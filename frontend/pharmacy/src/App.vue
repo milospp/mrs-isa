@@ -17,7 +17,7 @@ export default {
     return []
   },
   created() {
-    // this.role = 'pharmacist',
+    this.role = 'pharmacist',
     // this.header = ["Korisničko ime", "Ime", "Prezime"],
     // this.attributes = ["username", "name", "surname"],
     this.patients = []
@@ -52,5 +52,3 @@ export default {
   overflow-y: scroll;
 }
 </style>
-
-
