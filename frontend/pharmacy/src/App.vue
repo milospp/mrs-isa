@@ -1,30 +1,56 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
-  <router-view/>
+  <DermaPharmaNavbar :role="role"/>
+  <PatientList/>
 </template>
+
+<script>
+import PatientList from './components/PatientList.vue';
+import DermaPharmaNavbar from './components/DermaPharmaNavbar.vue';
+
+export default {
+  name: 'App',
+  components: {
+    DermaPharmaNavbar,
+    PatientList
+  },
+  data() {
+    return []
+  },
+  created() {
+    // this.role = 'pharmacist',
+    // this.header = ["Korisničko ime", "Ime", "Prezime"],
+    // this.attributes = ["username", "name", "surname"],
+    this.patients = []
+    // this.patients = [
+    //   {
+    //     username: "perica",
+    //     name: "Pera",
+    //     surname: "Peric",
+    //   },
+    //   {
+    //     username: "marica",
+    //     name: "Mara",
+    //     surname: "Maric",
+    //   },
+    //   {
+    //     username: "milica",
+    //     name: "Mila",
+    //     surname: "Milic",
+    //   },
+    // ]
+  }
+}
+</script>
 
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+  margin-top: 60px;
+  overflow-y: scroll;
 }
 </style>
+
+
