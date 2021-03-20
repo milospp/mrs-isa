@@ -1,34 +1,16 @@
-package isa9.model;
+package isa9.Farmacy.model.dto;
 
-public class Patient {
+public class UserDTO {
     private Long id;
     private String username;
     private String name;
     private String surname;
 
-    public Patient() {
-    }
-
-    public Patient(Long id, String username, String name, String surname) {
+    public UserDTO(Long id, String username, String name, String surname) {
         this.id = id;
         this.username = username;
         this.name = name;
         this.surname = surname;
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return ((Patient)obj).username.equals(this.username);
-    }
-
-    @Override
-    public String toString() {
-        return "Patient: " + username + " " + name + " " + surname;
     }
 
     public Long getId() {

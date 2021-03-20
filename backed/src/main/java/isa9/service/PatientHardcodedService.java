@@ -1,6 +1,6 @@
 package isa9.service;
 
-import isa9.model.Patient;
+import isa9.Farmacy.model.Patient;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 

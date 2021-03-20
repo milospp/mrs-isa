@@ -1,12 +1,10 @@
-package isa9.Farmacy;
+package isa9.Farmacy.controller;
 
-import isa9.model.Patient;
+import isa9.Farmacy.model.Patient;
 import isa9.service.PatientHardcodedService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
