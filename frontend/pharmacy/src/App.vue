@@ -1,43 +1,27 @@
 <template>
-  <DermaPharmaNavbar :role="role"/>
+  <!-- <DermaPharmaNavbar :role="role"/> -->
   <PatientList/>
 </template>
 
 <script>
 import PatientList from './components/PatientList.vue';
-import DermaPharmaNavbar from './components/DermaPharmaNavbar.vue';
+//import DermaPharmaNavbar from './components/DermaPharmaNavbar.vue';
 
 export default {
   name: 'App',
   components: {
-    DermaPharmaNavbar,
+    //DermaPharmaNavbar,
     PatientList
   },
   data() {
     return []
   },
   created() {
-    this.role = 'pharmacist',
+    // this.role = 'pharmacist',
     // this.header = ["Korisničko ime", "Ime", "Prezime"],
     // this.attributes = ["username", "name", "surname"],
-    this.patients = []
-    // this.patients = [
-    //   {
-    //     username: "perica",
-    //     name: "Pera",
-    //     surname: "Peric",
-    //   },
-    //   {
-    //     username: "marica",
-    //     name: "Mara",
-    //     surname: "Maric",
-    //   },
-    //   {
-    //     username: "milica",
-    //     name: "Mila",
-    //     surname: "Milic",
-    //   },
-    // ]
+    console.log('kreiran App');
+    // this.patients = [];
   }
 }
 </script>
