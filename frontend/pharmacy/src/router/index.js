@@ -1,12 +1,36 @@
 import { createRouter, createWebHistory } from 'vue-router'
-//import Home from '../views/Home.vue'
+import HomePage from '../views/HomePage.vue'
+import OldHome from '../views/OldHome.vue'
+import Pharmacies from '../views/Pharmacies.vue'
+import Medicines from '../views/Medicines.vue'
+import Register from '@/views/Register.vue'
 
 const routes = [
-  // {
-  //   path: '/',
-  //   name: 'Home',
-  //   component: Home
-  // },
+  {
+    path: '/',
+    name: 'HomePage',
+    component: HomePage
+  },
+  {
+    path: '/oh',
+    name: 'OldHome',
+    component: OldHome
+  },
+  {
+    path: '/pharmacies',
+    name: 'Pharmacies',
+    component: Pharmacies
+  },
+  {
+    path: '/medicines',
+    name: 'Medicines',
+    component: Medicines
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register
+  },
   // {
   //   path: '/about',
   //   name: 'About',
