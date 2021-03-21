@@ -1,19 +1,24 @@
 package isa9.Farmacy.model;
 
-public class User {
+public abstract class User {
+
     private Long id;
     private String username;
     private String name;
     private String surname;
+    private String email;
+    private String password;
 
     public User() {
     }
 
-    public User(Long id, String username, String name, String surname) {
+    public User(Long id, String username, String name, String surname, String email, String password) {
         this.id = id;
         this.username = username;
         this.name = name;
         this.surname = surname;
+        this.email = email;
+        this.password = password;
     }
 
     @Override
@@ -23,12 +28,12 @@ public class User {
 
     @Override
     public boolean equals(Object obj) {
-        return ((User)obj).username.equals(this.username);
+        return super.equals(obj);
     }
 
     @Override
     public String toString() {
-        return "User: " + username + " " + name + " " + surname;
+        return "User: " + username + " " + name + " " + surname + " " + email + " " + password;
     }
 
     public Long getId() {
@@ -63,4 +68,19 @@ public class User {
         this.surname = surname;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

@@ -16,12 +16,12 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
     private final Map<Long, User> users = new HashMap<>();
 
 
-    InMemoryUserService() {
-        users.put(1L, new User(1L, "2", "3", "4"));
-        users.put(2L, new User(2L, "2", "3", "4"));
-        users.put(3L, new User(3L, "2", "3", "4"));
-        users.put(4L, new User(4L, "2", "3", "4"));
-    }
+//    InMemoryUserService() {
+//        users.put(1L, new User(1L, "2", "3", "4"));
+//        users.put(2L, new User(2L, "2", "3", "4"));
+//        users.put(3L, new User(3L, "2", "3", "4"));
+//        users.put(4L, new User(4L, "2", "3", "4"));
+//    }
 
     @Override
     public List<User> findAll() {

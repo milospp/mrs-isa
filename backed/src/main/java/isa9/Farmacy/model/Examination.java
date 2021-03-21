@@ -1,4 +1,4 @@
 package isa9.Farmacy.model;
 
-public class Pharmacy {
+public class Examination {
 }
