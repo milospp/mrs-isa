@@ -1,2 +1,6 @@
-package isa9.Farmacy.model;public enum OrderStatus {
+package isa9.Farmacy.model;
+
+public enum OrderStatus {
+    ACCEPTED,
+    REJECTED
 }

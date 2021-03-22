@@ -1,5 +1,8 @@
 package isa9.Farmacy.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Pharmacist extends Doctor{
 
     private Pharmacy pharmacy;
@@ -7,8 +10,10 @@ public class Pharmacist extends Doctor{
     public Pharmacist() {
     }
 
-    public Pharmacist(Long id, String username, String name, String surname, String email, String password) {
-        super(id, username, name, surname, email, password);
+    public Pharmacist(Long id, String name, String surname, String email,
+                   String password, String username, Address address, String phoneNumber, Pharmacy pharmacy) {
+        super(id, username, name, surname, email, password, address, phoneNumber);
+        this.pharmacy = pharmacy;
     }
 
     @Override
@@ -23,7 +28,15 @@ public class Pharmacist extends Doctor{
 
     @Override
     public String toString() {
-        return "Pharmacist: " + getUsername() + " " + getName() + " " + getSurname() + " " + getEmail() + " " + getPassword();
+        return "Pharmacist: " + getUsername() + " " + getName() + " " + getSurname() + " " + getEmail()
+                + " " + getPassword() + " " + getPhoneNumber() + " " + getAddress();
     }
 
+    public Pharmacy getPharmacy() {
+        return pharmacy;
+    }
+
+    public void setPharmacy(Pharmacy pharmacy) {
+        this.pharmacy = pharmacy;
+    }
 }

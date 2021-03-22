@@ -5,8 +5,8 @@ public class Supplier extends User{
     public Supplier() {
     }
 
-    public Supplier(Long id, String username, String name, String surname, String email, String password) {
-        super(id, username, name, surname, email, password);
+    public Supplier(Long id, String username, String name, String surname, String email, String password, Address address, String phoneNumber) {
+        super(id, username, name, surname, email, password, address, phoneNumber);
     }
 
     @Override
@@ -21,7 +21,8 @@ public class Supplier extends User{
 
     @Override
     public String toString() {
-        return "Supplier: " + getUsername() + " " + getName() + " " + getSurname() + " " + getEmail() + " " + getPassword();
+        return "Supplier: " + getUsername() + " " + getName() + " " + getSurname() + " " + getEmail()
+                + " " + getPassword() + " " + getPhoneNumber() + " " + getAddress();
     }
 
 }

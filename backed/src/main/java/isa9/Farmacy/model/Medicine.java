@@ -1,2 +1,4 @@
-package isa9.Farmacy.model;public class Medicine {
+package isa9.Farmacy.model;
+
+public class Medicine {
 }

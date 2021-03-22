@@ -1,7 +1,4 @@
-package isa9.Farmacy.model.dto;
-
-import isa9.Farmacy.model.Pharmacy;
-import isa9.Farmacy.model.User;
+package isa9.Farmacy.model;
 
 import java.util.Objects;
 

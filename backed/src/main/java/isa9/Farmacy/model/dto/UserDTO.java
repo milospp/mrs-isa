@@ -5,12 +5,16 @@ public class UserDTO {
     private String username;
     private String name;
     private String surname;
+    private String address; // pretvori se u string?
+    private String phoneNumber;
 
-    public UserDTO(Long id, String username, String name, String surname) {
+    public UserDTO(Long id, String username, String name, String surname, String address, String phoneNumber) {
         this.id = id;
         this.username = username;
         this.name = name;
         this.surname = surname;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
     }
 
     public Long getId() {
@@ -43,5 +47,21 @@ public class UserDTO {
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

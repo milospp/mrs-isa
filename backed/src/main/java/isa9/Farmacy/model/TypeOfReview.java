@@ -1,4 +1,4 @@
-package isa9.Farmacy.model.dto;
+package isa9.Farmacy.model;
 
 public enum TypeOfReview {
     EXAMINATION,

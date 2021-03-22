@@ -1,2 +1,6 @@
-package isa9.Farmacy.model;public class TypeOfRest {
+package isa9.Farmacy.model;
+
+public enum TypeOfRest {
+    REST,
+    ABSENCE
 }

@@ -5,8 +5,9 @@ public class SysAdmin extends User{
     public SysAdmin() {
     }
 
-    public SysAdmin(Long id, String username, String name, String surname, String email, String password) {
-        super(id, username, name, surname, email, password);
+    public SysAdmin(Long id, String name, String surname, String email,
+                      String password, String username, Address address, String phoneNumber, Pharmacy pharmacy) {
+        super(id, username, name, surname, email, password, address, phoneNumber);
     }
 
     @Override
@@ -21,6 +22,7 @@ public class SysAdmin extends User{
 
     @Override
     public String toString() {
-        return "SysAdmin: " + getUsername() + " " + getName() + " " + getSurname() + " " + getEmail() + " " + getPassword();
+        return "SysAdmin: " + getUsername() + " " + getName() + " " + getSurname() + " " + getEmail()
+                + " " + getPassword() + " " + getPhoneNumber() + " " + getAddress();
     }
 }

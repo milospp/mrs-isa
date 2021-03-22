@@ -1,5 +1,6 @@
 package isa9.Farmacy.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Dermatologist extends Doctor{
@@ -9,8 +10,9 @@ public class Dermatologist extends Doctor{
     public Dermatologist() {
     }
 
-    public Dermatologist(Long id, String username, String name, String surname, String email, String password) {
-        super(id, username, name, surname, email, password);
+    public Dermatologist(Long id, String username, String name, String surname, String email, String password, Address address, String phoneNumber) {
+        super(id, username, name, surname, email, password, address, phoneNumber);
+        this.pharmacies = new ArrayList<Pharmacy>();
     }
 
     @Override
@@ -28,4 +30,11 @@ public class Dermatologist extends Doctor{
         return "Dermatologist: " + getUsername() + " " + getName() + " " + getSurname() + " " + getEmail() + " " + getPassword();
     }
 
+    public List<Pharmacy> getPharmacies() {
+        return pharmacies;
+    }
+
+    public void setPharmacies(List<Pharmacy> pharmacies) {
+        this.pharmacies = pharmacies;
+    }
 }

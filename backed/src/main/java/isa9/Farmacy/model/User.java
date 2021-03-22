@@ -2,6 +2,8 @@ package isa9.Farmacy.model;
 
 public abstract class User {
 
+    private Address address;
+    private String phoneNumber;
     private Long id;
     private String username;
     private String name;
@@ -12,7 +14,19 @@ public abstract class User {
     public User() {
     }
 
-    public User(Long id, String username, String name, String surname, String email, String password) {
+    public User(Long id, String username, String name, String surname, String email, String password, Address address, String phoneNumber) {
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.id = id;
+        this.username = username;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.password = password;
+    }
+
+    public User(Long id, String username, String name, String surname, String email, String password, String address, String phoneNumber) {
+        this.phoneNumber = phoneNumber;
         this.id = id;
         this.username = username;
         this.name = name;
@@ -82,5 +96,21 @@ public abstract class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

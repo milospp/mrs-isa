@@ -5,8 +5,6 @@ import java.util.List;
 
 public class Patient extends User {
 
-    private Address address;
-    private String phoneNumber;
     private int points;
     private int panalties;
     private List<Examination> myExaminations;
@@ -16,9 +14,7 @@ public class Patient extends User {
 
     public Patient(Long id, String name, String surname, String email,
                    String password, String username, Address address, String phoneNumber) {
-        super(id, username, name, surname, email, password);
-        this.address = address;
-        this.phoneNumber = phoneNumber;
+        super(id, username, name, surname, email, password, address, phoneNumber);
         this.points = 0;
         this.panalties = 0;
         this.myExaminations = new ArrayList<>();
@@ -28,9 +24,7 @@ public class Patient extends User {
     public Patient(Long id, String username, String name, String surname, String email,
                    String password, Address address, String phoneNumber, int points,
                    int panalties, List<Examination> myExaminations) {
-        super(id, username, name, surname, email, password);
-        this.address = address;
-        this.phoneNumber = phoneNumber;
+        super(id, username, name, surname, email, password, address, phoneNumber);
         this.points = points;
         this.panalties = panalties;
         this.myExaminations = myExaminations;
@@ -49,23 +43,7 @@ public class Patient extends User {
     @Override
     public String toString() {
         return "Patient: " + getUsername() + " " + getName() + " " + getSurname() + " " + getEmail()
-                + " " + getPassword() + " " + phoneNumber + " " + address;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+                + " " + getPassword() + " " + getPhoneNumber() + " " + getAddress();
     }
 
     public int getPoints() {

@@ -1,6 +1,7 @@
 package isa9.Farmacy.controller;
 
 import com.sun.mail.iap.Response;
+import isa9.Farmacy.model.Pharmacist;
 import isa9.Farmacy.model.User;
 import isa9.Farmacy.model.dto.UserDTO;
 import isa9.Farmacy.service.UserService;
@@ -29,7 +30,7 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<UserDTO> resultDTOS = new ArrayList<>();
         for (User user : this.userService.findAll()){
-            resultDTOS.add(new UserDTO(user.getId(), user.getUsername(), user.getName(), user.getSurname()));
+            resultDTOS.add(new UserDTO(user.getId(), user.getUsername(), user.getName(), user.getSurname(), user.getAddress().toString(), user.getPhoneNumber()));
         }
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
@@ -40,7 +41,7 @@ public class UserController {
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id){
         User user = userService.findOne(id);
 
-        UserDTO userDTO = new UserDTO(user.getId(), user.getUsername(), user.getName(), user.getSurname());
+        UserDTO userDTO = new UserDTO(user.getId(), user.getUsername(), user.getName(), user.getSurname(), user.getAddress().toString(), user.getPhoneNumber());
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
 
     }
@@ -50,10 +51,36 @@ public class UserController {
     public ResponseEntity<UserDTO> registerUser(@RequestBody User user) {
         userService.save(user);
         return new ResponseEntity<>(
-                new UserDTO(user.getId(), user.getUsername(), user.getName(), user.getSurname()),
+                new UserDTO(user.getId(), user.getUsername(), user.getName(), user.getSurname(), user.getAddress().toString(), user.getPhoneNumber()),
                 HttpStatus.OK
         );
 
     }
 
+    @GetMapping(path = "is-available-username/{us}", produces = "application/json")
+    public ResponseEntity<Boolean> isAvaibleUsername(@PathVariable String us) {
+        System.out.println(us);
+        boolean povratna = userService.isAvaibleUsername(us);
+       return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "is-available-email/{em}", produces = "application/json")
+    public ResponseEntity<Boolean> isAvaibleEmaile(@PathVariable String em) {
+        System.out.println(em);
+        boolean povratna = userService.isAvaibleEmail(em);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @PostMapping("/register/pharmacist")
+    public void createPharmacist(@RequestBody Pharmacist user) {
+
+        User createdUser = userService.save(user);
+        System.out.println(createdUser);
+        // Location
+        // Get current resource url
+        /// {id}
+        //URI uri = //ServletUriComponentsBuilder.fromCurrentRequest().path("/addPharmacist").buildAndExpand(createdCourse.getId()).toUri();
+
+        //return ResponseEntity.created(uri).build();
+    }
 }
