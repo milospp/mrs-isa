@@ -17,9 +17,9 @@ class PharmacistDataService {
     return axios.get(`${API_URL}/api/users/is-available-email/${em}`);
   }
   SendPharmacist(promenljiva) {
-    axios({
+    return axios({
       method: 'post',
-      url: '/api/users/register/pharmacist',
+      url: `${API_URL}/api/users/register/pharmacist`,
       data: promenljiva
     });
   }
