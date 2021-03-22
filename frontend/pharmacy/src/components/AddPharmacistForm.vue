@@ -51,7 +51,7 @@
                 <td id="adresa" >
                     <input 
                         type="text" id="address" v-model="registerData.address.street" required="required"
-                            pattern="[A-Z][a-zA-Z0-9]*" title="Address must start with capital letter"
+                            pattern="[A-Z][a-zA-Z0-9| ]*" title="Address must start with capital letter"
                     ></td>
             </tr>
             <tr>
@@ -140,7 +140,6 @@ export default {
 					} else if (error.request) {
 						console.log(error.request);
 					}
-
 					console.log("error.config");
 					console.log(error.config);
 				});

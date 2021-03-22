@@ -72,15 +72,13 @@ public class UserController {
     }
 
     @PostMapping("/register/pharmacist")
-    public void createPharmacist(@RequestBody Pharmacist user) {
-
+    public ResponseEntity<Integer> createPharmacist(@RequestBody Pharmacist user) {
+        int povratna = 0;
+        if (!userService.isAvaibleUsername(user.getUsername())) povratna = 1;
+        if (!userService.isAvaibleEmail(user.getEmail())) povratna += 2;
+        if (povratna > 0) return new ResponseEntity<>(povratna, HttpStatus.OK);
         User createdUser = userService.save(user);
         System.out.println(createdUser);
-        // Location
-        // Get current resource url
-        /// {id}
-        //URI uri = //ServletUriComponentsBuilder.fromCurrentRequest().path("/addPharmacist").buildAndExpand(createdCourse.getId()).toUri();
-
-        //return ResponseEntity.created(uri).build();
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 }
