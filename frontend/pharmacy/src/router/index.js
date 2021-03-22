@@ -4,6 +4,7 @@ import OldHome from '../views/OldHome.vue'
 import Pharmacies from '../views/Pharmacies.vue'
 import Medicines from '../views/Medicines.vue'
 import Register from '@/views/Register.vue'
+import Patients from '@/views/Patients.vue'
 
 const routes = [
   {
@@ -31,6 +32,11 @@ const routes = [
     name: 'Register',
     component: Register
   },
+  {
+    path: '/patients',
+    name: 'Patients',
+    component: Patients
+  }
   // {
   //   path: '/about',
   //   name: 'About',

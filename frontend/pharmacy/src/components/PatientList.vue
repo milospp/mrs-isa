@@ -1,27 +1,32 @@
 <template>
-    <div class="container" >
-        <table class="table table-hover">
-            <thead>
-                <th>Korisničko ime</th>
-                <th>Ime</th>
-                <th>Prezime</th>
+    <div class="container">
+        <div class="row">
+        <table class="table table-hover table-bordered box-shadow">
+            <thead class="card-header">
+                <th>Username</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Address</th>
+                <th>Phone number</th>
             </thead>
             <tbody>
-                <tr :key="p.username" v-for="p in patients">
+                <tr :key="p.username" v-for="p in patients" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
+                    <td>{{p.username}}</td>
                     <td>{{p.name}}</td>
                     <td>{{p.surname}}</td>
-                    <td>{{p.username}}</td>
+                    <td>{{p.address}}</td>
+                    <td>{{p.phoneNumber}}</td>
                 </tr>
             </tbody>
             
         </table>
-        
+        </div>
     </div>
 </template>
 
 <script>
 import PatientDataService from '../service/PatientDataService.js';
-console.log("spolja");
+
 export default {
     name: 'PatientList',
     data() {
@@ -33,25 +38,30 @@ export default {
     },
     methods: {
         refreshPatients() {
-            console.log('eee');
             PatientDataService.retrieveAllPatients() // HARDCODED
                 .then(response => {
                     this.patients = response.data;
                     console.log(response.data);
                 });
+        },
+        patientInfo(patient){
+            alert(patient);
         }
     },
     mounted() {
-        console.log("aloe");
         this.refreshPatients();
-        console.log(this.patients);
-        console.log('eeeeeee');
     },
     created() {
-        console.log("aloe");
         this.refreshPatients();
-        console.log(this.patients);
-        console.log('eeeeeee');
     }
 }
 </script>
+
+<style scoped>
+    .table {
+        color: inherit;
+    }
+    .clickable {
+        cursor: pointer;
+    }
+</style>

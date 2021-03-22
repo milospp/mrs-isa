@@ -14,6 +14,7 @@
 					<router-link :to="{ name: 'HomePage'}" class="nav-item nav-link">Home</router-link>
 					<router-link :to="{ name: 'Pharmacies'}" class="nav-item nav-link">Pharmacies</router-link>
 					<router-link :to="{ name: 'Medicines'}" class="nav-item nav-link">Medicines</router-link>
+					<router-link :to="{ name: 'Patients' }" class="nav-item nav-link">(Patients)</router-link>
 					
 					<!-- <router-link v-if="user && user.userRole == 'ADMIN'" to="/users" class="nav-link">Users</router-link>  -->
 

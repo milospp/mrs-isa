@@ -5,11 +5,8 @@ const API_URL = "http://localhost:8080";
 
 class PatientDataService {
   retrieveAllPatients() {
-    console.log('saljem zahtev');
-    return axios.get(`${API_URL}/patients`);
+    return axios.get(`${API_URL}/all-patients`);
   }
 }
 
 export default new PatientDataService();
-
-console.log('napravila PatientDataService');

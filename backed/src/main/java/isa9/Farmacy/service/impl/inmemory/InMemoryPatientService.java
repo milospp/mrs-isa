@@ -20,10 +20,10 @@ public class InMemoryPatientService implements PatientService {
     private final Map<Long, Patient> patients = new HashMap<>();
 
     InMemoryPatientService() {
-        patients.put(1L, new Patient(1L, "isidora", "Isidora", "Stanic", "isidora@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
-        patients.put(2L, new Patient(2L, "milica", "Milica", "Djumic", "milica@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
-        patients.put(3L, new Patient(3L, "mladen", "Mladen", "Vasic", "mladen@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
-        patients.put(4L, new Patient(4L, "milos", "Milos", "Popovic", "milos@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
+        patients.put(1L, new Patient(1L, "Isidora", "Stanic", "isidora@mail.com", "1234", "isidora", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
+        patients.put(2L, new Patient(2L, "Milica", "Djumic", "milica@mail.com", "1234", "milica", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
+        patients.put(3L, new Patient(3L, "Mladen", "Vasic", "mladen@mail.com", "1234", "mladen", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
+        patients.put(4L, new Patient(4L, "Milos", "Popovic", "milos@mail.com", "1234", "milos", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
     }
 
     @Override
