@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin(origins = { "http://localhost:3000", "http://localhost:4200", "http://localhost:8081" })
 @RestController
+@CrossOrigin("*")
+@RequestMapping("/api/patient")
 public class PatientController {
 
     private final PatientService patientService;
@@ -52,11 +53,11 @@ public class PatientController {
     }
 
 
-    @PostMapping("register-patient")
-    public ResponseEntity<PatientDTO> registerUser(@RequestBody Patient patient) {
+    @PostMapping("register/patient")
+    public ResponseEntity<Boolean> registerUser(@RequestBody Patient patient) {
         patientService.save(patient);
-        return new ResponseEntity<>(
-                new PatientDTO(patient.getId(), patient.getUsername(), patient.getName(), patient.getSurname(), patient.getAddress().toString(), patient.getPhoneNumber()),
+        System.out.println(patient);
+        return new ResponseEntity<> (true,
                 HttpStatus.OK
         );
 
