@@ -57,7 +57,6 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
     @Override
     public boolean isAvaibleEmail(String em) {
         boolean povratna = true;
-        System.out.println(em);
         for (User u : users.values()) {
             if (u.getEmail().equals(em)) {
                 povratna = false;
