@@ -22,11 +22,10 @@ class PharmacistDataService {
       url: `${API_URL}/api/users/register/pharmacist`,
       data: promenljiva
     }).then(response => {
-      alert(response.data);
       if (response.data == 0) return true; 
       else if (response.data == 1) alert("Username is not unique!");
       else if (response.data == 2) alert("Email is not unique!");
-      else alert("Username or email is not unique!");
+      else alert("Username and email are not unique!");
       return false;
     });
   }
