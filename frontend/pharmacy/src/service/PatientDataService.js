@@ -5,7 +5,7 @@ const API_URL = "http://localhost:8080";
 
 class PatientDataService {
   retrieveAllPatients() {
-    return axios.get(`${API_URL}/all-patients`);
+    return axios.get(`${API_URL}/api/patient/all-patients`);
   }
   
   SendPatient(newPatient) {

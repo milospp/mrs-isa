@@ -6,7 +6,7 @@ import java.util.List;
 public class Patient extends User {
 
     private int points;
-    private int panalties;
+    private int penalties;
     private List<Examination> myExaminations;
 
     public Patient() {
@@ -16,17 +16,17 @@ public class Patient extends User {
                    String password, String username, Address address, String phoneNumber) {
         super(id, username, name, surname, email, password, address, phoneNumber);
         this.points = 0;
-        this.panalties = 0;
+        this.penalties = 0;
         this.myExaminations = new ArrayList<>();
 
     }
 
     public Patient(Long id, String username, String name, String surname, String email,
                    String password, Address address, String phoneNumber, int points,
-                   int panalties, List<Examination> myExaminations) {
+                   int penalties, List<Examination> myExaminations) {
         super(id, username, name, surname, email, password, address, phoneNumber);
         this.points = points;
-        this.panalties = panalties;
+        this.penalties = penalties;
         this.myExaminations = myExaminations;
     }
 
@@ -54,12 +54,12 @@ public class Patient extends User {
         this.points = points;
     }
 
-    public int getPanalties() {
-        return panalties;
+    public int getPenalties() {
+        return penalties;
     }
 
-    public void setPanalties(int panalties) {
-        this.panalties = panalties;
+    public void setPenalties(int penalties) {
+        this.penalties = penalties;
     }
 
     public List<Examination> getMyExaminations() {
