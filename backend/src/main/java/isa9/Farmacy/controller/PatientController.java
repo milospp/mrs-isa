@@ -1,8 +1,10 @@
 package isa9.Farmacy.controller;
 
+import isa9.Farmacy.model.Address;
 import isa9.Farmacy.model.Patient;
 import isa9.Farmacy.model.User;
 import isa9.Farmacy.model.dto.PatientDTO;
+import isa9.Farmacy.model.dto.PatientRegistrationDTO;
 import isa9.Farmacy.model.dto.UserDTO;
 import isa9.Farmacy.service.PatientService;
 import isa9.Farmacy.service.UserService;
@@ -17,7 +19,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/api/patient")
+@RequestMapping("/api/patients")
 public class PatientController {
 
     private final PatientService patientService;
@@ -54,9 +56,12 @@ public class PatientController {
 
 
     @PostMapping("register/patient")
-    public ResponseEntity<Boolean> registerUser(@RequestBody Patient patient) {
-        patientService.save(patient);
-        System.out.println(patient);
+    public ResponseEntity<Boolean> registerUser(@RequestBody PatientRegistrationDTO patient) {
+        Patient newlyRegistered = new Patient(patient.getId(), patient.getName(), patient.getSurname()
+                , patient.getEmail(), patient.getPassword(), patient.getUsername(),
+                patient.getAddress(), patient.getPhoneNumber());
+        patientService.save(newlyRegistered);
+        System.out.println(newlyRegistered);
         return new ResponseEntity<> (true,
                 HttpStatus.OK
         );

@@ -51,7 +51,7 @@
                 <td id="adresa" >
                     <input 
                         type="text" id="address" v-model="registerData.address.street" required="required"
-                            pattern="[A-Z][a-zA-Z0-9]*" title="Address must start with capital letter"
+                            pattern="[A-Z][a-zA-Z0-9 ]*" title="Address must start with capital letter"
                     ></td>
             </tr>
             <tr>
@@ -62,10 +62,10 @@
             </tr>
 
             <tr>
-                <td align="left">Input phone numer:</td>
+                <td align="left">Input phone number:</td>
                 <td id="broj" ><input 
                     type="text" id="phoneNumber" v-model="registerData.phoneNumber" required="required"
-                    pattern="[0-9]*" title="Phone number must number"
+                    pattern="[0-9]*" title="Phone number must be a number"
                 ></td>
             </tr>
 
@@ -79,6 +79,7 @@
 
 <script>
 import PatientDataService from '../service/PatientDataService.js';
+import PharmacistDataService from '../service/PharmacistDataService.js';
 console.log("Majmun");
 export default {
     name: 'AddPatientForm',
@@ -122,14 +123,14 @@ export default {
                 if (red.cells.length == 3) red.removeChild(red.cells[2]);
             }
 
-            //----- jedinstvenost -----
+            //jedinstvenost
             // if (this.checkEmail()) {
             //     povratna = false;
-            //     this.ispisPoruke(sviRedovi[2], "Email must be unque!");
+            //     this.ispisPoruke(sviRedovi[2], "Email must be unique!");
             // }
             // if (this.checkUsername())  {
             //     povratna = false;
-            //     this.ispisPoruke(sviRedovi[3], "Username must be unque!");
+            //     this.ispisPoruke(sviRedovi[3], "Username must be unique!");
             // }
 
             if (!povratna) return;
@@ -158,7 +159,7 @@ export default {
 
         checkUsername() {
             console.log("response");
-            PatientDataService.checkUsername(this.username)
+            PharmacistDataService.checkUsername(this.username)
                 .then(response => {
                     console.log(response);
                     if (response.data) {     // slobodno
@@ -174,7 +175,7 @@ export default {
 
         checkEmail() {
             console.log("response");
-            PatientDataService.checkEmail(this.email)
+            PharmacistDataService.checkEmail(this.email)
                 .then(response => {
                     console.log(response);
                     return response.data;

@@ -5,13 +5,13 @@ const API_URL = "http://localhost:8080";
 
 class PatientDataService {
   retrieveAllPatients() {
-    return axios.get(`${API_URL}/api/patient/all-patients`);
+    return axios.get(`${API_URL}/api/patients/all-patients`);
   }
   
   SendPatient(newPatient) {
     return axios({
       method: 'post',
-      url: `${API_URL}/api/patient/register/patient`,
+      url: `${API_URL}/api/patients/register/patient`,
       data: newPatient
     });
   }
