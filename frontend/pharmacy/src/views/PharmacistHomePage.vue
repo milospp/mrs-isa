@@ -1,8 +1,8 @@
 <template>
   <NavBar role="pharmacist"/>
-  <div class="container">
-    <h1 class="title">My Patients</h1>
-    <PatientList/>
+  <h1 class="title">Working Calendar</h1>
+  <div class="containter">
+      <WorkingCalendar v-bind:email="email"/>
   </div>
 </template>
 
@@ -10,20 +10,18 @@
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
 import NavBar from '@/components/NavBar.vue'
-import PatientList from '@/components/PatientList'
+import WorkingCalendar from '@/components/WorkingCalendar.vue'
+
 export default {
-  name: 'Patients',
-  props: {
-    role: String
-  },
+  name: 'PharmacistHomePage',
   components: {
     NavBar,
-    PatientList,
+    WorkingCalendar
   },
   data() {
-    return {
-      role: "pharmacist"
-    }
+      return {
+          email: "test#test"
+      }
   }
 }
 </script>

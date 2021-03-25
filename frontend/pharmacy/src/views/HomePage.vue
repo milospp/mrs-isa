@@ -1,6 +1,6 @@
 <template>
-  <NavBar/>
-  <h1>Home</h1>
+  <NavBar role="none"/>
+  <h1 class="title">Home</h1>
   <div class="container">
     <Pharmacies/>
   </div>
@@ -21,7 +21,13 @@ export default {
   components: {
     NavBar,
     Pharmacies,
-    Medicines,
+    Medicines
   }
 }
 </script>
+
+<style scoped>
+.title {
+    margin: 20px;
+}
+</style>
