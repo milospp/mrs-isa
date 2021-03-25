@@ -77,7 +77,8 @@ public class UserController {
         if (!userService.isAvaibleUsername(user.getUsername())) povratna = 1;
         if (!userService.isAvaibleEmail(user.getEmail())) povratna += 2;
         if (povratna > 0) return new ResponseEntity<>(povratna, HttpStatus.OK);
-        userService.save(user);
+        User createdUser = userService.save(user);
+        System.out.println(createdUser);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 }

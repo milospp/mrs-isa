@@ -6,14 +6,14 @@ public class Pharmacy {
     private String name;
     private Address address;
     private String description;
-    private String id;
+    private Long id;
     //private List<MedicineStockPrice> medicineStockPrices; // ?
 
     public Pharmacy() {
         super();
     }
 
-    public Pharmacy(String name, Address address, String description, String id/*,
+    public Pharmacy(String name, Address address, String description, Long id/*,
                     List<MedicineStockPrice> medicineStockPrices*/) {
         super();
         this.name = name;
@@ -47,11 +47,11 @@ public class Pharmacy {
         this.description = description;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 /*
