@@ -13,18 +13,18 @@ public class Patient extends User {
     }
 
     public Patient(Long id, String name, String surname, String email,
-                   String password, String username, Address address, String phoneNumber) {
-        super(id, username, name, surname, email, password, address, phoneNumber);
+                   String password, Address address, String phoneNumber) {
+        super(id, name, surname, email, password, address, phoneNumber);
         this.points = 0;
         this.penalties = 0;
         this.myExaminations = new ArrayList<>();
 
     }
 
-    public Patient(Long id, String username, String name, String surname, String email,
+    public Patient(Long id, String name, String surname, String email,
                    String password, Address address, String phoneNumber, int points,
                    int penalties, List<Examination> myExaminations) {
-        super(id, username, name, surname, email, password, address, phoneNumber);
+        super(id, name, surname, email, password, address, phoneNumber);
         this.points = points;
         this.penalties = penalties;
         this.myExaminations = myExaminations;
@@ -42,7 +42,7 @@ public class Patient extends User {
 
     @Override
     public String toString() {
-        return "Patient: " + getUsername() + " " + getName() + " " + getSurname() + " " + getEmail()
+        return "Patient: " + getName() + " " + getSurname() + " " + getEmail()
                 + " " + getPassword() + " " + getPhoneNumber() + " " + getAddress();
     }
 

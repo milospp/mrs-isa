@@ -11,8 +11,8 @@ public class Pharmacist extends Doctor{
     }
 
     public Pharmacist(Long id, String name, String surname, String email,
-                   String password, String username, Address address, String phoneNumber, Pharmacy pharmacy) {
-        super(id, username, name, surname, email, password, address, phoneNumber);
+                   String password, Address address, String phoneNumber, Pharmacy pharmacy) {
+        super(id, name, surname, email, password, address, phoneNumber);
         this.pharmacy = pharmacy;
     }
 
@@ -28,7 +28,7 @@ public class Pharmacist extends Doctor{
 
     @Override
     public String toString() {
-        return "Pharmacist: " + getUsername() + " " + getName() + " " + getSurname() + " " + getEmail()
+        return "Pharmacist: " + getName() + " " + getSurname() + " " + getEmail()
                 + " " + getPassword() + " " + getPhoneNumber() + " " + getAddress();
     }
 

@@ -10,8 +10,8 @@ public class Dermatologist extends Doctor{
     public Dermatologist() {
     }
 
-    public Dermatologist(Long id, String username, String name, String surname, String email, String password, Address address, String phoneNumber) {
-        super(id, username, name, surname, email, password, address, phoneNumber);
+    public Dermatologist(Long id, String name, String surname, String email, String password, Address address, String phoneNumber) {
+        super(id, name, surname, email, password, address, phoneNumber);
         this.pharmacies = new ArrayList<Pharmacy>();
     }
 
@@ -27,7 +27,7 @@ public class Dermatologist extends Doctor{
 
     @Override
     public String toString() {
-        return "Dermatologist: " + getUsername() + " " + getName() + " " + getSurname() + " " + getEmail() + " " + getPassword();
+        return "Dermatologist: " + getName() + " " + getSurname() + " " + getEmail() + " " + getPassword();
     }
 
     public List<Pharmacy> getPharmacies() {

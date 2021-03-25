@@ -7,8 +7,8 @@ public class PharmacyAdmin extends User{
     public PharmacyAdmin() {
     }
 
-    public PharmacyAdmin(Long id, String username, String name, String surname, String email, String password, Pharmacy pharmacy, Address address, String phoneNumber) {
-        super(id, username, name, surname, email, password, address, phoneNumber);
+    public PharmacyAdmin(Long id, String name, String surname, String email, String password, Pharmacy pharmacy, Address address, String phoneNumber) {
+        super(id, name, surname, email, password, address, phoneNumber);
         this.pharmacy = pharmacy;
     }
 
@@ -24,7 +24,7 @@ public class PharmacyAdmin extends User{
 
     @Override
     public String toString() {
-        return "PharmacyAdmin: " + getUsername() + " " + getName() + " " + getSurname() + " " + getEmail() + " " + getPassword() + " " + pharmacy;
+        return "PharmacyAdmin: " + getName() + " " + getSurname() + " " + getEmail() + " " + getPassword() + " " + pharmacy;
     }
 
     public Pharmacy getPharmacy() {

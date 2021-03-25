@@ -5,15 +5,19 @@ const API_URL = "http://localhost:8080";
 
 class PatientDataService {
   retrieveAllPatients() {
-    return axios.get(`${API_URL}/api/patients/all-patients`);
+    return axios.get(`${API_URL}/api/users/all-patients`);
   }
   
   SendPatient(newPatient) {
     return axios({
       method: 'post',
-      url: `${API_URL}/api/patients/register/patient`,
+      url: `${API_URL}/api/users/register/patient`,
       data: newPatient
-    });
+    }).then(response => {
+      if (response.data) return true;
+      alert("Email is not unique!");
+      return false;
+    });;
   }
 }
 

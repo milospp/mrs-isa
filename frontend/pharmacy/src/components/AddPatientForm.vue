@@ -24,16 +24,7 @@
                 <td id="mejl" >
                     <input 
                         type="text" id="email" v-model="registerData.email" required="required"
-                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,}$" title="Email must be in form example@yahoo.com"
-                    ></td>
-            </tr>
-            
-            <tr>
-                <td align="left">Input username:</td>
-                <td id = "korIme">
-                    <input 
-                        type="text" id="username" v-model="registerData.username" required="required"
-                        pattern="[a-zA-Z0-9]*" title="Username isn't valid"
+                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+[.][a-z]{2,}$" title="Email must be in form example@yahoo.com"
                     ></td>
             </tr>
             
@@ -88,98 +79,39 @@ export default {
 
             message: null,
             registerData: {
-                name : "Ad",
-                surname : "Sn",
-                email : "test@test",
-                username : "username",
-                password : "password",
+                name : "",
+                surname : "",
+                email : "",
+                password : "",
                 address : {
                     state: "",
                     city: "",
-                    street: "Temp ulica",
-                    number: "123",
+                    street: "",
+                    number: "",
                 },
-                phoneNumber : "123123",
+                phoneNumber : "",
             }
-
-            // pharmacist: [],
-            // message: null,
-            // name : null,
-            // surname : null,
-            // email : null,
-            // username : null,
-            // password : null,
-            // address : null,
-            // phoneNumber : null
         };
     },
     methods: {     
         proveraForme(e) {
-
-            //e.preventDefault();
             let povratna = true;
             let sviRedovi = document.getElementsByTagName("tr");
             for (let red of sviRedovi) {                // brisem stare komentare
                 if (red.cells.length == 3) red.removeChild(red.cells[2]);
             }
 
-            //jedinstvenost
-            // if (this.checkEmail()) {
-            //     povratna = false;
-            //     this.ispisPoruke(sviRedovi[2], "Email must be unique!");
-            // }
-            // if (this.checkUsername())  {
-            //     povratna = false;
-            //     this.ispisPoruke(sviRedovi[3], "Username must be unique!");
-            // }
-
             if (!povratna) return;
             PatientDataService.SendPatient(this.registerData)
-                .then(response => {
-                    console.log("Majmun");
-                })
 				.catch(function (error) {
 					if (error.response) {
 						console.log(error.response.data);
 					} else if (error.request) {
 						console.log(error.request);
 					}
-
 					console.log("error.config");
 					console.log(error.config);
 				});
-        },
-
-        ispisPoruke(red, poruka) {
-            if (red.cells.length > 2) return;
-            let novaKolona = red.insertCell(2);
-            novaKolona.innerHTML = poruka;
-            novaKolona.style.color = "red";
-        },
-
-        checkUsername() {
-            console.log("response");
-            PharmacistDataService.checkUsername(this.username)
-                .then(response => {
-                    console.log(response);
-                    if (response.data) {     // slobodno
-                        document.getElementById("korIme").style.background = "white";
-                        return true;
-                    }
-                    else {
-                        document.getElementById("korIme").style.background = "red";
-                        return false;
-                    }
-                });
-        },
-
-        checkEmail() {
-            console.log("response");
-            PharmacistDataService.checkEmail(this.email)
-                .then(response => {
-                    console.log(response);
-                    return response.data;
-                });
         }
     }
 }
