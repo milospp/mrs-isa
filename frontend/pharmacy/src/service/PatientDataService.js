@@ -14,7 +14,10 @@ class PatientDataService {
       url: `${API_URL}/api/users/register/patient`,
       data: newPatient
     }).then(response => {
-      if (response.data) return true;
+      if (response.data) {
+        alert("Successfully added patient!");
+        return true;
+      }
       alert("Email is not unique!");
       return false;
     });;

@@ -23,14 +23,6 @@ public abstract class User {
         this.password = password;
     }
 
-    public User(Long id, String name, String email, String password, String address, String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-    }
-
     @Override
     public int hashCode() {
         return super.hashCode();

@@ -13,7 +13,10 @@ class PharmacistDataService {
       url: `${API_URL}/api/users/register/pharmacist`,
       data: promenljiva
     }).then(response => {
-      if (response.data == 0) return true;
+      if (response.data == 0) {
+        alert("Successfully added pharmacist!");
+        return true;
+      }
       alert("Email is not unique!");
       return false;
     });
