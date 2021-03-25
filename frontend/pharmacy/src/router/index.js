@@ -45,7 +45,7 @@ const routes = [
     component: AddPharmacist    // view je komponenta
   },
   {
-    path: '/pharmacyPage',
+    path: '/pharmacyPage/:id',
     name: 'PharmacyPage',
     component: PharmacyPage    // view je komponenta
   }

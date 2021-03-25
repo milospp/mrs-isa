@@ -1,15 +1,36 @@
 package isa9.Farmacy.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import isa9.Farmacy.model.Pharmacy;
+import isa9.Farmacy.model.dto.PharmacyDTO;
+import isa9.Farmacy.model.dto.UserDTO;
+import isa9.Farmacy.service.PharmacyService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin("*")
+@RequestMapping("/api/pharmacies")
 public class PharmacyController {
 
-    @GetMapping("test")
-    public String test(){
-        return "test";
+    private final PharmacyService pharmacyService;
+
+    @Autowired
+    public PharmacyController(PharmacyService pharmacyService){
+        this.pharmacyService = pharmacyService;
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<PharmacyDTO> getPharmacy(@PathVariable Long id) {
+        Pharmacy pharmacy = pharmacyService.findOne(id);
+
+        if (pharmacy == null) return new ResponseEntity(HttpStatus.NOT_FOUND);
+
+        PharmacyDTO dto = new PharmacyDTO(pharmacy.getId(), pharmacy.getName(),
+                pharmacy.getDescription(), pharmacy.getAddress());
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
 
 }
+

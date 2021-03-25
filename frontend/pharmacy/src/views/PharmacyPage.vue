@@ -2,33 +2,14 @@
   <NavBar/>
   
   <div class="container pt-5">
+    <PharmacyProfileInfo/>
 
-    <div class="row">
-      <div class="col-md-4">
-        <h2>Naziv apoteke</h2>
-        <p class="rating">Rating: <span>9.7/10</span></p>
-
-        <h5>Address</h5>
-      </div>
-
-      <div class="col-md-6 text-left">
-        <p>Desciption.
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione accusantium quidem, magnam eligendi quia sint aperiam praesentium cum sapiente officiis. Saepe porro beatae unde eaque ratione, animi voluptatem similique ab?
-        </p>
-        
-      </div>
-      
-      <div class="col-md-2">
-        <button class="btn btn-block btn-primary">Subscribe</button>
-      </div>
-
-    </div>
 
     <div class="row">
       <div class="col-md-12">
 
         <div>
-          <h2>Dynamic Tabs</h2>
+          <h2>TODO More info</h2>
           <ul class="nav nav-tabs">
             <li class="nav-item active"><a class="nav-link" data-toggle="tab" href="#tab-medicines">Home</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Doctors</a></li>
@@ -140,7 +121,6 @@
       </div>
     </div>
 
-    <PharmaciesList/>
   </div>
 </template>
 
@@ -157,13 +137,14 @@
 
 <script>
 import NavBar from '@/components/NavBar.vue'
+import PharmacyProfileInfo from '../components/PharmacyProfileInfo.vue'
 
 // @ is an alias to /src
 export default {
   name: 'PharmacyPage',
   components: {
     NavBar,
-    // PharmaciesList,
+    PharmacyProfileInfo,
   }
 }
 </script>
