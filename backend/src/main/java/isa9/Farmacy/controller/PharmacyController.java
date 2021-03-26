@@ -32,8 +32,8 @@ public class PharmacyController {
     public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
         List<PharmacyDTO> resultDTOS = new ArrayList<>();
         for (Pharmacy p : this.pharmacyService.findAll()){
-            resultDTOS.add(new PharmacyDTO(p.getName(), p.getDescription(),
-                    p.getId(), p.getAddress()));
+            resultDTOS.add(new PharmacyDTO(p.getId(), p.getName(), p.getDescription(),
+                     p.getAddress()));
         }
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
