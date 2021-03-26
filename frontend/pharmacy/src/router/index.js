@@ -6,6 +6,7 @@ import Medicines from '../views/Medicines.vue'
 import Register from '@/views/Register.vue'
 import Patients from '@/views/Patients.vue'
 import AddPharmacist from '@/views/AddPharmacist.vue'
+import AddPharmacy from '@/views/AddPharmacy.vue'
 import PharmacistHomePage from '@/views/PharmacistHomePage.vue'
 import DispenseMedication from '@/views/DispenseMedication.vue'
 import VacationRequest from '@/views/VacationRequest.vue'
@@ -47,6 +48,11 @@ const routes = [
     path: '/addPharmacist',
     name: 'AddPharmacist',
     component: AddPharmacist    // view je komponenta
+  },
+  {
+    path: '/addPharmacy',
+    name: 'AddPharmacy',
+    component: AddPharmacy
   },
   {
     path: '/pharmacist',

@@ -3,6 +3,7 @@ package isa9.Farmacy.model.dto;
 import isa9.Farmacy.model.Address;
 
 public class PharmacyDTO {
+
     private Long id;
     private String name;
     private Address address;
