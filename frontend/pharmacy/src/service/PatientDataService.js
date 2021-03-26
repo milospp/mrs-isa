@@ -7,6 +7,10 @@ class PatientDataService {
   retrieveAllPatients() {
     return axios.get(`${API_URL}/api/users/all-patients`);
   }
+
+  getPatient(id){
+    return axios.get(`${API_URL}/api/users` + id);
+  }
   
   SendPatient(newPatient) {
     return axios({
