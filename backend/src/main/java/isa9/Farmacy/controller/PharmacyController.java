@@ -50,14 +50,13 @@ public class PharmacyController {
 
 
     @PostMapping("register/pharmacy")
-    public ResponseEntity<Boolean> registerPharmacy(@RequestBody PharmacyDTO pharmacy) {
-        Pharmacy newlyRegistered = new Pharmacy(pharmacy.getName(), pharmacy.getAddress(),
-                pharmacy.getDescription(), pharmacy.getId());
+    public ResponseEntity<Boolean> registerPharmacy(@RequestBody PharmacyDTO pDTO) {
+        Pharmacy newlyRegistered = new Pharmacy(pDTO.getName(), pDTO.getAddress(),
+                pDTO.getDescription(), pDTO.getId());
+        if(pharmacyService.pharmacyExists(newlyRegistered)) return new ResponseEntity<>(false, HttpStatus.OK);
         pharmacyService.save(newlyRegistered);
         System.out.println(newlyRegistered);
-        return new ResponseEntity<> (true,
-                HttpStatus.OK
-        );
+        return new ResponseEntity<> (true, HttpStatus.OK);
 
     }
 }

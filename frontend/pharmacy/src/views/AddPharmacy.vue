@@ -1,7 +1,7 @@
 <template>
   <NavBar/>
   <div class="container">
-    <h1>Register a new pharmacy</h1>
+    <h1 align="left">Register a new pharmacy</h1>
     <p>
     <AddPharmacyForm/>
     </p>
@@ -20,3 +20,4 @@ export default {
   }
 }
 </script>
+
