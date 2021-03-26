@@ -1,77 +1,85 @@
 <template>
-    <form v-on:submit.prevent="proveraForme(this)"> <!--v-on:submit.prevent="send" -->
+    <form v-on:submit.prevent="proveraForme(this)">
         <table>
             <tr>
-                <td align="left">Input name:</td>
-                <td id="ime" >
+                <td align="right">Name:</td>
+                <td colspan="2">
                     <input 
                         type="text" id="name" v-model="registerData.name" required="required"
-                        pattern="[A-Z][a-zA-Z]*" title="Name must start with capital letter"
+                        pattern="[A-Z][a-zA-Z]*" title="Name must start with capital letter" size="31"
                     ></td>
             </tr>
 
             <tr>
-                <td align="left">Input surname:</td>
-                <td id="prez" >
+                <td align="right">Surname:</td>
+                <td colspan="2">
                     <input 
                         type="text" id="surname" v-model="registerData.surname" required="required"
-                        pattern="[A-Z][a-zA-Z]*" title="Surname must start with capital letter"
+                        pattern="[A-Z][a-zA-Z]*" title="Surname must start with capital letter" size="31"
                     ></td>
             </tr>
             
             <tr>
-                <td align="left">Input email:</td>
-                <td id="mejl" >
+                <td align="right">Email:</td>
+                <td colspan="2">
                     <input 
-                        type="text" id="email" v-model="registerData.email" required="required"
-                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,}$" title="Email must be in form example@yahoo.com"
+                        type="text" id="email" v-model="registerData.email" required="required" size="31"
+                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+[.][a-z]{2,}$" title="Email must be in form example@yahoo.com"
                     ></td>
             </tr>
             
             <tr>
-                <td align="left">Input username:</td>
-                <td id = "korIme">
-                    <input 
-                        type="text" id="username" v-model="registerData.username" required="required"
-                        pattern="[a-zA-Z0-9]*" title="Username isn't valid"
-                    ></td>
-            </tr>
-            
-            <tr>
-                <td align="left">Input initial password:</td>
-                <td id="lozinka" >
+                <td align="right">Initial password:</td>
+                <td colspan="2">
                     <input 
                         type="text" id="password" v-model="registerData.password" required="required"
-                        pattern="[a-zA-Z0-9]{6,}" title="Password must have minimum 6 symbols"
+                        pattern="[a-zA-Z0-9]{6,}" size="31" title="Password must have minimum 6 symbols"
                     ></td>
             </tr>
 
             <tr>
-                <td align="left">Input address:</td>
-                <td id="adresa" >
+                <td align="right">Country:</td>
+                <td colspan="2">
+                    <input 
+                        type="text" id="address" v-model="registerData.address.state" required="required"
+                            pattern="[A-Z][a-zA-Z| ]*" size="31" title="State must start with capital letter"
+                    ></td>
+            </tr>
+            
+            <tr>
+                <td align="right">City:</td>
+                <td colspan="2">
+                    <input 
+                        type="text" id="address" v-model="registerData.address.city" required="required"
+                            pattern="[A-Z][a-zA-Z| ]*" size="31" title="City must start with capital letter"
+                    ></td>
+            </tr>
+
+            <tr>
+                <td align="right">Address and number:</td>
+                <td>
                     <input 
                         type="text" id="address" v-model="registerData.address.street" required="required"
-                            pattern="[A-Z][a-zA-Z0-9 ]*" title="Address must start with capital letter"
+                            pattern="[A-Z][a-zA-Z0-9| ]*" title="Address must start with capital letter"
                     ></td>
-            </tr>
-            <tr>
-                <td align="left">Input address number:</td>
-                <td id="adresa" >
+                <td>
                     <input 
-                        type="text" id="address" v-model="registerData.address.number" required="required"></td>
+                        type="text" id="address" v-model="registerData.address.number" required="required" size="5"
+                        pattern="[0-9][0-9a-zA-Z|/| ]*" title="Address number can have number and /"
+                    ></td>
             </tr>
 
             <tr>
-                <td align="left">Input phone number:</td>
-                <td id="broj" ><input 
+                <td align="right">Phone numer:</td>
+                <td colspan="2"><input 
                     type="text" id="phoneNumber" v-model="registerData.phoneNumber" required="required"
-                    pattern="[0-9]*" title="Phone number must be a number"
+                    pattern="[0-9]*" size="31" title="Phone number must be number"
                 ></td>
             </tr>
 
             <tr>
                 <td></td>
-                <td><input type="submit" id="dugme" value="Dodaj"></td>
+                <td colspan="2"><input type="submit" id="dugme" value="   Add   "></td>
             </tr>
         </table>
     </form>
@@ -79,8 +87,6 @@
 
 <script>
 import PatientDataService from '../service/PatientDataService.js';
-import PharmacistDataService from '../service/PharmacistDataService.js';
-console.log("Majmun");
 export default {
     name: 'AddPatientForm',
     data() {
@@ -88,98 +94,32 @@ export default {
 
             message: null,
             registerData: {
-                name : "Ad",
-                surname : "Sn",
-                email : "test@test",
-                username : "username",
-                password : "password",
+                name : "",
+                surname : "",
+                email : "",
+                password : "",
                 address : {
                     state: "",
                     city: "",
-                    street: "Temp ulica",
-                    number: "123",
+                    street: "",
+                    number: "",
                 },
-                phoneNumber : "123123",
+                phoneNumber : "",
             }
-
-            // pharmacist: [],
-            // message: null,
-            // name : null,
-            // surname : null,
-            // email : null,
-            // username : null,
-            // password : null,
-            // address : null,
-            // phoneNumber : null
         };
     },
     methods: {     
         proveraForme(e) {
-
-            //e.preventDefault();
-            let povratna = true;
-            let sviRedovi = document.getElementsByTagName("tr");
-            for (let red of sviRedovi) {                // brisem stare komentare
-                if (red.cells.length == 3) red.removeChild(red.cells[2]);
-            }
-
-            //jedinstvenost
-            // if (this.checkEmail()) {
-            //     povratna = false;
-            //     this.ispisPoruke(sviRedovi[2], "Email must be unique!");
-            // }
-            // if (this.checkUsername())  {
-            //     povratna = false;
-            //     this.ispisPoruke(sviRedovi[3], "Username must be unique!");
-            // }
-
-            if (!povratna) return;
             PatientDataService.SendPatient(this.registerData)
-                .then(response => {
-                    console.log("Majmun");
-                })
 				.catch(function (error) {
 					if (error.response) {
 						console.log(error.response.data);
 					} else if (error.request) {
 						console.log(error.request);
 					}
-
 					console.log("error.config");
 					console.log(error.config);
 				});
-        },
-
-        ispisPoruke(red, poruka) {
-            if (red.cells.length > 2) return;
-            let novaKolona = red.insertCell(2);
-            novaKolona.innerHTML = poruka;
-            novaKolona.style.color = "red";
-        },
-
-        checkUsername() {
-            console.log("response");
-            PharmacistDataService.checkUsername(this.username)
-                .then(response => {
-                    console.log(response);
-                    if (response.data) {     // slobodno
-                        document.getElementById("korIme").style.background = "white";
-                        return true;
-                    }
-                    else {
-                        document.getElementById("korIme").style.background = "red";
-                        return false;
-                    }
-                });
-        },
-
-        checkEmail() {
-            console.log("response");
-            PharmacistDataService.checkEmail(this.email)
-                .then(response => {
-                    console.log(response);
-                    return response.data;
-                });
         }
     }
 }

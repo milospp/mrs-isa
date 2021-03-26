@@ -5,7 +5,6 @@ public abstract class User {
     private Address address;
     private String phoneNumber;
     private Long id;
-    private String username;
     private String name;
     private String surname;
     private String email;
@@ -14,21 +13,10 @@ public abstract class User {
     public User() {
     }
 
-    public User(Long id, String username, String name, String surname, String email, String password, Address address, String phoneNumber) {
+    public User(Long id, String name, String surname, String email, String password, Address address, String phoneNumber) {
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.id = id;
-        this.username = username;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.password = password;
-    }
-
-    public User(Long id, String username, String name, String surname, String email, String password, String address, String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-        this.id = id;
-        this.username = username;
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -47,7 +35,7 @@ public abstract class User {
 
     @Override
     public String toString() {
-        return "User: " + username + " " + name + " " + surname + " " + email + " " + password;
+        return "User: " + name + " " + surname + " " + email + " " + password;
     }
 
     public Long getId() {
@@ -56,14 +44,6 @@ public abstract class User {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getName() {
