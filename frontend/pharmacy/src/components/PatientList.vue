@@ -30,7 +30,6 @@ import PatientDataService from '../service/PatientDataService.js';
 export default {
     name: 'PatientList',
     data() {
-        console.log('podaci');
         return {
             patients: [],
             message: null,
