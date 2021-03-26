@@ -7,7 +7,7 @@
 
 
       
-    <div class="col-md-3" v-for="p in pharmacies">
+    <div class="col-md-3" v-for="p in pharmaciesSlice">
       <div class="card mb-4 box-shadow">
         <div class="card-header">
             <h4 class="my-0 font-weight-normal">{{p.name}}</h4>
@@ -47,6 +47,13 @@ export default {
             message: null,
         };
     },
+    props: ['limit'],
+    computed:{
+      pharmaciesSlice(){
+        return this.limit ? this.pharmacies.slice(0,this.limit) : this.pharmacies
+      },
+    },
+
     methods: {
         getPharmacies() {
           PharmacyDataService.getAllPharmacies() // HARDCODED

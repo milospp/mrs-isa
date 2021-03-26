@@ -2,10 +2,13 @@
   <NavBar role="none"/>
   <h1 class="title">Home</h1>
   <div class="container">
-    <Pharmacies/>
+    <Pharmacies limit="8"/>
+    <router-link class="btn btn-secondary text-left" :to="{ name: 'Pharmacies'}">View all</router-link>
+
   </div>
   <div class="container py-5">
-    <Medicines/>
+    <Medicines limit="6"/>
+    <router-link class="btn btn-secondary text-left" :to="{ name: 'Medicines'}">View all</router-link>
   </div>
 </template>
 
@@ -13,8 +16,9 @@
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
 import NavBar from '@/components/NavBar.vue'
-import Pharmacies from '@/components/PharmaciesMinList.vue'
-import Medicines from '@/components/MedicinesMinList.vue'
+import Medicines from '@/components/MedicinesList.vue'
+import Pharmacies from '@/components/PharmaciesList'
+
 
 export default {
   name: 'Home',
