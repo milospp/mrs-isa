@@ -2,15 +2,13 @@ package isa9.Farmacy.model.dto;
 
 public class UserDTO {
     private Long id;
-    private String username;
     private String name;
     private String surname;
     private String address; // pretvori se u string?
     private String phoneNumber;
 
-    public UserDTO(Long id, String username, String name, String surname, String address, String phoneNumber) {
+    public UserDTO(Long id, String name, String surname, String address, String phoneNumber) {
         this.id = id;
-        this.username = username;
         this.name = name;
         this.surname = surname;
         this.address = address;
@@ -23,14 +21,6 @@ public class UserDTO {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getName() {

@@ -3,7 +3,6 @@
         <div class="row">
         <table class="table table-hover table-bordered box-shadow">
             <thead class="card-header">
-                <th>Username</th>
                 <th>First name</th>
                 <th>Last name</th>
                 <th>Address</th>
@@ -11,7 +10,6 @@
             </thead>
             <tbody>
                 <tr :key="p.username" v-for="p in patients" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
-                    <td>{{p.username}}</td>
                     <td>{{p.name}}</td>
                     <td>{{p.surname}}</td>
                     <td>{{p.address}}</td>
@@ -30,7 +28,6 @@ import PatientDataService from '../service/PatientDataService.js';
 export default {
     name: 'PatientList',
     data() {
-        console.log('podaci');
         return {
             patients: [],
             message: null,

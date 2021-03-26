@@ -9,6 +9,7 @@ import AddPharmacist from '@/views/AddPharmacist.vue'
 import PharmacistHomePage from '@/views/PharmacistHomePage.vue'
 import DispenseMedication from '@/views/DispenseMedication.vue'
 import VacationRequest from '@/views/VacationRequest.vue'
+import PharmacyPage from '@/views/PharmacyPage.vue'
 
 const routes = [
   {
@@ -61,7 +62,13 @@ const routes = [
     path: '/vacation-request',
     name: 'VacationRequest',
     component: VacationRequest
+  },
+  {
+    path: '/pharmacyPage/:id',
+    name: 'PharmacyPage',
+    component: PharmacyPage    // view je komponenta
   }
+
   // {
   //   path: '/about',
   //   name: 'About',

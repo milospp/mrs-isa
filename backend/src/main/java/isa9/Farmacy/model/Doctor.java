@@ -9,8 +9,8 @@ public abstract class Doctor extends User{
     }
 
     public Doctor(Long id, String name, String surname, String email,
-                   String password, String username, Address address, String phoneNumber) {
-        super(id, username, name, surname, email, password, address, phoneNumber);
+                   String password, Address address, String phoneNumber) {
+        super(id, name, surname, email, password, address, phoneNumber);
 
     }
 
@@ -26,7 +26,7 @@ public abstract class Doctor extends User{
 
     @Override
     public String toString() {
-        return "Doctor: " + getUsername() + " " + getName() + " " + getSurname() + " " + getEmail()
+        return "Doctor: " + getName() + " " + getSurname() + " " + getEmail()
                 + " " + getPassword() + " " + getPhoneNumber() + " " + getAddress();
     }
 
