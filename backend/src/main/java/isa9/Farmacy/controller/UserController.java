@@ -88,7 +88,7 @@ public class UserController {
 
     }
 
-    @GetMapping("patient-{id}")
+    @GetMapping("patient/{id}")
     public ResponseEntity<PatientDTO> getPatient(@PathVariable Long id){
         User us = userService.findOne(id);
         if (us.getClass() != Patient.class) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
