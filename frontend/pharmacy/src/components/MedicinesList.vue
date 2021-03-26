@@ -18,6 +18,7 @@
           </p>
           
           <div class="d-flex justify-content-between align-items-center">
+            <!-- <router-link class="btn btn-block btn-primary" :to="{ name: 'MedicinePage', params: { id: m.id  }}">View</router-link> -->
             <button type="button" class="btn btn-block btn-primary">View TODO</button>
           </div>
         </div>
@@ -45,9 +46,6 @@ export default {
                     console.log(response.data);
                 });
         },
-        patientInfo(patient){
-            alert(patient);
-        }
     },
     mounted() {
         this.getMedicines();

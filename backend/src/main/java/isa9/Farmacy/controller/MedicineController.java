@@ -32,9 +32,6 @@ public class MedicineController {
 
     @GetMapping("")
     public ResponseEntity<List<MedicineDTO>> test(){
-        List<String> codes = new ArrayList<>();
-        codes.add("AX2");
-        codes.add("XX12");
 
         List<MedicineDTO> resultDTOS = new ArrayList<>();
         for (Medicine medicine : this.medicineService.findAll()) {

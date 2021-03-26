@@ -5,7 +5,7 @@ const API_URL = "http://localhost:8080/api/pharmacies";
 
 class PharmacyDataService {
     getAllPharmacies() {
-        return axios.get(`${API_URL}/all-pharmacist`);
+        return axios.get(`${API_URL}`);
     }
     getPharmacy(id) {
       return axios.get(`${API_URL}/` + id);
