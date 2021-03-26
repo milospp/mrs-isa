@@ -13,7 +13,7 @@ class PharmacyDataService {
     SendPharmacy(newPharmacy) {
         return axios({
             method: 'post',
-            url: `${API_URL}/api/pharmacies/register/pharmacy`,
+            url: `${API_URL}/register/pharmacy`,
             data: newPharmacy
         }).then(response => {
             if (response.data == false) alert("This pharmacy already exists!");
