@@ -1,14 +1,14 @@
 import axios from "axios";
 
 
-const API_URL = "http://localhost:8080";
+const API_URL = "http://localhost:8080/api/pharmacies";
 
 class PharmacyDataService {
     getAllPharmacies() {
-        return axios.get(`${API_URL}/api/pharmacies/all-pharmacist`);
+        return axios.get(`${API_URL}/all-pharmacist`);
     }
-    getOnePharmacy(id){
-        return axios.get(`${API_URL}/api/pharmacies/pharmacy-${id}`);
+    getPharmacy(id) {
+      return axios.get(`${API_URL}/` + id);
     }
     SendPharmacy(newPharmacy) {
         return axios({

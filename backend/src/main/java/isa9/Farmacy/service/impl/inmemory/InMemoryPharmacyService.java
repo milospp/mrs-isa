@@ -1,11 +1,14 @@
 package isa9.Farmacy.service.impl.inmemory;
 
-
+import org.springframework.stereotype.Component;
 import isa9.Farmacy.model.Address;
 import isa9.Farmacy.model.Patient;
 import isa9.Farmacy.model.Pharmacy;
+import isa9.Farmacy.model.User;
 import isa9.Farmacy.service.PharmacyService;
-import org.springframework.stereotype.Component;
+import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.service.impl.base.PharmacyServiceBase;
+import isa9.Farmacy.service.impl.base.UserServiceBase;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,7 +18,7 @@ import java.util.Map;
 
 @Service
 @Component
-public class InMemoryPharmacyService implements PharmacyService {
+public class InMemoryPharmacyService extends PharmacyServiceBase implements PharmacyService {
     private final Map<Long, Pharmacy> pharmacies = new HashMap<>();
 
     InMemoryPharmacyService() {
@@ -27,6 +30,7 @@ public class InMemoryPharmacyService implements PharmacyService {
                 "Radno vreme 8-18h", 3L));
         pharmacies.put(4L, new Pharmacy("Laurus", new Address("Trg slobode", "8", "Novi Sad", "Serbia"),
                 "Nedeljom ne radimo", 4L));
+
 
     }
 
@@ -56,4 +60,5 @@ public class InMemoryPharmacyService implements PharmacyService {
 
         return false;
     }
+
 }

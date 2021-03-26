@@ -4,14 +4,13 @@ import isa9.Farmacy.model.Address;
 
 public class PatientRegistrationDTO {
     private Long id;
-    private String username, name, surname, phoneNumber, password, email;
+    private String name, surname, phoneNumber, password, email;
     private Address address;
 
 
-    public PatientRegistrationDTO(Long id, String username, String name, String surname,
+    public PatientRegistrationDTO(Long id, String name, String surname,
                                   Address address, String phoneNumber, String password) {
         this.id = id;
-        this.username = username;
         this.name = name;
         this.surname = surname;
         this.address = address;
@@ -26,14 +25,6 @@ public class PatientRegistrationDTO {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getName() {

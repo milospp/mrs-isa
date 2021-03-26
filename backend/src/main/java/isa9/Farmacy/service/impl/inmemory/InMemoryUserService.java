@@ -19,10 +19,10 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
     private final Map<Long, User> users = new HashMap<>();
 
     InMemoryUserService() {
-        users.put(1L, new Patient(1L, "Isidora", "Stanic", "isidora@mail.com", "1234", "isidora", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
-        users.put(2L, new Patient(2L, "Milica", "Djumic", "milica@mail.com", "1234", "milica", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
-        users.put(3L, new Patient(3L, "Mladen", "Vasic", "mladen@mail.com", "1234", "mladen", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
-        users.put(4L, new Patient(4L, "Milos", "Popovic", "milos@mail.com", "1234", "milos", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
+        users.put(1L, new Patient(1L, "Isidora", "Stanic", "isidora@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
+        users.put(2L, new Patient(2L, "Milica", "Djumic", "milica@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
+        users.put(3L, new Patient(3L, "Mladen", "Vasic", "mladen@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
+        users.put(4L, new Patient(4L, "Milos", "Popovic", "milos@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
     }
 
     @Override
@@ -39,19 +39,6 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
     public User save(User entity) {
         this.users.put(entity.getId(), entity);
         return entity;
-    }
-
-
-    @Override
-    public boolean isAvaibleUsername(String us) {
-        boolean povratna = true;
-        for (User u : users.values()) {
-            if (u.getUsername().equals(us)) {
-                povratna = false;
-                break;
-            }
-        }
-        return povratna;
     }
 
     @Override

@@ -5,6 +5,7 @@ import isa9.Farmacy.model.Pharmacy;
 import isa9.Farmacy.model.dto.PatientDTO;
 import isa9.Farmacy.model.dto.PatientRegistrationDTO;
 import isa9.Farmacy.model.dto.PharmacyDTO;
+import isa9.Farmacy.model.dto.UserDTO;
 import isa9.Farmacy.service.PharmacyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ public class PharmacyController {
     }
 
 
-    @GetMapping("all-pharmacies")
+    @GetMapping("")
     public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
         List<PharmacyDTO> resultDTOS = new ArrayList<>();
         for (Pharmacy p : this.pharmacyService.findAll()){
@@ -39,13 +40,16 @@ public class PharmacyController {
 
     }
 
-    @GetMapping("pharmacy-{id}")
-    public ResponseEntity<PharmacyDTO> getPharmacy(@PathVariable Long id){
+  
+    @GetMapping("{id}")
+    public ResponseEntity<PharmacyDTO> getPharmacy(@PathVariable Long id) {
         Pharmacy pharmacy = pharmacyService.findOne(id);
 
-        PharmacyDTO pharmacyDTO = new PharmacyDTO(pharmacy.getName(), pharmacy.getDescription(), pharmacy.getId(), pharmacy.getAddress());
-        return new ResponseEntity<>(pharmacyDTO, HttpStatus.OK);
+        if (pharmacy == null) return new ResponseEntity(HttpStatus.NOT_FOUND);
 
+        PharmacyDTO dto = new PharmacyDTO(pharmacy.getId(), pharmacy.getName(),
+                pharmacy.getDescription(), pharmacy.getAddress());
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
 
@@ -60,3 +64,4 @@ public class PharmacyController {
 
     }
 }
+

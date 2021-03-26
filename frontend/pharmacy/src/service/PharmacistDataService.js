@@ -7,15 +7,6 @@ class PharmacistDataService {
   retrieveAllPharmacists() {
     return axios.get(`${API_URL}/all-pharmacist`);
   }
-  checkUsername(us) {
-    alert(us);
-    return axios.get(`${API_URL}/api/users/is-available-username/${us}`);
-  }
-  checkEmail(em) {
-    alert(em);
-    alert(`${API_URL}/api/users/is-available-email/${em}`);
-    return axios.get(`${API_URL}/api/users/is-available-email/${em}`);
-  }
   SendPharmacist(promenljiva) {
     return axios({
       method: 'post',

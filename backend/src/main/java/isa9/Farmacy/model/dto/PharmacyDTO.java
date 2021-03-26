@@ -4,30 +4,60 @@ import isa9.Farmacy.model.Address;
 
 public class PharmacyDTO {
 
-    private String name, description;
-    private Address address;
     private Long id;
+    private String name;
+    private Address address;
+    private String description;
 
-    public PharmacyDTO(String name, String description, Long id, Address address) {
+    public PharmacyDTO() {
+    }
+
+    public PharmacyDTO(Long id, String name, String description, Address address) {
+        this.id = id;
         this.name = name;
-        this.description = description;
         this.address = address;
+        this.description = description;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getDescription() { return description; }
+    public Address getAddress() {
+        return address;
+    }
 
-    public void setDescription(String description) { this.description = description; }
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
-    public Long getId() { return id; }
+    public String getDescription() {
+        return description;
+    }
 
-    public void setId(Long id) { this.id = id; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public Address getAddress() { return address; }
-
-    public void setAddress(Address address) { this.address = address; }
+    @Override
+    public String toString() {
+        return "PharmacyDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address=" + address +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }
