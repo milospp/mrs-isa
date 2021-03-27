@@ -18,11 +18,15 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         Medicine med2= new Medicine("GSP2", "Phiiizer", "Some good thinkgs",
                 "MAANAF", "Do not drive", 2, "Pills", "AntiDepresive", DispencingMedicine.WITH_RECEIPT, new HashSet<Medicine>(Arrays.asList(med1)));
 
+        Pharmacy ph1 = new Pharmacy("Prima", new Address("Nemanjina", "2", "Belgrade", "Serbia"),
+                "Otvoreni non-stop", 1L);
+
         Patient p1 = new Patient(1L, "Isidora", "Stanic", "isidora@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789");
         Patient p2 = new Patient(2L, "Milica", "Djumic", "milica@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789");
         p1.getAllergies().add(med1);
         p1.getAllergies().add(med2);
         p2.getAllergies().add(med1);
+        p1.getSubscriptions().add(ph1);
 
 
 

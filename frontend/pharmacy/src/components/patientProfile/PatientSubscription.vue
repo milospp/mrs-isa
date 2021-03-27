@@ -4,26 +4,17 @@
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>Example</th>
-        <th>Example</th>
-        <th>Example</th>
-        <th>Example</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Address</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>Med 1</td>
-        <td>Med 1</td>
-        <td>Med 1</td>
-        <td>Med 1</td>
-        <td><button class="btn btn-danger">Unsubscribe</button></td>
-      </tr>
-      <tr>
-        <td>Med 2</td>
-        <td>Med 2</td>
-        <td>Med 2</td>
-        <td>Med 2</td>
+      <tr v-for="s in subscriptions">
+        <td>{{s.name}}</td>
+        <td>{{s.description}}</td>
+        <td>{{UtilService.AddressToString(s.address)}}</td>
         <td><button class="btn btn-danger">Unsubscribe</button></td>
       </tr>
     </tbody>
@@ -31,7 +22,7 @@
 </template>
 
 <script>
-    // import PharmacyDataService from '@/service/PharmacyDataService.js';
+    import PatientDataService from '@/service/PatientDataService.js';
     import UtilService from '@/service/UtilService.js';
 
 export default {
@@ -41,29 +32,27 @@ export default {
 
 	data: function () {
 		return {
-      alergies: {},
+      subscriptions: {},
 		}
 	},
-    methods: {
-        // loadPatientData() {
-        //     let self = this;
+  methods: {
+        loadPatientSubscriptions() {
+            PatientDataService.getPatientSubscriptions(this.id) // HARDCODED
+                .then(response => {
+                    console.log("Load subscriptions");
+                    console.log(response.data);
 
-        //     PharmacyDataService.getPharmacy(this.id) // HARDCODED
-        //         .then(response => {
-        //             self.pharmacy = response.data; 
-        //             console.log(this.id);
-        //             this.patients = response.data;
-        //             console.log(response.data);
-        //         });
-        // },
+                    this.subscriptions = response.data;
+                });
+        },
 
 
     },
     mounted() {
-        // this.loadPatientData();
+        this.loadPatientSubscriptions();
     },
 	created() {
-		  this.username = this.$route.params.id; 
+		  this.id = this.$route.params.id; 
 	},
 }
 </script>

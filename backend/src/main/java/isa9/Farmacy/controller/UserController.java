@@ -5,6 +5,7 @@ import isa9.Farmacy.model.dto.*;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.support.MedicineToMedicineDTO;
 import isa9.Farmacy.support.PatientToPatientDTO;
+import isa9.Farmacy.support.PharmacyToPharmacyDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +24,17 @@ public class UserController {
 
     private final PatientToPatientDTO patientToPatientDTO;
     private final MedicineToMedicineDTO medicineToMedicineDTO;
+    private final PharmacyToPharmacyDTO pharmacyToPharmacyDTO;
 
     @Autowired
-    public UserController(UserService userService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO){
+    public UserController(UserService userService,
+                          PatientToPatientDTO patientToPatientDTO,
+                          MedicineToMedicineDTO medicineToMedicineDTO,
+                          PharmacyToPharmacyDTO pharmacyToPharmacyDTO){
         this.userService = userService;
         this.patientToPatientDTO = patientToPatientDTO;
         this.medicineToMedicineDTO = medicineToMedicineDTO;
+        this.pharmacyToPharmacyDTO = pharmacyToPharmacyDTO;
     }
 
     @GetMapping("all-users")
@@ -63,6 +69,17 @@ public class UserController {
         Set<Medicine> allergies = userService.getPatientAllergies(user);
 
         List<MedicineDTO> dto = medicineToMedicineDTO.convert(allergies);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+
+    }
+
+    @GetMapping("{id}/subscriptions")
+    public ResponseEntity<List<PharmacyDTO>> getUserSubscriptions(@PathVariable Long id){
+        User user = userService.findOne(id);
+        Set<Pharmacy> subscriptions = userService.getPatientSubscriptions(user);
+
+        List<PharmacyDTO> dto = pharmacyToPharmacyDTO.convert(subscriptions);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
 
