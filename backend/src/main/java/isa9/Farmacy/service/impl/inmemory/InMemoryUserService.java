@@ -56,7 +56,9 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
 
     @Override
     public User save(User entity) {
-        this.users.put(entity.getId(), entity);
+        long id = this.users.size() + 1;
+        entity.setId(id);
+        this.users.put(id, entity);
         return entity;
     }
 
