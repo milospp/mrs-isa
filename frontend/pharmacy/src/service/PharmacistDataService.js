@@ -7,6 +7,7 @@ class PharmacistDataService {
   retrieveAllPharmacists() {
     return axios.get(`${API_URL}/all-pharmacist`);
   }
+
   SendPharmacist(promenljiva) {
     return axios({
       method: 'post',
@@ -20,6 +21,14 @@ class PharmacistDataService {
       alert("Email is not unique!");
       return false;
     });
+  }
+
+  getAllPharmacistAdmin(idAdminaApoteke) {
+    return axios.get(`${API_URL}/api/users/all-pharmacist/Admin/${idAdminaApoteke}`);
+  }
+  
+  getAllPharmacistPharmacy(idApoteke) {
+    return axios.get(`${API_URL}/api/users/all-pharmacist/Apoteka/${idApoteke}`);
   }
 }
 
