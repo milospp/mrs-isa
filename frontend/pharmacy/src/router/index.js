@@ -44,7 +44,8 @@ const routes = [
   {
     path: '/patients',
     name: 'Patients',
-    component: Patients
+    component: Patients,
+    props: route => ({ role: route.query.q })
   },
   {
     path: '/addPharmacist',
@@ -69,7 +70,8 @@ const routes = [
   {
     path: '/vacation-request',
     name: 'VacationRequest',
-    component: VacationRequest
+    component: VacationRequest,
+    props: route => ({ role: route.query.q })
   },
   {
     path: '/pharmacyPage/:id',

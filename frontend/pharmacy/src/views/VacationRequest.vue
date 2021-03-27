@@ -1,5 +1,5 @@
 <template>
-  <NavBar role="pharmacist"/>
+  <NavBar v-bind:role="role"/>
   <h1 class="title">Vacation Request</h1>
   <div class="containter">
   </div>
@@ -12,6 +12,7 @@ import NavBar from '@/components/NavBar.vue'
 
 export default {
   name: 'PharmacistHomePage',
+  props: ['role'],
   components: {
     NavBar
   },
