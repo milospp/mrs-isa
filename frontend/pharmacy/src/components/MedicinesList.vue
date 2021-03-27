@@ -4,7 +4,7 @@
   </div>
   <div class="row">
 
-    <div class="col-md-4" v-for="m in medicines">
+    <div class="col-md-4" v-for="m in medicinesSlice">
       <div class="card mb-4 box-shadow">
         <div class="card-header">
             <h4 class="my-0 font-weight-normal">{{m.name}}</h4><kbd>{{m.code}}</kbd>
@@ -18,6 +18,7 @@
           </p>
           
           <div class="d-flex justify-content-between align-items-center">
+            <!-- <router-link class="btn btn-block btn-primary" :to="{ name: 'MedicinePage', params: { id: m.id  }}">View</router-link> -->
             <button type="button" class="btn btn-block btn-primary">View TODO</button>
           </div>
         </div>
@@ -35,8 +36,16 @@ export default {
         return {
             medicines: [],
             message: null,
+            // limit: 0,
         };
     },
+    props: ['limit'],
+    computed:{
+      medicinesSlice(){
+        return this.limit ? this.medicines.slice(0,this.limit) : this.medicines
+      },
+    },
+
     methods: {
         getMedicines() {
           MedicineDataService.getAllMedicines() // HARDCODED
@@ -45,9 +54,6 @@ export default {
                     console.log(response.data);
                 });
         },
-        patientInfo(patient){
-            alert(patient);
-        }
     },
     mounted() {
         this.getMedicines();

@@ -1,8 +1,8 @@
 <template>
   <NavBar role="pharmacist"/>
-  <div class="container">
-    <h1 class="title">My Patients</h1>
-    <PatientList/>
+  <h1 class="title">Dispense Medication</h1>
+  <div class="containter">
+      <!-- <h1 class="title">Dispense Medication</h1> -->
   </div>
 </template>
 
@@ -10,20 +10,16 @@
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
 import NavBar from '@/components/NavBar.vue'
-import PatientList from '@/components/PatientList'
+
 export default {
-  name: 'Patients',
-  props: {
-    role: String
-  },
+  name: 'DispenseMedication',
   components: {
-    NavBar,
-    PatientList,
+    NavBar
   },
   data() {
-    return {
-      role: "pharmacist"
-    }
+      return {
+          email: "test#test"
+      }
   }
 }
 </script>

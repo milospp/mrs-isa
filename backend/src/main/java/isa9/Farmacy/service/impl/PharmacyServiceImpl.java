@@ -21,4 +21,7 @@ public class PharmacyServiceImpl implements PharmacyService {
     public Pharmacy save(Pharmacy entity) {
         return null;
     }
+
+    @Override
+    public boolean pharmacyExists(Pharmacy p) { return false; }
 }
