@@ -9,7 +9,7 @@
       <div class="col-md-12">
 
         <div>
-          <h2>TODO More info</h2>
+          <h2>TODO AUTH!! More info</h2>
           <ul class="nav nav-tabs">
             <li class="nav-item active"><a class="nav-link" data-toggle="tab" href="#tab-alergies">Alergies</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Subscription</a></li>

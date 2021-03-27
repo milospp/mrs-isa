@@ -4,28 +4,26 @@
   <table class="table table-striped">
     <thead>
       <tr>
+        <!-- <th>ID</th> -->
         <th>Reason</th>
         <th>Date</th>
         <th>Expire</th>
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>Reasooooon 1</td>
-        <td>20/10/1015</td>
-        <td>Med 1</td>
+      <tr v-for="p in penalities" v-bind:style="{ background: UtilService.isPastDate(UtilService.addDate(p.date, 1, 'M')) ? '#aaa' : ''}">
+        <!-- <td>{{p.id}}</td> -->
+        <td>{{p.reason}}</td>
+        <td>{{UtilService.formatDate(p.date)}}</td>
+        <td>{{UtilService.formatAddDate(p.date, 1, 'M')}}</td>
       </tr>
-      <tr>
-        <td>Med 2</td>
-        <td>Med 2</td>
-        <td>Med 2</td>
-      </tr>
+
     </tbody>
   </table>
 </template>
 
 <script>
-    // import PharmacyDataService from '@/service/PharmacyDataService.js';
+    import PatientDataService from '@/service/PatientDataService.js';
     import UtilService from '@/service/UtilService.js';
 
 export default {
@@ -35,29 +33,27 @@ export default {
 
 	data: function () {
 		return {
-      alergies: {},
+      penalities: {},
 		}
 	},
     methods: {
-        // loadPatientData() {
-        //     let self = this;
+        loadPatientPenalities() {
 
-        //     PharmacyDataService.getPharmacy(this.id) // HARDCODED
-        //         .then(response => {
-        //             self.pharmacy = response.data; 
-        //             console.log(this.id);
-        //             this.patients = response.data;
-        //             console.log(response.data);
-        //         });
-        // },
+            PatientDataService.getPatientPenalities(this.id) // HARDCODED
+                .then(response => {
+                    this.penalities = response.data;
+                    console.log("Penalities")
+                    console.log(response.data);
+                });
+        },
 
 
     },
     mounted() {
-        // this.loadPatientData();
+        this.loadPatientPenalities();
     },
 	created() {
-		  this.username = this.$route.params.id; 
+		  this.id = this.$route.params.id; 
 	},
 }
 </script>

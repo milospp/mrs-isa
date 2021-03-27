@@ -6,6 +6,7 @@ import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.support.MedicineToMedicineDTO;
 import isa9.Farmacy.support.PatientToPatientDTO;
+import isa9.Farmacy.support.PenalityToPenalityDTO;
 import isa9.Farmacy.support.PharmacyToPharmacyDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Flow;
 
 @RestController
 @CrossOrigin("*")
@@ -27,18 +29,21 @@ public class UserController {
     private final PatientToPatientDTO patientToPatientDTO;
     private final MedicineToMedicineDTO medicineToMedicineDTO;
     private final PharmacyToPharmacyDTO pharmacyToPharmacyDTO;
+    private final PenalityToPenalityDTO penalityToPenalityDTO;
 
     @Autowired
     public UserController(UserService userService,
                           PharmacyService pharmacyService,
                           PatientToPatientDTO patientToPatientDTO,
                           MedicineToMedicineDTO medicineToMedicineDTO,
-                          PharmacyToPharmacyDTO pharmacyToPharmacyDTO){
+                          PharmacyToPharmacyDTO pharmacyToPharmacyDTO,
+                          PenalityToPenalityDTO penalityToPenalityDTO){
         this.userService = userService;
         this.pharmacyService = pharmacyService;
         this.patientToPatientDTO = patientToPatientDTO;
         this.medicineToMedicineDTO = medicineToMedicineDTO;
         this.pharmacyToPharmacyDTO = pharmacyToPharmacyDTO;
+        this.penalityToPenalityDTO = penalityToPenalityDTO;
     }
 
     @GetMapping("all-users")
@@ -88,6 +93,27 @@ public class UserController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
 
     }
+
+    @GetMapping("{id}/penalties")
+    public ResponseEntity<List<PenalityDTO>> getUserPenalties(@PathVariable Long id){
+        User user = userService.findOne(id);
+        Set<Penality> penalties = userService.getPenalties(user);
+
+        List<PenalityDTO> dto = penalityToPenalityDTO.convert(penalties);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+
+    }
+
+    @GetMapping("{id}/penalties/count")
+    public ResponseEntity<Integer> getUserPenaltiesCount(@PathVariable Long id){
+        User user = userService.findOne(id);
+        Integer penalties = userService.countActivePenalties(user);
+
+        return new ResponseEntity<>(penalties, HttpStatus.OK);
+
+    }
+
 
     @DeleteMapping("{id}/subscriptions/{pharmacyId}")
     public ResponseEntity<List<PharmacyDTO>> getUserSubscriptions(@PathVariable Long id, @PathVariable Long pharmacyId){

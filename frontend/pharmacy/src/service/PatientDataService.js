@@ -23,6 +23,14 @@ class PatientDataService {
   unsubscribePatient(userId, pharmacyId){
     return axios.delete(`${API_URL}/api/users/` + userId + `/subscriptions/` + pharmacyId);
   }
+
+  getPatientPenalities(id){
+    return axios.get(`${API_URL}/api/users/` + id + `/penalties`);
+  }
+  
+  getPatientPenalitiesCount(id){
+    return axios.get(`${API_URL}/api/users/` + id + `/penalties/count`);
+  }
   
   SendPatient(newPatient) {
     return axios({

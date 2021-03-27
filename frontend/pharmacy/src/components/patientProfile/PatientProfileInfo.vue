@@ -10,7 +10,7 @@
 
       <div class="col-md-6 text-left">
         <p>Points: {{patient.points}}</p>
-        <p>Penalities: TODO</p>
+        <p>Active Penalties: {{penalties}}</p>
         
       </div>
       
@@ -34,25 +34,34 @@ export default {
 	data: function () {
 		return {
       patient: null,
+      penalties: 0,
 		}
 	},
     methods: {
         loadPatientData() {
-            let self = this;
 
             PatientDataService.getPatient(this.id) // HARDCODED
                 .then(response => {
-                    self.pharmacy = response.data; 
                     console.log(this.id);
                     this.patient = response.data;
                     console.log(response.data);
                 });
         },
 
+        getPatientPenalties() {
+          PatientDataService.getPatientPenalitiesCount(this.id) // HARDCODED
+                .then(response => {
+                    console.log(this.id);
+                    this.penalties = response.data;
+                    console.log(response.data);
+                });
+        }
+
 
     },
     mounted() {
         this.loadPatientData();
+        this.getPatientPenalties();
     },
 	created() {
 		  this.id = this.$route.params.id; 
