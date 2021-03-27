@@ -1,9 +1,6 @@
 package isa9.Farmacy.service.impl.inmemory;
 
-import isa9.Farmacy.model.Address;
-import isa9.Farmacy.model.Patient;
-import isa9.Farmacy.model.Pharmacist;
-import isa9.Farmacy.model.User;
+import isa9.Farmacy.model.*;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.impl.base.UserServiceBase;
 import org.springframework.stereotype.Service;
@@ -23,6 +20,15 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         users.put(2L, new Patient(2L, "Milica", "Djumic", "milica@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
         users.put(3L, new Patient(3L, "Mladen", "Vasic", "mladen@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
         users.put(4L, new Patient(4L, "Milos", "Popovic", "milos@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
+
+        Pharmacy apoteka = new Pharmacy("PrimerApoteke", new Address("ulica", "broj", "grad", "drzava"), "opis", 1L);
+        users.put(5l, new PharmacyAdmin(5L, "Admin", "Apoteke", "mejl@mail.com", "1234", apoteka,  new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
+        users.put(6L, new Pharmacist(6L, "Maja", "Markovic", "maja@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345", apoteka));
+        users.put(7L, new Pharmacist(7L, "ANa", "Markovic", "ana@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345", apoteka));
+        Dermatologist dermatolog = new Dermatologist(8L, "Sanja", "Markovic", "sanja@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345");
+        dermatolog.getPharmacies().add(apoteka);
+        users.put(8L, dermatolog);
+
     }
 
     @Override
