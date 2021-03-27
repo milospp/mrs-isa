@@ -1,33 +1,55 @@
 package isa9.Farmacy.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Patient extends User {
 
     private int points;
-    private int penalties;
-    private List<Examination> myExaminations;
+    private Set<Penality> penalties;
+    private Set<Pharmacy> subscriptions;
+    private Set<Examination> myExaminations;
+    private Set<Medicine> allergies;
 
     public Patient() {
     }
 
     public Patient(Long id, String name, String surname, String email,
                    String password, Address address, String phoneNumber) {
-        super(id, name, surname, email, password, address, phoneNumber);
+        super(id, name, surname, email, password, address, phoneNumber, UserRole.PATIENT);
         this.points = 0;
-        this.penalties = 0;
-        this.myExaminations = new ArrayList<>();
+        this.penalties = new HashSet<>();
+        this.subscriptions = new HashSet<>();
+        this.myExaminations = new HashSet<>();
+        this.allergies = new HashSet<>();
+
+    }
+
+    @Deprecated
+    public Patient(Long id, String name, String surname, String email,
+                   String password, Address address, String phoneNumber, int points,
+                   Set<Penality> penalties, List<Examination> myExaminations) {
+        super(id, name, surname, email, password, address, phoneNumber, UserRole.PATIENT);
+        this.points = points;
+        this.penalties = penalties;
+        this.subscriptions = new HashSet<>();
+        this.myExaminations = new HashSet<>();
+        this.allergies = new HashSet<>();
 
     }
 
     public Patient(Long id, String name, String surname, String email,
                    String password, Address address, String phoneNumber, int points,
-                   int penalties, List<Examination> myExaminations) {
-        super(id, name, surname, email, password, address, phoneNumber);
+                   Set<Penality> penalties, Set<Pharmacy> subscriptions , Set<Examination> myExaminations,
+                   Set<Medicine> allergies) {
+        super(id, name, surname, email, password, address, phoneNumber, UserRole.PATIENT);
         this.points = points;
         this.penalties = penalties;
+        this.subscriptions = subscriptions;
         this.myExaminations = myExaminations;
+        this.allergies = allergies;
     }
 
     @Override
@@ -42,8 +64,13 @@ public class Patient extends User {
 
     @Override
     public String toString() {
-        return "Patient: " + getName() + " " + getSurname() + " " + getEmail()
-                + " " + getPassword() + " " + getPhoneNumber() + " " + getAddress();
+        return "Patient{" +
+                "points=" + points +
+                ", penalties=" + penalties +
+                ", subscriptions=" + subscriptions +
+                ", myExaminations=" + myExaminations +
+                ", allergies=" + allergies +
+                '}';
     }
 
     public int getPoints() {
@@ -54,19 +81,35 @@ public class Patient extends User {
         this.points = points;
     }
 
-    public int getPenalties() {
+    public Set<Penality> getPenalties() {
         return penalties;
     }
 
-    public void setPenalties(int penalties) {
+    public void setPenalties(Set<Penality> penalties) {
         this.penalties = penalties;
     }
 
-    public List<Examination> getMyExaminations() {
+    public Set<Pharmacy> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public void setSubscriptions(Set<Pharmacy> subscriptions) {
+        this.subscriptions = subscriptions;
+    }
+
+    public Set<Examination> getMyExaminations() {
         return myExaminations;
     }
 
-    public void setMyExaminations(List<Examination> myExaminations) {
+    public void setMyExaminations(Set<Examination> myExaminations) {
         this.myExaminations = myExaminations;
+    }
+
+    public Set<Medicine> getAllergies() {
+        return allergies;
+    }
+
+    public void setAllergies(Set<Medicine> allergies) {
+        this.allergies = allergies;
     }
 }

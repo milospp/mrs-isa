@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Objects;
 
 public class Penality {
+    private Long id;
     private String reason;
     private Date date;
 
@@ -15,6 +16,20 @@ public class Penality {
         super();
         this.reason = reason;
         this.date = date;
+    }
+
+    public Penality(Long id, String reason, Date date) {
+        this.id = id;
+        this.reason = reason;
+        this.date = date;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getReason() {

@@ -1,17 +1,11 @@
 package isa9.Farmacy.service.impl.inmemory;
 
-import isa9.Farmacy.model.Address;
-import isa9.Farmacy.model.Patient;
-import isa9.Farmacy.model.Pharmacist;
-import isa9.Farmacy.model.User;
+import isa9.Farmacy.model.*;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.impl.base.UserServiceBase;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class InMemoryUserService extends UserServiceBase implements UserService {
@@ -19,8 +13,21 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
     private final Map<Long, User> users = new HashMap<>();
 
     InMemoryUserService() {
-        users.put(1L, new Patient(1L, "Isidora", "Stanic", "isidora@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
-        users.put(2L, new Patient(2L, "Milica", "Djumic", "milica@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
+        Medicine med1 = new Medicine("AZP2", "Phiiizer", "Some good thinkgs",
+                "MAANAF", "Do not drive", 2, "Pills", "AntiDepresive", DispencingMedicine.WITH_RECEIPT, null);
+        Medicine med2= new Medicine("GSP2", "Phiiizer", "Some good thinkgs",
+                "MAANAF", "Do not drive", 2, "Pills", "AntiDepresive", DispencingMedicine.WITH_RECEIPT, new HashSet<Medicine>(Arrays.asList(med1)));
+
+        Patient p1 = new Patient(1L, "Isidora", "Stanic", "isidora@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789");
+        Patient p2 = new Patient(2L, "Milica", "Djumic", "milica@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789");
+        p1.getAllergies().add(med1);
+        p1.getAllergies().add(med2);
+        p2.getAllergies().add(med1);
+
+
+
+        users.put(1L, p1);
+        users.put(2L, p2);
         users.put(3L, new Patient(3L, "Mladen", "Vasic", "mladen@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
         users.put(4L, new Patient(4L, "Milos", "Popovic", "milos@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
     }

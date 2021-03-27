@@ -9,7 +9,12 @@ class PatientDataService {
   }
 
   getPatient(id){
-    return axios.get(`${API_URL}/api/users` + id);
+    return axios.get(`${API_URL}/api/users/` + id);
+  }
+
+  getPatientAllergies(id){
+    return axios.get(`${API_URL}/api/users/` + id + `/allergies`);
+
   }
   
   SendPatient(newPatient) {

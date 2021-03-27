@@ -1,57 +1,93 @@
 package isa9.Farmacy.model.dto;
 
-public class PatientDTO{
-    private Long id;
-    private String name;
-    private String surname;
-    private String address; // pretvori se u string?
-    private String phoneNumber;
+import isa9.Farmacy.model.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+public class PatientDTO extends UserDTO{
+    private int points;
+    private List<Long> penalties;
+    private List<Long> subscriptions;
+    private List<Long> myExaminations;
+    private List<String> allergies;
+
+    public PatientDTO() {}
+
+    @Deprecated
     public PatientDTO(Long id, String name, String surname, String address, String phoneNumber) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
+        super(id, name, surname, new Address(), phoneNumber, UserRole.PATIENT);
+        this.penalties = new ArrayList<>();
+        this.subscriptions = new ArrayList<>();
+        this.myExaminations = new ArrayList<>();
+        this.allergies = new ArrayList<>();
     }
 
-    public Long getId() {
-        return id;
+    public PatientDTO(Long id, String name, String surname, Address address, String phoneNumber) {
+        super(id, name, surname, address, phoneNumber, UserRole.PATIENT);
+        this.points = 0;
+        this.penalties = new ArrayList<>();
+        this.subscriptions = new ArrayList<>();
+        this.myExaminations = new ArrayList<>();
+        this.allergies = new ArrayList<>();
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public PatientDTO(Long id, String name, String surname, Address address, String phoneNumber, int points) {
+        super(id, name, surname, address, phoneNumber, UserRole.PATIENT);
+        this.points = points;
+        this.penalties = new ArrayList<>();
+        this.subscriptions = new ArrayList<>();
+        this.myExaminations = new ArrayList<>();
+        this.allergies = new ArrayList<>();
     }
 
-    public String getName() {
-        return name;
+    public PatientDTO(Long id, String name, String surname, Address address, String phoneNumber, int points, List<Long> penalties, List<Long> subscriptions, List<Long> myExaminations, List<String> allergies) {
+        super(id, name, surname, address, phoneNumber, UserRole.PATIENT);
+        this.points = points;
+        this.penalties = penalties;
+        this.subscriptions = subscriptions;
+        this.myExaminations = myExaminations;
+        this.allergies = allergies;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public int getPoints() {
+        return points;
     }
 
-    public String getSurname() {
-        return surname;
+    public void setPoints(int points) {
+        this.points = points;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public List<Long> getPenalties() {
+        return penalties;
     }
 
-    public String getAddress() {
-        return address;
+    public void setPenalties(List<Long> penalties) {
+        this.penalties = penalties;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public List<Long> getSubscriptions() {
+        return subscriptions;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public void setSubscriptions(List<Long> subscriptions) {
+        this.subscriptions = subscriptions;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public List<Long> getMyExaminations() {
+        return myExaminations;
+    }
+
+    public void setMyExaminations(List<Long> myExaminations) {
+        this.myExaminations = myExaminations;
+    }
+
+    public List<String> getAllergies() {
+        return allergies;
+    }
+
+    public void setAllergies(List<String> allergies) {
+        this.allergies = allergies;
     }
 }

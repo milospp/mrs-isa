@@ -76,10 +76,11 @@ const routes = [
     component: PharmacyPage    // view je komponenta
   },
   {
-    path: '/profile/:username',
+    path: '/profile/:id',
     name: 'profile',
     component: PatientProfile    // view je komponenta
   }
+
 
   // {
   //   path: '/about',

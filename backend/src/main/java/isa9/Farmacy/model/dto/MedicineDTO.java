@@ -72,6 +72,46 @@ public class MedicineDTO {
     public List<String> getReplacementMedicationIds() {
         return replacementMedicationIds;
     }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setStructure(String structure) {
+        this.structure = structure;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public void setShape(String shape) {
+        this.shape = shape;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setPerscription(DispencingMedicine perscription) {
+        this.perscription = perscription;
+    }
+
+    public void setReplacementMedicationIds(List<String> replacementMedicationIds) {
+        this.replacementMedicationIds = replacementMedicationIds;
+    }
 }
 
 

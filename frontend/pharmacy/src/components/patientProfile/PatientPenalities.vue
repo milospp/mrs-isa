@@ -57,7 +57,7 @@ export default {
         // this.loadPatientData();
     },
 	created() {
-		  this.username = this.$route.params.username; 
+		  this.username = this.$route.params.id; 
 	},
 }
 </script>

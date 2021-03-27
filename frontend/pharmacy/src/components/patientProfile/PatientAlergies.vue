@@ -4,27 +4,26 @@
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>Example</th>
-        <th>Example</th>
-        <th>Example</th>
-        <th>Example</th>
+        <th>Name</th>
+        <th>Code</th>
+        <th>Note</th>
+        <th>Structure</th>
+        <th>Shape</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>Med 1</td>
-        <td>Med 1</td>
-        <td>Med 1</td>
-        <td>Med 1</td>
-        <td><button class="btn btn-danger">Delete</button></td>
-      </tr>
-      <tr>
-        <td>Med 2</td>
-        <td>Med 2</td>
-        <td>Med 2</td>
-        <td>Med 2</td>
-        <td><button class="btn btn-danger">Delete</button></td>
+      <tr v-for="a in alergies">
+        <td>{{a.name}}</td>
+        <td>{{a.code}}</td>
+        <td>{{a.note}}</td>
+        <td>{{a.structure}}</td>
+        <td>{{a.shape}}</td>
+        <td>
+          <button class="btn btn-primary">View</button>
+    <!-- <router-link class="btn btn-block btn-primary" :to="{ name: 'MedicinePage', params: { id: a.id  }}">View</router-link> -->
+          <button class="btn btn-danger ml-1">Delete</button>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -32,7 +31,7 @@
 </template>
 
 <script>
-    // import PharmacyDataService from '@/service/PharmacyDataService.js';
+    import PatientDataService from '@/service/PatientDataService.js';
     import UtilService from '@/service/UtilService.js';
 
 export default {
@@ -46,25 +45,26 @@ export default {
 		}
 	},
     methods: {
-        // loadPatientData() {
-        //     let self = this;
+        loadPatientAlergies() {
+            let self = this;
 
-        //     PharmacyDataService.getPharmacy(this.id) // HARDCODED
-        //         .then(response => {
-        //             self.pharmacy = response.data; 
-        //             console.log(this.id);
-        //             this.patients = response.data;
-        //             console.log(response.data);
-        //         });
-        // },
+            PatientDataService.getPatientAllergies(this.id) // HARDCODED
+                .then(response => {
+                    // TODO: TEST
+                    self.alergies = response.data; 
+                    console.log(this.id);
+                    this.alergies = response.data;
+                    console.log(response.data);
+                });
+        },
 
 
     },
     mounted() {
-        // this.loadPatientData();
+        this.loadPatientAlergies();
     },
 	created() {
-		  this.username = this.$route.params.username; 
+		  this.id = this.$route.params.id; 
 	},
 }
 </script>
