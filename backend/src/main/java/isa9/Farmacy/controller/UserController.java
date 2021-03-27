@@ -2,6 +2,7 @@ package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.*;
+import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.support.MedicineToMedicineDTO;
 import isa9.Farmacy.support.PatientToPatientDTO;
@@ -21,6 +22,7 @@ import java.util.Set;
 public class UserController {
 
     private final UserService userService;
+    private final PharmacyService pharmacyService;
 
     private final PatientToPatientDTO patientToPatientDTO;
     private final MedicineToMedicineDTO medicineToMedicineDTO;
@@ -28,10 +30,12 @@ public class UserController {
 
     @Autowired
     public UserController(UserService userService,
+                          PharmacyService pharmacyService,
                           PatientToPatientDTO patientToPatientDTO,
                           MedicineToMedicineDTO medicineToMedicineDTO,
                           PharmacyToPharmacyDTO pharmacyToPharmacyDTO){
         this.userService = userService;
+        this.pharmacyService = pharmacyService;
         this.patientToPatientDTO = patientToPatientDTO;
         this.medicineToMedicineDTO = medicineToMedicineDTO;
         this.pharmacyToPharmacyDTO = pharmacyToPharmacyDTO;
@@ -82,6 +86,16 @@ public class UserController {
         List<PharmacyDTO> dto = pharmacyToPharmacyDTO.convert(subscriptions);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
+
+    }
+
+    @DeleteMapping("{id}/subscriptions/{pharmacyId}")
+    public ResponseEntity<List<PharmacyDTO>> getUserSubscriptions(@PathVariable Long id, @PathVariable Long pharmacyId){
+        User user = userService.findOne(id);
+        Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
+
+        userService.PatientUnsubscribe(user, pharmacy);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
 

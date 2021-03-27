@@ -12,5 +12,6 @@ public interface UserService extends GenericService<User> {
 
     Set<Medicine> getPatientAllergies(User patient);
     Set<Pharmacy> getPatientSubscriptions(User patient);
+    void PatientUnsubscribe(User patient, Pharmacy pharmacy);
 
 }

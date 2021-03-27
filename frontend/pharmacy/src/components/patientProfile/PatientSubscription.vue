@@ -11,11 +11,15 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="s in subscriptions">
+      <tr v-for="s in subscriptions" v-bind:style="{ background: s.unsubscribed ? '#aaa' : ''}">
         <td>{{s.name}}</td>
         <td>{{s.description}}</td>
         <td>{{UtilService.AddressToString(s.address)}}</td>
-        <td><button class="btn btn-danger">Unsubscribe</button></td>
+
+        <td>
+          <router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: s.id  }}">View</router-link>
+          <button v-bind:disabled="s.unsubscribed" class="btn btn-danger" v-on:click="unsubscribe(s)">Unsubscribe</button>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -45,6 +49,15 @@ export default {
                     this.subscriptions = response.data;
                 });
         },
+
+        unsubscribe(obj) {
+            PatientDataService.unsubscribePatient(this.id, obj.id)
+                .then(response => {
+                    console.log("Unsubscribe " + obj.id);
+                    obj.unsubscribed = true;
+                    //this.subscriptions = response.data;
+                });
+        }
 
 
     },

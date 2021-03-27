@@ -21,4 +21,17 @@ public abstract class UserServiceBase implements UserService {
 
         return ((Patient) patient).getSubscriptions();
     }
+
+    @Override
+    public void PatientUnsubscribe(User user, Pharmacy pharmacy) {
+        if (user.getRole() != UserRole.PATIENT) return;
+
+        Patient patient = (Patient) user;
+        Set<Pharmacy> subscriptions = ((Patient) patient).getSubscriptions();
+        subscriptions.remove(pharmacy);
+        patient.setSubscriptions(subscriptions);
+
+        return;
+
+    }
 }
