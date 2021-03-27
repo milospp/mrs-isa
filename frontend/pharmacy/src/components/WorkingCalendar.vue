@@ -1,5 +1,5 @@
 <template>
-    <img src="../assets/kalendar.jpg" alt="radni kalendar">
+    <img src="../assets/kalendar.jpg" alt="working calendar">
 </template>
 
 <script>
