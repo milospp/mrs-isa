@@ -1,12 +1,13 @@
 package isa9.Farmacy.controller;
 
-import isa9.Farmacy.model.Patient;
-import isa9.Farmacy.model.Pharmacist;
-import isa9.Farmacy.model.User;
-import isa9.Farmacy.model.dto.PatientDTO;
-import isa9.Farmacy.model.dto.PatientRegistrationDTO;
-import isa9.Farmacy.model.dto.UserDTO;
+import isa9.Farmacy.model.*;
+import isa9.Farmacy.model.dto.*;
+import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.support.MedicineToMedicineDTO;
+import isa9.Farmacy.support.PatientToPatientDTO;
+import isa9.Farmacy.support.PenalityToPenalityDTO;
+import isa9.Farmacy.support.PharmacyToPharmacyDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Flow;
 
 @RestController
 @CrossOrigin("*")
@@ -21,17 +24,33 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final PharmacyService pharmacyService;
+
+    private final PatientToPatientDTO patientToPatientDTO;
+    private final MedicineToMedicineDTO medicineToMedicineDTO;
+    private final PharmacyToPharmacyDTO pharmacyToPharmacyDTO;
+    private final PenalityToPenalityDTO penalityToPenalityDTO;
 
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService,
+                          PharmacyService pharmacyService,
+                          PatientToPatientDTO patientToPatientDTO,
+                          MedicineToMedicineDTO medicineToMedicineDTO,
+                          PharmacyToPharmacyDTO pharmacyToPharmacyDTO,
+                          PenalityToPenalityDTO penalityToPenalityDTO){
         this.userService = userService;
+        this.pharmacyService = pharmacyService;
+        this.patientToPatientDTO = patientToPatientDTO;
+        this.medicineToMedicineDTO = medicineToMedicineDTO;
+        this.pharmacyToPharmacyDTO = pharmacyToPharmacyDTO;
+        this.penalityToPenalityDTO = penalityToPenalityDTO;
     }
 
     @GetMapping("all-users")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<UserDTO> resultDTOS = new ArrayList<>();
         for (User user : this.userService.findAll()){
-            resultDTOS.add(new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress().toString(), user.getPhoneNumber()));
+            resultDTOS.add(new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), user.getRole()));
         }
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
@@ -42,17 +61,75 @@ public class UserController {
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id){
         User user = userService.findOne(id);
 
-        UserDTO userDTO = new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress().toString(), user.getPhoneNumber());
-        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+//        UserDTO userDTO = new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress().toString(), user.getPhoneNumber(), user.getRole());
+        UserDTO dto;
+        if (user.getRole() == UserRole.PATIENT){
+            dto = (UserDTO) patientToPatientDTO.convert((Patient) user);
+        } else {
+            dto = new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), user.getRole());
+        }
+        return new ResponseEntity<>(dto, HttpStatus.OK);
 
     }
 
+    @GetMapping("{id}/allergies")
+    public ResponseEntity<List<MedicineDTO>> getUserAlergies(@PathVariable Long id){
+        User user = userService.findOne(id);
+        Set<Medicine> allergies = userService.getPatientAllergies(user);
+
+        List<MedicineDTO> dto = medicineToMedicineDTO.convert(allergies);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+
+    }
+
+    @GetMapping("{id}/subscriptions")
+    public ResponseEntity<List<PharmacyDTO>> getUserSubscriptions(@PathVariable Long id){
+        User user = userService.findOne(id);
+        Set<Pharmacy> subscriptions = userService.getPatientSubscriptions(user);
+
+        List<PharmacyDTO> dto = pharmacyToPharmacyDTO.convert(subscriptions);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+
+    }
+
+    @GetMapping("{id}/penalties")
+    public ResponseEntity<List<PenalityDTO>> getUserPenalties(@PathVariable Long id){
+        User user = userService.findOne(id);
+        Set<Penality> penalties = userService.getPenalties(user);
+
+        List<PenalityDTO> dto = penalityToPenalityDTO.convert(penalties);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+
+    }
+
+    @GetMapping("{id}/penalties/count")
+    public ResponseEntity<Integer> getUserPenaltiesCount(@PathVariable Long id){
+        User user = userService.findOne(id);
+        Integer penalties = userService.countActivePenalties(user);
+
+        return new ResponseEntity<>(penalties, HttpStatus.OK);
+
+    }
+
+
+    @DeleteMapping("{id}/subscriptions/{pharmacyId}")
+    public ResponseEntity<List<PharmacyDTO>> getUserSubscriptions(@PathVariable Long id, @PathVariable Long pharmacyId){
+        User user = userService.findOne(id);
+        Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
+
+        userService.PatientUnsubscribe(user, pharmacy);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
 
     @PostMapping("register")
     public ResponseEntity<UserDTO> registerUser(@RequestBody User user) {
         userService.save(user);
         return new ResponseEntity<>(
-                new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress().toString(), user.getPhoneNumber()),
+                new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), user.getRole()),
                 HttpStatus.OK
         );
 
@@ -83,7 +160,7 @@ public class UserController {
         for (User us : svi){
             if (us.getClass()!= Patient.class) continue;
             Patient patient = (Patient) us;
-            resultDTOS.add(new PatientDTO(patient.getId(), patient.getName(), patient.getSurname(), patient.getAddress().toString(), patient.getPhoneNumber()));
+            resultDTOS.add(new PatientDTO(patient.getId(), patient.getName(), patient.getSurname(), patient.getAddress(), patient.getPhoneNumber()));
         }
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
 
@@ -94,7 +171,7 @@ public class UserController {
         User us = userService.findOne(id);
         if (us.getClass() != Patient.class) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         Patient patient = (Patient) us;
-        PatientDTO patientDTO = new PatientDTO(patient.getId(), patient.getName(), patient.getSurname(), patient.getAddress().toString(), patient.getPhoneNumber());
+        PatientDTO patientDTO = new PatientDTO(patient.getId(), patient.getName(), patient.getSurname(), patient.getAddress(), patient.getPhoneNumber());
         return new ResponseEntity<>(patientDTO, HttpStatus.OK);
 
     }

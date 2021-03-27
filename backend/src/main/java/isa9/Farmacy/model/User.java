@@ -9,10 +9,12 @@ public abstract class User {
     private String surname;
     private String email;
     private String password;
+    private UserRole role;
 
     public User() {
     }
 
+    @Deprecated
     public User(Long id, String name, String surname, String email, String password, Address address, String phoneNumber) {
         this.address = address;
         this.phoneNumber = phoneNumber;
@@ -21,6 +23,17 @@ public abstract class User {
         this.surname = surname;
         this.email = email;
         this.password = password;
+    }
+
+    public User(Long id, String name, String surname, String email, String password, Address address, String phoneNumber, UserRole userRole) {
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.password = password;
+        this.role = userRole;
     }
 
     @Override
@@ -92,5 +105,13 @@ public abstract class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 }

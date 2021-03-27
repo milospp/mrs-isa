@@ -1,20 +1,35 @@
 package isa9.Farmacy.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Penality {
+    private Long id;
     private String reason;
-    private Date date;
+    private LocalDate date;
 
     public Penality() {
         super();
     }
 
-    public Penality(String reason, Date date) {
+    public Penality(String reason, LocalDate date) {
         super();
         this.reason = reason;
         this.date = date;
+    }
+
+    public Penality(Long id, String reason, LocalDate date) {
+        this.id = id;
+        this.reason = reason;
+        this.date = date;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getReason() {
@@ -25,11 +40,11 @@ public class Penality {
         this.reason = reason;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

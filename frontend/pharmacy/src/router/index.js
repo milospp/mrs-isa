@@ -11,6 +11,7 @@ import PharmacistHomePage from '@/views/PharmacistHomePage.vue'
 import DispenseMedication from '@/views/DispenseMedication.vue'
 import VacationRequest from '@/views/VacationRequest.vue'
 import PharmacyPage from '@/views/PharmacyPage.vue'
+import PatientProfile from '@/views/PatientProfile.vue'
 
 const routes = [
   {
@@ -73,7 +74,13 @@ const routes = [
     path: '/pharmacyPage/:id',
     name: 'PharmacyPage',
     component: PharmacyPage    // view je komponenta
+  },
+  {
+    path: '/profile/:id',
+    name: 'profile',
+    component: PatientProfile    // view je komponenta
   }
+
 
   // {
   //   path: '/about',

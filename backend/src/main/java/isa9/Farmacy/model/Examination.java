@@ -5,6 +5,7 @@ import java.util.Objects;
 
 public class Examination {
 
+    private Long id;
     private Patient patient;
     private User doctor; // ?
     private Appointment appointment;
@@ -26,6 +27,26 @@ public class Examination {
         this.diagnose = diagnose;
         this.therapy = therapy;
         this.type = type;
+    }
+
+    public Examination(Long id, Patient patient, User doctor, Appointment appointment, ExaminationStatus status, String examinationInfo, String diagnose, Map<Medicine, Integer> therapy, TypeOfReview type) {
+        this.id = id;
+        this.patient = patient;
+        this.doctor = doctor;
+        this.appointment = appointment;
+        this.status = status;
+        this.examinationInfo = examinationInfo;
+        this.diagnose = diagnose;
+        this.therapy = therapy;
+        this.type = type;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Patient getPatient() {
