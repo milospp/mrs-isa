@@ -192,4 +192,49 @@ public class UserController {
         );
 
     }
+
+//    probala sam
+//@GetMapping("/pharmacists/admin")
+// public ResponseEntity<List<Pharmacist>> getAllPharmacistsAdmin(@RequestBody Long id) {
+    //------------------
+//@GetMapping(value="/pharmacists/admin", produces="application/json")
+// public ResponseEntity<List<Pharmacist>> getAllPharmacistsAdmin(@RequestBody Long id) {
+    //------------------
+//@GetMapping("/pharmacists/admin/{id}")
+// public ResponseEntity<List<Pharmacist>> getAllPharmacistsAdmin(@PathVariable Long id) {
+    //------------------
+//@GetMapping(value="/pharmacists/admin/{id}", produces="application/json")
+// public ResponseEntity<List<Pharmacist>> getAllPharmacistsAdmin(@PathVariable Long id) {
+
+    @RequestMapping(value="/pharmacists/admin", produces="application/json", method = RequestMethod.GET)
+    public ResponseEntity<List<Pharmacist>> getAllPharmacistsAdmin(@RequestBody String id) {
+        Long idLong = Long.parseLong(id);
+        System.out.println("funkcija getAllPharmacistsAdmin");
+        List<User> svi = userService.findAll();
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(idLong);
+        List<Pharmacist> povratna = new ArrayList<>();
+        System.out.println("funkcija 1 deo");
+        for (User u : svi) if (u.getClass() == Pharmacist.class) {
+            Pharmacist farmaceut = (Pharmacist) u;
+            if (((Pharmacist) u).getPharmacy().equals(admin.getPharmacy())) povratna.add(farmaceut);
+        }
+        System.out.println("funkcija 2 deo " + povratna.size());
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @GetMapping("/all-pharmacists/admin/{id}")
+    public ResponseEntity<List<PharmacistDTO>> getAllPharmacistsAdminDTO(@PathVariable Long id) {
+        System.out.println("funkcija getAllPharmacistsAdminDTO");
+        List<PharmacistDTO> resultDTOS = new ArrayList<>();
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
+        List<User> svi = userService.findAll();
+        for (User us : svi) {
+            if (us.getClass() != Pharmacist.class) continue;
+            Pharmacist farmaceut = (Pharmacist) us;
+            if (!farmaceut.getPharmacy().equals(admin.getPharmacy())) continue;
+            resultDTOS.add(new PharmacistDTO(farmaceut.getId(), farmaceut.getName(), farmaceut.getSurname(), farmaceut.getAddress(), farmaceut.getPhoneNumber(), farmaceut.getPharmacy()));
+        }
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
 }

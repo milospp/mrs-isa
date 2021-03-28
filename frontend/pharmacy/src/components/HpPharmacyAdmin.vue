@@ -86,6 +86,14 @@
                   <th>Address</th>
                   <th>Phone number</th>
                 </thead>
+                <tbody>
+                    <tr :key="p.username" v-for="p in this.sviZaposlenifarmaceuti">
+                      <td>{{p.name}}</td>
+                      <td>{{p.surname}}</td>
+                      <td>{{p.address}}</td>
+                      <td>{{p.phoneNumber}}</td>
+                  </tr>
+                </tbody>
               </table>
             </div>
             <div id="menu3" class="tab-pane fade">
@@ -126,9 +134,20 @@ export default {
     },
     created() {
 	    this.id = this.$route.params.id; 
-    },
-    methods: {
-       
+      alert("funkcija created " + this.id + "   "+ typeof(this.id));
+      PharmacistDataService.getAllPharmacistAdmin(this.id)
+        .then(response => {
+          this.sviZaposleniFarmaceuti = response.data;
+          alert("Uspeeeh")})
+        .catch(function (error) {
+          if (error.response) {
+            console.log(error.response.data);
+          } else if (error.request) {
+            console.log(error.request);
+          }
+          console.log("Greskaaa");
+          console.log(error.config);
+      });
     }
 }
 </script>

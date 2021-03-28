@@ -4,10 +4,6 @@ import axios from "axios";
 const API_URL = "http://localhost:8080";
 
 class PharmacistDataService {
-  retrieveAllPharmacists() {
-    return axios.get(`${API_URL}/all-pharmacist`);
-  }
-
   SendPharmacist(promenljiva) {
     return axios({
       method: 'post',
@@ -16,19 +12,24 @@ class PharmacistDataService {
     }).then(response => {
       alert(response.data);
       if (response.data == 0) return true; 
-      else if (response.data == 1) alert("Username is not unique!");
-      else if (response.data == 2) alert("Email is not unique!");
-      else alert("Username or email is not unique!");
+      alert("Email is not unique!");
       return false;
     });
   }
 
   getAllPharmacistAdmin(idAdminaApoteke) {
-    return axios.get(`${API_URL}/api/users/all-pharmacist/Admin/${idAdminaApoteke}`);
+    alert( `${API_URL}/api/users/pharmacists/admin` + `${idAdminaApoteke}` + idAdminaApoteke);
+    return axios({
+      method: 'get',
+      url: `${API_URL}/api/users/pharmacists/admin`,
+      data: `${idAdminaApoteke}`    //idAdminaApoteke
+    });
+    // return axios.get(`${API_URL}/api/users/pharmacists/admin/${idAdminaApoteke}`);
+    // return axios.get(`${API_URL}/api/users/pharmacists/admin/` + {idAdminaApoteke});
   }
   
   getAllPharmacistPharmacy(idApoteke) {
-    return axios.get(`${API_URL}/api/users/all-pharmacist/Apoteka/${idApoteke}`);
+    return axios.get(`${API_URL}/api/users/all-pharmacists/apoteka/${idApoteke}`);
   }
 }
 
