@@ -1,5 +1,5 @@
 <template>
-     <form v-on:submit.prevent="formCheck(this)">
+     <form v-on:submit.prevent="formCheck(this)" >
         <table>
             <tr>
                 <td align="right">Name:</td>
@@ -60,12 +60,12 @@
                 <td>
                     <input 
                         type="text" id="address" v-model="registerData.address.street" required="required"
-                            pattern="[A-Z][a-zA-Z0-9| ]*" title="Address must start with capital letter"
+                            pattern="[A-Z][a-zA-Z0-9 ]*" title="Address must start with capital letter"
                     ></td>
                 <td>
                     <input 
                         type="text" id="address" v-model="registerData.address.number" required="required" size="5" 
-                        pattern="[0-9][0-9a-zA-Z|/| ]*" title="Address number can have number and /"
+                        pattern="[0-9][0-9a-zA-Z/ ]*" title="Address number can have number and /"
                     ></td>
             </tr>
 
@@ -76,21 +76,30 @@
                     pattern="[0-9]*" size="31" title="Phone number must be a number"
                 ></td>
             </tr>
-
+            <tr >
+                <td align="right">Select a pharmacy:</td>
+                <td colspan="2">
+                    <select id="pharmaciesSelection" v-on:click="selectedPharmacy(this)" style="width: 100%;" v-model="registerData.pharmacyId" required="required">
+                        <option v-for="pharmacy in this.availablePharmacies" v-bind:value=pharmacy.id>{{pharmacy.name}}</option>
+                    </select>
+                </td>
+            </tr>
             <tr>
                 <td></td>
-                <td colspan="2"><input type="submit" id="dugme" value="Register"></td>
+                <td colspan="2"><input type="submit" id="dugme" value="Register" ></td>
             </tr>
         </table>
     </form>
 </template>
 
 <script>
-import PharmacistDataService from '../service/PharmacyAdminDataService.js';
+import PharmacyAdminDataService from '../service/PharmacyAdminDataService.js';
+import PharmacyDataService from '../service/PharmacyDataService.js';
 export default {
     name: 'AddPharmacyAdminForm',
     data() {
         return {
+            availablePharmacies: [],
             message: null,
             registerData: {
                 name : "",
@@ -110,7 +119,7 @@ export default {
     },
     methods: {      
         formCheck(e) {
-            PharmacistDataService.SendPharmacyAdmin(this.registerData)
+            PharmacyAdminDataService.SendPharmacyAdmin(this.registerData)
 				.catch(function (error) {
 					if (error.response) {
 						console.log(error.response.data);
@@ -120,7 +129,18 @@ export default {
 					console.log("error.config");
 					console.log(error.config);
 				});
+        },
+        selectedPharmacy(e){
+            console.log(this.registerData.pharmacyId);
         }
+    },
+    created() {
+        PharmacyDataService.getAvailablePharmacies()
+        .then(
+            response => {
+                this.availablePharmacies = response.data;
+            }
+        );
     }
 }
 </script>

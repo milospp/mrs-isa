@@ -4,19 +4,16 @@ import axios from "axios";
 const API_URL = "http://localhost:8080/api/users";
 
 class PharmacyAdminDataService {
-    retrieveAllPharmacists() {
-        return axios.get(`${API_URL}/all-pharmacist`);
-    }
-    SendPharmacy(newPharmacy) {
+    SendPharmacyAdmin(newAdmin) {
         return axios({
             method: 'post',
-            url: `${API_URL}/register/pharmacy`,
-            data: newPharmacy
+            url: `${API_URL}/register/pharmacyAdmin`,
+            data: newAdmin
         }).then(response => {
-            if (response.data == false) alert("This pharmacy already exists!");
+            if (response.data == false) alert("This e-mail is taken!");
         });
     }
 }
 
 
-export default new PharmacyDataService();
+export default new PharmacyAdminDataService();
