@@ -56,6 +56,8 @@ const routes = [
     path: '/homePagePharmacyAdmin/:id',
     name: 'HomePagePharmacyAdmin',
     component: HomePagePharmacyAdmin    // view je komponenta
+  },
+  {
     path: '/addPharmacy',
     name: 'AddPharmacy',
     component: AddPharmacy
