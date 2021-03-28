@@ -204,4 +204,21 @@ public class UserController {
         System.out.println(newlyRegistered);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
+
+    @GetMapping("all-pharmacy-admins")
+    public ResponseEntity<List<PharmacyAdminDTO>> getAllPharmacyAdminsDTO() {
+        List<PharmacyAdminDTO> resultDTOS = new ArrayList<>();
+        List<User> allUsers = userService.findAll();
+        for (User us : allUsers){
+            if (us.getClass()!= PharmacyAdmin.class) continue;
+            PharmacyAdmin phAdmin = (PharmacyAdmin) us;
+            resultDTOS.add(new PharmacyAdminDTO(phAdmin.getId(), phAdmin.getName(), phAdmin.getSurname(),
+                                                phAdmin.getAddress(), phAdmin.getPhoneNumber(),
+                                                phAdmin.getPharmacy().getId()));
+        }
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
+
+
 }

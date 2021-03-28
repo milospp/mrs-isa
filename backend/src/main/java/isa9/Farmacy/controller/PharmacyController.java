@@ -7,6 +7,7 @@ import isa9.Farmacy.model.dto.PatientRegistrationDTO;
 import isa9.Farmacy.model.dto.PharmacyDTO;
 import isa9.Farmacy.model.dto.UserDTO;
 import isa9.Farmacy.service.PharmacyService;
+import isa9.Farmacy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +22,12 @@ import java.util.List;
 public class PharmacyController {
 
     private final PharmacyService pharmacyService;
+    private final UserService userService;
 
     @Autowired
-    public PharmacyController(PharmacyService pharmacyService){
+    public PharmacyController(PharmacyService pharmacyService, UserService userService){
         this.pharmacyService = pharmacyService;
+        this.userService = userService;
     }
 
 
@@ -32,12 +35,24 @@ public class PharmacyController {
     public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
         List<PharmacyDTO> resultDTOS = new ArrayList<>();
         for (Pharmacy p : this.pharmacyService.findAll()){
-            resultDTOS.add(new PharmacyDTO(p.getId(), p.getName(), p.getDescription(),
-                     p.getAddress()));
+            resultDTOS.add(new PharmacyDTO(p.getId(), p.getName(), p.getDescription(), p.getAddress()));
         }
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
 
+    }
+
+    /*Returns all pharmacies that don't have a pharmacy administrator assigned to them*/
+    @GetMapping("available")
+    public ResponseEntity<List<PharmacyDTO>> getAvailablePharmacies(){
+        List<PharmacyDTO> resultDTOS = new ArrayList<>();
+        for (Pharmacy p : this.pharmacyService.findAll()){
+            if(userService.findPharmacyAdmin(p.getId()) == null) {
+                resultDTOS.add(new PharmacyDTO(p.getId(), p.getName(), p.getDescription(), p.getAddress()));
+            }
+        }
+
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
     }
 
   
