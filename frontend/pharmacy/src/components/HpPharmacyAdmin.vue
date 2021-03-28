@@ -75,6 +75,14 @@
                   <th>Address</th>
                   <th>Phone number</th>
                 </thead>
+                <tbody>
+                    <tr :key="p.username" v-for="p in this.sviZaposleniFarmaceuti" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
+                      <td>{{p.name}}</td>
+                      <td>{{p.surname}}</td>
+                      <td>{{p.address["state"]}}, {{p.address["city"]}}, {{p.address["street"]}}, {{p.address["number"]}}</td>
+                      <td>{{p.phoneNumber}}</td>
+                  </tr>
+                </tbody>
               </table>
             </div>
             <div id="menu2" class="tab-pane fade">
@@ -121,25 +129,19 @@ export default {
     name: 'HpPharmacyAdmin',
     data() {
         return {
-            
+            sviZaposleniFarmaceuti : []
         };
     },
     created() {
 	    this.id = this.$route.params.id; 
+      PharmacistDataService.getAllPharmacistAdmin(this.id)
+        .then(response => {
+          this.sviZaposleniFarmaceuti = response.data;});
     },
-    methods: {
-       
+    mounted() {
+      PharmacistDataService.getAllPharmacistAdmin(this.id)
+        .then(response => {
+          this.sviZaposleniFarmaceuti = response.data;});
     }
 }
 </script>
-
-<style>
-  .in {
-    opacity: 1 !important;
-  }
-  .nav-item.active > .nav-link {
-    color: #495057;
-    background-color: #fff;
-    border-color: #dee2e6 #dee2e6 #fff;
-  }
-</style>
