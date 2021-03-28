@@ -193,39 +193,34 @@ public class UserController {
 
     }
 
-//    probala sam
-//@GetMapping("/pharmacists/admin")
-// public ResponseEntity<List<Pharmacist>> getAllPharmacistsAdmin(@RequestBody Long id) {
-    //------------------
-//@GetMapping(value="/pharmacists/admin", produces="application/json")
-// public ResponseEntity<List<Pharmacist>> getAllPharmacistsAdmin(@RequestBody Long id) {
-    //------------------
-//@GetMapping("/pharmacists/admin/{id}")
-// public ResponseEntity<List<Pharmacist>> getAllPharmacistsAdmin(@PathVariable Long id) {
-    //------------------
-//@GetMapping(value="/pharmacists/admin/{id}", produces="application/json")
-// public ResponseEntity<List<Pharmacist>> getAllPharmacistsAdmin(@PathVariable Long id) {
-
-    @RequestMapping(value="/pharmacists/admin", produces="application/json", method = RequestMethod.GET)
-    public ResponseEntity<List<Pharmacist>> getAllPharmacistsAdmin(@RequestBody String id) {
-        Long idLong = Long.parseLong(id);
-        System.out.println("funkcija getAllPharmacistsAdmin");
+    @GetMapping("/pharmacists/admin/{id}")
+     public ResponseEntity<List<Pharmacist>> getAllPharmacistsAdmin(@PathVariable Long id) {
         List<User> svi = userService.findAll();
-        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(idLong);
+        if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
         List<Pharmacist> povratna = new ArrayList<>();
-        System.out.println("funkcija 1 deo");
         for (User u : svi) if (u.getClass() == Pharmacist.class) {
             Pharmacist farmaceut = (Pharmacist) u;
-            if (((Pharmacist) u).getPharmacy().equals(admin.getPharmacy())) povratna.add(farmaceut);
+            if (farmaceut.getPharmacy().equals(admin.getPharmacy())) povratna.add(farmaceut);
         }
-        System.out.println("funkcija 2 deo " + povratna.size());
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @GetMapping("/pharmacists/pharmacy/{id}")
+    public ResponseEntity<List<Pharmacist>> getAllPharmacistsPharmacy(@PathVariable Long id) {
+        List<User> svi = userService.findAll();
+        List<Pharmacist> povratna = new ArrayList<>();
+        for (User u : svi) if (u.getClass() == Pharmacist.class) {
+            Pharmacist farmaceut = (Pharmacist) u;
+            if (farmaceut.getPharmacy().getId().equals(id)) povratna.add(farmaceut);
+        }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
     @GetMapping("/all-pharmacists/admin/{id}")
     public ResponseEntity<List<PharmacistDTO>> getAllPharmacistsAdminDTO(@PathVariable Long id) {
-        System.out.println("funkcija getAllPharmacistsAdminDTO");
         List<PharmacistDTO> resultDTOS = new ArrayList<>();
+        if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
         PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
         List<User> svi = userService.findAll();
         for (User us : svi) {

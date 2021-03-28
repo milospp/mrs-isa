@@ -18,18 +18,29 @@ class PharmacistDataService {
   }
 
   getAllPharmacistAdmin(idAdminaApoteke) {
-    alert( `${API_URL}/api/users/pharmacists/admin` + `${idAdminaApoteke}` + idAdminaApoteke);
-    return axios({
-      method: 'get',
-      url: `${API_URL}/api/users/pharmacists/admin`,
-      data: `${idAdminaApoteke}`    //idAdminaApoteke
-    });
-    // return axios.get(`${API_URL}/api/users/pharmacists/admin/${idAdminaApoteke}`);
-    // return axios.get(`${API_URL}/api/users/pharmacists/admin/` + {idAdminaApoteke});
+    return axios.get(API_URL + "/api/users/pharmacists/admin/" + idAdminaApoteke)
+    .catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("Error");
+      console.log(error.config);
+  });
   }
   
   getAllPharmacistPharmacy(idApoteke) {
-    return axios.get(`${API_URL}/api/users/all-pharmacists/apoteka/${idApoteke}`);
+    return axios.get(API_URL + "/api/users/pharmacists/pharmacy/" + idApoteke)
+    .catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("Error");
+      console.log(error.config);
+  });
   }
 }
 
