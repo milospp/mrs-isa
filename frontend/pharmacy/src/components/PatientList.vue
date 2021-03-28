@@ -6,7 +6,6 @@
                 <th>First name</th>
                 <th>Last name</th>
                 <th>Address</th>
-                <th>Email</th>
                 <th>Phone number</th>
             </thead>
             <tbody>
@@ -14,7 +13,6 @@
                     <td>{{p.name}}</td>
                     <td>{{p.surname}}</td>
                     <td>{{p.address.street}} {{p.address.number}}, {{p.address.city}}, {{p.address.state}}</td>
-                    <td>{{p.email}}</td>
                     <td>{{p.phoneNumber}}</td>
                 </tr>
             </tbody>
