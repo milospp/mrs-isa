@@ -17,6 +17,8 @@
 					<router-link :to="{ name: 'HomePage'}" class="nav-item nav-link">Home</router-link>
 					<router-link :to="{ name: 'Pharmacies'}" class="nav-item nav-link">Pharmacies</router-link>
 					<router-link to="/medicines?q=none" class="nav-item nav-link">Medicines</router-link>
+					<router-link :to="{ name: 'DermAppointments'}" class="nav-item nav-link">Derm. Appointments</router-link>
+
 
 				</div>
 				<div v-else-if="role === 'pharmacist'" class="navbar-nav mr-auto mt-2 mt-lg-0">

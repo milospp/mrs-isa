@@ -1,22 +1,25 @@
-package isa9.Farmacy.model;
+package isa9.Farmacy.model.dto;
+
+import isa9.Farmacy.model.*;
 
 import java.util.Map;
 import java.util.Objects;
 
-public class Examination {
+public class ExaminationDTO {
 
     private Long id;
-    private Patient patient;
-    private Appointment appointment;
+    private Long patient;
+    private Long appointment;
     private ExaminationStatus status; // held, not held or canceled
     private String examinationInfo;
     private String diagnose;
-    private Map<Medicine, Integer> therapy; // maybe should be the code of the medicine
+    private Map<String, Integer> therapy; // maybe should be the code of the medicine
+    private TypeOfReview type;
 
-    public Examination() {
+    public ExaminationDTO() {
     }
 
-    public Examination(Long id, Patient patient, Appointment appointment, ExaminationStatus status, String examinationInfo, String diagnose, Map<Medicine, Integer> therapy) {
+    public ExaminationDTO(Long id, Long patient, Long appointment, ExaminationStatus status, String examinationInfo, String diagnose, Map<String, Integer> therapy, TypeOfReview type) {
         this.id = id;
         this.patient = patient;
         this.appointment = appointment;
@@ -24,6 +27,7 @@ public class Examination {
         this.examinationInfo = examinationInfo;
         this.diagnose = diagnose;
         this.therapy = therapy;
+        this.type = type;
     }
 
     public Long getId() {
@@ -34,19 +38,19 @@ public class Examination {
         this.id = id;
     }
 
-    public Patient getPatient() {
+    public Long getPatient() {
         return patient;
     }
 
-    public void setPatient(Patient patient) {
+    public void setPatient(Long patient) {
         this.patient = patient;
     }
 
-    public Appointment getAppointment() {
+    public Long getAppointment() {
         return appointment;
     }
 
-    public void setAppointment(Appointment appointment) {
+    public void setAppointment(Long appointment) {
         this.appointment = appointment;
     }
 
@@ -74,11 +78,19 @@ public class Examination {
         this.diagnose = diagnose;
     }
 
-    public Map<Medicine, Integer> getTherapy() {
+    public Map<String, Integer> getTherapy() {
         return therapy;
     }
 
-    public void setTherapy(Map<Medicine, Integer> therapy) {
+    public void setTherapy(Map<String, Integer> therapy) {
         this.therapy = therapy;
+    }
+
+    public TypeOfReview getType() {
+        return type;
+    }
+
+    public void setType(TypeOfReview type) {
+        this.type = type;
     }
 }

@@ -1,9 +1,11 @@
 <template>
+<div>
   <NavBar/>
   
   <div class="container pt-5">
     <PharmacyProfileInfo/>
   </div>
+</div>
 </template>
 
 <style>

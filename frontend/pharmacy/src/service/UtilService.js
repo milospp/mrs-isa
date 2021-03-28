@@ -25,6 +25,10 @@ class UtilService {
     return moment(date).format('DD/MM/YYYY');
   }
 
+  formatDateTime(date) {
+    return moment(date).format('DD/MM/YYYY hh:mm');
+  }
+
   isPastDate(date){
     console.log(date)
     return moment(date).isBefore();
