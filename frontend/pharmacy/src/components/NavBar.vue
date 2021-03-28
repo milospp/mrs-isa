@@ -23,13 +23,23 @@
 				</div>
 				<div v-else-if="role === 'pharmacist'" class="navbar-nav mr-auto mt-2 mt-lg-0">
 
-					<a class="navbar-brand" href="/">Navbar</a>
+					<a class="navbar-brand" href="/pharmacist">Navbar</a>
 
-					<router-link v-if="role === 'pharmacist' || role === 'dermatologist'" :to="{ name: 'PharmacistHomePage'}" class="nav-item nav-link">Working Calendar</router-link>
+					<router-link :to="{ name: 'PharmacistHomePage'}" class="nav-item nav-link">Working Calendar</router-link>
 					<router-link to="/medicines?q=pharmacist" class="nav-item nav-link">Medicines</router-link>
-					<router-link v-if="role === 'pharmacist' || role === 'dermatologist'" :to="{ name: 'Patients'}" class="nav-item nav-link">My Patients</router-link>
+					<router-link to="/patients?q=pharmacist" class="nav-item nav-link">My Patients</router-link>
 					<router-link :to="{ name: 'DispenseMedication'}" class="nav-item nav-link">Dispense Medication</router-link>
-					<router-link v-if="role === 'pharmacist' || role === 'dermatologist'" :to="{ name: 'VacationRequest'}" class="nav-item nav-link">Vacation Request</router-link>
+					<router-link to="/vacation-request?q=pharmacist" class="nav-item nav-link">Vacation Request</router-link>
+					
+				</div>
+				<div v-else-if="role === 'dermatologist'" class="navbar-nav mr-auto mt-2 mt-lg-0">
+
+					<a class="navbar-brand" href="/dermatologist">Navbar</a>
+
+					<router-link :to="{ name: 'DermatologistHomePage'}" class="nav-item nav-link">Working Calendar</router-link>
+					<router-link to="/medicines?q=dermatologist" class="nav-item nav-link">Medicines</router-link>
+					<router-link to="/patients?q=dermatologist" class="nav-item nav-link">My Patients</router-link>
+					<router-link to="/vacation-request?q=dermatologist" class="nav-item nav-link">Vacation Request</router-link>
 					
 				</div>
 

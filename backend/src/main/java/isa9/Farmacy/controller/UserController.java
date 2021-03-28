@@ -192,4 +192,44 @@ public class UserController {
         );
 
     }
+
+    @GetMapping("/pharmacists/admin/{id}")
+     public ResponseEntity<List<Pharmacist>> getAllPharmacistsAdmin(@PathVariable Long id) {
+        List<User> svi = userService.findAll();
+        if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
+        List<Pharmacist> povratna = new ArrayList<>();
+        for (User u : svi) if (u.getClass() == Pharmacist.class) {
+            Pharmacist farmaceut = (Pharmacist) u;
+            if (farmaceut.getPharmacy().equals(admin.getPharmacy())) povratna.add(farmaceut);
+        }
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @GetMapping("/pharmacists/pharmacy/{id}")
+    public ResponseEntity<List<Pharmacist>> getAllPharmacistsPharmacy(@PathVariable Long id) {
+        List<User> svi = userService.findAll();
+        List<Pharmacist> povratna = new ArrayList<>();
+        for (User u : svi) if (u.getClass() == Pharmacist.class) {
+            Pharmacist farmaceut = (Pharmacist) u;
+            if (farmaceut.getPharmacy().getId().equals(id)) povratna.add(farmaceut);
+        }
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @GetMapping("/all-pharmacists/admin/{id}")
+    public ResponseEntity<List<PharmacistDTO>> getAllPharmacistsAdminDTO(@PathVariable Long id) {
+        List<PharmacistDTO> resultDTOS = new ArrayList<>();
+        if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
+        List<User> svi = userService.findAll();
+        for (User us : svi) {
+            if (us.getClass() != Pharmacist.class) continue;
+            Pharmacist farmaceut = (Pharmacist) us;
+            if (!farmaceut.getPharmacy().equals(admin.getPharmacy())) continue;
+            resultDTOS.add(new PharmacistDTO(farmaceut.getId(), farmaceut.getName(), farmaceut.getSurname(), farmaceut.getAddress(), farmaceut.getPhoneNumber(), farmaceut.getPharmacy()));
+        }
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
 }

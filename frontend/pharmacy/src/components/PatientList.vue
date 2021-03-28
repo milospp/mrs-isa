@@ -12,7 +12,7 @@
                 <tr :key="p.username" v-for="p in patients" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
                     <td>{{p.name}}</td>
                     <td>{{p.surname}}</td>
-                    <td>{{p.address}}</td>
+                    <td>{{p.address.street}} {{p.address.number}}, {{p.address.city}}, {{p.address.state}}</td>
                     <td>{{p.phoneNumber}}</td>
                 </tr>
             </tbody>
