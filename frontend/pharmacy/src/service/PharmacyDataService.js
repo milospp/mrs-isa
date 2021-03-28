@@ -10,6 +10,11 @@ class PharmacyDataService {
     getPharmacy(id) {
       return axios.get(`${API_URL}/` + id);
     }
+
+    getAvailablePharmacies(){
+        return axios.get(`${API_URL}/available`);
+    }
+
     SendPharmacy(newPharmacy) {
         return axios({
             method: 'post',

@@ -193,6 +193,36 @@ public class UserController {
 
     }
 
+
+    @PostMapping("register/pharmacyAdmin")
+    public ResponseEntity<Boolean> registerPharmacyAdmin(@RequestBody PharmacyAdminRegDTO newAdminDto){
+        if(!userService.isAvaibleEmail(newAdminDto.getEmail())) return new ResponseEntity<>(false, HttpStatus.OK);
+        long pharmacyId = newAdminDto.getPharmacyId();
+        Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
+        PharmacyAdmin newlyRegistered = new PharmacyAdmin(0L, newAdminDto.getName(), newAdminDto.getSurname(), newAdminDto.getEmail(),
+                newAdminDto.getPassword(), pharmacy, newAdminDto.getAddress(), newAdminDto.getPhoneNumber());
+        userService.save(newlyRegistered);
+        System.out.println(newlyRegistered);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @GetMapping("all-pharmacy-admins")
+    public ResponseEntity<List<PharmacyAdminDTO>> getAllPharmacyAdminsDTO() {
+        List<PharmacyAdminDTO> resultDTOS = new ArrayList<>();
+        List<User> allUsers = userService.findAll();
+        for (User us : allUsers){
+            if (us.getClass()!= PharmacyAdmin.class) continue;
+            PharmacyAdmin phAdmin = (PharmacyAdmin) us;
+            resultDTOS.add(new PharmacyAdminDTO(phAdmin.getId(), phAdmin.getName(), phAdmin.getSurname(),
+                                                phAdmin.getAddress(), phAdmin.getPhoneNumber(),
+                                                phAdmin.getPharmacy().getId()));
+        }
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
+
+
+
     @GetMapping("/pharmacists/admin/{id}")
      public ResponseEntity<List<Pharmacist>> getAllPharmacistsAdmin(@PathVariable Long id) {
         List<User> svi = userService.findAll();
@@ -232,4 +262,5 @@ public class UserController {
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
 
     }
+
 }
