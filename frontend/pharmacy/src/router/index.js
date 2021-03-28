@@ -6,6 +6,7 @@ import Medicines from '../views/Medicines.vue'
 import Register from '@/views/Register.vue'
 import Patients from '@/views/Patients.vue'
 import AddPharmacist from '@/views/AddPharmacist.vue'
+import HomePagePharmacyAdmin from '@/views/HomePagePharmacyAdmin.vue'
 import AddPharmacy from '@/views/AddPharmacy.vue'
 import AddPharmacyAdmin from '@/views/AddPharmacyAdmin.vue'
 import PharmacistHomePage from '@/views/PharmacistHomePage.vue'
@@ -14,6 +15,7 @@ import VacationRequest from '@/views/VacationRequest.vue'
 import PharmacyPage from '@/views/PharmacyPage.vue'
 import PatientProfile from '@/views/PatientProfile.vue'
 import DermatologistHomePage from '@/views/DermatologistHomePage.vue'
+import DermAppointments from '../views/DermAppointments.vue'
 
 const routes = [
   {
@@ -45,12 +47,18 @@ const routes = [
   {
     path: '/patients',
     name: 'Patients',
-    component: Patients
+    component: Patients,
+    props: route => ({ role: route.query.q })
   },
   {
     path: '/addPharmacist',
     name: 'AddPharmacist',
     component: AddPharmacist    // view je komponenta
+  },
+  {
+    path: '/homePagePharmacyAdmin/:id',
+    name: 'HomePagePharmacyAdmin',
+    component: HomePagePharmacyAdmin    // view je komponenta
   },
   {
     path: '/addPharmacy',
@@ -75,7 +83,8 @@ const routes = [
   {
     path: '/vacation-request',
     name: 'VacationRequest',
-    component: VacationRequest
+    component: VacationRequest,
+    props: route => ({ role: route.query.q })
   },
   {
     path: '/pharmacyPage/:id',
@@ -91,6 +100,11 @@ const routes = [
     path: '/dermatologist',
     name: 'DermatologistHomePage',
     component: DermatologistHomePage
+  },
+  {
+    path: '/darm-appointments',
+    name: 'DermAppointments',
+    component: DermAppointments
   }
 
 
