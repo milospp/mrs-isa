@@ -13,6 +13,7 @@ import VacationRequest from '@/views/VacationRequest.vue'
 import PharmacyPage from '@/views/PharmacyPage.vue'
 import PatientProfile from '@/views/PatientProfile.vue'
 import DermatologistHomePage from '@/views/DermatologistHomePage.vue'
+import DermAppointments from '../views/DermAppointments.vue'
 
 const routes = [
   {
@@ -85,6 +86,11 @@ const routes = [
     path: '/dermatologist',
     name: 'DermatologistHomePage',
     component: DermatologistHomePage
+  },
+  {
+    path: '/darm-appointments',
+    name: 'DermAppointments',
+    component: DermAppointments
   }
 
 

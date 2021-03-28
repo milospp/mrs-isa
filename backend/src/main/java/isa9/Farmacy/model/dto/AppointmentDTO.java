@@ -1,26 +1,31 @@
-package isa9.Farmacy.model;
+package isa9.Farmacy.model.dto;
+
+import isa9.Farmacy.model.Doctor;
+import isa9.Farmacy.model.Examination;
+import isa9.Farmacy.model.Pharmacy;
+import isa9.Farmacy.model.TypeOfReview;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Objects;
 
-public class Appointment {
+public class AppointmentDTO {
     private Long id;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDateTime startTime;
     private double price;
     private int durationInMins;
     private TypeOfReview type;
 
-
     private Doctor doctor;
     private Pharmacy pharmacy;
     private Examination examination;
 
-    public Appointment() {
+    public AppointmentDTO() {
         super();
     }
 
-    public Appointment(Long id, LocalDateTime startTime, double price, int durationInMins, TypeOfReview type, Doctor doctor, Pharmacy pharmacy, Examination examination) {
+    public AppointmentDTO(Long id, LocalDateTime startTime, double price, int durationInMins, TypeOfReview type, Doctor doctor, Pharmacy pharmacy, Examination examination) {
         this.id = id;
         this.startTime = startTime;
         this.price = price;

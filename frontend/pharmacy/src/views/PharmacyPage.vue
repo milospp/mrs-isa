@@ -1,4 +1,5 @@
 <template>
+<div>
   <NavBar/>
   
   <div class="container pt-5">
@@ -99,18 +100,15 @@
                       <table>
                         <tr><td>Starting at: </td><td class="pl-5"><strong>20/5/2021 08:00</strong></td></tr>
                       </table>
-                      <br>
+                      <br/>
                       <button class="btn btn-block btn-primary">Book a appointment</button>
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> 
 
-              
-
-
-              
             </div>
+
             <div id="menu3" class="tab-pane fade">
             </div>
           </div>
@@ -122,6 +120,7 @@
     </div>
 
   </div>
+</div>
 </template>
 
 <style>
