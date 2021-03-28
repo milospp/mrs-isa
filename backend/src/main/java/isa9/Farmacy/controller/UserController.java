@@ -197,6 +197,7 @@ public class UserController {
      public ResponseEntity<List<Pharmacist>> getAllPharmacistsAdmin(@PathVariable Long id) {
         List<User> svi = userService.findAll();
         if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
+        // tehnicki suvisna provera ali dok ne sredimo registraciju
         PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
         List<Pharmacist> povratna = new ArrayList<>();
         for (User u : svi) if (u.getClass() == Pharmacist.class) {
@@ -230,6 +231,38 @@ public class UserController {
             resultDTOS.add(new PharmacistDTO(farmaceut.getId(), farmaceut.getName(), farmaceut.getSurname(), farmaceut.getAddress(), farmaceut.getPhoneNumber(), farmaceut.getPharmacy()));
         }
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+    }
 
+    @GetMapping("/dermatologists/admin/{id}")
+    public ResponseEntity<List<Dermatologist>> getAllDermatologistsAdmin(@PathVariable Long id) {
+        List<User> svi = userService.findAll();
+        if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
+        // tehnicki suvisna provera ali dok ne sredimo registraciju
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
+        List<Dermatologist> povratna = new ArrayList<>();
+        for (User u : svi) if (u.getClass() == Dermatologist.class) {
+            Dermatologist dermatolog = (Dermatologist) u;
+            for (Pharmacy apoteka : dermatolog.getPharmacies())
+                if (apoteka.equals(admin.getPharmacy())) {
+                    povratna.add(dermatolog);
+                    break;
+                }
+        }
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @GetMapping("/dermatologists/pharmacy/{id}")
+    public ResponseEntity<List<Dermatologist>> getAllDermatologistsPharmacy(@PathVariable Long id) {
+        List<User> svi = userService.findAll();
+        List<Dermatologist> povratna = new ArrayList<>();
+        for (User u : svi) if (u.getClass() == Dermatologist.class) {
+            Dermatologist dermatolog = (Dermatologist) u;
+            for (Pharmacy apoteka : dermatolog.getPharmacies())
+                if (apoteka.getId().equals(id)) {
+                    povratna.add(dermatolog);
+                    break;
+                }
+        }
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 }
