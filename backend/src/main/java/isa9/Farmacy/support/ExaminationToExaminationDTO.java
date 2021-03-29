@@ -4,6 +4,7 @@ package isa9.Farmacy.support;
 import isa9.Farmacy.model.Examination;
 import isa9.Farmacy.model.Medicine;
 import isa9.Farmacy.model.dto.ExaminationDTO;
+import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,8 @@ public class ExaminationToExaminationDTO implements Converter<Examination, Exami
 
     @Override
     public ExaminationDTO convert(Examination examination) {
+        if (examination == null) return null;
+
         ExaminationDTO dto = new ExaminationDTO();
 
         dto.setId(examination.getId());

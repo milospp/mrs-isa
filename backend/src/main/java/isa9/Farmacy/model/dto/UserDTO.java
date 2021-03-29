@@ -10,6 +10,7 @@ public class UserDTO {
     private Address address; // pretvori se u string?
     private String phoneNumber;
     private UserRole role;
+    private String email;
 
     public UserDTO() {
     }
@@ -23,6 +24,7 @@ public class UserDTO {
         this.phoneNumber = phoneNumber;
     }
 
+    @Deprecated
     public UserDTO(Long id, String name, String surname, Address address, String phoneNumber, UserRole role) {
         this.id = id;
         this.name = name;
@@ -30,6 +32,24 @@ public class UserDTO {
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.role = role;
+    }
+
+    public UserDTO(Long id, String name, String surname, Address address, String phoneNumber, UserRole role, String email) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Long getId() {

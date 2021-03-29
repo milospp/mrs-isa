@@ -1,8 +1,8 @@
 package isa9.Farmacy.model.dto;
 
-import isa9.Farmacy.model.Doctor;
-import isa9.Farmacy.model.Examination;
-import isa9.Farmacy.model.Pharmacy;
+import isa9.Farmacy.model.dto.DoctorDTO;
+import isa9.Farmacy.model.dto.ExaminationDTO;
+import isa9.Farmacy.model.dto.PharmacyDTO;
 import isa9.Farmacy.model.TypeOfReview;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -17,15 +17,15 @@ public class AppointmentDTO {
     private int durationInMins;
     private TypeOfReview type;
 
-    private Doctor doctor;
-    private Pharmacy pharmacy;
-    private Examination examination;
+    private DoctorDTO doctor;
+    private PharmacyDTO pharmacy;
+    private ExaminationDTO examination;
 
     public AppointmentDTO() {
         super();
     }
 
-    public AppointmentDTO(Long id, LocalDateTime startTime, double price, int durationInMins, TypeOfReview type, Doctor doctor, Pharmacy pharmacy, Examination examination) {
+    public AppointmentDTO(Long id, LocalDateTime startTime, double price, int durationInMins, TypeOfReview type, DoctorDTO doctor, PharmacyDTO pharmacy, ExaminationDTO examination) {
         this.id = id;
         this.startTime = startTime;
         this.price = price;
@@ -76,27 +76,27 @@ public class AppointmentDTO {
         this.type = type;
     }
 
-    public Doctor getDoctor() {
+    public DoctorDTO getDoctor() {
         return doctor;
     }
 
-    public void setDoctor(Doctor doctor) {
+    public void setDoctor(DoctorDTO doctor) {
         this.doctor = doctor;
     }
 
-    public Pharmacy getPharmacy() {
+    public PharmacyDTO getPharmacy() {
         return pharmacy;
     }
 
-    public void setPharmacy(Pharmacy pharmacy) {
+    public void setPharmacy(PharmacyDTO pharmacy) {
         this.pharmacy = pharmacy;
     }
 
-    public Examination getExamination() {
+    public ExaminationDTO getExamination() {
         return examination;
     }
 
-    public void setExamination(Examination examination) {
+    public void setExamination(ExaminationDTO examination) {
         this.examination = examination;
     }
 }

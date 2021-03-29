@@ -66,7 +66,7 @@ export default {
 
     methods: {
         getDermatologAppointments() {
-          AppointmentDataService.getAllAppointments() // HARDCODED
+          AppointmentDataService.getFreeDermAppointments() // HARDCODED
                 .then(response => {
                     this.appointments = response.data;
                     console.log(response.data);
