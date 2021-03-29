@@ -22,6 +22,9 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         Pharmacy ph1 = new Pharmacy("Prima", new Address("Nemanjina", "2", "Belgrade", "Serbia"),
                 "Otvoreni non-stop", 1L);
 
+        Pharmacy ph2 = new Pharmacy("Apoteka Janković", new Address("Bulevar oslobođenja", "128", "Novi Sad", "Serbia"),
+                "", 2L);
+
         Penality penality1 = new Penality(1L, "User didn't apeared on appointment", LocalDate.now().minusMonths(1));
         Penality penality2 = new Penality(2L, "User didn't apeared on appointment", LocalDate.now().minusMonths(2));
         Penality penality3 = new Penality(3L, "User didn't apeared on appointment", LocalDate.now());
@@ -36,7 +39,16 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         p1.getPenalties().add(penality2);
         p1.getPenalties().add(penality3);
 
+        //Adding pharmacy admins---------------------------------------------------------------------------
+        PharmacyAdmin pha1 = new PharmacyAdmin(5L, "Nikola", "Nikolic", "nikola@mail.com", "password",
+                ph1, new Address("ulica", "broj", "grad", "drzava"),"111111111");
+        PharmacyAdmin pha2 = new PharmacyAdmin(6L, "Marko", "Markovic", "marko@mail.com", "password",
+                ph2, new Address("ulica", "broj", "grad", "drzava"),"111111111");
 
+        users.put(pha1.getId(), pha1);
+        users.put(pha2.getId(), pha2);
+
+        //-------------------------------------------------------------------------------------------------
 
         users.put(1L, p1);
         users.put(2L, p2);
@@ -65,7 +77,9 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
 
     @Override
     public User save(User entity) {
-        this.users.put(entity.getId(), entity);
+        long id = this.users.size() + 1;
+        entity.setId(id);
+        this.users.put(id, entity);
         return entity;
     }
 
@@ -79,5 +93,24 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
             }
         }
         return povratna;
+    }
+
+
+    @Override
+    public PharmacyAdmin findPharmacyAdmin(Long pharmacyId) {
+        PharmacyAdmin phAdmin = null;
+        for(User u : this.users.values()){
+            if(u.getRole() == UserRole.PHARMACY_ADMIN){
+                phAdmin = (PharmacyAdmin) u;
+                try{
+                    if(phAdmin.getPharmacy().getId() == pharmacyId) return phAdmin;
+                }catch(NullPointerException e){
+                    continue;
+                }
+            }
+        }
+        phAdmin = null;
+
+        return phAdmin;
     }
 }

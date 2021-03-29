@@ -17,7 +17,7 @@
                     <input type="submit" class="btn btn-primary" value="Add pharmacist"></form> </td>
         </tr>
         <tr>
-            <td align="left"> <form v-on:submit.prevent="DodajFarmaceuta()">
+            <td align="left"> <form v-on:submit.prevent="">
                     <input type="submit" class="btn btn-primary" value="Add dermatologist"></form> </td>
         </tr>
         <tr>
@@ -76,11 +76,11 @@
                   <th>Phone number</th>
                 </thead>
                 <tbody>
-                    <tr :key="p.username" v-for="p in this.sviZaposleniFarmaceuti" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
-                      <td>{{p.name}}</td>
-                      <td>{{p.surname}}</td>
-                      <td>{{p.address["state"]}}, {{p.address["city"]}}, {{p.address["street"]}}, {{p.address["number"]}}</td>
-                      <td>{{p.phoneNumber}}</td>
+                    <tr :key="f.username" v-for="f in this.sviZaposleniFarmaceuti" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
+                      <td>{{f.name}}</td>
+                      <td>{{f.surname}}</td>
+                      <td>{{f.address["state"]}}, {{f.address["city"]}}, {{f.address["street"]}}, {{f.address["number"]}}</td>
+                      <td>{{f.phoneNumber}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -94,6 +94,14 @@
                   <th>Address</th>
                   <th>Phone number</th>
                 </thead>
+                <tbody>
+                    <tr :key="d.username" v-for="d in this.sviZaposleniDermatolozi" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
+                      <td>{{d.name}}</td>
+                      <td>{{d.surname}}</td>
+                      <td>{{d.address["state"]}}, {{d.address["city"]}}, {{d.address["street"]}}, {{d.address["number"]}}</td>
+                      <td>{{d.phoneNumber}}</td>
+                  </tr>
+                </tbody>
               </table>
             </div>
             <div id="menu3" class="tab-pane fade">
@@ -124,12 +132,15 @@
 </template>
 
 <script>
+import DermatologistDataService from '../service/DermatologistDataService.js';
 import PharmacistDataService from '../service/PharmacistDataService.js';
+import AddPharmacistForm from '@/components/AddPharmacistForm.vue'
 export default {
     name: 'HpPharmacyAdmin',
     data() {
         return {
-            sviZaposleniFarmaceuti : []
+            sviZaposleniFarmaceuti : [],
+            sviZaposleniDermatolozi : []
         };
     },
     created() {
@@ -137,11 +148,24 @@ export default {
       PharmacistDataService.getAllPharmacistAdmin(this.id)
         .then(response => {
           this.sviZaposleniFarmaceuti = response.data;});
+          
+      DermatologistDataService.getAllDermatologistAdmin(this.id)
+        .then(response => {
+          this.sviZaposleniDermatolozi = response.data;});
     },
     mounted() {
       PharmacistDataService.getAllPharmacistAdmin(this.id)
         .then(response => {
           this.sviZaposleniFarmaceuti = response.data;});
+          
+      DermatologistDataService.getAllDermatologistAdmin(this.id)
+        .then(response => {
+          this.sviZaposleniDermatolozi = response.data;});
+    },
+    methods : {
+      DodajFarmaceuta() {
+        window.location.href = "/addPharmacist/" + this.id;
+      }
     }
 }
 </script>

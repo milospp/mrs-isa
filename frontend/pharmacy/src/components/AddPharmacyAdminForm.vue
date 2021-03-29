@@ -1,5 +1,5 @@
 <template>
-     <form v-on:submit.prevent="proveraForme(this)">
+     <form v-on:submit.prevent="formCheck(this)" >
         <table>
             <tr>
                 <td align="right">Name:</td>
@@ -29,7 +29,7 @@
             </tr>
             
             <tr>
-                <td align="right">Initial password:</td>
+                <td align="right">Password:</td>
                 <td colspan="2">
                     <input 
                         type="text" id="password" v-model="registerData.password" required="required"
@@ -60,61 +60,66 @@
                 <td>
                     <input 
                         type="text" id="address" v-model="registerData.address.street" required="required"
-                            pattern="[A-Z][a-zA-Z0-9| ]*" title="Address must start with capital letter"
+                            pattern="[A-Z][a-zA-Z0-9 ]*" title="Address must start with capital letter"
                     ></td>
                 <td>
                     <input 
                         type="text" id="address" v-model="registerData.address.number" required="required" size="5" 
-                        pattern="[0-9][0-9a-zA-Z|/| ]*" title="Address number can have number, letters and /"
+                        pattern="[0-9][0-9a-zA-Z/ ]*" title="Address number can have number and /"
                     ></td>
             </tr>
 
             <tr>
-                <td align="right">Phone numer:</td>
+                <td align="right">Phone number:</td>
                 <td colspan="2"><input 
                     type="text" id="phoneNumber" v-model="registerData.phoneNumber" required="required"
-                    pattern="[0-9]*" size="31" title="Phone number must number"
+                    pattern="[0-9]*" size="31" title="Phone number must be a number"
                 ></td>
             </tr>
-
+            <tr >
+                <td align="right">Select a pharmacy:</td>
+                <td colspan="2">
+                    <select id="pharmaciesSelection" v-on:click="selectedPharmacy(this)" style="width: 100%;" v-model="registerData.pharmacyId" required="required">
+                        <option v-for="pharmacy in this.availablePharmacies" v-bind:value=pharmacy.id>{{pharmacy.name}}</option>
+                    </select>
+                </td>
+            </tr>
             <tr>
                 <td></td>
-                <td colspan="2"><input type="submit" id="dugme" value="   Add   "></td>
+                <td colspan="2"><input type="submit" id="dugme" value="Register" ></td>
             </tr>
         </table>
     </form>
 </template>
 
 <script>
-import PharmacistDataService from '../service/PharmacistDataService.js';
+import PharmacyAdminDataService from '../service/PharmacyAdminDataService.js';
+import PharmacyDataService from '../service/PharmacyDataService.js';
 export default {
-    name: 'AddPharmacistForm',
+    name: 'AddPharmacyAdminForm',
     data() {
         return {
-            pharmacist: [],
+            availablePharmacies: [],
             message: null,
             registerData: {
                 name : "",
                 surname : "",
                 email : "",
-                username : "",
                 password : "",
+                phoneNumber : "",
                 address : {
                     state: "",
                     city: "",
                     street: "",
                     number: "",
                 },
-                phoneNumber : "",
+                pharmacyId : ""
             }
         };
     },
-    created() {
-        this.id = this.$route.params.id; 
-    },
-    methods: {      // sve metode se pozivaju istovremeno
-        proveraForme(e) {
-            PharmacistDataService.SendPharmacist(this.id, this.registerData)
+    methods: {      
+        formCheck(e) {
+            PharmacyAdminDataService.SendPharmacyAdmin(this.registerData)
 				.catch(function (error) {
 					if (error.response) {
 						console.log(error.response.data);
@@ -124,7 +129,18 @@ export default {
 					console.log("error.config");
 					console.log(error.config);
 				});
+        },
+        selectedPharmacy(e){
+            console.log(this.registerData.pharmacyId);
         }
+    },
+    created() {
+        PharmacyDataService.getAvailablePharmacies()
+        .then(
+            response => {
+                this.availablePharmacies = response.data;
+            }
+        );
     }
 }
 </script>

@@ -8,6 +8,7 @@ import Patients from '@/views/Patients.vue'
 import AddPharmacist from '@/views/AddPharmacist.vue'
 import HomePagePharmacyAdmin from '@/views/HomePagePharmacyAdmin.vue'
 import AddPharmacy from '@/views/AddPharmacy.vue'
+import AddPharmacyAdmin from '@/views/AddPharmacyAdmin.vue'
 import PharmacistHomePage from '@/views/PharmacistHomePage.vue'
 import DispenseMedication from '@/views/DispenseMedication.vue'
 import VacationRequest from '@/views/VacationRequest.vue'
@@ -50,7 +51,7 @@ const routes = [
     props: route => ({ role: route.query.q })
   },
   {
-    path: '/addPharmacist',
+    path: '/addPharmacist/:id',
     name: 'AddPharmacist',
     component: AddPharmacist    // view je komponenta
   },
@@ -63,6 +64,11 @@ const routes = [
     path: '/addPharmacy',
     name: 'AddPharmacy',
     component: AddPharmacy
+  },
+  {
+    path: '/addPharmacyAdmin',
+    name: 'AddPharmacyAdmin',
+    component: AddPharmacyAdmin
   },
   {
     path: '/pharmacist',

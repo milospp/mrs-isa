@@ -4,10 +4,7 @@ import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.*;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
-import isa9.Farmacy.support.MedicineToMedicineDTO;
-import isa9.Farmacy.support.PatientToPatientDTO;
-import isa9.Farmacy.support.PenalityToPenalityDTO;
-import isa9.Farmacy.support.PharmacyToPharmacyDTO;
+import isa9.Farmacy.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +27,8 @@ public class UserController {
     private final MedicineToMedicineDTO medicineToMedicineDTO;
     private final PharmacyToPharmacyDTO pharmacyToPharmacyDTO;
     private final PenalityToPenalityDTO penalityToPenalityDTO;
+    private final DermatologistToDermatologistDTO dermatologistToDermatologistDTO;
+    private final PharmacistToPharmacistDTO pharmacistToPharmacistDTO;
 
     @Autowired
     public UserController(UserService userService,
@@ -37,13 +36,17 @@ public class UserController {
                           PatientToPatientDTO patientToPatientDTO,
                           MedicineToMedicineDTO medicineToMedicineDTO,
                           PharmacyToPharmacyDTO pharmacyToPharmacyDTO,
-                          PenalityToPenalityDTO penalityToPenalityDTO){
+                          PenalityToPenalityDTO penalityToPenalityDTO,
+                          DermatologistToDermatologistDTO dermatologistToDermatologistDTO,
+                          PharmacistToPharmacistDTO pharmacistToPharmacistDTO){
         this.userService = userService;
         this.pharmacyService = pharmacyService;
         this.patientToPatientDTO = patientToPatientDTO;
         this.medicineToMedicineDTO = medicineToMedicineDTO;
         this.pharmacyToPharmacyDTO = pharmacyToPharmacyDTO;
         this.penalityToPenalityDTO = penalityToPenalityDTO;
+        this.dermatologistToDermatologistDTO = dermatologistToDermatologistDTO;
+        this.pharmacistToPharmacistDTO = pharmacistToPharmacistDTO;
     }
 
     @GetMapping("all-users")
@@ -135,11 +138,15 @@ public class UserController {
 
     }
 
-    @PostMapping("/register/pharmacist")
-    public ResponseEntity<Integer> createPharmacist(@RequestBody Pharmacist user) {
+    @PostMapping("/register/pharmacist/{id}")
+    public ResponseEntity<Integer> createPharmacist(@PathVariable Long id, @RequestBody Pharmacist user) {
         int povratna = 0;
         if (!userService.isAvaibleEmail(user.getEmail())) povratna += 2;
         if (povratna > 0) return new ResponseEntity<>(povratna, HttpStatus.OK);
+        User adminUser = userService.findOne(id);
+        if (adminUser.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(1, HttpStatus.NOT_FOUND);
+        user.setPharmacy(((PharmacyAdmin) adminUser).getPharmacy());
+        // tehnicki suvisna provera ali dok ne sredimo registraciju
         User createdUser = userService.save(user);
         System.out.println(createdUser);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
@@ -193,43 +200,94 @@ public class UserController {
 
     }
 
+
+    @PostMapping("register/pharmacyAdmin")
+    public ResponseEntity<Boolean> registerPharmacyAdmin(@RequestBody PharmacyAdminRegDTO newAdminDto){
+        if(!userService.isAvaibleEmail(newAdminDto.getEmail())) return new ResponseEntity<>(false, HttpStatus.OK);
+        long pharmacyId = newAdminDto.getPharmacyId();
+        Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
+        PharmacyAdmin newlyRegistered = new PharmacyAdmin(0L, newAdminDto.getName(), newAdminDto.getSurname(), newAdminDto.getEmail(),
+                newAdminDto.getPassword(), pharmacy, newAdminDto.getAddress(), newAdminDto.getPhoneNumber());
+        userService.save(newlyRegistered);
+        System.out.println(newlyRegistered);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @GetMapping("all-pharmacy-admins")
+    public ResponseEntity<List<PharmacyAdminDTO>> getAllPharmacyAdminsDTO() {
+        List<PharmacyAdminDTO> resultDTOS = new ArrayList<>();
+        List<User> allUsers = userService.findAll();
+        for (User us : allUsers){
+            if (us.getClass()!= PharmacyAdmin.class) continue;
+            PharmacyAdmin phAdmin = (PharmacyAdmin) us;
+            resultDTOS.add(new PharmacyAdminDTO(phAdmin.getId(), phAdmin.getName(), phAdmin.getSurname(),
+                                                phAdmin.getAddress(), phAdmin.getPhoneNumber(),
+                                                phAdmin.getPharmacy().getId()));
+        }
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
+
+
+
     @GetMapping("/pharmacists/admin/{id}")
-     public ResponseEntity<List<Pharmacist>> getAllPharmacistsAdmin(@PathVariable Long id) {
+     public ResponseEntity<List<PharmacistDTO>> getAllPharmacistsAdmin(@PathVariable Long id) {
         List<User> svi = userService.findAll();
         if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
+        // tehnicki suvisna provera ali dok ne sredimo registraciju
         PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
-        List<Pharmacist> povratna = new ArrayList<>();
+        List<PharmacistDTO> povratna = new ArrayList<>();
         for (User u : svi) if (u.getClass() == Pharmacist.class) {
             Pharmacist farmaceut = (Pharmacist) u;
-            if (farmaceut.getPharmacy().equals(admin.getPharmacy())) povratna.add(farmaceut);
+            if (farmaceut.getPharmacy().equals(admin.getPharmacy()))
+                povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
     @GetMapping("/pharmacists/pharmacy/{id}")
-    public ResponseEntity<List<Pharmacist>> getAllPharmacistsPharmacy(@PathVariable Long id) {
+    public ResponseEntity<List<PharmacistDTO>> getAllPharmacistsPharmacy(@PathVariable Long id) {
         List<User> svi = userService.findAll();
-        List<Pharmacist> povratna = new ArrayList<>();
+        List<PharmacistDTO> povratna = new ArrayList<>();
         for (User u : svi) if (u.getClass() == Pharmacist.class) {
             Pharmacist farmaceut = (Pharmacist) u;
-            if (farmaceut.getPharmacy().getId().equals(id)) povratna.add(farmaceut);
+            if (farmaceut.getPharmacy().getId().equals(id))
+                povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
-    @GetMapping("/all-pharmacists/admin/{id}")
-    public ResponseEntity<List<PharmacistDTO>> getAllPharmacistsAdminDTO(@PathVariable Long id) {
-        List<PharmacistDTO> resultDTOS = new ArrayList<>();
-        if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
-        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
+    @GetMapping("/dermatologists/admin/{id}")
+    public ResponseEntity<List<DermatologistDTO>> getAllDermatologistsAdmin(@PathVariable Long id) {
         List<User> svi = userService.findAll();
-        for (User us : svi) {
-            if (us.getClass() != Pharmacist.class) continue;
-            Pharmacist farmaceut = (Pharmacist) us;
-            if (!farmaceut.getPharmacy().equals(admin.getPharmacy())) continue;
-            resultDTOS.add(new PharmacistDTO(farmaceut.getId(), farmaceut.getName(), farmaceut.getSurname(), farmaceut.getAddress(), farmaceut.getPhoneNumber(), farmaceut.getPharmacy()));
+        if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
+        // tehnicki suvisna provera ali dok ne sredimo registraciju
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
+        List<DermatologistDTO> povratna = new ArrayList<>();
+        for (User u : svi) if (u.getClass() == Dermatologist.class) {
+            Dermatologist dermatolog = (Dermatologist) u;
+            for (Pharmacy apoteka : dermatolog.getPharmacies())
+                if (apoteka.equals(admin.getPharmacy())) {
+                    povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog));
+                    break;
+                }
         }
-        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
-
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
+
+    @GetMapping("/dermatologists/pharmacy/{id}")
+    public ResponseEntity<List<DermatologistDTO>> getAllDermatologistsPharmacy(@PathVariable Long id) {
+        List<User> svi = userService.findAll();
+        List<DermatologistDTO> povratna = new ArrayList<>();
+        for (User u : svi) if (u.getClass() == Dermatologist.class) {
+            Dermatologist dermatolog = (Dermatologist) u;
+            for (Pharmacy apoteka : dermatolog.getPharmacies())
+                if (apoteka.getId().equals(id)) {
+                    povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog));
+                    break;
+                }
+        }
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
 }

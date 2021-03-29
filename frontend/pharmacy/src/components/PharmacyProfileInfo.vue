@@ -31,6 +31,7 @@
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Appoitments</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu3">Map</a></li>
              <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu4">Pharmacists</a></li>
+             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu5">Dermatologists</a></li>
           </ul>
         
           <div class="tab-content">
@@ -136,16 +137,34 @@
                   <th>Phone number</th>
                 </thead>
                 <tbody>
-                    <tr :key="p.username" v-for="p in this.sviZaposleniFarmaceuti" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
-                      <td>{{p.name}}</td>
-                      <td>{{p.surname}}</td>
-                      <td>{{UtilService.AddressToString(p.address)}}</td>
-                      <td>{{p.phoneNumber}}</td>
+                    <tr :key="f.username" v-for="f in this.sviZaposleniFarmaceuti" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
+                      <td>{{f.name}}</td>
+                      <td>{{f.surname}}</td>
+                      <td>{{UtilService.AddressToString(f.address)}}</td>
+                      <td>{{f.phoneNumber}}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <!-- za dermtologa -->
+            <div id="menu5" class="tab-pane fade">
+              <h3>Dermatologists</h3>
+                <table class="table table-striped">
+                  <thead class="card-header">
+                  <th>First name</th>
+                  <th>Last name</th>
+                  <th>Address</th>
+                  <th>Phone number</th>
+                </thead>
+                <tbody>
+                    <tr :key="d.username" v-for="d in this.sviZaposleniDermatolozi" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
+                      <td>{{d.name}}</td>
+                      <td>{{d.surname}}</td>
+                      <td>{{UtilService.AddressToString(d.address)}}</td>
+                      <td>{{d.phoneNumber}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -156,6 +175,7 @@
 <script>
     import PharmacyDataService from '../service/PharmacyDataService.js';
     import PharmacistDataService from '../service/PharmacistDataService.js';
+    import DermatologistDataService from '../service/DermatologistDataService';
     import UtilService from '../service/UtilService.js';
 
 export default {
@@ -166,7 +186,8 @@ export default {
 	data: function () {
 		return {
             pharmacy: null,
-            sviZaposleniFarmaceuti : [] 
+            sviZaposleniFarmaceuti : [] ,
+            sviZaposleniDermatolozi : []
 		}
 	},
   methods: {
@@ -190,12 +211,19 @@ export default {
       PharmacistDataService.getAllPharmacistPharmacy(this.id)
         .then(response => {
           this.sviZaposleniFarmaceuti = response.data;});
+      DermatologistDataService.getAllDermatologistsPharmacy(this.id)
+        .then(response => {
+          this.sviZaposleniDermatolozi = response.data;});
+          alert(this.sviZaposleniDermatolozi[0]);
   },
   mounted() {
     this.loadPharmacyData();
       PharmacistDataService.getAllPharmacistPharmacy(this.id)
         .then(response => {
           this.sviZaposleniFarmaceuti = response.data;});
+      DermatologistDataService.getAllDermatologistsPharmacy(this.id)
+        .then(response => {
+          this.sviZaposleniDermatolozi = response.data;});
     }
 }
 </script>
