@@ -17,20 +17,29 @@ class UtilService {
   }
 
   addDate(date, val, type){
-    return moment(date).add(val, type).format();
+    if (!(date instanceof moment)) date = moment(date);
+
+    return date.add(val, type).format();
 
   }
 
   formatDate(date) {
+    if (date instanceof moment) return date.format('DD/MM/YYYY');
     return moment(date).format('DD/MM/YYYY');
   }
 
   formatDateTime(date) {
+    
     return moment(date).format('DD/MM/YYYY hh:mm');
   }
 
+  getFirstInNextMounth(date){
+    if (!(date instanceof moment)) date = moment(date);
+
+    return date.add(1, 'M').set('date', 1);
+  }
+
   isPastDate(date){
-    console.log(date)
     return moment(date).isBefore();
   }
 

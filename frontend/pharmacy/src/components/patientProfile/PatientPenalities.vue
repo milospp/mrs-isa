@@ -11,11 +11,11 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="p in penalities" v-bind:style="{ background: UtilService.isPastDate(UtilService.addDate(p.date, 1, 'M')) ? '#aaa' : ''}">
+      <tr v-for="p in penalities" v-bind:style="{ background: UtilService.isPastDate(UtilService.getFirstInNextMounth(p.date)) ? '#aaa' : ''}">
         <!-- <td>{{p.id}}</td> -->
         <td>{{p.reason}}</td>
         <td>{{UtilService.formatDate(p.date)}}</td>
-        <td>{{UtilService.formatAddDate(p.date, 1, 'M')}}</td>
+        <td>{{UtilService.formatDate(UtilService.getFirstInNextMounth(p.date))}}</td>
       </tr>
 
     </tbody>

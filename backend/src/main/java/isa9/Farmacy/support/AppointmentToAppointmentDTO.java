@@ -5,6 +5,7 @@ import isa9.Farmacy.model.Appointment;
 import isa9.Farmacy.model.Appointment;
 import isa9.Farmacy.model.dto.AppointmentDTO;
 import isa9.Farmacy.model.dto.AppointmentDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,17 @@ import java.util.stream.Collectors;
 @Component
 public class AppointmentToAppointmentDTO implements Converter<Appointment, AppointmentDTO> {
 
+    ExaminationToExaminationDTO examinationToExaminationDTO;
+    DoctorToDoctorDTO doctorToDoctorDTO;
+    PharmacyToPharmacyDTO pharmacyToPharmacyDTO;
+
+    @Autowired
+    AppointmentToAppointmentDTO(ExaminationToExaminationDTO examinationToExaminationDTO, DoctorToDoctorDTO doctorToDoctorDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO) {
+        this.examinationToExaminationDTO = examinationToExaminationDTO;
+        this.doctorToDoctorDTO = doctorToDoctorDTO;
+        this.pharmacyToPharmacyDTO = pharmacyToPharmacyDTO;
+    }
+
     @Override
     public AppointmentDTO convert(Appointment appointment) {
         AppointmentDTO dto = new AppointmentDTO();
@@ -24,10 +36,10 @@ public class AppointmentToAppointmentDTO implements Converter<Appointment, Appoi
         dto.setStartTime(appointment.getStartTime());
         dto.setPrice(appointment.getPrice());
         dto.setDurationInMins(appointment.getDurationInMins());
-        dto.setExamination(appointment.getExamination());
+        dto.setExamination(examinationToExaminationDTO.convert(appointment.getExamination()));
         dto.setType(appointment.getType());
-        dto.setDoctor(appointment.getDoctor());
-        dto.setPharmacy(appointment.getPharmacy());
+        dto.setDoctor(doctorToDoctorDTO.convert(appointment.getDoctor()));
+        dto.setPharmacy(pharmacyToPharmacyDTO.convert(appointment.getPharmacy()));
 
 
         return dto;

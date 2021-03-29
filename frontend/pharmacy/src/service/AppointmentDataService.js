@@ -8,6 +8,10 @@ class MedicineDataService {
     return axios.get(`${API_URL}`);
   }
 
+  getFreeDermAppointments(id) {
+    return axios.get(`${API_URL}/dermatologist/free`);
+  }
+
 }
 
 export default new MedicineDataService();

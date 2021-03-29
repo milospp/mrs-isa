@@ -50,7 +50,7 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<UserDTO> resultDTOS = new ArrayList<>();
         for (User user : this.userService.findAll()){
-            resultDTOS.add(new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), user.getRole()));
+            resultDTOS.add(new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), user.getRole(), user.getEmail()));
         }
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
@@ -66,7 +66,7 @@ public class UserController {
         if (user.getRole() == UserRole.PATIENT){
             dto = (UserDTO) patientToPatientDTO.convert((Patient) user);
         } else {
-            dto = new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), user.getRole());
+            dto = new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), user.getRole(), user.getEmail());
         }
         return new ResponseEntity<>(dto, HttpStatus.OK);
 
@@ -129,7 +129,7 @@ public class UserController {
     public ResponseEntity<UserDTO> registerUser(@RequestBody User user) {
         userService.save(user);
         return new ResponseEntity<>(
-                new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), user.getRole()),
+                new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), user.getRole(), user.getEmail()),
                 HttpStatus.OK
         );
 

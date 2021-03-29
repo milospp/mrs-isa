@@ -22,6 +22,7 @@ public class PatientToPatientDTO implements Converter<Patient, PatientDTO> {
         dto.setSurname(patient.getSurname());
         dto.setAddress(patient.getAddress());
         dto.setPhoneNumber(patient.getPhoneNumber());
+        dto.setEmail(patient.getEmail());
         dto.setPenalties(
                 patient.getPenalties().stream()
                         .map(Penality::getId)

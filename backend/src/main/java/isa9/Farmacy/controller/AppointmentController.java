@@ -38,5 +38,13 @@ public class AppointmentController {
 
     }
 
+    @GetMapping("dermatologist/free")
+    public ResponseEntity<List<AppointmentDTO>> getFreeDernatologist() {
+        List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.getAllFreeDermatologist());
+
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
+
 }
 
