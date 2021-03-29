@@ -65,7 +65,7 @@
                 <td>
                     <input 
                         type="text" id="address" v-model="registerData.address.number" required="required" size="5"
-                        pattern="[0-9][0-9a-zA-Z|/| ]*" title="Address number can have number and /"
+                        pattern="[0-9][0-9a-zA-Z|/| ]*" title="Address number can have number, letters and /"
                     ></td>
             </tr>
 

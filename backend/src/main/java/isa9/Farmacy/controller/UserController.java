@@ -138,11 +138,15 @@ public class UserController {
 
     }
 
-    @PostMapping("/register/pharmacist")
-    public ResponseEntity<Integer> createPharmacist(@RequestBody Pharmacist user) {
+    @PostMapping("/register/pharmacist/{id}")
+    public ResponseEntity<Integer> createPharmacist(@PathVariable Long id, @RequestBody Pharmacist user) {
         int povratna = 0;
         if (!userService.isAvaibleEmail(user.getEmail())) povratna += 2;
         if (povratna > 0) return new ResponseEntity<>(povratna, HttpStatus.OK);
+        User adminUser = userService.findOne(id);
+        if (adminUser.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(1, HttpStatus.NOT_FOUND);
+        user.setPharmacy(((PharmacyAdmin) adminUser).getPharmacy());
+        // tehnicki suvisna provera ali dok ne sredimo registraciju
         User createdUser = userService.save(user);
         System.out.println(createdUser);
         return new ResponseEntity<>(povratna, HttpStatus.OK);

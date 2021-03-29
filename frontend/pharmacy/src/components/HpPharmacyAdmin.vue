@@ -164,9 +164,8 @@ export default {
     },
     methods : {
       DodajFarmaceuta() {
-        window.location.href = "/addPharmacist";
+        window.location.href = "/addPharmacist/" + this.id;
       }
-
     }
 }
 </script>

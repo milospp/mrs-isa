@@ -51,7 +51,7 @@ const routes = [
     props: route => ({ role: route.query.q })
   },
   {
-    path: '/addPharmacist',
+    path: '/addPharmacist/:id',
     name: 'AddPharmacist',
     component: AddPharmacist    // view je komponenta
   },

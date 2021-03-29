@@ -4,13 +4,12 @@ import axios from "axios";
 const API_URL = "http://localhost:8080";
 
 class PharmacistDataService {
-  SendPharmacist(promenljiva) {
+  SendPharmacist(idAdmina, promenljiva) {
     return axios({
       method: 'post',
-      url: `${API_URL}/api/users/register/pharmacist`,
+      url: API_URL + "/api/users/register/pharmacist/" + idAdmina,
       data: promenljiva
     }).then(response => {
-      alert(response.data);
       if (response.data == 0) return true; 
       alert("Email is not unique!");
       return false;
