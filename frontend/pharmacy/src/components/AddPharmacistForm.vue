@@ -65,7 +65,7 @@
                 <td>
                     <input 
                         type="text" id="address" v-model="registerData.address.number" required="required" size="5" 
-                        pattern="[0-9][0-9a-zA-Z|/| ]*" title="Address number can have number and /"
+                        pattern="[0-9][0-9a-zA-Z|/| ]*" title="Address number can have number, letters and /"
                     ></td>
             </tr>
 
@@ -109,9 +109,12 @@ export default {
             }
         };
     },
+    created() {
+        this.id = this.$route.params.id; 
+    },
     methods: {      // sve metode se pozivaju istovremeno
         proveraForme(e) {
-            PharmacistDataService.SendPharmacist(this.registerData)
+            PharmacistDataService.SendPharmacist(this.id, this.registerData)
 				.catch(function (error) {
 					if (error.response) {
 						console.log(error.response.data);
