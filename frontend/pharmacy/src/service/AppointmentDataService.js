@@ -8,8 +8,16 @@ class MedicineDataService {
     return axios.get(`${API_URL}`);
   }
 
+  getAllUpcomingAppointments(id) {
+    return axios.get(`${API_URL}/patient-upcoming/` + id);
+  }
+
   getFreeDermAppointments(id) {
     return axios.get(`${API_URL}/dermatologist/free`);
+  }
+
+  cancelAppointment(id){
+    return;
   }
 
 }

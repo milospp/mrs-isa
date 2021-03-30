@@ -14,56 +14,21 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td class="badge badge-primary">Examination</td>
-        <td>Johm</td>
-        <td>Pharm</td>
-        <td>22/1/2020 22:22</td>
-        <td>39 min</td>
-        <td>$ 200.00</td>
+      <tr class="v-middle" v-for="a in appointments" v-bind:style="{ background: isCanceled(a) ? '#aaa' : ''}">
+        <td v-bind:class="{ 'badge-info': a.type == 'COUNSELING', 'badge-primary': a.type == 'EXAMINATION' }" class="badge">{{a.type}}
+          <br><span v-if="isCanceled(a)" class="badge badge-danger">CALCELED</span>
+        </td>
+        <td>{{a.doctor.name}} {{a.doctor.surname}}</td>
+        <td><router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: a.pharmacy.id  }}">{{a.pharmacy.name}}</router-link></td>
+        <td>{{UtilService.formatDateTime(a.startTime)}}</td>
+        <td>{{a.durationInMins}}min</td>
+        <td>${{a.price}}</td>
 
         <td>
-          <router-link class="btn btn-primary" :to="{ name: 'PharmacyPage'}">View</router-link>
-          <button v-bind:disabled="true" class="btn btn-danger" v-on:cancelAppointment="unsubscribe()">Cancel</button>
+          
+          <button v-bind:disabled="isCanceled(a)" class="btn btn-danger" v-on:click="cancelAppointment(a)">Cancel</button>
         </td>
       </tr>
-      <tr>
-        <td class="badge badge-primary">Examination</td>
-        <td>Johm</td>
-        <td>Pharm</td>
-        <td>22/1/2020 22:22</td>
-        <td>39 min</td>
-        <td>$ 200.00</td>
-
-        <td>
-          <router-link class="btn btn-primary" :to="{ name: 'PharmacyPage'}">View</router-link>
-          <button v-bind:disabled="true" class="btn btn-danger" v-on:cancelAppointment="unsubscribe()">Cancel</button>
-        </td>
-      </tr>
-      <tr class="v-middle">
-        <td class="badge badge-primary">Examination</td>
-        <td>Johm</td>
-        <td>Pharm</td>
-        <td>22/1/2020 22:22</td>
-        <td>39 min</td>
-        <td>$ 200.00</td>
-
-        <td>
-          <router-link class="btn btn-primary" :to="{ name: 'PharmacyPage'}">View</router-link>
-          <button v-bind:disabled="true" class="btn btn-danger" v-on:cancelAppointment="unsubscribe()">Cancel</button>
-        </td>
-      </tr>
-<!--       
-      <tr class="v-middle" v-for="s in subscriptions" v-bind:style="{ background: s.canceled ? '#aaa' : ''}">
-        <td>{{s.name}}</td>
-        <td>{{s.description}}</td>
-        <td>{{UtilService.AddressToString(s.address)}}</td>
-
-        <td>
-          <router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: s.id  }}">View</router-link>
-          <button v-bind:disabled="s.canceled" class="btn btn-danger" v-on:click="unsubscribe(s)">Unsubscribe</button>
-        </td>
-      </tr> -->
     </tbody>
   </table>
 
@@ -79,7 +44,7 @@
 </style>
 
 <script>
-    import PatientDataService from '@/service/PatientDataService.js';
+    import AppointmentDataService from '@/service/AppointmentDataService.js';
     import UtilService from '@/service/UtilService.js';
 
 export default {
@@ -94,28 +59,36 @@ export default {
 	},
   methods: {
         loadPatientSubscriptions() {
-            PatientDataService.getPatientAppointments(this.id) // HARDCODED
+            AppointmentDataService.getAllUpcomingAppointments(this.id)
                 .then(response => {
                     console.log("Load Appointments");
                     console.log(response.data);
 
-                    this.subscriptions = response.data;
+                    this.appointments = response.data;
                 });
         },
 
         cancelAppointment(obj) {
-            PatientDataService.cancelAppointment(this.id, obj.id)
+            AppointmentDataService.cancelAppointment(this.id, obj.id)
                 .then(response => {
                     console.log("Cancel " + obj.id);
-                    obj.canceled = true;
+                    obj.examination.status = "CANCELED";
                     //this.subscriptions = response.data;
                 });
-        }
+        },
+        isCanceled(obj) {
+          if (obj.examination != undefined){
+            if (obj.examination.status == "CANCELED") {
+              return true;
+            }
+          }
+          return false;
+        },
 
 
     },
     mounted() {
-        // this.loadPatientSubscriptions();
+        this.loadPatientSubscriptions();
     },
 	created() {
 		  this.id = this.$route.params.id; 
