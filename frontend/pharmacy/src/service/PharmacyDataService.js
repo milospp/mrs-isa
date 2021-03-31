@@ -15,6 +15,11 @@ class PharmacyDataService {
         return axios.get(`${API_URL}/available`);
     }
 
+    getDoctorsJobs(id){
+        // returns pharmacy where the doctor work
+        return axios.get(`${API_URL}/working/` + id);
+    }
+
     SendPharmacy(newPharmacy) {
         return axios({
             method: 'post',

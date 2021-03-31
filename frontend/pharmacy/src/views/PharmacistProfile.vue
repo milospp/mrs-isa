@@ -13,6 +13,7 @@
     <div class="container pt-5">
         <DoctorProfileInfo/>
     </div>
+    <PharmacyWorkingCard doctorId="8"/> <!-- HARDCODED -->
 </template>
 
 <style>
@@ -28,15 +29,22 @@
 
 <script>
 import NavBar from '@/components/NavBar.vue'
-import DoctorProfileInfo from '../components/doctorProfile/DoctorProfileInfo.vue'
+import DoctorProfileInfo from '@/components/doctorProfile/DoctorProfileInfo.vue'
+import PharmacyWorkingCard from '@/components/doctorProfile/PharmacyWorkingCard.vue'
 
 // @ is an alias to /src
 export default {
-  name: 'PharmacistProfile',
-  components: {
+    name: 'PharmacistProfile',
+    components: {
     NavBar,
-    DoctorProfileInfo
+    DoctorProfileInfo,
+    PharmacyWorkingCard
     //PharmacyInfo
-  }
+    },
+    data() {
+        return {
+            message: null
+        };
+    }
 }
 </script>

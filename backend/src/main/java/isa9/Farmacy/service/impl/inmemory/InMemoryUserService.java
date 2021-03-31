@@ -6,6 +6,7 @@ import isa9.Farmacy.service.impl.base.UserServiceBase;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -56,9 +57,15 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         users.put(4L, new Patient(4L, "Milos", "Popovic", "milos@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
 
         Pharmacy apoteka = new Pharmacy("PrimerApoteke", new Address("ulica", "broj", "grad", "drzava"), "opis", 5L);
+
         users.put(7l, new PharmacyAdmin(7L, "Admin", "Apoteke", "mejl@mail.com", "1234", apoteka,  new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
+
         users.put(8L, new Pharmacist(8L, "Maja", "Markovic", "maja@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345", apoteka));
+
+        ((Pharmacist)users.get(8L)).getWorking().add(new Work(1L, (Pharmacist)users.get(8L), apoteka, LocalTime.now(), LocalTime.now()));
+
         users.put(9L, new Pharmacist(9L, "ANa", "Markovic", "ana@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345", apoteka));
+
         Dermatologist dermatolog = new Dermatologist(10L, "Sanja", "Markovic", "sanja@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345");
         dermatolog.getPharmacies().add(apoteka);
         users.put(10L, dermatolog);

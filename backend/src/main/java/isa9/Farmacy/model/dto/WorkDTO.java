@@ -1,5 +1,6 @@
 package isa9.Farmacy.model.dto;
 
+import isa9.Farmacy.model.Address;
 import isa9.Farmacy.model.Doctor;
 import isa9.Farmacy.model.Pharmacy;
 
@@ -9,6 +10,9 @@ public class WorkDTO {
     private Long id;
     private Long doctorId;
     private Long pharmacyId;
+    private String pharmacyName;
+    private Address pharmacyAddr;
+    private String pharmacyDesc;
     private LocalTime startHour;
     private LocalTime endHour;
 
@@ -16,12 +20,39 @@ public class WorkDTO {
 
     }
 
-    public WorkDTO(Long id, Long doctor, Long pharmacy, LocalTime startHour, LocalTime endHour) {
+    public WorkDTO(Long id, Long doctorId, Long pharmacyId, String pharmacyName, Address pharmacyAddr, String pharmacyDesc, LocalTime startHour, LocalTime endHour) {
         this.id = id;
-        this.doctorId = doctor;
-        this.pharmacyId = pharmacy;
+        this.doctorId = doctorId;
+        this.pharmacyId = pharmacyId;
+        this.pharmacyName = pharmacyName;
+        this.pharmacyAddr = pharmacyAddr;
+        this.pharmacyDesc = pharmacyDesc;
         this.startHour = startHour;
         this.endHour = endHour;
+    }
+
+    public String getPharmacyName() {
+        return pharmacyName;
+    }
+
+    public void setPharmacyName(String pharmacyName) {
+        this.pharmacyName = pharmacyName;
+    }
+
+    public Address getPharmacyAddr() {
+        return pharmacyAddr;
+    }
+
+    public void setPharmacyAddr(Address pharmacyAddr) {
+        this.pharmacyAddr = pharmacyAddr;
+    }
+
+    public String getPharmacyDesc() {
+        return pharmacyDesc;
+    }
+
+    public void setPharmacyDesc(String pharmacyDesc) {
+        this.pharmacyDesc = pharmacyDesc;
     }
 
     public Long getId() {

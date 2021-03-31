@@ -82,13 +82,18 @@ public class PharmacyController {
     @GetMapping("working/{doctorId}")
     public ResponseEntity<List<WorkDTO>> getPharmacistPharmacy(@PathVariable Long doctorId) {
         User doctor = userService.findOne(doctorId);
+        System.out.println("Looking for jobs");
 
-        if (doctor.getRole() == UserRole.PHARMACIST){
+        if (doctor.getRole() == UserRole.PHARMACIST || doctor.getClass() == Pharmacist.class){
+            System.out.println("Look! Pharmacist!");
             Pharmacist p = (Pharmacist) doctor;
+            System.out.println("Look! REAL Pharmacist!");
             List<WorkDTO> work = this.workToWorkDTO.convert(p.getWorking());
+            System.out.println("Look! " + p.getWorking().get(0).toString());
             return new ResponseEntity<>(work, HttpStatus.OK);
         }
-        else if (doctor.getRole() == UserRole.DERMATOLOGIST){
+        else if (doctor.getRole() == UserRole.DERMATOLOGIST || doctor.getClass() == Dermatologist.class){
+            System.out.println("Look! Dermatologist!");
             Dermatologist d = (Dermatologist) doctor;
             List<WorkDTO> work = this.workToWorkDTO.convert(d.getWorking());
             return new ResponseEntity<>(work, HttpStatus.OK);
