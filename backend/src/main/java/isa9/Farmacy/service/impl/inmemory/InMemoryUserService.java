@@ -114,11 +114,12 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         return phAdmin;
     }
 
-    @Override
-    public Pharmacy getPharmacistPharmacy(User pharmacist) {
-        if (pharmacist.getRole() == UserRole.PHARMACIST)
-            return ((Pharmacist)pharmacist).getPharmacy();
-        else
-            return null;
-    }
+//    @Override
+//    public Pharmacy findPharmacistPharmacy(Long id) {
+//        User user = findOne(id);
+//        if (user.getRole() == UserRole.PHARMACIST)
+//            return ((Pharmacist)user).getPharmacy();
+//        else
+//            return null;
+//    }
 }

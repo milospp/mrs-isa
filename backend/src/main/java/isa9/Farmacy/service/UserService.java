@@ -16,4 +16,6 @@ public interface UserService extends GenericService<User> {
     int countActivePenalties(User user);
 
     PharmacyAdmin findPharmacyAdmin(Long pharmacyId);
+
+    //Pharmacy findPharmacistPharmacy(Long id);
 }

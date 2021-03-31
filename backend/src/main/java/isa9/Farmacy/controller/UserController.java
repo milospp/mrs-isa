@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -68,6 +69,8 @@ public class UserController {
         UserDTO dto;
         if (user.getRole() == UserRole.PATIENT){
             dto = (UserDTO) patientToPatientDTO.convert((Patient) user);
+        } else if (user.getRole() == UserRole.PHARMACIST){
+            dto = (UserDTO) pharmacistToPharmacistDTO.convert((Pharmacist) user);
         } else {
             dto = new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), user.getRole(), user.getEmail());
         }
@@ -145,7 +148,9 @@ public class UserController {
         if (povratna > 0) return new ResponseEntity<>(povratna, HttpStatus.OK);
         User adminUser = userService.findOne(id);
         if (adminUser.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(1, HttpStatus.NOT_FOUND);
-        user.setPharmacy(((PharmacyAdmin) adminUser).getPharmacy());
+        user.setWorking(new ArrayList<>());
+        user.getWorking().add(new Work(1L, user, ((PharmacyAdmin) adminUser).getPharmacy(), LocalTime.parse("08-00-00-00"), LocalTime.parse("16-00-00-00")));
+        //user.setPharmacy();
         // tehnicki suvisna provera ali dok ne sredimo registraciju
         User createdUser = userService.save(user);
         System.out.println(createdUser);

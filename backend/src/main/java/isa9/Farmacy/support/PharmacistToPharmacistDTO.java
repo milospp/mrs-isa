@@ -20,7 +20,7 @@ public class PharmacistToPharmacistDTO implements Converter<Pharmacist, Pharmaci
         dto.setSurname(farmaceut.getSurname());
         dto.setAddress(farmaceut.getAddress());
         dto.setPhoneNumber(farmaceut.getPhoneNumber());
-        dto.setPharmacy(farmaceut.getPharmacy());
+        dto.setPharmacy(farmaceut.getWorking().get(0).getPharmacy());
         return dto;
     }
 

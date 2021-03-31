@@ -1,19 +1,26 @@
 package isa9.Farmacy.model;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Pharmacist extends Doctor{
-
-    private Pharmacy pharmacy;
 
     public Pharmacist() {
     }
 
     public Pharmacist(Long id, String name, String surname, String email,
-                   String password, Address address, String phoneNumber, Pharmacy pharmacy) {
+                   String password, Address address, String phoneNumber, Work work) {
         super(id, name, surname, email, password, address, phoneNumber);
-        this.pharmacy = pharmacy;
+        this.setWorking(new ArrayList<>());
+        this.getWorking().add(work);
+    }
+
+    public Pharmacist(Long id, String name, String surname, String email, String password, Address address, String phoneNumber, Pharmacy pharmacy) {
+        super(id, name, surname, email, password, address, phoneNumber);
+        this.setWorking(new ArrayList<>());
+    }
+
+    public Pharmacy getPharmacy() {
+        return this.getWorking().get(0).getPharmacy();
     }
 
     @Override
@@ -30,13 +37,5 @@ public class Pharmacist extends Doctor{
     public String toString() {
         return "Pharmacist: " + getName() + " " + getSurname() + " " + getEmail()
                 + " " + getPassword() + " " + getPhoneNumber() + " " + getAddress();
-    }
-
-    public Pharmacy getPharmacy() {
-        return pharmacy;
-    }
-
-    public void setPharmacy(Pharmacy pharmacy) {
-        this.pharmacy = pharmacy;
     }
 }

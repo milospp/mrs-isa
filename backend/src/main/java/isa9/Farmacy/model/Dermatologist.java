@@ -5,14 +5,19 @@ import java.util.List;
 
 public class Dermatologist extends Doctor{
 
-    private List<Pharmacy> pharmacies;
-
     public Dermatologist() {
     }
 
     public Dermatologist(Long id, String name, String surname, String email, String password, Address address, String phoneNumber) {
         super(id, name, surname, email, password, address, phoneNumber);
-        this.pharmacies = new ArrayList<Pharmacy>();
+        //this.pharmacies = new ArrayList<Pharmacy>();
+        this.setWorking(new ArrayList<>());
+    }
+
+    public Dermatologist(Long id, String name, String surname, String email, String password, Address address, String phoneNumber, List<Work> working) {
+        super(id, name, surname, email, password, address, phoneNumber);
+        //this.pharmacies = new ArrayList<Pharmacy>();
+        this.setWorking(working);
     }
 
     @Override
@@ -31,10 +36,14 @@ public class Dermatologist extends Doctor{
     }
 
     public List<Pharmacy> getPharmacies() {
+        List<Pharmacy> pharmacies = new ArrayList<>();
+        for (Work work : getWorking()){
+            pharmacies.add(work.getPharmacy());
+        }
         return pharmacies;
     }
 
-    public void setPharmacies(List<Pharmacy> pharmacies) {
-        this.pharmacies = pharmacies;
-    }
+//    public void setPharmacies(List<Pharmacy> pharmacies) {
+//        this.pharmacies = pharmacies;
+//    }
 }
