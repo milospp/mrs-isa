@@ -41,6 +41,10 @@ class PharmacistDataService {
       console.log(error.config);
   });
   }
+
+  getPharmacist(id){
+    return axios.get(`${API_URL}/api/users/` + id);
+  }
 }
 
 export default new PharmacistDataService();
