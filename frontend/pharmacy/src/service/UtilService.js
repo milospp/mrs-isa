@@ -7,6 +7,10 @@ class UtilService {
     return  address.state + ", " + address.city + ", " + address.street + " " + address.number;
   }
 
+  FormatTime(time) {
+    return time.split(":")[0] + ":" + time.split(":")[1];
+  }
+
   test() {
     return "AAAA";
   }

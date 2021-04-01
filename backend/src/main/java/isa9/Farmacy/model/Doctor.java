@@ -1,9 +1,10 @@
 package isa9.Farmacy.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Doctor extends User{
+
+    private List<Work> working;
 
     public Doctor() {
     }
@@ -12,6 +13,14 @@ public abstract class Doctor extends User{
                    String password, Address address, String phoneNumber) {
         super(id, name, surname, email, password, address, phoneNumber);
 
+    }
+
+    public List<Work> getWorking() {
+        return working;
+    }
+
+    public void setWorking(List<Work> working) {
+        this.working = working;
     }
 
     @Override

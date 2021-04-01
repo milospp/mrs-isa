@@ -29,6 +29,10 @@ class DermatologistDataService {
       console.log(error.config);
   });
   }
+
+  getDermatologist(id){
+    return axios.get(`${API_URL}/api/users/` + id);
+  }
 }
 
 export default new DermatologistDataService();

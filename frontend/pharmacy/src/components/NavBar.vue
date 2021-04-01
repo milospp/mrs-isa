@@ -48,7 +48,11 @@
 					<router-link to="/login" class="nav-link">Login</router-link>
 					<router-link to="/register" class="nav-link">Register</router-link>
 				</div>
-			  	<div v-else class="navbar-nav my-2 my-lg-0">
+			  	<div v-else-if="role === 'pharmacist'" class="navbar-nav my-2 my-lg-0">
+					<router-link to="/pharmacist/profile/8" class="nav-link">Profile</router-link>
+					<router-link to="/logout" class="nav-link">Logout</router-link>
+				</div>
+				<div v-else class="navbar-nav my-2 my-lg-0">
 					<router-link to="/profile" class="nav-link">Profile</router-link>
 					<router-link to="/logout" class="nav-link">Logout</router-link>
 				</div>

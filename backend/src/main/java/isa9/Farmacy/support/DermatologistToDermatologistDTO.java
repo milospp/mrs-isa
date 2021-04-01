@@ -20,7 +20,8 @@ public class DermatologistToDermatologistDTO implements Converter<Dermatologist,
         dto.setSurname(dermatolog.getSurname());
         dto.setAddress(dermatolog.getAddress());
         dto.setPhoneNumber(dermatolog.getPhoneNumber());
-        dto.setPharmacies(dermatolog.getPharmacies());
+        //dto.setPharmacies(dermatolog.getPharmacies());
+        // vrv ovo treba da se menja da ima samo listu id-eva a ne celu apoteku
         return dto;
     }
 

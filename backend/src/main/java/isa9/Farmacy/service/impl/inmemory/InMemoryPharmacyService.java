@@ -30,6 +30,8 @@ public class InMemoryPharmacyService extends PharmacyServiceBase implements Phar
                 "Radno vreme 8-18h", 3L));
         pharmacies.put(4L, new Pharmacy("Laurus", new Address("Trg slobode", "8", "Novi Sad", "Serbia"),
                 "Nedeljom ne radimo", 4L));
+        pharmacies.put(5L, new Pharmacy("PrimerApoteke", new Address("ulica", "broj", "grad", "drzava"),
+                "opis", 5L));
 
 
     }

@@ -6,6 +6,7 @@ import isa9.Farmacy.service.impl.base.UserServiceBase;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -55,13 +56,23 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         users.put(3L, new Patient(3L, "Mladen", "Vasic", "mladen@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
         users.put(4L, new Patient(4L, "Milos", "Popovic", "milos@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
 
-        Pharmacy apoteka = new Pharmacy("PrimerApoteke", new Address("ulica", "broj", "grad", "drzava"), "opis", 1L);
-        users.put(5l, new PharmacyAdmin(5L, "Admin", "Apoteke", "mejl@mail.com", "1234", apoteka,  new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
-        users.put(6L, new Pharmacist(6L, "Maja", "Markovic", "maja@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345", apoteka));
-        users.put(7L, new Pharmacist(7L, "ANa", "Markovic", "ana@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345", apoteka));
-        Dermatologist dermatolog = new Dermatologist(8L, "Sanja", "Markovic", "sanja@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345");
-        dermatolog.getPharmacies().add(apoteka);
-        users.put(8L, dermatolog);
+        Pharmacy apoteka = new Pharmacy("PrimerApoteke", new Address("ulica", "broj", "grad", "drzava"), "opis", 5L);
+
+        users.put(7l, new PharmacyAdmin(7L, "Admin", "Apoteke", "mejl@mail.com", "1234", apoteka,  new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
+
+        Pharmacist maja = new Pharmacist(8L, "Maja", "Markovic", "maja@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345");
+        users.put(8L, maja);
+        apoteka.hireDoctor(1L, maja, LocalTime.now(), LocalTime.now());
+
+        Pharmacist ana = new Pharmacist(9L, "ANa", "Markovic", "ana@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345");
+        users.put(9L, ana);
+        apoteka.hireDoctor(2L, ana, LocalTime.now(), LocalTime.now());
+
+        Dermatologist dermatolog = new Dermatologist(10L, "Sanja", "Markovic", "sanja@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345");
+        apoteka.hireDoctor(3L, dermatolog, LocalTime.now(), LocalTime.now());
+        users.put(10L, dermatolog);
+
+        //System.out.println("Ohayo porco!");
 
     }
 
@@ -113,4 +124,13 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
 
         return phAdmin;
     }
+
+//    @Override
+//    public Pharmacy findPharmacistPharmacy(Long id) {
+//        User user = findOne(id);
+//        if (user.getRole() == UserRole.PHARMACIST)
+//            return ((Pharmacist)user).getPharmacy();
+//        else
+//            return null;
+//    }
 }

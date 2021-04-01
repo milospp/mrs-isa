@@ -7,6 +7,7 @@ import isa9.Farmacy.model.UserRole;
 public class PharmacistDTO extends DoctorDTO {
 
     private Pharmacy pharmacy;
+    //private Long id;
 
     public PharmacistDTO() {
     }
