@@ -14,7 +14,7 @@ public class Pharmacist extends Doctor{
         this.getWorking().add(work);
     }
 
-    public Pharmacist(Long id, String name, String surname, String email, String password, Address address, String phoneNumber, Pharmacy pharmacy) {
+    public Pharmacist(Long id, String name, String surname, String email, String password, Address address, String phoneNumber) {
         super(id, name, surname, email, password, address, phoneNumber);
         this.setWorking(new ArrayList<>());
     }

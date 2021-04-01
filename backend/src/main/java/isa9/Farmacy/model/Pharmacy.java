@@ -1,5 +1,8 @@
 package isa9.Farmacy.model;
 
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Pharmacy {
@@ -7,20 +10,27 @@ public class Pharmacy {
     private Address address;
     private String description;
     private Long id;
-    //private List<MedicineStockPrice> medicineStockPrices; // ?
+    private List<Work> staff;
 
     public Pharmacy() {
         super();
     }
 
-    public Pharmacy(String name, Address address, String description, Long id/*,
-                    List<MedicineStockPrice> medicineStockPrices*/) {
+    public Pharmacy(String name, Address address, String description, Long id) {
         super();
         this.name = name;
         this.address = address;
         this.description = description;
         this.id = id;
-        //this.medicineStockPrices = medicineStockPrices;
+        this.staff = new ArrayList<>();
+    }
+
+    public Pharmacy(String name, Address address, String description, Long id, List<Work> staff) {
+        this.name = name;
+        this.address = address;
+        this.description = description;
+        this.id = id;
+        this.staff = staff;
     }
 
     public String getName() {
@@ -53,6 +63,32 @@ public class Pharmacy {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public List<Work> getStaff() {
+        return staff;
+    }
+
+    public void setStaff(List<Work> staff) {
+        this.staff = staff;
+    }
+
+    public void hireDoctor(Long id, Doctor d, LocalTime time1, LocalTime time2) {
+        // doda work objekat u doktora i u apoteku
+        if (d.getClass() == Pharmacist.class) {
+            if (!d.getWorking().isEmpty()){
+                System.out.println("apotekar je vec zaposlen");
+            } else {
+                Work work = new Work(id, d, this, time1, time2);
+                d.getWorking().add(work);
+                this.staff.add(work);
+            }
+        } else if (d.getClass() == Dermatologist.class) {
+            // provara da li je dermatolog vec zaposlen tu? ili spolja da se uradi provera
+            Work work = new Work(id, d, this, time1, time2);
+            d.getWorking().add(work);
+            this.staff.add(work);
+        }
     }
 /*
     public List<MedicineStockPrice> getMedicineStockPrices() {

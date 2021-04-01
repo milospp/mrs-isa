@@ -244,6 +244,7 @@ public class UserController {
         List<PharmacistDTO> povratna = new ArrayList<>();
         for (User u : svi) if (u.getClass() == Pharmacist.class) {
             Pharmacist farmaceut = (Pharmacist) u;
+            System.out.println((Pharmacist)u);
             if (farmaceut.getPharmacy().equals(admin.getPharmacy()))
                 povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
         }

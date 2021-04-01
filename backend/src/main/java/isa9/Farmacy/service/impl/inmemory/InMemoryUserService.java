@@ -60,15 +60,19 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
 
         users.put(7l, new PharmacyAdmin(7L, "Admin", "Apoteke", "mejl@mail.com", "1234", apoteka,  new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
 
-        users.put(8L, new Pharmacist(8L, "Maja", "Markovic", "maja@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345", apoteka));
+        Pharmacist maja = new Pharmacist(8L, "Maja", "Markovic", "maja@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345");
+        users.put(8L, maja);
+        apoteka.hireDoctor(1L, maja, LocalTime.now(), LocalTime.now());
 
-        ((Pharmacist)users.get(8L)).getWorking().add(new Work(1L, (Pharmacist)users.get(8L), apoteka, LocalTime.now(), LocalTime.now()));
-
-        users.put(9L, new Pharmacist(9L, "ANa", "Markovic", "ana@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345", apoteka));
+        Pharmacist ana = new Pharmacist(9L, "ANa", "Markovic", "ana@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345");
+        users.put(9L, ana);
+        apoteka.hireDoctor(2L, ana, LocalTime.now(), LocalTime.now());
 
         Dermatologist dermatolog = new Dermatologist(10L, "Sanja", "Markovic", "sanja@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345");
-        dermatolog.getPharmacies().add(apoteka);
+        apoteka.hireDoctor(3L, dermatolog, LocalTime.now(), LocalTime.now());
         users.put(10L, dermatolog);
+
+        //System.out.println("Ohayo porco!");
 
     }
 

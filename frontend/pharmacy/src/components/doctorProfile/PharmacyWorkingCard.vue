@@ -1,6 +1,6 @@
 <template>
     <div class="col-md-12" v-for="j in jobs">
-      <div class="card m-4 box-shadow d-inline-flex">
+      <div class="card m-4 box-shadow d-inline-flex" style="width: 20%">
         <div class="card-header">
             <h4 class="my-0 font-weight-normal">{{j.pharmacyName}}</h4> <!---->
           </div>
@@ -10,7 +10,7 @@
           </p><!---->
           <hr>
           <p class="card-text">
-            Shift: {{j.startHour}} - {{j.endHour}}
+            Shift: {{UtilService.FormatTime(j.startHour)}} - {{UtilService.FormatTime(j.endHour)}}
           </p><!---->
           <hr>
           <h6>

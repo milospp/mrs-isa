@@ -19,7 +19,7 @@ public class WorkToWorkDTO implements Converter<Work, WorkDTO> {
 
         dto.setId(work.getId());
         dto.setDoctorId(work.getDoctor().getId());
-        
+
         dto.setPharmacyId(work.getPharmacy().getId());
         dto.setPharmacyName(work.getPharmacy().getName());
         dto.setPharmacyAddr(work.getPharmacy().getAddress());
