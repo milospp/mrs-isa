@@ -16,6 +16,7 @@
               <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Subscription</a></li>
               <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Penalities</a></li>
               <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#appointments">Appointments</a></li>
+              <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#history">Hisotry</a></li>
               <!-- <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu3">Map</a></li> -->
             </ul>
           
@@ -34,6 +35,10 @@
               </div>
               <div id="appointments" class="tab-pane fade">
                 <PatientAppointments/>
+              </div>
+              
+              <div id="history" class="tab-pane fade">
+                <PatientHistory/>
               </div>
             </div>
           </div>
@@ -65,6 +70,7 @@ import PatientAlergies from '../components/patientProfile/PatientAlergies.vue'
 import PatientSubscription from '../components/patientProfile/PatientSubscription.vue'
 import PatientPenalities from '../components/patientProfile/PatientPenalities.vue'
 import PatientAppointments from '../components/patientProfile/PatientAppointments.vue'
+import PatientHistory from '../components/patientProfile/PatientHistory.vue'
 
 // @ is an alias to /src
 export default {
@@ -76,6 +82,7 @@ export default {
     PatientSubscription,
     PatientPenalities,
     PatientAppointments,
+    PatientHistory,
   }
 }
 </script>
