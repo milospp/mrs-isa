@@ -176,14 +176,14 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body" align="left">Name: {{lek_za_prikaz?.medicine.name}}<br />Nanananna</div>
+        <div class="modal-body" align="left">Name: {{lek_za_prikaz?.medicine.name}}</div>
         <div class="modal-body" align="left">Structure: {{lek_za_prikaz?.medicine.structure}}</div>
         <div class="modal-body" align="left">Manufacturer: {{lek_za_prikaz?.medicine.manufacturer}}</div>
         <div class="modal-body" align="left">Note: {{lek_za_prikaz?.medicine.note}}</div>
         <div class="modal-body" align="left">Points: {{lek_za_prikaz?.medicine.points}}</div>
         <div class="modal-body" align="left">Type: {{lek_za_prikaz?.medicine.type}}</div>
-        <div class="modal-body" align="left">Quantity: ... (max = {{lek_za_prikaz?.quantity}})</div>
-        <div class="modal-body" align="left">Expiry date: <input type="text" v-model="date"/></div>
+        <div class="modal-body" align="left">Quantity: ... <input type="text" v-model="kolicina"/> (max = {{lek_za_prikaz?.quantity}})</div>
+        <div class="modal-body" align="left">Expiry date: <input type="text" v-model="datum"/></div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" v-on:click.prevent="provera()">Reserve</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -212,7 +212,9 @@ export default {
             sviZaposleniDermatolozi : [],
             lekovi: [],
             lek_za_prikaz: null,
-            date: null
+            datum: null,
+            kolicina: null,
+            max_kolicina: 1
 		}
 	},
   methods: {
@@ -229,28 +231,55 @@ export default {
       },
       funkcija(l) {
         this.lek_za_prikaz = l;
+        this.max_kolicina = l.quantity;
       },
       provera() {
-        if (this.date == null) {
+        var provera = 0;
+        provera += this.proveri_datum(this.datum);
+        provera += this.proveri_broj(this.kolicina, "Quantity must be number.");
+        provera += this.proveri_kolicinu(this.kolicina);
+        if (provera != 0) return false;
+        alert("Everything is okay");
+        return true;
+      },
+      proveri_datum() {
+        if (this.datum == null) {
           alert("You must enter date.\nDate must be in one of form \n17.03.2021.\n7.3.2021.");
-          return false;
+          return 1;
         }
-        var splitovano = this.date.split('.');
-        if (splitovano.lenght != 4) {
+        var splitovano = this.datum.split('.');
+        if (splitovano.length != 4) {
           alert("You forget dot.\nDate must be in one of form \n17.03.2021.\n7.3.2021.");
-          return false;
+          return 1;
         }
-        if (splitovano[0].length == 0 | splitovano[1].lenght == 0 | splitovano[2].lenght == 0 | splitovano[3] != 0 ) {
+        if (splitovano[0].length == 0 | splitovano[1].length == 0 | splitovano[2].length == 0 | splitovano[3].length != 0 ) {
           alert("Date must be in one of form \n17.03.2021.\n7.3.2021.");
-          return false;
+          return 1;
         }
-        for (var karakter in this.date) {
-          if (karakter == '.') continue;
-          if (karakter <= '0' | karakter >= '9') {
-            alert("You wrote the letter.\nDate must be in one of form \n17.03.2021.\n7.3.2021.");
-            return false;
+        this.proveri_broj(this.datum, "You wrote the letter.\nDate must be in one of form \n17.03.2021.\n7.3.2021.");
+        return 0;
+      },
+      proveri_broj(unos, poruka) {
+        if (this.kolicina == null) {
+          alert("You must enter quantity.");
+          return 1;
+        }
+        for (var karakter of unos) {
+          if (this.datum == unos && karakter == '.') continue;
+          if (karakter < '0' || karakter > '9') {
+            alert(poruka);
+            return 1;
           }
         }
+        return 0;
+      },
+      proveri_kolicinu(unos) {
+        var broj = parseInt(unos);
+        if (broj < 0 || broj > this.max_kolicina) {
+          alter("Quantity must be in interval [1, " + this.max_kolicina + "].");
+          return 1;
+        }
+        return 0;
       }
   },
   created() {
