@@ -11,6 +11,7 @@ public class Pharmacy {
     private String description;
     private Long id;
     private List<Work> staff;
+    private List<MedicineQuantity> allMedicines;        // lekovi na stanju u apoteci
 
     public Pharmacy() {
         super();
@@ -23,6 +24,7 @@ public class Pharmacy {
         this.description = description;
         this.id = id;
         this.staff = new ArrayList<>();
+        this.allMedicines = new ArrayList<>();
     }
 
     public Pharmacy(String name, Address address, String description, Long id, List<Work> staff) {
@@ -31,6 +33,7 @@ public class Pharmacy {
         this.description = description;
         this.id = id;
         this.staff = staff;
+        this.allMedicines = new ArrayList<>();
     }
 
     public String getName() {
@@ -90,7 +93,15 @@ public class Pharmacy {
             this.staff.add(work);
         }
     }
-/*
+
+    public List<MedicineQuantity> getAllMedicines() {
+        return allMedicines;
+    }
+
+    public void setAllMedicines(List<MedicineQuantity> allMedicines) {
+        this.allMedicines = allMedicines;
+    }
+    /*
     public List<MedicineStockPrice> getMedicineStockPrices() {
         return medicineStockPrices;
     }

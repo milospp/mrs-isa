@@ -48,22 +48,23 @@
             <div id="tab-medicines" class="tab-pane in fade active in">
               <h3>Medicines</h3>
               <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                  </tr>
+                 <thead class="card-header">
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Quantity</th>
+                  <th></th>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Name 1</td>
-                    <td>Description 1</td>
-                  </tr>
-                  <tr>
-                    <td>Name 2</td>
-                    <td>Description 2</td>
+                    <tr :key="f.key" v-for="f in this.lekovi">
+                      <td>{{f.medicine.code}}</td>
+                      <td>{{f.medicine.name}}</td>
+                      <td>{{f.medicine.type}}</td>
+                      <td>{{f.quantity}}</td>
+                      <td><form ><input type="submit" class="btn btn-primary" value="View"></form></td>
                   </tr>
                 </tbody>
+    
               </table>
             </div>
             <div id="menu1" class="tab-pane fade">
@@ -76,7 +77,7 @@
                   <th>Phone number</th>
                 </thead>
                 <tbody>
-                    <tr :key="f.username" v-for="f in this.sviZaposleniFarmaceuti" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
+                    <tr :key="f.username" v-for="f in this.sviZaposleniFarmaceuti">
                       <td>{{f.name}}</td>
                       <td>{{f.surname}}</td>
                       <td>{{f.address["state"]}}, {{f.address["city"]}}, {{f.address["street"]}}, {{f.address["number"]}}</td>
@@ -95,7 +96,7 @@
                   <th>Phone number</th>
                 </thead>
                 <tbody>
-                    <tr :key="d.username" v-for="d in this.sviZaposleniDermatolozi" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
+                    <tr :key="d.username" v-for="d in this.sviZaposleniDermatolozi">
                       <td>{{d.name}}</td>
                       <td>{{d.surname}}</td>
                       <td>{{d.address["state"]}}, {{d.address["city"]}}, {{d.address["street"]}}, {{d.address["number"]}}</td>
@@ -134,13 +135,14 @@
 <script>
 import DermatologistDataService from '../service/DermatologistDataService.js';
 import PharmacistDataService from '../service/PharmacistDataService.js';
-import AddPharmacistForm from '@/components/AddPharmacistForm.vue'
+import MedicineDataService from '../service/MedicineDataService.js';
 export default {
     name: 'HpPharmacyAdmin',
     data() {
         return {
             sviZaposleniFarmaceuti : [],
-            sviZaposleniDermatolozi : []
+            sviZaposleniDermatolozi : [],
+            lekovi: []
         };
     },
     created() {
@@ -148,10 +150,13 @@ export default {
       PharmacistDataService.getAllPharmacistAdmin(this.id)
         .then(response => {
           this.sviZaposleniFarmaceuti = response.data;});
-          
       DermatologistDataService.getAllDermatologistAdmin(this.id)
         .then(response => {
           this.sviZaposleniDermatolozi = response.data;});
+      MedicineDataService.getMedicineForPharmacyAdmin(this.id)
+      .then(response => {
+          this.lekovi = response.data;
+      });
     },
     mounted() {
       PharmacistDataService.getAllPharmacistAdmin(this.id)

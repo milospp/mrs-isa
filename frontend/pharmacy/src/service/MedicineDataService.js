@@ -8,6 +8,18 @@ class MedicineDataService {
     return axios.get(`${API_URL}`);
   }
 
+  getMedicineForPharmacyAdmin(idAdminaApoteke) {
+    return axios.get(API_URL + "/pharmacyAdmin/" + idAdminaApoteke)
+    .catch(function (error) {
+        if (error.response) {
+            console.log(error.response.data);
+        } else if (error.request) {
+            console.log(error.request);
+        }
+        console.log("Error");
+        console.log(error.config);
+    });
+  }
 }
 
 export default new MedicineDataService();

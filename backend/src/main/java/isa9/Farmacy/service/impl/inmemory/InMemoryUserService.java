@@ -57,6 +57,9 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         users.put(4L, new Patient(4L, "Milos", "Popovic", "milos@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
 
         Pharmacy apoteka = new Pharmacy("PrimerApoteke", new Address("ulica", "broj", "grad", "drzava"), "opis", 5L);
+        apoteka.getAllMedicines().add(new MedicineQuantity(new Medicine("Kod1", "Ime1", "Strkt1", "Man1", "Note1", 1, "Oblik1", "Tip1", null, null), 2));
+        apoteka.getAllMedicines().add(new MedicineQuantity(new Medicine("Kod2", "Ime2", "Strk2", "Man2", "Note2", 2, "Oblik2", "Tip2", null, null), 7));
+        //string code, String name, String structure, String manufacturer, String note, int points, String shape, String type, DispencingMedicine perscription, Set<Medicine> replacementMedication
 
         users.put(7l, new PharmacyAdmin(7L, "Admin", "Apoteke", "mejl@mail.com", "1234", apoteka,  new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
 
