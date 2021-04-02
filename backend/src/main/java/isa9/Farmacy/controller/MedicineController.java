@@ -1,12 +1,10 @@
 package isa9.Farmacy.controller;
 
-import isa9.Farmacy.model.Medicine;
-import isa9.Farmacy.model.MedicineQuantity;
-import isa9.Farmacy.model.PharmacyAdmin;
-import isa9.Farmacy.model.User;
+import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.MedicineDTO;
 import isa9.Farmacy.model.dto.MedicineQuantityDTO;
 import isa9.Farmacy.service.MedicineService;
+import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.support.MedicineQuantityToMedicineQuantityDTO;
 import isa9.Farmacy.support.MedicineToMedicineDTO;
@@ -28,10 +26,12 @@ public class MedicineController {
 
     private final MedicineService medicineService;
     private final UserService userService;
+    private final PharmacyService pharmacyService;
 
     @Autowired
-    public MedicineController(MedicineService medicineService, UserService us){
+    public MedicineController(MedicineService medicineService, UserService us, PharmacyService ps){
         this.userService = us;
+        this.pharmacyService = ps;
         this.medicineService = medicineService;
     }
 
@@ -67,6 +67,13 @@ public class MedicineController {
         MedicineQuantityToMedicineQuantityDTO konverter = new MedicineQuantityToMedicineQuantityDTO();
         List<MedicineQuantity> sviLekovi = ((PharmacyAdmin) user).getPharmacy().getAllMedicines();
         List<MedicineQuantityDTO> povratna = konverter.convert(sviLekovi);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+    @GetMapping("/pharmacy/{id}")
+    public ResponseEntity<List<MedicineQuantityDTO>> getAllMedicinePharmacy(@PathVariable Long id) {
+        Pharmacy apoteka = pharmacyService.findOne(id);
+        MedicineQuantityToMedicineQuantityDTO konverter = new MedicineQuantityToMedicineQuantityDTO();
+        List<MedicineQuantityDTO> povratna = konverter.convert(apoteka.getAllMedicines());
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 }

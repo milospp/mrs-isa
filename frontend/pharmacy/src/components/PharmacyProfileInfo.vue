@@ -24,7 +24,6 @@
       <div class="col-md-12">
 
         <div>
-          <h2>TODO More info</h2>
           <ul class="nav nav-tabs">
             <li class="nav-item active"><a class="nav-link" data-toggle="tab" href="#tab-medicines">Home</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Doctors</a></li>
@@ -38,29 +37,26 @@
             <div id="tab-medicines" class="tab-pane in fade active in">
               <h3>Medicines</h3>
               <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Example</th>
-                    <th>Example</th>
-                    <th>Example</th>
-                    <th>Example</th>
-                    <th>Example</th>
-                  </tr>
+                <thead class="card-header">
+                  <th>Name</th>
+                  <th>Structure</th>
+                  <th>Manufacturer</th>
+                  <th>Note</th>
+                  <th>Points</th>
+                  <th>Type</th>
+                  <th>Quantity</th>
+                  <th></th>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Med 1</td>
-                    <td>Med 1</td>
-                    <td>Med 1</td>
-                    <td>Med 1</td>
-                    <td>Med 1</td>
-                  </tr>
-                  <tr>
-                    <td>Med 2</td>
-                    <td>Med 2</td>
-                    <td>Med 2</td>
-                    <td>Med 2</td>
-                    <td>Med 2</td>
+                    <tr :key="f.key" v-for="f in this.lekovi">
+                      <td>{{f.medicine.name}}</td>
+                      <td>{{f.medicine.structure}}</td>
+                      <td>{{f.medicine.manufacturer}}</td>
+                      <td>{{f.medicine.note}}</td>
+                      <td>{{f.medicine.points}}</td>
+                      <td>{{f.medicine.type}}</td>
+                      <td>{{f.quantity}}</td>
+                      <td><form ><input type="submit" class="btn btn-primary" value="Reserve"></form></td>
                   </tr>
                 </tbody>
               </table>
@@ -177,6 +173,7 @@
     import PharmacistDataService from '../service/PharmacistDataService.js';
     import DermatologistDataService from '../service/DermatologistDataService';
     import UtilService from '../service/UtilService.js';
+    import MedicineDataService from '../service/MedicineDataService.js';
 
 export default {
     setup() {
@@ -187,7 +184,8 @@ export default {
 		return {
             pharmacy: null,
             sviZaposleniFarmaceuti : [] ,
-            sviZaposleniDermatolozi : []
+            sviZaposleniDermatolozi : [],
+            lekovi: []
 		}
 	},
   methods: {
@@ -201,9 +199,6 @@ export default {
                   this.patients = response.data;
                   console.log(response.data);
               });
-      },
-      patientInfo(patient){
-          alert(patient);
       }
   },
   created() {
@@ -214,7 +209,10 @@ export default {
       DermatologistDataService.getAllDermatologistsPharmacy(this.id)
         .then(response => {
           this.sviZaposleniDermatolozi = response.data;});
-          alert(this.sviZaposleniDermatolozi[0]);
+      MedicineDataService.getMedicineForPharmacy(this.id)
+        .then(response => {
+            this.lekovi = response.data;
+        });
   },
   mounted() {
     this.loadPharmacyData();

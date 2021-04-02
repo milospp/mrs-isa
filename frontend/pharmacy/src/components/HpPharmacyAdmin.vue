@@ -64,7 +64,6 @@
                       <td><form ><input type="submit" class="btn btn-primary" value="View"></form></td>
                   </tr>
                 </tbody>
-    
               </table>
             </div>
             <div id="menu1" class="tab-pane fade">
