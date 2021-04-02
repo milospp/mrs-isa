@@ -140,15 +140,15 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body" align="left">Name: {{lek_za_prikaz?.medicine.name}}</div>
-        <div class="modal-body" align="left">Structure: {{lek_za_prikaz?.medicine.structure}}</div>
-        <div class="modal-body" align="left">Manufacturer: {{lek_za_prikaz?.medicine.manufacturer}}</div>
-        <div class="modal-body" align="left">Note: {{lek_za_prikaz?.medicine.note}}</div>
-        <div class="modal-body" align="left">Points: {{lek_za_prikaz?.medicine.points}}</div>
-        <div class="modal-body" align="left">Type: {{lek_za_prikaz?.medicine.type}}</div>
-        <div class="modal-body" align="left">Quantity: {{lek_za_prikaz?.quantity}}</div>
+        <div class="modal-body" align="left">Name: <input type="text" v-model="name" placeholder=name/></div>
+        <div class="modal-body" align="left">Structure: <input type="text" v-model="structure" placeholder=structure/></div>
+        <div class="modal-body" align="left">Manufacturer: <input type="text" v-model="manufacturer" placeholder=manufacturer/></div>
+        <div class="modal-body" align="left">Note: <input type="text" v-model="note" placeholder=note/></div>
+        <div class="modal-body" align="left">Points: <input type="text" v-model="points" placeholder=points/></div>
+        <div class="modal-body" align="left">Type: <input type="text" v-model="type" placeholder=type/></div>
+        <div class="modal-body" align="left">Quantity: <input type="text" v-model="quantity" placeholder=quantity/></div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-primary" v-on:click.prevent="provera()">Save changes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -167,7 +167,8 @@ export default {
             sviZaposleniFarmaceuti : [],
             sviZaposleniDermatolozi : [],
             lekovi: [],
-            lek_za_prikaz: null
+            name: null, structure: null, manufacturer: null,
+            note: null, points: null, type: null, quantity: null
         };
     },
     created() {
@@ -197,7 +198,48 @@ export default {
         window.location.href = "/addPharmacist/" + this.id;
       },
       funkcija(l) {
-        this.lek_za_prikaz = l;
+        this.name = l.medicine.name;
+        this.structure =  l.medicine.structure;
+        this.manufacturer = l.medicine.manufacturer;
+        this.note = l.medicine.note;
+        this.points = l.medicine.points;
+        this.type = l.medicine.type;
+        this.quantity = l.quantity;
+      },
+      provera() {
+        var provera = 0;
+        provera += this.provera_prazan(this.name, "You must enter name");
+        provera += this.provera_prazan(this.structure, "You must enter structure");
+        provera += this.provera_prazan(this.manufacturer, "You must enter manufacturer");
+        provera += this.provera_prazan(this.note, "You must enter note");
+        provera += this.provera_prazan(this.points, "You must enter points");
+        provera += this.provera_prazan(this.type, "You must enter type");
+        provera += this.provera_prazan(this.quantity, "You must enter quantity");
+        provera += this.proveri_broj(String(this.quantity), "Quantity must be number.");
+        provera += this.proveri_broj(String(this.points), "Points must be number.");
+        if (provera != 0) return false;
+        alert("Everything is okay");
+        return true;
+      },
+      proveri_broj(unos, poruka) {
+        for (var karakter of unos) {
+          if (karakter < '0' || karakter > '9') {
+            alert(poruka);
+            return 1;
+          }
+        }
+        return 0;
+      },
+      provera_prazan(unos, poruka) {
+        if (unos == null) {
+          alert(poruka);
+          return 1;
+        }
+        if (unos.length == 0) {
+          alert(poruka);
+          return 1;
+        }
+        return 0;
       }
     }
 }

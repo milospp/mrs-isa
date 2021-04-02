@@ -182,7 +182,7 @@
         <div class="modal-body" align="left">Note: {{lek_za_prikaz?.medicine.note}}</div>
         <div class="modal-body" align="left">Points: {{lek_za_prikaz?.medicine.points}}</div>
         <div class="modal-body" align="left">Type: {{lek_za_prikaz?.medicine.type}}</div>
-        <div class="modal-body" align="left">Quantity: ... <input type="text" v-model="kolicina"/> (max = {{lek_za_prikaz?.quantity}})</div>
+        <div class="modal-body" align="left">Quantity: <input type="text" v-model="kolicina"/> (max = {{lek_za_prikaz?.quantity}})</div>
         <div class="modal-body" align="left">Expiry date: <input type="text" v-model="datum"/></div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" v-on:click.prevent="provera()">Reserve</button>
@@ -244,19 +244,19 @@ export default {
       },
       proveri_datum() {
         if (this.datum == null) {
-          alert("You must enter date.\nDate must be in one of form \n17.03.2021.\n7.3.2021.");
+          alert("You must enter date.\nDate must be in one of the form \n17.03.2021.\n7.3.2021.");
           return 1;
         }
         var splitovano = this.datum.split('.');
         if (splitovano.length != 4) {
-          alert("You forget dot.\nDate must be in one of form \n17.03.2021.\n7.3.2021.");
+          alert("You forget dot.\nDate must be in one of the form \n17.03.2021.\n7.3.2021.");
           return 1;
         }
         if (splitovano[0].length == 0 | splitovano[1].length == 0 | splitovano[2].length == 0 | splitovano[3].length != 0 ) {
-          alert("Date must be in one of form \n17.03.2021.\n7.3.2021.");
+          alert("Date must be in one of the form \n17.03.2021.\n7.3.2021.");
           return 1;
         }
-        this.proveri_broj(this.datum, "You wrote the letter.\nDate must be in one of form \n17.03.2021.\n7.3.2021.");
+        this.proveri_broj(this.datum, "You wrote the letter.\nDate must be in one of the form \n17.03.2021.\n7.3.2021.");
         return 0;
       },
       proveri_broj(unos, poruka) {
@@ -276,7 +276,7 @@ export default {
       proveri_kolicinu(unos) {
         var broj = parseInt(unos);
         if (broj < 0 || broj > this.max_kolicina) {
-          alter("Quantity must be in interval [1, " + this.max_kolicina + "].");
+          alert("Quantity must be in interval [1, " + this.max_kolicina + "].");
           return 1;
         }
         return 0;
