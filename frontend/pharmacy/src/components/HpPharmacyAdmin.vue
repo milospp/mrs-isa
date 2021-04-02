@@ -56,12 +56,12 @@
                   <th></th>
                 </thead>
                 <tbody>
-                    <tr :key="f.key" v-for="f in this.lekovi">
-                      <td>{{f.medicine.code}}</td>
-                      <td>{{f.medicine.name}}</td>
-                      <td>{{f.medicine.type}}</td>
-                      <td>{{f.quantity}}</td>
-                      <td><form ><input type="submit" class="btn btn-primary" value="View"></form></td>
+                    <tr :key="l" v-for="l in this.lekovi">
+                      <td>{{l.medicine.code}}</td>
+                      <td>{{l.medicine.name}}</td>
+                      <td>{{l.medicine.type}}</td>
+                      <td>{{l.quantity}}</td>
+                      <td><form v-on:click.prevent="funkcija(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">View</button></form></td>
                   </tr>
                 </tbody>
               </table>
@@ -129,6 +129,31 @@
         </div>
       </div>
     </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="podaci" tabindex="-1" role="dialog" aria-labelledby="About medicine" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="AboutMedicine">About medicine</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">Name = {{lek_za_prikaz?.medicine.name}}</div>
+        <div class="modal-body">Structure = {{lek_za_prikaz?.medicine.structure}}</div>
+        <div class="modal-body">Manufacturer = {{lek_za_prikaz?.medicine.manufacturer}}</div>
+        <div class="modal-body">Note = {{lek_za_prikaz?.medicine.note}}</div>
+        <div class="modal-body">Points = {{lek_za_prikaz?.medicine.points}}</div>
+        <div class="modal-body">Type = {{lek_za_prikaz?.medicine.type}}</div>
+        <div class="modal-body">Quantity = {{lek_za_prikaz?.quantity}}</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -141,7 +166,8 @@ export default {
         return {
             sviZaposleniFarmaceuti : [],
             sviZaposleniDermatolozi : [],
-            lekovi: []
+            lekovi: [],
+            lek_za_prikaz: null
         };
     },
     created() {
@@ -169,6 +195,9 @@ export default {
     methods : {
       DodajFarmaceuta() {
         window.location.href = "/addPharmacist/" + this.id;
+      },
+      funkcija(l) {
+        this.lek_za_prikaz = l;
       }
     }
 }
