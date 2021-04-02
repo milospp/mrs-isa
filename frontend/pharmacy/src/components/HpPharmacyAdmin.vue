@@ -130,7 +130,7 @@
       </div>
     </div>
 
-  <!-- Modal -->
+  <!-- Info o leku -->
   <div class="modal fade" id="podaci" tabindex="-1" role="dialog" aria-labelledby="About medicine" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -140,13 +140,13 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">Name = {{lek_za_prikaz?.medicine.name}}</div>
-        <div class="modal-body">Structure = {{lek_za_prikaz?.medicine.structure}}</div>
-        <div class="modal-body">Manufacturer = {{lek_za_prikaz?.medicine.manufacturer}}</div>
-        <div class="modal-body">Note = {{lek_za_prikaz?.medicine.note}}</div>
-        <div class="modal-body">Points = {{lek_za_prikaz?.medicine.points}}</div>
-        <div class="modal-body">Type = {{lek_za_prikaz?.medicine.type}}</div>
-        <div class="modal-body">Quantity = {{lek_za_prikaz?.quantity}}</div>
+        <div class="modal-body" align="left">Name: {{lek_za_prikaz?.medicine.name}}</div>
+        <div class="modal-body" align="left">Structure: {{lek_za_prikaz?.medicine.structure}}</div>
+        <div class="modal-body" align="left">Manufacturer: {{lek_za_prikaz?.medicine.manufacturer}}</div>
+        <div class="modal-body" align="left">Note: {{lek_za_prikaz?.medicine.note}}</div>
+        <div class="modal-body" align="left">Points: {{lek_za_prikaz?.medicine.points}}</div>
+        <div class="modal-body" align="left">Type: {{lek_za_prikaz?.medicine.type}}</div>
+        <div class="modal-body" align="left">Quantity: {{lek_za_prikaz?.quantity}}</div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary">Save changes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

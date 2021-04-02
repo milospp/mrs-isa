@@ -48,15 +48,15 @@
                   <th></th>
                 </thead>
                 <tbody>
-                    <tr :key="f.key" v-for="f in this.lekovi">
-                      <td>{{f.medicine.name}}</td>
-                      <td>{{f.medicine.structure}}</td>
-                      <td>{{f.medicine.manufacturer}}</td>
-                      <td>{{f.medicine.note}}</td>
-                      <td>{{f.medicine.points}}</td>
-                      <td>{{f.medicine.type}}</td>
-                      <td>{{f.quantity}}</td>
-                      <td><form ><input type="submit" class="btn btn-primary" value="Reserve"></form></td>
+                    <tr :key="l" v-for="l in this.lekovi">
+                      <td>{{l.medicine.name}}</td>
+                      <td>{{l.medicine.structure}}</td>
+                      <td>{{l.medicine.manufacturer}}</td>
+                      <td>{{l.medicine.note}}</td>
+                      <td>{{l.medicine.points}}</td>
+                      <td>{{l.medicine.type}}</td>
+                      <td>{{l.quantity}}</td>
+                      <td><form v-on:click.prevent="funkcija(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">Reserve</button></form></td>
                   </tr>
                 </tbody>
               </table>
@@ -133,7 +133,7 @@
                   <th>Phone number</th>
                 </thead>
                 <tbody>
-                    <tr :key="f.username" v-for="f in this.sviZaposleniFarmaceuti" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
+                    <tr :key="f.username" v-for="f in this.sviZaposleniFarmaceuti">
                       <td>{{f.name}}</td>
                       <td>{{f.surname}}</td>
                       <td>{{UtilService.AddressToString(f.address)}}</td>
@@ -152,7 +152,7 @@
                   <th>Phone number</th>
                 </thead>
                 <tbody>
-                    <tr :key="d.username" v-for="d in this.sviZaposleniDermatolozi" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
+                    <tr :key="d.username" v-for="d in this.sviZaposleniDermatolozi">
                       <td>{{d.name}}</td>
                       <td>{{d.surname}}</td>
                       <td>{{UtilService.AddressToString(d.address)}}</td>
@@ -166,6 +166,31 @@
       </div>
     </div>
 
+  <!-- Info o leku -->
+  <div class="modal fade" id="podaci" tabindex="-1" role="dialog" aria-labelledby="About medicine" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="AboutMedicine">About medicine</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" align="left">Name: {{lek_za_prikaz?.medicine.name}}<br />Nanananna</div>
+        <div class="modal-body" align="left">Structure: {{lek_za_prikaz?.medicine.structure}}</div>
+        <div class="modal-body" align="left">Manufacturer: {{lek_za_prikaz?.medicine.manufacturer}}</div>
+        <div class="modal-body" align="left">Note: {{lek_za_prikaz?.medicine.note}}</div>
+        <div class="modal-body" align="left">Points: {{lek_za_prikaz?.medicine.points}}</div>
+        <div class="modal-body" align="left">Type: {{lek_za_prikaz?.medicine.type}}</div>
+        <div class="modal-body" align="left">Quantity: ... (max = {{lek_za_prikaz?.quantity}})</div>
+        <div class="modal-body" align="left">Expiry date: <input type="text" v-model="date"/></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" v-on:click.prevent="provera()">Reserve</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -185,7 +210,9 @@ export default {
             pharmacy: null,
             sviZaposleniFarmaceuti : [] ,
             sviZaposleniDermatolozi : [],
-            lekovi: []
+            lekovi: [],
+            lek_za_prikaz: null,
+            date: null
 		}
 	},
   methods: {
@@ -199,6 +226,31 @@ export default {
                   this.patients = response.data;
                   console.log(response.data);
               });
+      },
+      funkcija(l) {
+        this.lek_za_prikaz = l;
+      },
+      provera() {
+        if (this.date == null) {
+          alert("You must enter date.\nDate must be in one of form \n17.03.2021.\n7.3.2021.");
+          return false;
+        }
+        var splitovano = this.date.split('.');
+        if (splitovano.lenght != 4) {
+          alert("You forget dot.\nDate must be in one of form \n17.03.2021.\n7.3.2021.");
+          return false;
+        }
+        if (splitovano[0].length == 0 | splitovano[1].lenght == 0 | splitovano[2].lenght == 0 | splitovano[3] != 0 ) {
+          alert("Date must be in one of form \n17.03.2021.\n7.3.2021.");
+          return false;
+        }
+        for (var karakter in this.date) {
+          if (karakter == '.') continue;
+          if (karakter <= '0' | karakter >= '9') {
+            alert("You wrote the letter.\nDate must be in one of form \n17.03.2021.\n7.3.2021.");
+            return false;
+          }
+        }
       }
   },
   created() {
