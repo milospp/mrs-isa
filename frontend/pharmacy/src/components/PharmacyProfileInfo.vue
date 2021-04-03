@@ -1,17 +1,14 @@
 <template>
 
     <div v-if="pharmacy" class="row">
-      <div class="col-md-4">
+      <div class="col-md-4" align="left">
         <h2>{{pharmacy.name}}</h2>
-        <p class="rating">Rating: <span>TODO: 9.7/10</span></p>
-
         <h5>Address: {{UtilService.AddressToString(pharmacy.address)}}</h5>
+        <p class="rating">Rating: TODO: 9.7/10 <br />
+          Description: {{pharmacy.description}}</p>
       </div>
 
-      <div class="col-md-6 text-left">
-        <p>{{pharmacy.description}}</p>
-        
-      </div>
+      <div class="col-md-6 text-left" align="center"></div>
       
       <div class="col-md-2">
         <button class="btn btn-block btn-primary">Subscribe</button>

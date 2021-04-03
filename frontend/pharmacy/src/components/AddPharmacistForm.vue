@@ -6,7 +6,7 @@
                 <td colspan="2">
                     <input 
                         type="text" id="name" v-model="registerData.name" required="required"
-                        pattern="[A-Z][a-zA-Z]*" title="Name must start with capital letter" size="31"
+                        pattern="[A-Z][a-zA-Z]*" title="Name must start with capital letter"  size="31"
                     ></td>
             </tr>
 
@@ -15,7 +15,7 @@
                 <td colspan="2">
                     <input 
                         type="text" id="surname" v-model="registerData.surname" required="required"
-                        pattern="[A-Z][a-zA-Z]*" title="Surname must start with capital letter" size="31"
+                        pattern="[A-Z][a-zA-Z]*" title="Surname must start with capital letter"  size="31"
                     ></td>
             </tr>
             
@@ -23,7 +23,7 @@
                 <td align="right">Email:</td>
                 <td colspan="2">
                     <input 
-                        type="text" id="email" v-model="registerData.email" required="required" size="31"
+                        type="text" id="email" v-model="registerData.email" required="required"  size="31"
                         pattern="[a-z0-9._%+-]+@[a-z0-9.-]+[.][a-z]{2,}$" title="Email must be in form example@yahoo.com"
                     ></td>
             </tr>
@@ -33,7 +33,7 @@
                 <td colspan="2">
                     <input 
                         type="text" id="password" v-model="registerData.password" required="required"
-                        pattern="[a-zA-Z0-9]{6,}" size="31" title="Password must have minimum 6 symbols"
+                        pattern="[a-zA-Z0-9]{6,}" title="Password must have minimum 6 symbols"  size="31"
                     ></td>
             </tr>
 
@@ -42,7 +42,7 @@
                 <td colspan="2">
                     <input 
                         type="text" id="address" v-model="registerData.address.state" required="required"
-                            pattern="[A-Z][a-zA-Z| ]*" size="31" title="State must start with capital letter"
+                            pattern="[A-Z][a-zA-Z| ]*" title="State must start with capital letter"  size="31"
                     ></td>
             </tr>
             
@@ -51,7 +51,7 @@
                 <td colspan="2">
                     <input 
                         type="text" id="address" v-model="registerData.address.city" required="required"
-                            pattern="[A-Z][a-zA-Z| ]*" size="31" title="City must start with capital letter"
+                            pattern="[A-Z][a-zA-Z| ]*"  title="City must start with capital letter"  size="31"
                     ></td>
             </tr>
 
@@ -73,8 +73,23 @@
                 <td align="right">Phone numer:</td>
                 <td colspan="2"><input 
                     type="text" id="phoneNumber" v-model="registerData.phoneNumber" required="required"
-                    pattern="[0-9]*" size="31" title="Phone number must number"
+                    pattern="[0-9]*" title="Phone number must number" size="31"
                 ></td>
+            </tr>
+            
+            <tr>
+                <td align="right">Working hours:</td>
+                <td colspan="2" align="left">
+                    <span>&ensp; from &nbsp;</span>
+                    <input 
+                        type="text" id="startHour" v-model="startHour" required="required" size="7"
+                        pattern="[0-9]{1,2}[:][0-9]{1,2}" title="Start hour must be in form 17:17"
+                    >
+                    <span>&ensp; to &ensp;</span>
+                     <input 
+                        type="text" id="endHour" v-model="endHour" required="required" size="7"
+                            pattern="[0-9]{1,2}[:][0-9]{1,2}" title="End hour must be in form 17:17"
+                    ></td>
             </tr>
 
             <tr>
@@ -91,8 +106,6 @@ export default {
     name: 'AddPharmacistForm',
     data() {
         return {
-            pharmacist: [],
-            message: null,
             registerData: {
                 name : "",
                 surname : "",
@@ -106,7 +119,9 @@ export default {
                     number: "",
                 },
                 phoneNumber : "",
-            }
+            },
+            startHour: "",
+            endHour: "",
         };
     },
     created() {
@@ -114,7 +129,11 @@ export default {
     },
     methods: {      // sve metode se pozivaju istovremeno
         proveraForme(e) {
-            PharmacistDataService.SendPharmacist(this.id, this.registerData)
+            if (!this.provera_vremena()) {
+                alert("Start hour mus be smaller than end hour");
+                return false;
+            }
+            PharmacistDataService.SendPharmacist(this.id, this.$data)
 				.catch(function (error) {
 					if (error.response) {
 						console.log(error.response.data);
@@ -124,6 +143,14 @@ export default {
 					console.log("error.config");
 					console.log(error.config);
 				});
+        },
+        provera_vremena() {
+            var splitStart = this.startHour.split(':');
+            var splitEnd = this.endHour.split(':');
+            if (parseInt(splitStart[0]) > parseInt(splitEnd[0])) return false;
+            else if (parseInt(splitStart[0]) == parseInt(splitEnd[0]) 
+                && parseInt(splitStart[1]) > parseInt(splitStart[1])) return false;
+            return true;
         }
     }
 }
