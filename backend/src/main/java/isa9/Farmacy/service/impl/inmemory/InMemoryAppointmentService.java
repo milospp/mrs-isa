@@ -33,13 +33,20 @@ public class InMemoryAppointmentService extends AppointmentServiceBase implement
         Appointment a1 = new Appointment(1L, LocalDateTime.now().plusDays(2), 20, 30, TypeOfReview.EXAMINATION ,new Dermatologist(), new Pharmacy(), null);
         Appointment a2 = new Appointment(2L, LocalDateTime.now().plusDays(2), 20, 30, TypeOfReview.EXAMINATION ,new Dermatologist(), new Pharmacy(), null);
         Appointment a3 = new Appointment(3L, LocalDateTime.now().plusDays(2), 20, 30, TypeOfReview.EXAMINATION ,new Pharmacist(), new Pharmacy(), null);
+        Appointment a4 = new Appointment(4L, LocalDateTime.now(), 20, 30, TypeOfReview.COUNSELING ,new Pharmacist(), new Pharmacy(), null);
 
-        Examination e1 = new Examination(1L, (Patient) userService.findOne(1L), a1, ExaminationStatus.NOT_HELD, "test", "diagnose", new HashMap<>());
+
+        Examination e1 = new Examination(1L, (Patient) userService.findOne(1L), a1, ExaminationStatus.CANCELED, "test", "diagnose", new HashMap<>());
         a1.setExamination(e1);
+
+        Examination e2 = new Examination(1L, (Patient) userService.findOne(1L), a1, ExaminationStatus.NOT_HELD, "test", "diagnose", new HashMap<>());
+        a4.setExamination(e2);
+
 
         appointments.put(a1.getId(), a1);
         appointments.put(a2.getId(), a2);
         appointments.put(a3.getId(), a3);
+        appointments.put(a4.getId(), a4);
 
     }
 
@@ -68,4 +75,45 @@ public class InMemoryAppointmentService extends AppointmentServiceBase implement
         allAppointments = findAll().stream().filter(x -> isFreeDermAppointment(x)).collect(Collectors.toList());
         return allAppointments;
     }
+
+    @Override
+    public List<Appointment> getPatientUpcomingDermAppointments(Long patientId) {
+        User user = userService.findOne(patientId);
+        if (!user.getRole().equals(UserRole.PATIENT)) return new ArrayList<>();
+        Patient patient = (Patient) user;
+
+        List<Appointment> allAppointments;
+        allAppointments = findAll().stream()
+                .filter(x -> isAssignedToPatient(x, patient) && isDermExamination(x) && isUpcoming(x))
+                .collect(Collectors.toList());
+        return allAppointments;
+    }
+
+    @Override
+    public List<Appointment> getPatientUpcomingConsultingAppointments(Long patientId) {
+        User user = userService.findOne(patientId);
+        if (!user.getRole().equals(UserRole.PATIENT)) return new ArrayList<>();
+        Patient patient = (Patient) user;
+
+        List<Appointment> allAppointments;
+        allAppointments = findAll().stream()
+                .filter(x -> isAssignedToPatient(x, patient) && isConsulting(x) && isUpcoming(x))
+                .collect(Collectors.toList());
+        return allAppointments;
+    }
+
+    @Override
+    public List<Appointment> getPatientUpcomingAppointments(Long patientId) {
+        User user = userService.findOne(patientId);
+        if (!user.getRole().equals(UserRole.PATIENT)) return new ArrayList<>();
+        Patient patient = (Patient) user;
+
+        List<Appointment> allAppointments;
+        allAppointments = findAll().stream()
+                .filter(x -> isAssignedToPatient(x, patient) && isUpcoming(x))
+                .collect(Collectors.toList());
+        return allAppointments;
+    }
+
+
 }

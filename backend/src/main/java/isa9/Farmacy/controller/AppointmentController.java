@@ -46,5 +46,34 @@ public class AppointmentController {
 
     }
 
+    @GetMapping("dermatologist/patient-upcoming/{id}")
+    public ResponseEntity<List<AppointmentDTO>> getPatientUpcomingDermAppointments(@PathVariable Long id) {
+
+        List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.getPatientUpcomingDermAppointments(id));
+
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
+
+
+    @GetMapping("pharmacist/patient-upcoming/{id}")
+    public ResponseEntity<List<AppointmentDTO>> getPatientUpcomingConsultings(@PathVariable Long id) {
+
+        List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.getPatientUpcomingConsultingAppointments(id));
+
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
+
+
+    @GetMapping("patient-upcoming/{id}")
+    public ResponseEntity<List<AppointmentDTO>> getPatientUpcomingAppointments(@PathVariable Long id) {
+
+        List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.getPatientUpcomingAppointments(id));
+
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
+
 }
 

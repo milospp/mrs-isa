@@ -59,7 +59,8 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
 
         Pharmacy apoteka = new Pharmacy("PrimerApoteke", new Address("ulica", "broj", "grad", "drzava"), "opis", 5L);
         pha1.setPharmacy(apoteka);
-
+        Pharmacy apoteka2 = new Pharmacy("PrimerApoteke2", new Address("ulica2", "broj2", "grad2", "drzava2"), "opis2", 6L);
+      
         users.put(7l, new PharmacyAdmin(7L, "Admin", "Apoteke", "mejl@mail.com", "1234", apoteka,  new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
 
         Pharmacist maja = new Pharmacist(8L, "Maja", "Markovic", "maja@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345");
@@ -72,9 +73,8 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
 
         Dermatologist dermatolog = new Dermatologist(10L, "Sanja", "Markovic", "sanja@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345");
         apoteka.hireDoctor(3L, dermatolog, LocalTime.now(), LocalTime.now());
+        apoteka2.hireDoctor(4L, dermatolog, LocalTime.now(), LocalTime.now());
         users.put(10L, dermatolog);
-
-        //System.out.println("Ohayo porco!");
 
     }
 
