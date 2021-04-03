@@ -29,6 +29,33 @@ class PharmacyDataService {
             if (response.data == false) alert("This pharmacy already exists!");
         });
     }
+    getPharmacyByIDAdmin(idAdminaApoteke) {
+        return axios.get(API_URL + "/admin/" + idAdminaApoteke)
+        .catch(function (error) {
+          if (error.response) {
+            console.log(error.response.data);
+          } else if (error.request) {
+            console.log(error.request);
+          }
+          console.log("Error");
+          console.log(error.config);
+        });
+      }
+      setPharmacy(apoteka) {
+        return axios({
+            method: 'post',
+            url: API_URL + "/setPharmacyInfo",
+            data: apoteka})
+        .catch(function (error) {
+          if (error.response) {
+            console.log(error.response.data);
+          } else if (error.request) {
+            console.log(error.request);
+          }
+          console.log("Error");
+          console.log(error.config);
+        });
+      }
 }
 
 

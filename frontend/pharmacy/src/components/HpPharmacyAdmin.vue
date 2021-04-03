@@ -3,34 +3,29 @@
         <tr>
             <td align="left"> <form v-on:submit.prevent="">
                     <input type="submit" class="btn btn-primary" value="Make appointment"></form> </td>
-            <td></td>
-            <td></td>
+            <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+             <td align="left"> <form v-on:submit.prevent="">
+                    <input type="submit" class="btn btn-primary" value="Make pricelist"></form> </td>
+            <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+           <td align="left"> <form v-on:submit.prevent="">
+                    <input type="submit" class="btn btn-primary" value="Make action and promotion"></form> </td>
         </tr>
-        <tr>
-            <td align="left"> <form v-on:submit.prevent="">
-                    <input type="submit" class="btn btn-primary" value="Get report"></form> </td>
-            <td></td>
-            <td></td>
-       </tr>
         <tr>
             <td align="left"> <form v-on:submit.prevent="DodajFarmaceuta()">
                     <input type="submit" class="btn btn-primary" value="Add pharmacist"></form> </td>
-        </tr>
-        <tr>
+            <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
             <td align="left"> <form v-on:submit.prevent="">
                     <input type="submit" class="btn btn-primary" value="Add dermatologist"></form> </td>
+            <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+            <td align="left"> <form v-on:submit.prevent="">
+                    <input type="submit" class="btn btn-primary" value="Add medicine"></form> </td>
         </tr>
-        <tr>
+        <tr> 
             <td align="left"> <form v-on:submit.prevent="">
-                    <input type="submit" class="btn btn-primary" value="Make action and promotion"></form> </td>
-            <td> </td>
-            <td></td>
-        </tr> 
-        <tr>
-            <td align="left"> <form v-on:submit.prevent="">
-                    <input type="submit" class="btn btn-primary" value="See profile"></form> </td>
-            <td> </td>
-            <td></td>
+                    <input type="submit" class="btn btn-primary" value="Get report"></form> </td>
+            <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+            <td align="left"><button type="button" class="btn btn-primary" data-toggle="modal" 
+                data-target="#pharmacy">See pharmacy</button></td>
         </tr>
     </table> 
     <!-- Tabela sa podacima -->
@@ -129,22 +124,52 @@
         </div>
       </div>
     </div>
+
+    <!-- Info o adminu -->
+  <div class="modal fade" id="pharmacy" tabindex="-1" role="dialog" aria-labelledby="Pharmacy info" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="PharmacyInfo">Pharmacy info</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+          <div class="modal-body" align="left">Name: <input type="text" v-model="pharmacyName" placeholder=pharmacyName/></div>
+          <div class="modal-body" align="left">Description: <input type="text" v-model="pharmacyDesc" placeholder=pharmacyDesc/></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" v-on:click.prevent="provera()">Save changes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import DermatologistDataService from '../service/DermatologistDataService.js';
 import PharmacistDataService from '../service/PharmacistDataService.js';
-import AddPharmacistForm from '@/components/AddPharmacistForm.vue'
+import PharmacyDataService from '../service/PharmacyDataService.js';
+import AddPharmacistForm from '@/components/AddPharmacistForm.vue';
 export default {
     name: 'HpPharmacyAdmin',
     data() {
         return {
             sviZaposleniFarmaceuti : [],
-            sviZaposleniDermatolozi : []
+            sviZaposleniDermatolozi : [],
+            pharmacy: null,
+            pharmacyName: null,
+            pharmacyDesc: null
         };
     },
     created() {
-	    this.id = this.$route.params.id; 
+	    this.id = this.$route.params.id;
+      PharmacyDataService.getPharmacyByIDAdmin(this.id)
+        .then(response => {
+          this.pharmacy = response.data;
+          this.pharmacyName = this.pharmacy.name;
+          this.pharmacyDesc = this.pharmacy.description;
+        });
       PharmacistDataService.getAllPharmacistAdmin(this.id)
         .then(response => {
           this.sviZaposleniFarmaceuti = response.data;});
@@ -165,6 +190,16 @@ export default {
     methods : {
       DodajFarmaceuta() {
         window.location.href = "/addPharmacist/" + this.id;
+      },
+      provera() {
+        if (this.pharmacy.name.length == 0 || this.pharmacy.description.length == 0) {
+          alert("Name and description can't be empty.")
+          return false;
+        }
+        this.pharmacy.name = this.pharmacyName;
+        this.pharmacy.description = this.pharmacyDesc;
+        PharmacyDataService.setPharmacy(this.pharmacy)
+          .then(response => {alert("You successfaly changed pharmacy info.");});
       }
     }
 }
