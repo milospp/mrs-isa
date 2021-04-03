@@ -46,6 +46,7 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         PharmacyAdmin pha2 = new PharmacyAdmin(6L, "Marko", "Markovic", "marko@mail.com", "password",
                 ph2, new Address("ulica", "broj", "grad", "drzava"),"111111111");
 
+
         users.put(pha1.getId(), pha1);
         users.put(pha2.getId(), pha2);
 
@@ -57,8 +58,9 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         users.put(4L, new Patient(4L, "Milos", "Popovic", "milos@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
 
         Pharmacy apoteka = new Pharmacy("PrimerApoteke", new Address("ulica", "broj", "grad", "drzava"), "opis", 5L);
+        pha1.setPharmacy(apoteka);
         Pharmacy apoteka2 = new Pharmacy("PrimerApoteke2", new Address("ulica2", "broj2", "grad2", "drzava2"), "opis2", 6L);
-
+      
         users.put(7l, new PharmacyAdmin(7L, "Admin", "Apoteke", "mejl@mail.com", "1234", apoteka,  new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
 
         Pharmacist maja = new Pharmacist(8L, "Maja", "Markovic", "maja@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345");
@@ -73,8 +75,6 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         apoteka.hireDoctor(3L, dermatolog, LocalTime.now(), LocalTime.now());
         apoteka2.hireDoctor(4L, dermatolog, LocalTime.now(), LocalTime.now());
         users.put(10L, dermatolog);
-
-        //System.out.println("Ohayo porco!");
 
     }
 

@@ -1,50 +1,105 @@
 package isa9.Farmacy.model;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.Objects;
+import java.time.LocalDateTime;
+import java.util.*;
 
-public class MedicineOrder {private Map<Medicine, Integer> medicines;
-    private OrderStatus status;
-    private Date deadLine;
+public class MedicineOrder {
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private Offer chosenOffer;
+    private List<Offer> allOffer;
+    private Pharmacy pharmacy;
+    private List<MedicineQuantity> allMedicines;
+    private PharmacyAdmin author; // jer ponudu za neku narudzbenicu sme da prihvati samo admin koji je napravio narudzbenicu
+
     public MedicineOrder() {
-        super();
+        this.allMedicines = new ArrayList<>();
+        this.allOffer = new ArrayList<>();
     }
 
-    public MedicineOrder(Map<Medicine, Integer> medicines, OrderStatus status, Date deadLine) {
-        super();
-        this.medicines = medicines;
-        this.status = status;
-        this.deadLine = deadLine;
+    public MedicineOrder(LocalDateTime startDate, LocalDateTime endDate, Offer chosenOffer,
+                     List<Offer> allOffer, Pharmacy pharmacy, List<MedicineQuantity> allMedicines, PharmacyAdmin author) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.chosenOffer = chosenOffer;
+        this.allOffer = allOffer;
+        this.pharmacy = pharmacy;
+        this.allMedicines = allMedicines;
+        this.author = author;
     }
 
-    public Map<Medicine, Integer> getMedicines() {
-        return medicines;
+    public LocalDateTime getStartDate() {
+        return startDate;
     }
 
-    public void setMedicines(Map<Medicine, Integer> medicines) {
-        this.medicines = medicines;
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
     }
 
-    public OrderStatus getStatus() {
-        return status;
+    public LocalDateTime getEndDate() {
+        return endDate;
     }
 
-    public void setStatus(OrderStatus status) {
-        this.status = status;
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
     }
 
-    public Date getDeadLine() {
-        return deadLine;
+    public Offer getChosenOffer() {
+        return chosenOffer;
     }
 
-    public void setDeadLine(Date deadLine) {
-        this.deadLine = deadLine;
+    public void setChosenOffer(Offer chosenOffer) {
+        this.chosenOffer = chosenOffer;
+        this.chosenOffer.setStatus(OfferStatus.ACCEPTED);
+    }
+
+    public List<Offer> getAllOffer() {
+        return allOffer;
+    }
+
+    public void setAllOffer(List<Offer> allOffer) {
+        this.allOffer = allOffer;
+    }
+
+    public Pharmacy getPharmacy() {
+        return pharmacy;
+    }
+
+    public void setPharmacy(Pharmacy pharmacy) {
+        this.pharmacy = pharmacy;
+    }
+
+    public List<MedicineQuantity> getAllMedicines() {
+        return allMedicines;
+    }
+
+    public void setAllMedicines(List<MedicineQuantity> allMedicines) {
+        this.allMedicines = allMedicines;
+    }
+
+    public PharmacyAdmin getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(PharmacyAdmin author) {
+        this.author = author;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startDate, endDate, chosenOffer, allOffer, pharmacy, allMedicines);
     }
 
     @Override
     public String toString() {
-        return "MedicineOrder [medicines=" + medicines + ", status=" + status + ", deadLine=" + deadLine + "]";
+        return "MedicineOrder{" +
+                "startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", chosenOffer=" + chosenOffer +
+                ", allOffer=" + allOffer +
+                ", pharmacy=" + pharmacy +
+                ", allMedicines=" + allMedicines +
+                '}';
     }
 
     @Override
@@ -52,11 +107,6 @@ public class MedicineOrder {private Map<Medicine, Integer> medicines;
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MedicineOrder that = (MedicineOrder) o;
-        return Objects.equals(medicines, that.medicines) && status == that.status && Objects.equals(deadLine, that.deadLine);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(medicines, status, deadLine);
+        return Objects.equals(startDate, that.startDate) && Objects.equals(endDate, that.endDate) && Objects.equals(chosenOffer, that.chosenOffer) && Objects.equals(allOffer, that.allOffer) && Objects.equals(pharmacy, that.pharmacy) && Objects.equals(allMedicines, that.allMedicines);
     }
 }
