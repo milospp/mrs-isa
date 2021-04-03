@@ -23,7 +23,7 @@
     import UtilService from '@/service/UtilService.js';
 
 export default {
-    name: "DoctorProfileInfo",
+    name: "PharmacistProfileInfo",
     //props: ['id'],
     setup() {
       return { UtilService }
