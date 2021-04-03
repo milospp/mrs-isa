@@ -10,6 +10,7 @@ public class MedicineOrder {
     private List<Offer> allOffer;
     private Pharmacy pharmacy;
     private List<MedicineQuantity> allMedicines;
+    private PharmacyAdmin author; // jer ponudu za neku narudzbenicu sme da prihvati samo admin koji je napravio narudzbenicu
 
     public MedicineOrder() {
         this.allMedicines = new ArrayList<>();
@@ -17,13 +18,14 @@ public class MedicineOrder {
     }
 
     public MedicineOrder(LocalDateTime startDate, LocalDateTime endDate, Offer chosenOffer,
-                     List<Offer> allOffer, Pharmacy pharmacy, List<MedicineQuantity> allMedicines) {
+                     List<Offer> allOffer, Pharmacy pharmacy, List<MedicineQuantity> allMedicines, PharmacyAdmin author) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.chosenOffer = chosenOffer;
         this.allOffer = allOffer;
         this.pharmacy = pharmacy;
         this.allMedicines = allMedicines;
+        this.author = author;
     }
 
     public LocalDateTime getStartDate() {
@@ -73,6 +75,14 @@ public class MedicineOrder {
 
     public void setAllMedicines(List<MedicineQuantity> allMedicines) {
         this.allMedicines = allMedicines;
+    }
+
+    public PharmacyAdmin getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(PharmacyAdmin author) {
+        this.author = author;
     }
 
     @Override
