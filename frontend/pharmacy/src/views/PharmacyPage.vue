@@ -8,7 +8,7 @@
 </div>
 </template>
 
-<style>
+<style scoped>
   .in {
     opacity: 1 !important;
   }
