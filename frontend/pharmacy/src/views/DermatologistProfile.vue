@@ -1,5 +1,5 @@
 <template>
-    <NavBar role="pharmacist"/>
+    <NavBar role="dermatologist"/>
     <div class="row">
         <div class="col-md-12">
 
@@ -11,9 +11,9 @@
         </div>
     </div>
     <div class="container pt-5">
-        <PharmacistProfileInfo/>
+        <DermatologistProfileInfo/>
     </div>
-    <PharmacyWorkingCard doctorId="8"/> <!-- HARDCODED -->
+    <PharmacyWorkingCard doctorId="10"/> <!-- HARDCODED -->
 </template>
 
 <style>
@@ -29,15 +29,15 @@
 
 <script>
 import NavBar from '@/components/NavBar.vue'
-import PharmacistProfileInfo from '@/components/doctorProfile/PharmacistProfileInfo.vue'
-import PharmacyWorkingCard from '@/components/doctorProfile/PharmacyWorkingCardPharm.vue'
+import DermatologistProfileInfo from '@/components/doctorProfile/DermatologistProfileInfo.vue'
+import PharmacyWorkingCard from '@/components/doctorProfile/PharmacyWorkingCardDerm.vue'
 
 // @ is an alias to /src
 export default {
-    name: 'PharmacistProfile',
+    name: 'DermatologistProfile',
     components: {
     NavBar,
-    PharmacistProfileInfo,
+    DermatologistProfileInfo,
     PharmacyWorkingCard
     //PharmacyInfo
     },
