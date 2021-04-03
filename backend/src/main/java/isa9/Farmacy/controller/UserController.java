@@ -172,7 +172,8 @@ public class UserController {
         for (User us : svi){
             if (us.getClass()!= Patient.class) continue;
             Patient patient = (Patient) us;
-            resultDTOS.add(new PatientDTO(patient.getId(), patient.getName(), patient.getSurname(), patient.getAddress(), patient.getPhoneNumber()));
+            resultDTOS.add(patientToPatientDTO.convert(patient));
+//            resultDTOS.add(new PatientDTO(patient.getId(), patient.getName(), patient.getSurname(), patient.getAddress(), patient.getPhoneNumber()));
         }
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
 
@@ -183,7 +184,8 @@ public class UserController {
         User us = userService.findOne(id);
         if (us.getClass() != Patient.class) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         Patient patient = (Patient) us;
-        PatientDTO patientDTO = new PatientDTO(patient.getId(), patient.getName(), patient.getSurname(), patient.getAddress(), patient.getPhoneNumber());
+        PatientDTO patientDTO = patientToPatientDTO.convert(patient);
+//        PatientDTO patientDTO = new PatientDTO(patient.getId(), patient.getName(), patient.getSurname(), patient.getAddress(), patient.getPhoneNumber());
         return new ResponseEntity<>(patientDTO, HttpStatus.OK);
 
     }
