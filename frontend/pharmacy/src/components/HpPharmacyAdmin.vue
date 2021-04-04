@@ -47,6 +47,7 @@
                   <th>Code</th>
                   <th>Name</th>
                   <th>Type</th>
+                  <th>Price</th>
                   <th>Quantity</th>
                   <th></th>
                 </thead>
@@ -55,7 +56,8 @@
                       <td>{{l.medicine.code}}</td>
                       <td>{{l.medicine.name}}</td>
                       <td>{{l.medicine.type}}</td>
-                      <td>{{l.quantity}}</td>
+                      <th>{{l.currentPrice}}</th>
+                      <td>{{l.inStock}}</td>
                       <td><form v-on:click.prevent="funkcija(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">View</button></form></td>
                   </tr>
                 </tbody>
@@ -160,6 +162,7 @@
         <div class="modal-body" align="left">Note: <input type="text" v-model="note" placeholder=note/></div>
         <div class="modal-body" align="left">Points: <input type="text" v-model="points" placeholder=points/></div>
         <div class="modal-body" align="left">Type: <input type="text" v-model="type" placeholder=type/></div>
+        <div class="modal-body" align="left">Price: <input type="text" v-model="price" placeholder=quantity/></div>
         <div class="modal-body" align="left">Quantity: <input type="text" v-model="quantity" placeholder=quantity/></div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" v-on:click.prevent="provera()">Save changes</button>
@@ -184,7 +187,7 @@ export default {
             pharmacy: null,
             pharmacyName: null, pharmacyDesc: null,
             lekovi: [],
-            name: null, structure: null, manufacturer: null,
+            name: null, structure: null, manufacturer: null, price: null,
             note: null, points: null, type: null, quantity: null
         };
     },
@@ -237,19 +240,22 @@ export default {
         this.note = l.medicine.note;
         this.points = l.medicine.points;
         this.type = l.medicine.type;
-        this.quantity = l.quantity;
+        this.price = l.currentPrice;
+        this.quantity = l.inStock;
       },
       provera() {
         var provera = 0;
-        provera += this.provera_prazan(this.name, "You must enter name");
-        provera += this.provera_prazan(this.structure, "You must enter structure");
-        provera += this.provera_prazan(this.manufacturer, "You must enter manufacturer");
-        provera += this.provera_prazan(this.note, "You must enter note");
-        provera += this.provera_prazan(this.points, "You must enter points");
-        provera += this.provera_prazan(this.type, "You must enter type");
-        provera += this.provera_prazan(this.quantity, "You must enter quantity");
+        provera += this.provera_prazan(this.name, "You must enter name.");
+        provera += this.provera_prazan(this.structure, "You must enter structure.");
+        provera += this.provera_prazan(this.manufacturer, "You must enter manufacturer.");
+        provera += this.provera_prazan(this.note, "You must enter note.");
+        provera += this.provera_prazan(this.points, "You must enter points.");
+        provera += this.provera_prazan(this.type, "You must enter type.");
+        provera += this.provera_prazan(this.quantity, "You must enter quantity.");
+        provera += this.provera_prazan(String(this.price), "You must enter price.");
         provera += this.proveri_broj(String(this.quantity), "Quantity must be number.");
         provera += this.proveri_broj(String(this.points), "Points must be number.");
+        provera += this.proveri_cenu();
         if (provera != 0) return false;
         alert("Everything is okay");
         return true;
@@ -260,6 +266,18 @@ export default {
             alert(poruka);
             return 1;
           }
+        }
+        return 0;
+      },
+      proveri_cenu() {
+        var lista = this.price.split('.')
+        if (lista.length > 2) {
+          alert("Price must be in form 5.2");
+          return 1;
+        }
+        for (var elem of lista) {
+          var rez = this.proveri_broj(elem, "Price must be number in form 5.3") 
+          if (rez == 1) return 1;
         }
         return 0;
       },
