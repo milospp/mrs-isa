@@ -1,17 +1,14 @@
 <template>
 
     <div v-if="pharmacy" class="row">
-      <div class="col-md-4">
+      <div class="col-md-4" align="left">
         <h2>{{pharmacy.name}}</h2>
-        <p class="rating">Rating: <span>TODO: 9.7/10</span></p>
-
         <h5>Address: {{UtilService.AddressToString(pharmacy.address)}}</h5>
+        <p class="rating">Rating: TODO: 9.7/10 <br />
+          Description: {{pharmacy.description}}</p>
       </div>
 
-      <div class="col-md-6 text-left">
-        <p>{{pharmacy.description}}</p>
-        
-      </div>
+      <div class="col-md-6 text-left" align="center"></div>
       
       <div class="col-md-2">
         <button class="btn btn-block btn-primary">Subscribe</button>
@@ -24,79 +21,46 @@
       <div class="col-md-12">
 
         <div>
-          <h2>TODO More info</h2>
           <ul class="nav nav-tabs">
             <li class="nav-item active"><a class="nav-link" data-toggle="tab" href="#tab-medicines">Home</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Doctors</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Appoitments</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu3">Map</a></li>
-             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu4">Pharmacists</a></li>
-             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu5">Dermatologists</a></li>
+             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Pharmacists</a></li>
+             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Dermatologists</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu3">Appoitments</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu4">Map</a></li>
           </ul>
         
           <div class="tab-content">
             <div id="tab-medicines" class="tab-pane in fade active in">
               <h3>Medicines</h3>
               <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Example</th>
-                    <th>Example</th>
-                    <th>Example</th>
-                    <th>Example</th>
-                    <th>Example</th>
-                  </tr>
+                <thead class="card-header">
+                  <th>Name</th>
+                  <th>Structure</th>
+                  <th>Manufacturer</th>
+                  <th>Note</th>
+                  <th>Points</th>
+                  <th>Type</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th></th>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Med 1</td>
-                    <td>Med 1</td>
-                    <td>Med 1</td>
-                    <td>Med 1</td>
-                    <td>Med 1</td>
-                  </tr>
-                  <tr>
-                    <td>Med 2</td>
-                    <td>Med 2</td>
-                    <td>Med 2</td>
-                    <td>Med 2</td>
-                    <td>Med 2</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div id="menu1" class="tab-pane fade">
-              <h3>Staff</h3>
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Example</th>
-                    <th>Example</th>
-                    <th>Example</th>
-                    <th>Example</th>
-                    <th>Example</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Med 1</td>
-                    <td>Med 1</td>
-                    <td>Med 1</td>
-                    <td>Med 1</td>
-                    <td>Med 1</td>
-                  </tr>
-                  <tr>
-                    <td>Med 2</td>
-                    <td>Med 2</td>
-                    <td>Med 2</td>
-                    <td>Med 2</td>
-                    <td>Med 2</td>
+                    <tr :key="l" v-for="l in this.lekovi">
+                      <td>{{l.medicine.name}}</td>
+                      <td>{{l.medicine.structure}}</td>
+                      <td>{{l.medicine.manufacturer}}</td>
+                      <td>{{l.medicine.note}}</td>
+                      <td>{{l.medicine.points}}</td>
+                      <td>{{l.medicine.type}}</td>
+                      <th>{{l.currentPrice}}</th>
+                      <td>{{l.inStock}}</td>
+                      <td><form v-on:click.prevent="funkcija(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">Reserve</button></form></td>
                   </tr>
                 </tbody>
               </table>
             </div>
             
-            <div id="menu2" class="tab-pane in fade">
+            <div id="menu3" class="tab-pane in fade">
 
               <h3>Appointments</h3>
 
@@ -124,10 +88,10 @@
                 </div>
               </div>
             </div>
-            <div id="menu3" class="tab-pane fade">
+            <div id="menu4" class="tab-pane fade">
             </div>
             
-            <div id="menu4" class="tab-pane fade">
+            <div id="menu1" class="tab-pane fade">
               <h3>Pharmacists</h3>
                 <table class="table table-striped">
                   <thead class="card-header">
@@ -137,7 +101,7 @@
                   <th>Phone number</th>
                 </thead>
                 <tbody>
-                    <tr :key="f.username" v-for="f in this.sviZaposleniFarmaceuti" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
+                    <tr :key="f.username" v-for="f in this.sviZaposleniFarmaceuti">
                       <td>{{f.name}}</td>
                       <td>{{f.surname}}</td>
                       <td>{{UtilService.AddressToString(f.address)}}</td>
@@ -146,7 +110,7 @@
                 </tbody>
               </table>
             </div>
-            <div id="menu5" class="tab-pane fade">
+            <div id="menu2" class="tab-pane fade">
               <h3>Dermatologists</h3>
                 <table class="table table-striped">
                   <thead class="card-header">
@@ -156,7 +120,7 @@
                   <th>Phone number</th>
                 </thead>
                 <tbody>
-                    <tr :key="d.username" v-for="d in this.sviZaposleniDermatolozi" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
+                    <tr :key="d.username" v-for="d in this.sviZaposleniDermatolozi">
                       <td>{{d.name}}</td>
                       <td>{{d.surname}}</td>
                       <td>{{UtilService.AddressToString(d.address)}}</td>
@@ -170,6 +134,32 @@
       </div>
     </div>
 
+  <!-- Info o leku -->
+  <div class="modal fade" id="podaci" tabindex="-1" role="dialog" aria-labelledby="About medicine" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="AboutMedicine">About medicine</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" align="left">Name: {{lek_za_prikaz?.medicine.name}}</div>
+        <div class="modal-body" align="left">Structure: {{lek_za_prikaz?.medicine.structure}}</div>
+        <div class="modal-body" align="left">Manufacturer: {{lek_za_prikaz?.medicine.manufacturer}}</div>
+        <div class="modal-body" align="left">Note: {{lek_za_prikaz?.medicine.note}}</div>
+        <div class="modal-body" align="left">Points: {{lek_za_prikaz?.medicine.points}}</div>
+        <div class="modal-body" align="left">Type: {{lek_za_prikaz?.medicine.type}}</div>
+        <div class="modal-body" align="left">Price: {{lek_za_prikaz?.currentPrice}}</div>
+        <div class="modal-body" align="left">Quantity: <input type="text" v-model="kolicina"/> (max = {{lek_za_prikaz?.inStock}})</div>
+        <div class="modal-body" align="left">Expiry date: <input type="text" v-model="datum"/></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" v-on:click.prevent="provera()">Reserve</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -177,6 +167,7 @@
     import PharmacistDataService from '../service/PharmacistDataService.js';
     import DermatologistDataService from '../service/DermatologistDataService';
     import UtilService from '../service/UtilService.js';
+    import MedicineDataService from '../service/MedicineDataService.js';
 
 export default {
     setup() {
@@ -187,7 +178,12 @@ export default {
 		return {
             pharmacy: null,
             sviZaposleniFarmaceuti : [] ,
-            sviZaposleniDermatolozi : []
+            sviZaposleniDermatolozi : [],
+            lekovi: [],
+            lek_za_prikaz: null,
+            datum: null,
+            kolicina: null,
+            max_kolicina: 1
 		}
 	},
   methods: {
@@ -202,8 +198,57 @@ export default {
                   console.log(response.data);
               });
       },
-      patientInfo(patient){
-          alert(patient);
+      funkcija(l) {
+        this.lek_za_prikaz = l;
+        this.max_kolicina = l.quantity;
+      },
+      provera() {
+        var provera = 0;
+        provera += this.proveri_datum(this.datum);
+        provera += this.proveri_broj(this.kolicina, "Quantity must be number.");
+        provera += this.proveri_kolicinu(this.kolicina);
+        if (provera != 0) return false;
+        alert("Everything is okay");
+        return true;
+      },
+      proveri_datum() {
+        if (this.datum == null) {
+          alert("You must enter date.\nDate must be in one of the form \n17.03.2021.\n7.3.2021.");
+          return 1;
+        }
+        var splitovano = this.datum.split('.');
+        if (splitovano.length != 4) {
+          alert("You forget dot.\nDate must be in one of the form \n17.03.2021.\n7.3.2021.");
+          return 1;
+        }
+        if (splitovano[0].length == 0 | splitovano[1].length == 0 | splitovano[2].length == 0 | splitovano[3].length != 0 ) {
+          alert("Date must be in one of the form \n17.03.2021.\n7.3.2021.");
+          return 1;
+        }
+        this.proveri_broj(this.datum, "You wrote the letter.\nDate must be in one of the form \n17.03.2021.\n7.3.2021.");
+        return 0;
+      },
+      proveri_broj(unos, poruka) {
+        if (this.kolicina == null) {
+          alert("You must enter quantity.");
+          return 1;
+        }
+        for (var karakter of unos) {
+          if (this.datum == unos && karakter == '.') continue;
+          if (karakter < '0' || karakter > '9') {
+            alert(poruka);
+            return 1;
+          }
+        }
+        return 0;
+      },
+      proveri_kolicinu(unos) {
+        var broj = parseInt(unos);
+        if (broj < 0 || broj > this.max_kolicina) {
+          alert("Quantity must be in interval [1, " + this.max_kolicina + "].");
+          return 1;
+        }
+        return 0;
       }
   },
   created() {
@@ -214,7 +259,10 @@ export default {
       DermatologistDataService.getAllDermatologistsPharmacy(this.id)
         .then(response => {
           this.sviZaposleniDermatolozi = response.data;});
-          alert(this.sviZaposleniDermatolozi[0]);
+      MedicineDataService.getMedicineForPharmacy(this.id)
+        .then(response => {
+            this.lekovi = response.data;
+        });
   },
   mounted() {
     this.loadPharmacyData();

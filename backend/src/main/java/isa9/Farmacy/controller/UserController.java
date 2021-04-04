@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Flow;
 
@@ -142,17 +143,17 @@ public class UserController {
     }
 
     @PostMapping("/register/pharmacist/{id}")
-    public ResponseEntity<Integer> createPharmacist(@PathVariable Long id, @RequestBody Pharmacist user) {
+    public ResponseEntity<Integer> createPharmacist(@PathVariable Long id, @RequestBody WorkerHelp user) {
         int povratna = 0;
-        if (!userService.isAvaibleEmail(user.getEmail())) povratna += 2;
+        if (!userService.isAvaibleEmail(user.getRegisterData().getEmail())) povratna += 2;
         if (povratna > 0) return new ResponseEntity<>(povratna, HttpStatus.OK);
         User adminUser = userService.findOne(id);
         if (adminUser.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(1, HttpStatus.NOT_FOUND);
-        user.setWorking(new ArrayList<>());
-        user.getWorking().add(new Work(1L, user, ((PharmacyAdmin) adminUser).getPharmacy(), LocalTime.parse("08-00-00-00"), LocalTime.parse("16-00-00-00")));
+        user.getRegisterData().setWorking(new ArrayList<>());
+        user.getRegisterData().getWorking().add(new Work(1L, user.getRegisterData(), ((PharmacyAdmin) adminUser).getPharmacy(), LocalTime.parse(user.getStartHour()), LocalTime.parse(user.getEndHour())));
         //user.setPharmacy();
         // tehnicki suvisna provera ali dok ne sredimo registraciju
-        User createdUser = userService.save(user);
+        User createdUser = userService.save(user.getRegisterData());
         System.out.println(createdUser);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
@@ -172,7 +173,8 @@ public class UserController {
         for (User us : svi){
             if (us.getClass()!= Patient.class) continue;
             Patient patient = (Patient) us;
-            resultDTOS.add(new PatientDTO(patient.getId(), patient.getName(), patient.getSurname(), patient.getAddress(), patient.getPhoneNumber()));
+            resultDTOS.add(patientToPatientDTO.convert(patient));
+//            resultDTOS.add(new PatientDTO(patient.getId(), patient.getName(), patient.getSurname(), patient.getAddress(), patient.getPhoneNumber()));
         }
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
 
@@ -183,7 +185,8 @@ public class UserController {
         User us = userService.findOne(id);
         if (us.getClass() != Patient.class) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         Patient patient = (Patient) us;
-        PatientDTO patientDTO = new PatientDTO(patient.getId(), patient.getName(), patient.getSurname(), patient.getAddress(), patient.getPhoneNumber());
+        PatientDTO patientDTO = patientToPatientDTO.convert(patient);
+//        PatientDTO patientDTO = new PatientDTO(patient.getId(), patient.getName(), patient.getSurname(), patient.getAddress(), patient.getPhoneNumber());
         return new ResponseEntity<>(patientDTO, HttpStatus.OK);
 
     }
@@ -203,6 +206,12 @@ public class UserController {
                 HttpStatus.OK
         );
 
+    }
+
+    @PostMapping("{id}/update")
+    public ResponseEntity<PatientDTO> updatePatient(@RequestBody PatientDTO patient) {
+        PatientDTO patientDTO = patientToPatientDTO.convert(userService.updatePatient(patient));
+        return new ResponseEntity<> (patientDTO, HttpStatus.OK);
     }
 
 
@@ -244,7 +253,6 @@ public class UserController {
         List<PharmacistDTO> povratna = new ArrayList<>();
         for (User u : svi) if (u.getClass() == Pharmacist.class) {
             Pharmacist farmaceut = (Pharmacist) u;
-            System.out.println((Pharmacist)u);
             if (farmaceut.getPharmacy().equals(admin.getPharmacy()))
                 povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
         }

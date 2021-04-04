@@ -6,6 +6,7 @@ import isa9.Farmacy.service.impl.base.UserServiceBase;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -46,6 +47,7 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         PharmacyAdmin pha2 = new PharmacyAdmin(6L, "Marko", "Markovic", "marko@mail.com", "password",
                 ph2, new Address("ulica", "broj", "grad", "drzava"),"111111111");
 
+
         users.put(pha1.getId(), pha1);
         users.put(pha2.getId(), pha2);
 
@@ -57,6 +59,17 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         users.put(4L, new Patient(4L, "Milos", "Popovic", "milos@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
 
         Pharmacy apoteka = new Pharmacy("PrimerApoteke", new Address("ulica", "broj", "grad", "drzava"), "opis", 5L);
+
+        Medicine lek1 = new Medicine("Kod1", "Ime1", "Strkt1", "Man1", "Note1", 1, "Oblik1", "Tip1", null, null);
+        MedPrice cena1 = new MedPrice(17L, LocalDateTime.now(), 20.5, lek1, apoteka);
+        Medicine lek2 = new Medicine("Kod2", "Ime2", "Strk2", "Man2", "Note2", 2, "Oblik2", "Tip2", null, null);
+        MedPrice cena2 = new MedPrice(17L, LocalDateTime.now(), 20.5, lek2, apoteka);
+        apoteka.getMedicines().add(new MedicineInPharmacy("17", cena1, lek1, 2, apoteka));
+        apoteka.getMedicines().add(new MedicineInPharmacy("18", cena2, lek2, 7, apoteka));
+        //string code, String name, String structure, String manufacturer, String note, int points, String shape, String type, DispencingMedicine perscription, Set<Medicine> replacementMedication
+
+        pha1.setPharmacy(apoteka);
+        Pharmacy apoteka2 = new Pharmacy("PrimerApoteke2", new Address("ulica2", "broj2", "grad2", "drzava2"), "opis2", 6L);
 
         users.put(7l, new PharmacyAdmin(7L, "Admin", "Apoteke", "mejl@mail.com", "1234", apoteka,  new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
 
@@ -70,9 +83,8 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
 
         Dermatologist dermatolog = new Dermatologist(10L, "Sanja", "Markovic", "sanja@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345");
         apoteka.hireDoctor(3L, dermatolog, LocalTime.now(), LocalTime.now());
+        apoteka2.hireDoctor(4L, dermatolog, LocalTime.now(), LocalTime.now());
         users.put(10L, dermatolog);
-
-        //System.out.println("Ohayo porco!");
 
     }
 

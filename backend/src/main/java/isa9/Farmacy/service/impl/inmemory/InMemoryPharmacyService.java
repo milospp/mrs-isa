@@ -1,16 +1,14 @@
 package isa9.Farmacy.service.impl.inmemory;
 
+import isa9.Farmacy.model.*;
 import org.springframework.stereotype.Component;
-import isa9.Farmacy.model.Address;
-import isa9.Farmacy.model.Patient;
-import isa9.Farmacy.model.Pharmacy;
-import isa9.Farmacy.model.User;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.impl.base.PharmacyServiceBase;
 import isa9.Farmacy.service.impl.base.UserServiceBase;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,10 +28,17 @@ public class InMemoryPharmacyService extends PharmacyServiceBase implements Phar
                 "Radno vreme 8-18h", 3L));
         pharmacies.put(4L, new Pharmacy("Laurus", new Address("Trg slobode", "8", "Novi Sad", "Serbia"),
                 "Nedeljom ne radimo", 4L));
-        pharmacies.put(5L, new Pharmacy("PrimerApoteke", new Address("ulica", "broj", "grad", "drzava"),
-                "opis", 5L));
 
-
+        // potrebno za prikaz lekovaaa
+        Pharmacy apoteka = new Pharmacy("PrimerApoteke", new Address("ulica", "broj", "grad", "drzava"), "opis", 5L);
+        Medicine lek1 = new Medicine("Kod1", "Ime1", "Strkt1", "Man1", "Note1", 1, "Oblik1", "Tip1", null, null);
+        MedPrice cena1 = new MedPrice(17L, LocalDateTime.now(), 20.5, lek1, apoteka);
+        Medicine lek2 = new Medicine("Kod2", "Ime2", "Strk2", "Man2", "Note2", 2, "Oblik2", "Tip2", null, null);
+        MedPrice cena2 = new MedPrice(17L, LocalDateTime.now(), 20.5, lek2, apoteka);
+        apoteka.getMedicines().add(new MedicineInPharmacy("17", cena1, lek1, 2, apoteka));
+        apoteka.getMedicines().add(new MedicineInPharmacy("18", cena2, lek2, 7, apoteka));
+        //string code, String name, String structure, String manufacturer, String note, int points, String shape, String type, DispencingMedicine perscription, Set<Medicine> replacementMedication
+        pharmacies.put(5L, apoteka);
     }
 
     @Override

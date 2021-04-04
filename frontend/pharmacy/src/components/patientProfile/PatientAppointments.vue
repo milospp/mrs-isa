@@ -1,5 +1,5 @@
 <template>
-
+<div>
   <h3 class="mt-3">Dermatologist Appointments</h3>
   <table class="table table-striped">
     <thead>
@@ -31,12 +31,8 @@
       </tr>
     </tbody>
   </table>
-
-
-  <h3 class="mt-5">Consulting Appointments</h3>
-
+</div>
 </template>
-
 <style>
   .v-middle td {
     vertical-align: baseline !important;

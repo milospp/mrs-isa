@@ -26,7 +26,7 @@ class PharmacistDataService {
       }
       console.log("Error");
       console.log(error.config);
-  });
+    });
   }
   
   getAllPharmacistPharmacy(idApoteke) {
@@ -39,7 +39,7 @@ class PharmacistDataService {
       }
       console.log("Error");
       console.log(error.config);
-  });
+    });
   }
 
   getPharmacist(id){

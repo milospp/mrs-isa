@@ -15,6 +15,7 @@ import VacationRequest from '@/views/VacationRequest.vue'
 import PharmacyPage from '@/views/PharmacyPage.vue'
 import PatientProfile from '@/views/PatientProfile.vue'
 import PharmacistProfile from '@/views/PharmacistProfile.vue'
+import DermatologistProfile from '@/views/DermatologistProfile.vue'
 import DermatologistHomePage from '@/views/DermatologistHomePage.vue'
 import DermAppointments from '../views/DermAppointments.vue'
 import AddSupplier from '@/views/AddSupplier.vue'
@@ -102,6 +103,11 @@ const routes = [
     path: '/pharmacist/profile/:id',
     name: 'PharmacistProfile',
     component: PharmacistProfile    // view je komponenta
+  },
+  {
+    path: '/dermatologist/profile/:id',
+    name: 'DermatologistProfile',
+    component: DermatologistProfile    // view je komponenta
   },
   {
     path: '/dermatologist',

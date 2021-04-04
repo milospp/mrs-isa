@@ -75,5 +75,14 @@ public class AppointmentController {
 
     }
 
+    @GetMapping("patient-past/{id}")
+    public ResponseEntity<List<AppointmentDTO>> getPastPatientAppointments(@PathVariable Long id) {
+
+        List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.getPastPatientAppointments(id));
+
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
+
 }
 

@@ -4,6 +4,8 @@ package isa9.Farmacy.support;
 import isa9.Farmacy.model.Examination;
 import isa9.Farmacy.model.Medicine;
 import isa9.Farmacy.model.dto.ExaminationDTO;
+import isa9.Farmacy.model.dto.PatientDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,13 @@ import java.util.stream.Collectors;
 @Component
 public class ExaminationToExaminationDTO implements Converter<Examination, ExaminationDTO> {
 
+    PatientToPatientDTO patientToPatientDTO;
+
+    @Autowired
+    public ExaminationToExaminationDTO(PatientToPatientDTO patientToPatientDTO) {
+        this.patientToPatientDTO = patientToPatientDTO;
+    }
+
     @Override
     public ExaminationDTO convert(Examination examination) {
         if (examination == null) return null;
@@ -24,7 +33,7 @@ public class ExaminationToExaminationDTO implements Converter<Examination, Exami
         ExaminationDTO dto = new ExaminationDTO();
 
         dto.setId(examination.getId());
-        dto.setPatient(examination.getPatient().getId());
+        dto.setPatient(patientToPatientDTO.convert(examination.getPatient()));
         dto.setAppointment(examination.getAppointment().getId());
         dto.setStatus(examination.getStatus());
         dto.setExaminationInfo(examination.getExaminationInfo());
