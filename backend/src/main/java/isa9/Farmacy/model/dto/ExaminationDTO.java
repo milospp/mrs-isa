@@ -8,7 +8,7 @@ import java.util.Objects;
 public class ExaminationDTO {
 
     private Long id;
-    private Long patient;
+    private PatientDTO patient;
     private Long appointment;
     private ExaminationStatus status; // held, not held or canceled
     private String examinationInfo;
@@ -19,7 +19,7 @@ public class ExaminationDTO {
     public ExaminationDTO() {
     }
 
-    public ExaminationDTO(Long id, Long patient, Long appointment, ExaminationStatus status, String examinationInfo, String diagnose, Map<String, Integer> therapy, TypeOfReview type) {
+    public ExaminationDTO(Long id, PatientDTO patient, Long appointment, ExaminationStatus status, String examinationInfo, String diagnose, Map<String, Integer> therapy, TypeOfReview type) {
         this.id = id;
         this.patient = patient;
         this.appointment = appointment;
@@ -38,11 +38,11 @@ public class ExaminationDTO {
         this.id = id;
     }
 
-    public Long getPatient() {
+    public PatientDTO getPatient() {
         return patient;
     }
 
-    public void setPatient(Long patient) {
+    public void setPatient(PatientDTO patient) {
         this.patient = patient;
     }
 

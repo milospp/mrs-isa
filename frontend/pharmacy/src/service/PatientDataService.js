@@ -32,6 +32,14 @@ class PatientDataService {
     return axios.get(`${API_URL}/api/users/` + id + `/penalties/count`);
   }
   
+  updatePatientInfo(patient) {
+    return axios({
+      method: 'post',
+      url: `${API_URL}/api/users/` + patient.id + `/update`,
+      data: patient
+    });
+  }
+
   SendPatient(newPatient) {
     return axios({
       method: 'post',

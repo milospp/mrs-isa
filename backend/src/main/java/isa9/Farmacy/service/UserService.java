@@ -1,6 +1,7 @@
 package isa9.Farmacy.service;
 
 import isa9.Farmacy.model.*;
+import isa9.Farmacy.model.dto.PatientDTO;
 
 import java.util.Set;
 
@@ -16,6 +17,8 @@ public interface UserService extends GenericService<User> {
     int countActivePenalties(User user);
 
     PharmacyAdmin findPharmacyAdmin(Long pharmacyId);
+
+    Patient updatePatient(PatientDTO patientDTO);
 
     //Pharmacy findPharmacistPharmacy(Long id);
 }

@@ -19,6 +19,9 @@ public class Medicine {
     // TODO Medicine Stock
 
 
+    public Medicine() {
+    }
+
     public Medicine(String code) {
         this.code = code;
     }
