@@ -3,29 +3,30 @@
         <tr>
             <td align="left"> <form v-on:submit.prevent="">
                     <input type="submit" class="btn btn-primary" value="Make appointment"></form> </td>
-            <td></td>
-            <td></td>
+            <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+             <td align="left"> <form v-on:submit.prevent="">
+                    <input type="submit" class="btn btn-primary" value="Make pricelist"></form> </td>
+            <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+           <td align="left"> <form v-on:submit.prevent="">
+                    <input type="submit" class="btn btn-primary" value="Make action and promotion"></form> </td>
         </tr>
-        <tr>
-            <td align="left"> <form v-on:submit.prevent="">
-                    <input type="submit" class="btn btn-primary" value="Get report"></form> </td>
-            <td></td>
-            <td></td>
-       </tr>
         <tr>
             <td align="left"> <form v-on:submit.prevent="DodajFarmaceuta()">
                     <input type="submit" class="btn btn-primary" value="Add pharmacist"></form> </td>
-        </tr>
-        <tr>
+            <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
             <td align="left"> <form v-on:submit.prevent="">
                     <input type="submit" class="btn btn-primary" value="Add dermatologist"></form> </td>
-        </tr>
-        <tr>
+            <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
             <td align="left"> <form v-on:submit.prevent="">
-                    <input type="submit" class="btn btn-primary" value="Make action and promotion"></form> </td>
-            <td> </td>
-            <td></td>
-        </tr> 
+                    <input type="submit" class="btn btn-primary" value="Add medicine"></form> </td>
+        </tr>
+        <tr> 
+            <td align="left"> <form v-on:submit.prevent="">
+                    <input type="submit" class="btn btn-primary" value="Get report"></form> </td>
+            <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+            <td align="left"><button type="button" class="btn btn-primary" data-toggle="modal" 
+                data-target="#pharmacy">See pharmacy</button></td>
+        </tr>
     </table> 
     <!-- Tabela sa podacima -->
     <div class="row">
@@ -124,6 +125,25 @@
       </div>
     </div>
 
+    <!-- Info o apoteci -->
+  <div class="modal fade" id="pharmacy" tabindex="-1" role="dialog" aria-labelledby="Pharmacy info" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="PharmacyInfo">Pharmacy info</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" align="left">Name: <input type="text" v-model="pharmacyName" placeholder=pharmacyName/></div>
+        <div class="modal-body" align="left">Description: <input type="text" v-model="pharmacyDesc" placeholder=pharmacyDesc/></div>
+         <div class="modal-footer">
+          <button type="button" class="btn btn-primary" v-on:click.prevent="proveraApoteka()">Save changes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- Info o leku -->
   <div class="modal fade" id="podaci" tabindex="-1" role="dialog" aria-labelledby="About medicine" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -153,6 +173,7 @@
 <script>
 import DermatologistDataService from '../service/DermatologistDataService.js';
 import PharmacistDataService from '../service/PharmacistDataService.js';
+import PharmacyDataService from '../service/PharmacyDataService.js';
 import MedicineDataService from '../service/MedicineDataService.js';
 export default {
     name: 'HpPharmacyAdmin',
@@ -160,13 +181,21 @@ export default {
         return {
             sviZaposleniFarmaceuti : [],
             sviZaposleniDermatolozi : [],
+            pharmacy: null,
+            pharmacyName: null, pharmacyDesc: null,
             lekovi: [],
             name: null, structure: null, manufacturer: null,
             note: null, points: null, type: null, quantity: null
         };
     },
     created() {
-	    this.id = this.$route.params.id; 
+	    this.id = this.$route.params.id;
+      PharmacyDataService.getPharmacyByIDAdmin(this.id)
+        .then(response => {
+          this.pharmacy = response.data;
+          this.pharmacyName = this.pharmacy.name;
+          this.pharmacyDesc = this.pharmacy.description;
+        });
       PharmacistDataService.getAllPharmacistAdmin(this.id)
         .then(response => {
           this.sviZaposleniFarmaceuti = response.data;});
@@ -190,6 +219,16 @@ export default {
     methods : {
       DodajFarmaceuta() {
         window.location.href = "/addPharmacist/" + this.id;
+      },
+      proveraApoteka() {
+        if (this.pharmacyName.length == 0 || this.pharmacyDesc.length == 0) {
+          alert("Name and description can't be empty.")
+          return false;
+        }
+        this.pharmacy.name = this.pharmacyName;
+        this.pharmacy.description = this.pharmacyDesc;
+        PharmacyDataService.setPharmacy(this.pharmacy)
+          .then(response => {alert("You successfaly changed pharmacy info.");});
       },
       funkcija(l) {
         this.name = l.medicine.name;
