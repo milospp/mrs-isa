@@ -1,17 +1,14 @@
 <template>
 
     <div v-if="pharmacy" class="row">
-      <div class="col-md-4">
+      <div class="col-md-4" align="left">
         <h2>{{pharmacy.name}}</h2>
-        <p class="rating">Rating: <span>TODO: 9.7/10</span></p>
-
         <h5>Address: {{UtilService.AddressToString(pharmacy.address)}}</h5>
+        <p class="rating">Rating: TODO: 9.7/10 <br />
+          Description: {{pharmacy.description}}</p>
       </div>
 
-      <div class="col-md-6 text-left">
-        <p>{{pharmacy.description}}</p>
-        
-      </div>
+      <div class="col-md-6 text-left" align="center"></div>
       
       <div class="col-md-2">
         <button class="btn btn-block btn-primary">Subscribe</button>
@@ -24,14 +21,12 @@
       <div class="col-md-12">
 
         <div>
-          <h2>TODO More info</h2>
           <ul class="nav nav-tabs">
             <li class="nav-item active"><a class="nav-link" data-toggle="tab" href="#tab-medicines">Home</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Doctors</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Appoitments</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu3">Map</a></li>
-             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu4">Pharmacists</a></li>
-             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu5">Dermatologists</a></li>
+             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Pharmacists</a></li>
+             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Dermatologists</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu3">Appoitments</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu4">Map</a></li>
           </ul>
         
           <div class="tab-content">
@@ -65,38 +60,8 @@
                 </tbody>
               </table>
             </div>
-            <div id="menu1" class="tab-pane fade">
-              <h3>Staff</h3>
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Example</th>
-                    <th>Example</th>
-                    <th>Example</th>
-                    <th>Example</th>
-                    <th>Example</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Med 1</td>
-                    <td>Med 1</td>
-                    <td>Med 1</td>
-                    <td>Med 1</td>
-                    <td>Med 1</td>
-                  </tr>
-                  <tr>
-                    <td>Med 2</td>
-                    <td>Med 2</td>
-                    <td>Med 2</td>
-                    <td>Med 2</td>
-                    <td>Med 2</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
             
-            <div id="menu2" class="tab-pane in fade">
+            <div id="menu3" class="tab-pane in fade">
 
               <h3>Appointments</h3>
 
@@ -124,10 +89,10 @@
                 </div>
               </div>
             </div>
-            <div id="menu3" class="tab-pane fade">
+            <div id="menu4" class="tab-pane fade">
             </div>
             
-            <div id="menu4" class="tab-pane fade">
+            <div id="menu1" class="tab-pane fade">
               <h3>Pharmacists</h3>
                 <table class="table table-striped">
                   <thead class="card-header">
@@ -146,7 +111,7 @@
                 </tbody>
               </table>
             </div>
-            <div id="menu5" class="tab-pane fade">
+            <div id="menu2" class="tab-pane fade">
               <h3>Dermatologists</h3>
                 <table class="table table-striped">
                   <thead class="card-header">
@@ -214,7 +179,6 @@ export default {
       DermatologistDataService.getAllDermatologistsPharmacy(this.id)
         .then(response => {
           this.sviZaposleniDermatolozi = response.data;});
-          alert(this.sviZaposleniDermatolozi[0]);
   },
   mounted() {
     this.loadPharmacyData();

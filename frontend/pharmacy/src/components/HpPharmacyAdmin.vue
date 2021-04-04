@@ -26,12 +26,6 @@
             <td> </td>
             <td></td>
         </tr> 
-        <tr>
-            <td align="left"> <form v-on:submit.prevent="">
-                    <input type="submit" class="btn btn-primary" value="See profile"></form> </td>
-            <td> </td>
-            <td></td>
-        </tr>
     </table> 
     <!-- Tabela sa podacima -->
     <div class="row">
