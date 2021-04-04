@@ -21,4 +21,6 @@ public interface AppointmentService extends GenericService<Appointment>{
     List<Appointment> getPatientUpcomingDermAppointments(Long patientId);
     List<Appointment> getPatientUpcomingConsultingAppointments(Long patientId);
     List<Appointment> getPatientUpcomingAppointments(Long patientId);
+
+    List<Appointment> getPastPatientAppointments(Long patientId);
 }

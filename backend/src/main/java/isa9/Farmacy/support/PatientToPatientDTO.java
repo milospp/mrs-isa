@@ -43,6 +43,13 @@ public class PatientToPatientDTO implements Converter<Patient, PatientDTO> {
                         .map(Medicine::getCode)
                         .collect(Collectors.toList())
         );
+        dto.setReservations(
+                patient.getReservations().stream()
+                        .map(MedReservation::getId)
+                        .collect(Collectors.toList())
+        );
+
+
         return dto;
     }
 
