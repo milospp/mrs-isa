@@ -5,5 +5,6 @@ public enum UserRole {
     DERMATOLOGIST,
     PHARMACIST,
     SYS_ADMIN,
-    PHARMACY_ADMIN
+    PHARMACY_ADMIN,
+    SUPPLIER
 }

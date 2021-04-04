@@ -36,8 +36,11 @@ public class InMemoryAppointmentService extends AppointmentServiceBase implement
         Appointment a3 = new Appointment(3L, LocalDateTime.now().plusDays(2), 20, 30, TypeOfReview.EXAMINATION ,new Pharmacist(), new Pharmacy(), null);
         Appointment a4 = new Appointment(4L, LocalDateTime.now(), 20, 30, TypeOfReview.COUNSELING ,new Pharmacist(), new Pharmacy(), null);
 
+        Medicine med1 = new Medicine("code22");
+        HashMap<Medicine, Integer> ther1 = new HashMap<Medicine, Integer>();
+        ther1.put(med1, 3);
 
-        Examination e1 = new Examination(1L, (Patient) userService.findOne(1L), a1, ExaminationStatus.CANCELED, "test", "diagnose", new HashMap<>());
+        Examination e1 = new Examination(1L, (Patient) userService.findOne(1L), a1, ExaminationStatus.HELD, "test", "diagnose", ther1);
         a1.setExamination(e1);
 
         Examination e2 = new Examination(2L, (Patient) userService.findOne(1L), a1, ExaminationStatus.HELD, "test", "diagnose", new HashMap<>());

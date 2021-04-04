@@ -1,32 +1,7 @@
 <template>
   <div>
     <NavBar/>
-    
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-  Launch demo modal
-</button>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 
     <div class="container pt-5">
@@ -39,7 +14,7 @@
           <div>
             <h2>TODO AUTH!! More info</h2>
             <ul class="nav nav-tabs">
-              <li class="nav-item active"><a class="nav-link" data-toggle="tab" href="#tab-alergies">Alergies</a></li>
+              <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#tab-alergies">Alergies</a></li>
               <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Subscription</a></li>
               <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Penalities</a></li>
               <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#appointments">Appointments</a></li>
@@ -79,15 +54,9 @@
   </div>
 </template>
 
-<style scoped>
-  .subsection .in {
-    opacity: 1 !important;
-  }
-  .nav-item.active > .nav-link {
-    color: #495057;
-    background-color: #fff;
-    border-color: #dee2e6 #dee2e6 #fff;
-  }
+<style>
+
+
 </style>
 
 <script>

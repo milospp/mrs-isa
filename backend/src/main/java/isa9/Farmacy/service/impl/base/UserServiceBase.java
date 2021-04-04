@@ -1,6 +1,7 @@
 package isa9.Farmacy.service.impl.base;
 
 import isa9.Farmacy.model.*;
+import isa9.Farmacy.model.dto.PatientDTO;
 import isa9.Farmacy.service.UserService;
 
 import java.time.LocalDate;
@@ -56,5 +57,26 @@ public abstract class UserServiceBase implements UserService {
         if (user.getRole() != UserRole.PATIENT) return new HashSet<>();
 
         return ((Patient) user).getPenalties();
+    }
+
+    @Override
+    public Patient updatePatient(PatientDTO patientDTO) {
+        Patient patient = (Patient) findOne(patientDTO.getId());
+
+        if (patientDTO.getName() != null){
+            patient.setName(patientDTO.getName());
+        }
+        if (patientDTO.getSurname() != null){
+            patient.setSurname(patientDTO.getSurname());
+        }
+        if (patientDTO.getPhoneNumber() != null){
+            patient.setPhoneNumber(patientDTO.getPhoneNumber());
+        }
+        if (patientDTO.getAddress() != null){
+            patient.setAddress(patientDTO.getAddress());
+        }
+
+        save(patient);
+        return patient;
     }
 }

@@ -8,15 +8,8 @@
 </div>
 </template>
 
-<style scoped>
-  .in {
-    opacity: 1 !important;
-  }
-  .nav-item.active > .nav-link {
-    color: #495057;
-    background-color: #fff;
-    border-color: #dee2e6 #dee2e6 #fff;
-  }
+<style>
+
 </style>
 
 <script>

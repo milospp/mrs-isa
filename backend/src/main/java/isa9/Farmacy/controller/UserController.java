@@ -208,6 +208,12 @@ public class UserController {
 
     }
 
+    @PostMapping("{id}/update")
+    public ResponseEntity<PatientDTO> updatePatient(@RequestBody PatientDTO patient) {
+        PatientDTO patientDTO = patientToPatientDTO.convert(userService.updatePatient(patient));
+        return new ResponseEntity<> (patientDTO, HttpStatus.OK);
+    }
+
 
     @PostMapping("register/pharmacyAdmin")
     public ResponseEntity<Boolean> registerPharmacyAdmin(@RequestBody PharmacyAdminRegDTO newAdminDto){
