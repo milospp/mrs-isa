@@ -40,6 +40,7 @@
                   <th>Note</th>
                   <th>Points</th>
                   <th>Type</th>
+                  <th>Price</th>
                   <th>Quantity</th>
                   <th></th>
                 </thead>
@@ -51,7 +52,8 @@
                       <td>{{l.medicine.note}}</td>
                       <td>{{l.medicine.points}}</td>
                       <td>{{l.medicine.type}}</td>
-                      <td>{{l.quantity}}</td>
+                      <th>{{l.currentPrice}}</th>
+                      <td>{{l.inStock}}</td>
                       <td><form v-on:click.prevent="funkcija(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">Reserve</button></form></td>
                   </tr>
                 </tbody>
@@ -148,7 +150,8 @@
         <div class="modal-body" align="left">Note: {{lek_za_prikaz?.medicine.note}}</div>
         <div class="modal-body" align="left">Points: {{lek_za_prikaz?.medicine.points}}</div>
         <div class="modal-body" align="left">Type: {{lek_za_prikaz?.medicine.type}}</div>
-        <div class="modal-body" align="left">Quantity: <input type="text" v-model="kolicina"/> (max = {{lek_za_prikaz?.quantity}})</div>
+        <div class="modal-body" align="left">Price: {{lek_za_prikaz?.currentPrice}}</div>
+        <div class="modal-body" align="left">Quantity: <input type="text" v-model="kolicina"/> (max = {{lek_za_prikaz?.inStock}})</div>
         <div class="modal-body" align="left">Expiry date: <input type="text" v-model="datum"/></div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" v-on:click.prevent="provera()">Reserve</button>

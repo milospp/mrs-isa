@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -32,6 +34,12 @@ public class MedicineInPharmacyToMedInPharmaDTO implements Converter<MedicineInP
         dto.setCurrentPrice(medicineInPharmacy.getCurrentPrice().getPrice());
         dto.setInStock(medicineInPharmacy.getInStock());
 
+        return dto;
+    }
+
+    public List<MedInPharmaDTO> convert(List<MedicineInPharmacy> medicineInPharmacy) {
+        List<MedInPharmaDTO> dto = new ArrayList<>();
+        for (MedicineInPharmacy mf : medicineInPharmacy) dto.add(this.convert(mf));
         return dto;
     }
 }
