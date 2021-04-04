@@ -11,10 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Flow;
 
 @RestController
@@ -175,6 +172,21 @@ public class UserController {
             Patient patient = (Patient) us;
             resultDTOS.add(patientToPatientDTO.convert(patient));
 //            resultDTOS.add(new PatientDTO(patient.getId(), patient.getName(), patient.getSurname(), patient.getAddress(), patient.getPhoneNumber()));
+        }
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
+
+    @GetMapping("all-patients/search")
+    public ResponseEntity<List<PatientDTO>> getByNameSurnamePatientsDTO(@RequestParam String name, @RequestParam String surname) {
+        //System.out.println(name + surname);
+        List<PatientDTO> resultDTOS = new ArrayList<>();
+        List<User> svi = userService.findAll();
+        for (User us : svi){
+            if (us.getClass() == Patient.class && us.getName().toLowerCase(Locale.ROOT).startsWith(name.toLowerCase(Locale.ROOT)) && us.getSurname().toLowerCase(Locale.ROOT).startsWith(surname.toLowerCase(Locale.ROOT))) {
+                Patient patient = (Patient) us;
+                resultDTOS.add(patientToPatientDTO.convert(patient));
+            }
         }
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
 

@@ -2,18 +2,18 @@
     <div class="container">
         <div class="row">
             <div class="container" style="padding: 0px;">
-                <form style="float: right;">
+                <form v-on:submit.prevent="searchPatients(this)" style="float: right;">
                     <div class="form-row form-inline mb-2" >
                         <div class="form-group col-auto">
-                            <input type="text" class="form-control" id="name" placeholder="First Name">
+                            <input v-model="searchName" type="text" class="form-control" id="name" placeholder="First Name">
                         </div>
                         <div class="form-group col-auto">
-                            <input type="text" class="form-control" id="surname" placeholder="Last Name">
+                            <input v-model="searchSurname" type="text" class="form-control" id="surname" placeholder="Last Name">
                         </div>
                         <div class="col-auto">
                             <button type="submit" class="btn btn-primary">Search</button>
                         </div>
-                    </div>  
+                    </div>
                 </form>
             </div>
             <div class="container" style="padding: 0px;">
@@ -66,6 +66,8 @@ export default {
         return {
             patients: [],
             message: null,
+            searchName: "",
+            searchSurname: ""
         };
     },
     methods: {
@@ -79,35 +81,26 @@ export default {
         patientInfo(patient){
             alert(patient);
         },
-        searchBar() {
-            const searchFocus = document.getElementById('search-focus');
-            const keys = [
-            { keyCode: 'AltLeft', isTriggered: false },
-            { keyCode: 'ControlLeft', isTriggered: false },
-            ];
-
-            window.addEventListener('keydown', (e) => {
-            keys.forEach((obj) => {
-                if (obj.keyCode === e.code) {
-                obj.isTriggered = true;
-                }
-            });
-
-            const shortcutTriggered = keys.filter((obj) => obj.isTriggered).length === keys.length;
-
-            if (shortcutTriggered) {
-                searchFocus.focus();
+        searchPatients(e){
+            if (this.searchName || this.searchSurname){
+                PatientDataService.searchPatients(this.searchName, this.searchSurname)
+                .then(response => {
+                        this.patients = response.data;
+                        console.log(response.data);
+                    })
+                .catch(function (error) {
+                    if (error.response) {
+                    console.log(error.response.data);
+                    } else if (error.request) {
+                    console.log(error.request);
+                    }
+                    console.log("error.config");
+                    console.log(error.config);
+                });
             }
-            });
-
-            window.addEventListener('keyup', (e) => {
-            keys.forEach((obj) => {
-                if (obj.keyCode === e.code) {
-                obj.isTriggered = false;
-                }
-            });
-            });
-
+            else {
+                this.refreshPatients();
+            }
         }
     },
     mounted() {

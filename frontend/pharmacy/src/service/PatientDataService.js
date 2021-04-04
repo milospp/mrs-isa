@@ -8,6 +8,10 @@ class PatientDataService {
     return axios.get(`${API_URL}/api/users/all-patients`);
   }
 
+  searchPatients(name, surname) {
+    return axios.get(`${API_URL}/api/users/all-patients/search?name=` + name + `&surname=` + surname);
+  }
+
   getPatient(id){
     return axios.get(`${API_URL}/api/users/` + id);
   }
