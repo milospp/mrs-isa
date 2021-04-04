@@ -1,14 +1,23 @@
 package isa9.Farmacy.model;
 
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Objects;
+
 
 public class Supplier extends User{
     private List<Offer> allOffer;
     private List<MedicineQuantity> quantityOnState;
 
     public Supplier() {
+    }
+
+
+    public Supplier(Long id, String name, String surname, String email, String password, Address address, String phoneNumber) {
+        super(id, name, surname, email, password, address, phoneNumber, UserRole.SUPPLIER);
+        this.allOffer = new ArrayList<Offer>();
+        this.quantityOnState = new ArrayList<MedicineQuantity>();
     }
 
     public Supplier(Long id, String name, String surname, String email, String password, Address address,
@@ -50,8 +59,8 @@ public class Supplier extends User{
 
     @Override
     public String toString() {
-        return "Supplier{" +
-                "allOffer=" + allOffer +
+        return super.toString() + " Supplier{" +
+                "allOffers=" + allOffer +
                 ", quantityOnState=" + quantityOnState +
                 '}';
     }

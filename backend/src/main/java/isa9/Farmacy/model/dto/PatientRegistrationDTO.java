@@ -9,7 +9,7 @@ public class PatientRegistrationDTO {
 
 
     public PatientRegistrationDTO(Long id, String name, String surname,
-                                  Address address, String phoneNumber, String password) {
+                                  Address address, String phoneNumber, String password, String email) {
         this.id = id;
         this.name = name;
         this.surname = surname;

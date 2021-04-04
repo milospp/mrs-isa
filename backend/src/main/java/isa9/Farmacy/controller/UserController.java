@@ -304,4 +304,17 @@ public class UserController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
+    @PostMapping("register/supplier")
+    public ResponseEntity<Boolean> registerSupplier(@RequestBody SupplierRegistrationDTO newSupplierDto){
+        if(!userService.isAvaibleEmail(newSupplierDto.getEmail())) return new ResponseEntity<>(false, HttpStatus.OK);
+        Supplier newlyRegistered = new Supplier(0L, newSupplierDto.getName(), newSupplierDto.getSurname(),
+                newSupplierDto.getEmail(), newSupplierDto.getPassword(), newSupplierDto.getAddress(),
+                newSupplierDto.getPhoneNumber());
+        userService.save(newlyRegistered);
+        System.out.println(newlyRegistered);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+
+
 }
