@@ -1,10 +1,7 @@
 package isa9.Farmacy.service.impl.inmemory;
 
+import isa9.Farmacy.model.*;
 import org.springframework.stereotype.Component;
-import isa9.Farmacy.model.Address;
-import isa9.Farmacy.model.Patient;
-import isa9.Farmacy.model.Pharmacy;
-import isa9.Farmacy.model.User;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.impl.base.PharmacyServiceBase;
@@ -30,10 +27,13 @@ public class InMemoryPharmacyService extends PharmacyServiceBase implements Phar
                 "Radno vreme 8-18h", 3L));
         pharmacies.put(4L, new Pharmacy("Laurus", new Address("Trg slobode", "8", "Novi Sad", "Serbia"),
                 "Nedeljom ne radimo", 4L));
-        pharmacies.put(5L, new Pharmacy("PrimerApoteke", new Address("ulica", "broj", "grad", "drzava"),
-                "opis", 5L));
 
-
+        // potrebno za prikaz lekovaaa
+        Pharmacy apoteka = new Pharmacy("PrimerApoteke", new Address("ulica", "broj", "grad", "drzava"), "opis", 5L);
+        apoteka.getAllMedicines().add(new MedicineQuantity(new Medicine("Kod1", "Ime1", "Strkt1", "Man1", "Note1", 1, "Oblik1", "Tip1", null, null), 2));
+        apoteka.getAllMedicines().add(new MedicineQuantity(new Medicine("Kod2", "Ime2", "Strk2", "Man2", "Note2", 2, "Oblik2", "Tip2", null, null), 7));
+        //string code, String name, String structure, String manufacturer, String note, int points, String shape, String type, DispencingMedicine perscription, Set<Medicine> replacementMedication
+        pharmacies.put(5L, apoteka);
     }
 
     @Override

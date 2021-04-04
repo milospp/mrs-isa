@@ -1,6 +1,7 @@
 <template>
-    <div class="col-md-12" v-for="j in jobs">
-      <div class="card m-4 box-shadow d-inline-flex" style="width: 20%">
+<div class="row">
+    <div class="col-md-12 d-flex justify-content-center" v-for="j in jobs" :key="j.id">
+      <div class="card m-4 box-shadow" style="width: 25%">
         <div class="card-header">
             <h4 class="my-0 font-weight-normal">{{j.pharmacyName}}</h4> <!---->
           </div>
@@ -23,6 +24,7 @@
         </div>
       </div>
     </div>
+</div>
 </template>
 
 <script>
@@ -33,7 +35,7 @@ export default {
     setup() {
       return { UtilService }
     },
-    name: 'PharmacyCard',
+    name: 'PharmacyCardPharm',
     data() {
         return {
             jobs: [],

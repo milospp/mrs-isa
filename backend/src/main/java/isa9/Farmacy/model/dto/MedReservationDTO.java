@@ -1,29 +1,29 @@
-package isa9.Farmacy.model;
+package isa9.Farmacy.model.dto;
+
+import isa9.Farmacy.model.Medicine;
+import isa9.Farmacy.model.Pharmacist;
+import isa9.Farmacy.model.Pharmacy;
 
 import java.util.Date;
-import java.util.Objects;
 
-public class MedReservation {
+public class MedReservationDTO {
     private String id;
-    private Patient patient;
     private Date reservationDate;
     private Date lastDate;
     private boolean taken;
 
-    private Medicine medicine;
+    private String medicine;
     private int quantity;
 
+    private PharmacistDTO issued;
+    private PharmacyDTO pharmacy;
 
-    private Pharmacist issued;
-    private Pharmacy pharmacy;
-
-    public MedReservation() {
+    public MedReservationDTO() {
         super();
     }
 
-    public MedReservation(String id, Patient patient, Date reservationDate, Date lastDate, boolean taken, Medicine medicine, int quantity, Pharmacist issued, Pharmacy pharmacy) {
+    public MedReservationDTO(String id, Date reservationDate, Date lastDate, boolean taken, String medicine, int quantity, PharmacistDTO issued, PharmacyDTO pharmacy) {
         this.id = id;
-        this.patient = patient;
         this.reservationDate = reservationDate;
         this.lastDate = lastDate;
         this.taken = taken;
@@ -39,14 +39,6 @@ public class MedReservation {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Patient getPatient() {
-        return patient;
-    }
-
-    public void setPatient(Patient patient) {
-        this.patient = patient;
     }
 
     public Date getReservationDate() {
@@ -73,11 +65,11 @@ public class MedReservation {
         this.taken = taken;
     }
 
-    public Medicine getMedicine() {
+    public String getMedicine() {
         return medicine;
     }
 
-    public void setMedicine(Medicine medicine) {
+    public void setMedicine(String medicine) {
         this.medicine = medicine;
     }
 
@@ -89,31 +81,30 @@ public class MedReservation {
         this.quantity = quantity;
     }
 
-    public Pharmacist getIssued() {
+    public PharmacistDTO getIssued() {
         return issued;
     }
 
-    public void setIssued(Pharmacist issued) {
+    public void setIssued(PharmacistDTO issued) {
         this.issued = issued;
     }
 
-    public Pharmacy getPharmacy() {
+    public PharmacyDTO getPharmacy() {
         return pharmacy;
     }
 
-    public void setPharmacy(Pharmacy pharmacy) {
+    public void setPharmacy(PharmacyDTO pharmacy) {
         this.pharmacy = pharmacy;
     }
 
     @Override
     public String toString() {
-        return "MedReservation{" +
+        return "MedReservationDTO{" +
                 "id='" + id + '\'' +
-                ", patient=" + patient +
                 ", reservationDate=" + reservationDate +
                 ", lastDate=" + lastDate +
                 ", taken=" + taken +
-                ", medicine=" + medicine +
+                ", medicine='" + medicine + '\'' +
                 ", quantity=" + quantity +
                 ", issued=" + issued +
                 ", pharmacy=" + pharmacy +

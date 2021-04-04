@@ -1,9 +1,9 @@
 package isa9.Farmacy.model;
 
+import org.springframework.core.annotation.Order;
+
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Pharmacy {
     private String name;
@@ -11,9 +11,14 @@ public class Pharmacy {
     private String description;
     private Long id;
     private List<Work> staff;
+    private List<MedicineOrder> orders;
+    private List<MedicineInPharmacy> medicines;
 
     public Pharmacy() {
         super();
+        this.orders = new ArrayList<>();
+        this.staff = new ArrayList<>();
+        this.medicines = new ArrayList<>();
     }
 
     public Pharmacy(String name, Address address, String description, Long id) {
@@ -23,14 +28,18 @@ public class Pharmacy {
         this.description = description;
         this.id = id;
         this.staff = new ArrayList<>();
+        this.orders = new ArrayList<>();
+        this.medicines = new ArrayList<>();
     }
 
-    public Pharmacy(String name, Address address, String description, Long id, List<Work> staff) {
+    public Pharmacy(String name, Address address, String description, Long id, List<Work> staff, List<MedicineOrder> orders, List<MedicineInPharmacy> medicines) {
         this.name = name;
         this.address = address;
         this.description = description;
         this.id = id;
         this.staff = staff;
+        this.orders = orders;
+        this.medicines = medicines;
     }
 
     public String getName() {
@@ -90,19 +99,34 @@ public class Pharmacy {
             this.staff.add(work);
         }
     }
-/*
-    public List<MedicineStockPrice> getMedicineStockPrices() {
-        return medicineStockPrices;
+
+    public List<MedicineOrder> getOrders() {
+        return orders;
     }
 
-    public void setMedicineStockPrices(List<MedicineStockPrice> medicineStockPrices) {
-        this.medicineStockPrices = medicineStockPrices;
-    }*/
+    public void setOrders(List<MedicineOrder> orders) {
+        this.orders = orders;
+    }
+
+    public List<MedicineInPharmacy> getMedicines() {
+        return medicines;
+    }
+
+    public void setMedicines(List<MedicineInPharmacy> medicines) {
+        this.medicines = medicines;
+    }
 
     @Override
     public String toString() {
-        return "Pharmacy [name=" + name + ", address=" + address + ", description=" + description + ", id=" + id
-                + ", medicineStockPrices="/* + medicineStockPrices */+ "]";
+        return "Pharmacy{" +
+                "name='" + name + '\'' +
+                ", address=" + address +
+                ", description='" + description + '\'' +
+                ", id=" + id +
+                ", staff=" + staff +
+                ", orders=" + orders +
+                ", medicines=" + medicines +
+                '}';
     }
 
     @Override
@@ -110,11 +134,11 @@ public class Pharmacy {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Pharmacy pharmacy = (Pharmacy) o;
-        return Objects.equals(name, pharmacy.name) && Objects.equals(address, pharmacy.address) && Objects.equals(description, pharmacy.description) && Objects.equals(id, pharmacy.id);
+        return Objects.equals(name, pharmacy.name) && Objects.equals(address, pharmacy.address) && Objects.equals(description, pharmacy.description) && id.equals(pharmacy.id) && Objects.equals(staff, pharmacy.staff) && Objects.equals(orders, pharmacy.orders) && Objects.equals(medicines, pharmacy.medicines);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, address, description, id);
+        return Objects.hash(name, address, description, id, staff, orders, medicines);
     }
 }

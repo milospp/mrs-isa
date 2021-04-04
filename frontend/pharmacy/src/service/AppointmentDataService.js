@@ -12,6 +12,11 @@ class MedicineDataService {
     return axios.get(`${API_URL}/patient-upcoming/` + id);
   }
 
+  
+  getAllUserPastAppointments(id) {
+    return axios.get(`${API_URL}/patient-past/` + id);
+  }
+
   getFreeDermAppointments(id) {
     return axios.get(`${API_URL}/dermatologist/free`);
   }

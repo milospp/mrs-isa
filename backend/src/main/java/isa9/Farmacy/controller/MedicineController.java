@@ -1,21 +1,22 @@
 package isa9.Farmacy.controller;
 
-import isa9.Farmacy.model.Medicine;
-import isa9.Farmacy.model.User;
+import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.MedicineDTO;
-import isa9.Farmacy.model.dto.UserDTO;
+import isa9.Farmacy.model.dto.MedicineQuantityDTO;
 import isa9.Farmacy.service.MedicineService;
-import isa9.Farmacy.service.impl.base.MedicineServiceBase;
+import isa9.Farmacy.service.PharmacyService;
+import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.support.MedicineQuantityToMedicineQuantityDTO;
+import isa9.Farmacy.support.MedicineToMedicineDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -24,9 +25,13 @@ import java.util.stream.Collectors;
 public class MedicineController {
 
     private final MedicineService medicineService;
+    private final UserService userService;
+    private final PharmacyService pharmacyService;
 
     @Autowired
-    public MedicineController(MedicineService medicineService){
+    public MedicineController(MedicineService medicineService, UserService us, PharmacyService ps){
+        this.userService = us;
+        this.pharmacyService = ps;
         this.medicineService = medicineService;
     }
 
@@ -55,4 +60,20 @@ public class MedicineController {
     }
 
 
+    @GetMapping("/pharmacyAdmin/{id}")
+    public ResponseEntity<List<MedicineQuantityDTO>> getAllMedicinePharmacyAdmin(@PathVariable Long id) {
+        User user = userService.findOne(id);
+        if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        MedicineQuantityToMedicineQuantityDTO konverter = new MedicineQuantityToMedicineQuantityDTO();
+        List<MedicineQuantity> sviLekovi = ((PharmacyAdmin) user).getPharmacy().getAllMedicines();
+        List<MedicineQuantityDTO> povratna = konverter.convert(sviLekovi);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+    @GetMapping("/pharmacy/{id}")
+    public ResponseEntity<List<MedicineQuantityDTO>> getAllMedicinePharmacy(@PathVariable Long id) {
+        Pharmacy apoteka = pharmacyService.findOne(id);
+        MedicineQuantityToMedicineQuantityDTO konverter = new MedicineQuantityToMedicineQuantityDTO();
+        List<MedicineQuantityDTO> povratna = konverter.convert(apoteka.getAllMedicines());
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
 }

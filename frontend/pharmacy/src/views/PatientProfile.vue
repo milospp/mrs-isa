@@ -2,11 +2,38 @@
   <div>
     <NavBar/>
     
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
     <div class="container pt-5">
       <PatientProfileInfo/>
 
 
-      <div class="row">
+      <div class="row subsection">
         <div class="col-md-12">
 
           <div>
@@ -16,6 +43,7 @@
               <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Subscription</a></li>
               <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Penalities</a></li>
               <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#appointments">Appointments</a></li>
+              <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#history">Hisotry</a></li>
               <!-- <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu3">Map</a></li> -->
             </ul>
           
@@ -35,6 +63,10 @@
               <div id="appointments" class="tab-pane fade">
                 <PatientAppointments/>
               </div>
+              
+              <div id="history" class="tab-pane fade">
+                <PatientHistory/>
+              </div>
             </div>
           </div>
           
@@ -47,8 +79,8 @@
   </div>
 </template>
 
-<style>
-  .in {
+<style scoped>
+  .subsection .in {
     opacity: 1 !important;
   }
   .nav-item.active > .nav-link {
@@ -65,6 +97,7 @@ import PatientAlergies from '../components/patientProfile/PatientAlergies.vue'
 import PatientSubscription from '../components/patientProfile/PatientSubscription.vue'
 import PatientPenalities from '../components/patientProfile/PatientPenalities.vue'
 import PatientAppointments from '../components/patientProfile/PatientAppointments.vue'
+import PatientHistory from '../components/patientProfile/PatientHistory.vue'
 
 // @ is an alias to /src
 export default {
@@ -76,6 +109,7 @@ export default {
     PatientSubscription,
     PatientPenalities,
     PatientAppointments,
+    PatientHistory,
   }
 }
 </script>
