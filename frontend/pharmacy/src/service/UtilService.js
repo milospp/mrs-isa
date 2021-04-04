@@ -4,7 +4,7 @@ import moment from "moment";
 
 class UtilService {
   AddressToString(address) {
-    return  address.state + ", " + address.city + ", " + address.street + " " + address.number;
+    return address.street + " " + address.number + ", " + address.city + ", " + address.state;
   }
 
   FormatTime(time) {

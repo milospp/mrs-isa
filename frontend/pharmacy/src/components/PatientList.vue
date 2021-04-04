@@ -1,8 +1,8 @@
 <template>
     <div class="container">
         <div class="row">
-
-                <form>
+            <div class="container" style="padding: 0px;">
+                <form style="float: right;">
                     <div class="form-row form-inline mb-2" >
                         <div class="form-group col-auto">
                             <input type="text" class="form-control" id="name" placeholder="First Name">
@@ -15,24 +15,25 @@
                         </div>
                     </div>  
                 </form>
-
-            <table class="table table-hover table-bordered box-shadow">
-                <thead class="card-header">
-                    <th>First name</th>
-                    <th>Last name</th>
-                    <th>Address</th>
-                    <th>Phone number</th>
-                </thead>
-                <tbody>
-                    <tr :key="p.username" v-for="p in patients" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
-                        <td>{{p.name}}</td>
-                        <td>{{p.surname}}</td>
-                        <td>{{p.address.street}} {{p.address.number}}, {{p.address.city}}, {{p.address.state}}</td>
-                        <td>{{p.phoneNumber}}</td>
-                    </tr>
-                </tbody>
-            </table>
-
+            </div>
+            <div class="container" style="padding: 0px;">
+                <table class="table table-hover table-striped box-shadow">
+                    <thead class="card-header">
+                        <th style="">First name</th>
+                        <th>Last name</th>
+                        <th>Address</th>
+                        <th>Phone number</th>
+                    </thead>
+                    <tbody>
+                        <tr :key="p.username" v-for="p in patients" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
+                            <td>{{p.name}}</td>
+                            <td>{{p.surname}}</td>
+                            <td>{{UtilService.AddressToString(p.address)}}</td>
+                            <td>{{p.phoneNumber}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -54,9 +55,13 @@
 
 <script>
 import PatientDataService from '../service/PatientDataService.js';
+import UtilService from '../service/UtilService.js';
 
 export default {
     name: 'PatientList',
+    setup() {
+      return {UtilService}
+    },
     data() {
         return {
             patients: [],
@@ -117,8 +122,19 @@ export default {
 <style scoped>
     .table {
         color: inherit;
+        overflow: auto;
+        position: relative;
     }
     .clickable {
         cursor: pointer;
     }
+    .active {
+        color: #42b983;
+    }
+    /*th {
+        position: sticky;
+        top: 0;
+        color:  #007bff;
+        text-decoration: none;
+    }*/
 </style>
