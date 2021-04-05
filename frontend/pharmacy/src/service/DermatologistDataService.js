@@ -33,6 +33,16 @@ class DermatologistDataService {
   getDermatologist(id){
     return axios.get(`${API_URL}/api/users/` + id);
   }
+
+  SendDermatologist(newDermatologist) {
+    return axios({
+        method: 'post',
+        url: `${API_URL}/api/users/register/dermatologist`,
+        data: newDermatologist
+    }).then(response => {
+        if (response.data == false) alert("This e-mail is taken!");
+    });
+}
 }
 
 export default new DermatologistDataService();
