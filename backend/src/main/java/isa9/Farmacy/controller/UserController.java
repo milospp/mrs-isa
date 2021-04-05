@@ -327,6 +327,15 @@ public class UserController {
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
-
+    @PostMapping("register/dermatologist")
+    public ResponseEntity<Boolean> registerDermatologist(@RequestBody DermatologistRegDTO newDermatologistDto){
+        if(!userService.isAvaibleEmail(newDermatologistDto.getEmail())) return new ResponseEntity<>(false, HttpStatus.OK);
+        Dermatologist newlyRegistered = new Dermatologist(0L, newDermatologistDto.getName(), newDermatologistDto.getSurname(),
+                newDermatologistDto.getEmail(), newDermatologistDto.getPassword(),
+                newDermatologistDto.getAddress(), newDermatologistDto.getPhoneNumber());
+        userService.save(newlyRegistered);
+        System.out.println(newlyRegistered);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
 
 }
