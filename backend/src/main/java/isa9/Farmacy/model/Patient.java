@@ -1,24 +1,21 @@
 package isa9.Farmacy.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.*;
 
 @Entity
 public class Patient extends User {
     @Column
     private int points;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Penality> penalties;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Pharmacy> subscriptions;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Examination> myExaminations;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Medicine> allergies;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<MedReservation> reservations;
 
     public Patient() {

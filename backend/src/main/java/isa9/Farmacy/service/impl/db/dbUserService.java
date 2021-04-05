@@ -43,12 +43,15 @@ public class dbUserService extends UserServiceBase implements UserService {
 
     @Override
     public boolean isAvaibleEmail(String em) {
-        throw new NotYetImplementedException();
+        return true;
+//        throw new NotYetImplementedException();
 //        return false;
     }
 
     @Override
     public PharmacyAdmin findPharmacyAdmin(Long pharmacyId) {
+//        return true;
+        System.out.println("FindPharmacyAdmin Not implemented");
         throw new NotYetImplementedException();
 //        return null;
     }

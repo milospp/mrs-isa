@@ -32,7 +32,7 @@ public abstract class User {
     @Column
     private String password;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
     @Column
