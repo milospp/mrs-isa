@@ -91,7 +91,7 @@ public class PharmacyController {
             Pharmacist p = (Pharmacist) doctor;
             System.out.println("Look! REAL Pharmacist!");
             List<WorkDTO> work = this.workToWorkDTO.convert(p.getWorking());
-            System.out.println("Look! " + p.getWorking().get(0).toString());
+            System.out.println("Look! " + p.getWorking().iterator().next().toString());
             return new ResponseEntity<>(work, HttpStatus.OK);
         }
         else if (doctor.getRole() == UserRole.DERMATOLOGIST || doctor.getClass() == Dermatologist.class){

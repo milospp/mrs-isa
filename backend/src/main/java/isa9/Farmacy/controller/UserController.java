@@ -146,7 +146,7 @@ public class UserController {
         if (povratna > 0) return new ResponseEntity<>(povratna, HttpStatus.OK);
         User adminUser = userService.findOne(id);
         if (adminUser.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(1, HttpStatus.NOT_FOUND);
-        user.getRegisterData().setWorking(new ArrayList<>());
+        user.getRegisterData().setWorking(new HashSet<>());
         user.getRegisterData().getWorking().add(new Work(1L, user.getRegisterData(), ((PharmacyAdmin) adminUser).getPharmacy(), LocalTime.parse(user.getStartHour()), LocalTime.parse(user.getEndHour())));
         //user.setPharmacy();
         // tehnicki suvisna provera ali dok ne sredimo registraciju

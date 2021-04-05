@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -64,7 +65,7 @@ public class MedicineController {
         User user = userService.findOne(id);
         if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         MedicineInPharmacyToMedInPharmaDTO konverter = new MedicineInPharmacyToMedInPharmaDTO(new MedicineToMedicineDTO());
-        List<MedicineInPharmacy> sviLekovi = ((PharmacyAdmin) user).getPharmacy().getMedicines();
+        Set<MedicineInPharmacy> sviLekovi = ((PharmacyAdmin) user).getPharmacy().getMedicines();
         List<MedInPharmaDTO> povratna = konverter.convert(sviLekovi);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }

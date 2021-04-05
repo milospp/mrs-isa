@@ -1,14 +1,27 @@
 package isa9.Farmacy.model;
 
+import lombok.EqualsAndHashCode;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Entity
+@EqualsAndHashCode
 public class MedPrice {
     // za svaku promenu cene, pravi se nova klasa cene
+    @Id
     private Long id;
+    @Column
     private LocalDateTime startDate;
+    @Column
     private double price;
+    @ManyToOne
     private Medicine medicine;
+    @ManyToOne
     private Pharmacy pharmacy;
 
     public MedPrice() {
@@ -34,18 +47,7 @@ public class MedPrice {
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MedPrice medPrice = (MedPrice) o;
-        return id.equals(medPrice.id) && Double.compare(medPrice.price, price) == 0 && startDate.equals(medPrice.startDate) && medicine.equals(medPrice.medicine) && pharmacy.equals(medPrice.pharmacy);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, startDate, price, medicine, pharmacy);
-    }
 
     public Long getId() {
         return id;

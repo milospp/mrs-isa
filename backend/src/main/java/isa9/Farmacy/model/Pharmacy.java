@@ -1,24 +1,43 @@
 package isa9.Farmacy.model;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.core.annotation.Order;
 
+import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.*;
 
+@Entity
+@EqualsAndHashCode(exclude = "medicines")
+@ToString
 public class Pharmacy {
-    private String name;
-    private Address address;
-    private String description;
+    @Id
     private Long id;
-    private List<Work> staff;
-    private List<MedicineOrder> orders;
-    private List<MedicineInPharmacy> medicines;
+
+    @Column
+    private String name;
+    @ManyToOne
+    private Address address;
+    @Column
+    private String description;
+    @ManyToMany
+    private Set<Work> staff;
+
+    @OneToMany
+    private Set<MedicineOrder> orders;
+
+    @OneToMany
+    private Set<MedicineInPharmacy> medicines;
+
+    @OneToMany
+    private Set<Rating> ratings;
 
     public Pharmacy() {
         super();
-        this.orders = new ArrayList<>();
-        this.staff = new ArrayList<>();
-        this.medicines = new ArrayList<>();
+        this.orders = new HashSet<>();
+        this.staff = new HashSet<>();
+        this.medicines = new HashSet<>();
     }
 
     public Pharmacy(String name, Address address, String description, Long id) {
@@ -27,12 +46,12 @@ public class Pharmacy {
         this.address = address;
         this.description = description;
         this.id = id;
-        this.staff = new ArrayList<>();
-        this.orders = new ArrayList<>();
-        this.medicines = new ArrayList<>();
+        this.staff = new HashSet<>();
+        this.orders = new HashSet<>();
+        this.medicines = new HashSet<>();
     }
 
-    public Pharmacy(String name, Address address, String description, Long id, List<Work> staff, List<MedicineOrder> orders, List<MedicineInPharmacy> medicines) {
+    public Pharmacy(String name, Address address, String description, Long id, Set<Work> staff, Set<MedicineOrder> orders, Set<MedicineInPharmacy> medicines) {
         this.name = name;
         this.address = address;
         this.description = description;
@@ -74,11 +93,11 @@ public class Pharmacy {
         this.id = id;
     }
 
-    public List<Work> getStaff() {
+    public Set<Work> getStaff() {
         return staff;
     }
 
-    public void setStaff(List<Work> staff) {
+    public void setStaff(Set<Work> staff) {
         this.staff = staff;
     }
 
@@ -100,45 +119,23 @@ public class Pharmacy {
         }
     }
 
-    public List<MedicineOrder> getOrders() {
+    public Set<MedicineOrder> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<MedicineOrder> orders) {
+    public void setOrders(Set<MedicineOrder> orders) {
         this.orders = orders;
     }
 
-    public List<MedicineInPharmacy> getMedicines() {
+    public Set<MedicineInPharmacy> getMedicines() {
         return medicines;
     }
 
-    public void setMedicines(List<MedicineInPharmacy> medicines) {
+    public void setMedicines(Set<MedicineInPharmacy> medicines) {
         this.medicines = medicines;
     }
 
-    @Override
-    public String toString() {
-        return "Pharmacy{" +
-                "name='" + name + '\'' +
-                ", address=" + address +
-                ", description='" + description + '\'' +
-                ", id=" + id +
-                ", staff=" + staff +
-                ", orders=" + orders +
-                ", medicines=" + medicines +
-                '}';
-    }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Pharmacy pharmacy = (Pharmacy) o;
-        return Objects.equals(name, pharmacy.name) && Objects.equals(address, pharmacy.address) && Objects.equals(description, pharmacy.description) && id.equals(pharmacy.id) && Objects.equals(staff, pharmacy.staff) && Objects.equals(orders, pharmacy.orders) && Objects.equals(medicines, pharmacy.medicines);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, address, description, id, staff, orders, medicines);
-    }
+
 }

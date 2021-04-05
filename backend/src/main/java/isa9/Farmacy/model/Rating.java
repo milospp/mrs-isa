@@ -1,10 +1,22 @@
 package isa9.Farmacy.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.util.Objects;
 
-public class Rating {private User user;
+@Entity
+public class Rating {
+    @Id
+    private Long id;
+    @ManyToOne
+    private User user;
+    @ManyToOne
     private Pharmacy pharmacy;
+    @ManyToOne
     private Medicine medicine;
+    @Column
     private int rating;
 
     public Rating() {
@@ -17,6 +29,14 @@ public class Rating {private User user;
         this.pharmacy = pharmacy;
         this.medicine = medicine;
         this.rating = rating;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public User getUser() {

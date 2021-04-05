@@ -8,6 +8,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Component
@@ -30,7 +31,7 @@ public class WorkToWorkDTO implements Converter<Work, WorkDTO> {
         return dto;
     }
 
-    public List<WorkDTO> convert(List<Work> works) {
+    public List<WorkDTO> convert(Collection<Work> works) {
         List<WorkDTO> dto = new ArrayList<>();
         for (Work work : works){
             dto.add(convert(work));

@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@Component
 public class InMemoryExaminationService extends ExaminationServiceBase implements ExaminationService {
     private final Map<Long, Examination> examinations = new HashMap<>();
 

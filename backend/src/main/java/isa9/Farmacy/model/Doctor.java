@@ -1,10 +1,17 @@
 package isa9.Farmacy.model;
 
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToMany;
+import java.util.Set;
 
+@Entity
+@Inheritance(strategy= InheritanceType.JOINED)
 public abstract class Doctor extends User{
 
-    private List<Work> working;
+    @ManyToMany
+    private Set<Work> working;
 
     public Doctor() {
     }
@@ -15,11 +22,11 @@ public abstract class Doctor extends User{
 
     }
 
-    public List<Work> getWorking() {
+    public Set<Work> getWorking() {
         return working;
     }
 
-    public void setWorking(List<Work> working) {
+    public void setWorking(Set<Work> working) {
         this.working = working;
     }
 
