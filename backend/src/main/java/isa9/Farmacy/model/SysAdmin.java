@@ -1,5 +1,10 @@
 package isa9.Farmacy.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "sys_admin")
 public class SysAdmin extends User{
 
     public SysAdmin() {

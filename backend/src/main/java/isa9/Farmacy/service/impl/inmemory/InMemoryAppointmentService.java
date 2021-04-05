@@ -19,39 +19,37 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-@Component
 public class InMemoryAppointmentService extends AppointmentServiceBase implements AppointmentService {
     private final Map<Long, Appointment> appointments = new HashMap<>();
 
-    @Autowired
     InMemoryAppointmentService() {
 
 
     }
 
-    @PostConstruct
-    public void init() {
-        Appointment a1 = new Appointment(1L, LocalDateTime.now().minusDays(2), 20, 30, TypeOfReview.EXAMINATION ,new Dermatologist(), new Pharmacy(), null);
-        Appointment a2 = new Appointment(2L, LocalDateTime.now().plusDays(2), 20, 30, TypeOfReview.EXAMINATION ,new Dermatologist(), new Pharmacy(), null);
-        Appointment a3 = new Appointment(3L, LocalDateTime.now().plusDays(2), 20, 30, TypeOfReview.EXAMINATION ,new Pharmacist(), new Pharmacy(), null);
-        Appointment a4 = new Appointment(4L, LocalDateTime.now(), 20, 30, TypeOfReview.COUNSELING ,new Pharmacist(), new Pharmacy(), null);
-
-        Medicine med1 = new Medicine("code22");
-        HashMap<Medicine, Integer> ther1 = new HashMap<Medicine, Integer>();
-        ther1.put(med1, 3);
-
-        Examination e1 = new Examination(1L, (Patient) userService.findOne(1L), a1, ExaminationStatus.HELD, "test", "diagnose", ther1);
-        a1.setExamination(e1);
-
-        Examination e2 = new Examination(2L, (Patient) userService.findOne(1L), a1, ExaminationStatus.HELD, "test", "diagnose", new HashMap<>());
-        a4.setExamination(e2);
-
-
-        appointments.put(a1.getId(), a1);
-        appointments.put(a2.getId(), a2);
-        appointments.put(a3.getId(), a3);
-        appointments.put(a4.getId(), a4);
-    }
+//    @PostConstruct
+//    public void init() {
+//        Appointment a1 = new Appointment(1L, LocalDateTime.now().minusDays(2), 20, 30, TypeOfReview.EXAMINATION ,new Dermatologist(), new Pharmacy(), null);
+//        Appointment a2 = new Appointment(2L, LocalDateTime.now().plusDays(2), 20, 30, TypeOfReview.EXAMINATION ,new Dermatologist(), new Pharmacy(), null);
+//        Appointment a3 = new Appointment(3L, LocalDateTime.now().plusDays(2), 20, 30, TypeOfReview.EXAMINATION ,new Pharmacist(), new Pharmacy(), null);
+//        Appointment a4 = new Appointment(4L, LocalDateTime.now(), 20, 30, TypeOfReview.COUNSELING ,new Pharmacist(), new Pharmacy(), null);
+//
+//        Medicine med1 = new Medicine("code22");
+//        HashMap<Medicine, Integer> ther1 = new HashMap<Medicine, Integer>();
+//        ther1.put(med1, 3);
+//
+//        Examination e1 = new Examination(1L, (Patient) userService.findOne(1L), a1, ExaminationStatus.HELD, "test", "diagnose", ther1);
+//        a1.setExamination(e1);
+//
+//        Examination e2 = new Examination(2L, (Patient) userService.findOne(1L), a1, ExaminationStatus.HELD, "test", "diagnose", new HashMap<>());
+//        a4.setExamination(e2);
+//
+//
+//        appointments.put(a1.getId(), a1);
+//        appointments.put(a2.getId(), a2);
+//        appointments.put(a3.getId(), a3);
+//        appointments.put(a4.getId(), a4);
+//    }
 
     @Override
     public List<Appointment> findAll() {

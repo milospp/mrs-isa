@@ -1,12 +1,22 @@
 package isa9.Farmacy.model;
 
+import lombok.EqualsAndHashCode;
+
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@EqualsAndHashCode
 public class MedicineInPharmacy {
+    @Id
     private String id;
+    @OneToOne
     private MedPrice currentPrice;
+    @ManyToOne
     private Medicine medicine;
+    @Column
     private int inStock;
+    @ManyToOne
     private Pharmacy pharmacy; // mozda ne treba
 
     public MedicineInPharmacy() {
@@ -29,19 +39,6 @@ public class MedicineInPharmacy {
                 ", inStock=" + inStock +
                 ", pharmacy=" + pharmacy +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MedicineInPharmacy that = (MedicineInPharmacy) o;
-        return id.equals(that.id) && inStock == that.inStock && currentPrice.equals(that.currentPrice) && medicine.equals(that.medicine) && pharmacy.equals(that.pharmacy);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, currentPrice, medicine, inStock, pharmacy);
     }
 
     public String getId() {

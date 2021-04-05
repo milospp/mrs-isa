@@ -1,15 +1,26 @@
 package isa9.Farmacy.model;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
-
+@Entity
 public class MedicineOrder {
+    @Id
+    private Long id;
+    @Column
     private LocalDateTime startDate;
+    @Column
     private LocalDateTime endDate;
+
+    @OneToOne
     private Offer chosenOffer;
+    @OneToMany
     private List<Offer> allOffer;
+    @ManyToOne
     private Pharmacy pharmacy;
+    @OneToMany
     private List<MedicineQuantity> allMedicines;
+    @ManyToOne
     private PharmacyAdmin author; // jer ponudu za neku narudzbenicu sme da prihvati samo admin koji je napravio narudzbenicu
 
     public MedicineOrder() {

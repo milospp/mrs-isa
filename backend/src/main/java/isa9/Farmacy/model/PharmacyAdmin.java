@@ -1,7 +1,12 @@
 package isa9.Farmacy.model;
 
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+
+@Entity
 public class PharmacyAdmin extends User{
 
+    @ManyToOne
     private Pharmacy pharmacy;
 
     public PharmacyAdmin() {

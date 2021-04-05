@@ -1,16 +1,35 @@
 package isa9.Farmacy.model;
 
+import lombok.*;
+
+import javax.persistence.*;
 import java.util.Objects;
 
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 public class Address {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column
     private String street;
+
+    @Column
     private String number;
+
+    @Column
     private String city;
+
+    @Column
     private String state;
 
-    public Address() {
-    }
 
     public Address(String street, String number, String city, String state) {
         this.street = street;
@@ -19,54 +38,4 @@ public class Address {
         this.state = state;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Address address = (Address) o;
-        return street.equals(address.street) && number.equals(address.number) &&
-                city.equals(address.city) && state.equals(address.state);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(street, number, city, state);
-    }
-
-    @Override
-    public String toString() {
-        return street + " " + number + ", " + city + ", " + state;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
 }

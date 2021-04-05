@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@Component
 public class InMemoryPharmacyService extends PharmacyServiceBase implements PharmacyService {
     private final Map<Long, Pharmacy> pharmacies = new HashMap<>();
 
@@ -59,13 +58,6 @@ public class InMemoryPharmacyService extends PharmacyServiceBase implements Phar
         return entity;
     }
 
-    @Override
-    public boolean pharmacyExists(Pharmacy p) {
-        for(Pharmacy ph : this.pharmacies.values()){
-            if(ph.getName().equals(p.getName()) && ph.getAddress().equals(p.getAddress())) return true;
-        };
 
-        return false;
-    }
 
 }

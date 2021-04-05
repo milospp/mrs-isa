@@ -1,13 +1,18 @@
 package isa9.Farmacy.model;
 
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 
 import java.util.List;
 import java.util.Objects;
 
-
+@Entity
 public class Supplier extends User{
+    @OneToMany
     private List<Offer> allOffer;
+
+    @OneToMany
     private List<MedicineQuantity> quantityOnState;
 
     public Supplier() {

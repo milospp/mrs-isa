@@ -1,14 +1,24 @@
 package isa9.Farmacy.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import java.util.*;
 
+@Entity
 public class Patient extends User {
-
+    @Column
     private int points;
+    @OneToMany
     private Set<Penality> penalties;
+    @ManyToMany
     private Set<Pharmacy> subscriptions;
+    @OneToMany
     private Set<Examination> myExaminations;
+    @ManyToMany
     private Set<Medicine> allergies;
+    @OneToMany
     private Set<MedReservation> reservations;
 
     public Patient() {

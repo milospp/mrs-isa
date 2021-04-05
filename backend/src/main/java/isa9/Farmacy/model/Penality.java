@@ -1,11 +1,18 @@
 package isa9.Farmacy.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Entity
 public class Penality {
+    @Id
     private Long id;
+    @Column
     private String reason;
+    @Column
     private LocalDate date;
 
     public Penality() {

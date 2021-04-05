@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -38,6 +39,12 @@ public class MedicineInPharmacyToMedInPharmaDTO implements Converter<MedicineInP
     }
 
     public List<MedInPharmaDTO> convert(List<MedicineInPharmacy> medicineInPharmacy) {
+        List<MedInPharmaDTO> dto = new ArrayList<>();
+        for (MedicineInPharmacy mf : medicineInPharmacy) dto.add(this.convert(mf));
+        return dto;
+    }
+
+    public List<MedInPharmaDTO> convert(Set<MedicineInPharmacy> medicineInPharmacy) {
         List<MedInPharmaDTO> dto = new ArrayList<>();
         for (MedicineInPharmacy mf : medicineInPharmacy) dto.add(this.convert(mf));
         return dto;

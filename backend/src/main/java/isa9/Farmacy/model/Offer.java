@@ -1,15 +1,26 @@
 package isa9.Farmacy.model;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
+@Entity
 public class Offer {
+    @Id
+    private Long id;
+    @Column
     private double price;
+    @Column
     private Date startDate;
+    @Column
     private Date endDate;
+    @Column
     private String offerDescription;
+    @ManyToOne
     private Supplier supplier;
+    @OneToOne
     private MedicineOrder order;
+    @Enumerated
     private OfferStatus status;
 
 
