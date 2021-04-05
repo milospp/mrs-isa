@@ -1,8 +1,7 @@
 package isa9.Farmacy.model;
 
-import lombok.*;
-
 import javax.persistence.*;
+import lombok.*;
 
 @Getter
 @Setter
@@ -10,6 +9,7 @@ import javax.persistence.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 
 @Entity
 @Table(name = "users")

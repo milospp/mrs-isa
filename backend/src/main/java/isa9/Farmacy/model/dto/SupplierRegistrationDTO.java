@@ -2,6 +2,15 @@ package isa9.Farmacy.model.dto;
 
 import isa9.Farmacy.model.Address;
 import isa9.Farmacy.model.UserRole;
+import lombok.*;
+
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 
 public class SupplierRegistrationDTO extends UserDTO{
     private Long id;
@@ -20,43 +29,5 @@ public class SupplierRegistrationDTO extends UserDTO{
         this.address = address;
     }
 
-    @Override
-    public Long getId() { return id; }
 
-    @Override
-    public void setId(Long id) { this.id = id; }
-
-    @Override
-    public String getName() { return name; }
-
-    @Override
-    public void setName(String name) { this.name = name; }
-
-    @Override
-    public String getSurname() { return surname; }
-
-    @Override
-    public void setSurname(String surname) { this.surname = surname; }
-
-    @Override
-    public String getPhoneNumber() { return phoneNumber; }
-
-    @Override
-    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
-
-    public String getPassword() { return password; }
-
-    public void setPassword(String password) { this.password = password; }
-
-    @Override
-    public String getEmail() { return email; }
-
-    @Override
-    public void setEmail(String email) { this.email = email; }
-
-    @Override
-    public Address getAddress() { return address; }
-
-    @Override
-    public void setAddress(Address address) { this.address = address; }
 }

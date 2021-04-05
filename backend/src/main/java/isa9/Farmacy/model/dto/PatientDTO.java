@@ -5,6 +5,15 @@ import isa9.Farmacy.model.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import lombok.*;
+
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 
 public class PatientDTO extends UserDTO{
     private int points;
@@ -14,7 +23,7 @@ public class PatientDTO extends UserDTO{
     private List<String> allergies;
     private List<String> reservations;
 
-    public PatientDTO() {}
+
 
     public PatientDTO(Long id, String name, String surname, Address address, String phoneNumber, UserRole role, String email, int points) {
         super(id, name, surname, address, phoneNumber, role, email);
@@ -76,51 +85,5 @@ public class PatientDTO extends UserDTO{
         this.allergies = allergies;
     }
 
-    public int getPoints() {
-        return points;
-    }
 
-    public void setPoints(int points) {
-        this.points = points;
-    }
-
-    public List<Long> getPenalties() {
-        return penalties;
-    }
-
-    public void setPenalties(List<Long> penalties) {
-        this.penalties = penalties;
-    }
-
-    public List<Long> getSubscriptions() {
-        return subscriptions;
-    }
-
-    public void setSubscriptions(List<Long> subscriptions) {
-        this.subscriptions = subscriptions;
-    }
-
-    public List<Long> getMyExaminations() {
-        return myExaminations;
-    }
-
-    public void setMyExaminations(List<Long> myExaminations) {
-        this.myExaminations = myExaminations;
-    }
-
-    public List<String> getAllergies() {
-        return allergies;
-    }
-
-    public void setAllergies(List<String> allergies) {
-        this.allergies = allergies;
-    }
-
-    public List<String> getReservations() {
-        return reservations;
-    }
-
-    public void setReservations(List<String> reservations) {
-        this.reservations = reservations;
-    }
 }
