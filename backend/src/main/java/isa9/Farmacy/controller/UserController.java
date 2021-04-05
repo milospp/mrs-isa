@@ -177,6 +177,21 @@ public class UserController {
 
     }
 
+    @GetMapping("all-patients/search")
+    public ResponseEntity<List<PatientDTO>> getByNameSurnamePatientsDTO(@RequestParam String name, @RequestParam String surname) {
+        //System.out.println(name + surname);
+        List<PatientDTO> resultDTOS = new ArrayList<>();
+        List<User> svi = userService.findAll();
+        for (User us : svi){
+            if (us.getClass() == Patient.class && us.getName().toLowerCase(Locale.ROOT).startsWith(name.toLowerCase(Locale.ROOT)) && us.getSurname().toLowerCase(Locale.ROOT).startsWith(surname.toLowerCase(Locale.ROOT))) {
+                Patient patient = (Patient) us;
+                resultDTOS.add(patientToPatientDTO.convert(patient));
+            }
+        }
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
+
     @GetMapping("patient/{id}")
     public ResponseEntity<PatientDTO> getPatient(@PathVariable Long id){
         User us = userService.findOne(id);
@@ -312,6 +327,15 @@ public class UserController {
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
-
+    @PostMapping("register/dermatologist")
+    public ResponseEntity<Boolean> registerDermatologist(@RequestBody DermatologistRegDTO newDermatologistDto){
+        if(!userService.isAvaibleEmail(newDermatologistDto.getEmail())) return new ResponseEntity<>(false, HttpStatus.OK);
+        Dermatologist newlyRegistered = new Dermatologist(0L, newDermatologistDto.getName(), newDermatologistDto.getSurname(),
+                newDermatologistDto.getEmail(), newDermatologistDto.getPassword(),
+                newDermatologistDto.getAddress(), newDermatologistDto.getPhoneNumber());
+        userService.save(newlyRegistered);
+        System.out.println(newlyRegistered);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
 
 }
