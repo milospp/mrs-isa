@@ -7,6 +7,13 @@ import org.springframework.core.annotation.Order;
 import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.*;
+import lombok.*;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 
 @Entity
 @EqualsAndHashCode(exclude = "medicines")
@@ -33,12 +40,7 @@ public class Pharmacy {
     @OneToMany
     private Set<Rating> ratings;
 
-    public Pharmacy() {
-        super();
-        this.orders = new HashSet<>();
-        this.staff = new HashSet<>();
-        this.medicines = new HashSet<>();
-    }
+
 
     public Pharmacy(String name, Address address, String description, Long id) {
         super();
@@ -61,45 +63,7 @@ public class Pharmacy {
         this.medicines = medicines;
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Set<Work> getStaff() {
-        return staff;
-    }
-
-    public void setStaff(Set<Work> staff) {
-        this.staff = staff;
-    }
 
     public void hireDoctor(Long id, Doctor d, LocalTime time1, LocalTime time2) {
         // doda work objekat u doktora i u apoteku
@@ -119,21 +83,7 @@ public class Pharmacy {
         }
     }
 
-    public Set<MedicineOrder> getOrders() {
-        return orders;
-    }
 
-    public void setOrders(Set<MedicineOrder> orders) {
-        this.orders = orders;
-    }
-
-    public Set<MedicineInPharmacy> getMedicines() {
-        return medicines;
-    }
-
-    public void setMedicines(Set<MedicineInPharmacy> medicines) {
-        this.medicines = medicines;
-    }
 
 
 

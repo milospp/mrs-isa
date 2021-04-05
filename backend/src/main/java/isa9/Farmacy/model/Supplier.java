@@ -6,6 +6,15 @@ import java.util.ArrayList;
 
 import java.util.List;
 import java.util.Objects;
+import lombok.*;
+
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 
 @Entity
 public class Supplier extends User{
@@ -15,8 +24,6 @@ public class Supplier extends User{
     @OneToMany
     private List<MedicineQuantity> quantityOnState;
 
-    public Supplier() {
-    }
 
 
     public Supplier(Long id, String name, String surname, String email, String password, Address address, String phoneNumber) {
@@ -32,41 +39,7 @@ public class Supplier extends User{
         this.quantityOnState = quantityOnState;
     }
 
-    public List<Offer> getAllOffer() {
-        return allOffer;
-    }
 
-    public void setAllOffer(List<Offer> allOffer) {
-        this.allOffer = allOffer;
-    }
 
-    public List<MedicineQuantity> getQuantityOnState() {
-        return quantityOnState;
-    }
 
-    public void setQuantityOnState(List<MedicineQuantity> quantityOnState) {
-        this.quantityOnState = quantityOnState;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Supplier supplier = (Supplier) o;
-        return Objects.equals(allOffer, supplier.allOffer) && Objects.equals(quantityOnState, supplier.quantityOnState);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), allOffer, quantityOnState);
-    }
-
-    @Override
-    public String toString() {
-        return super.toString() + " Supplier{" +
-                "allOffers=" + allOffer +
-                ", quantityOnState=" + quantityOnState +
-                '}';
-    }
 }

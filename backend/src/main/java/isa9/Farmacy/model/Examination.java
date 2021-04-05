@@ -3,6 +3,15 @@ package isa9.Farmacy.model;
 import javax.persistence.*;
 import java.util.Map;
 import java.util.Objects;
+import lombok.*;
+
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 
 @Entity
 public class Examination {
@@ -26,72 +35,7 @@ public class Examination {
     @Column
     private Map<Medicine, Integer> therapy; // maybe should be the code of the medicine
 
-    public Examination() {
-    }
 
-    public Examination(Long id, Patient patient, Appointment appointment, ExaminationStatus status, String examinationInfo, String diagnose, Map<Medicine, Integer> therapy) {
-        this.id = id;
-        this.patient = patient;
-        this.appointment = appointment;
-        this.status = status;
-        this.examinationInfo = examinationInfo;
-        this.diagnose = diagnose;
-        this.therapy = therapy;
-    }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Patient getPatient() {
-        return patient;
-    }
-
-    public void setPatient(Patient patient) {
-        this.patient = patient;
-    }
-
-    public Appointment getAppointment() {
-        return appointment;
-    }
-
-    public void setAppointment(Appointment appointment) {
-        this.appointment = appointment;
-    }
-
-    public ExaminationStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ExaminationStatus status) {
-        this.status = status;
-    }
-
-    public String getExaminationInfo() {
-        return examinationInfo;
-    }
-
-    public void setExaminationInfo(String examinationInfo) {
-        this.examinationInfo = examinationInfo;
-    }
-
-    public String getDiagnose() {
-        return diagnose;
-    }
-
-    public void setDiagnose(String diagnose) {
-        this.diagnose = diagnose;
-    }
-
-    public Map<Medicine, Integer> getTherapy() {
-        return therapy;
-    }
-
-    public void setTherapy(Map<Medicine, Integer> therapy) {
-        this.therapy = therapy;
-    }
 }
