@@ -10,18 +10,20 @@ import lombok.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 
 public class PharmacyAdminDTO extends UserDTO{
     private Long pharmacyId;
 
 
-
+    @Deprecated
     public PharmacyAdminDTO(Long id, String name, String surname, Address address,
                             String phoneNumber, Long pharmacyId) {
-        super(id, name, surname, address, phoneNumber, UserRole.PHARMACY_ADMIN);
+        super(id, name, surname, address, phoneNumber, UserRole.PHARMACY_ADMIN, null);
         this.pharmacyId = pharmacyId;
     }
 
-
+    public PharmacyAdminDTO(Long id, String name, String surname, Address address, String phoneNumber, UserRole role, String email, Long pharmacyId) {
+        super(id, name, surname, address, phoneNumber, role, email);
+        this.pharmacyId = pharmacyId;
+    }
 }

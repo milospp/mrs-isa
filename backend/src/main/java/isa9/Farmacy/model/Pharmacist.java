@@ -5,22 +5,19 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import lombok.*;
 
+@Data
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 
 @Entity
 public class Pharmacist extends Doctor{
 
-
-
     public Pharmacist(Long id, String name, String surname, String email, String password, Address address, String phoneNumber) {
-        super(id, name, surname, email, password, address, phoneNumber);
-        this.setWorking(new HashSet<>());
+        super(id, name, surname, email, password, address, phoneNumber, UserRole.PHARMACIST);
     }
 
 

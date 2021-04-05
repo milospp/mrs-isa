@@ -15,8 +15,8 @@ public class PharmacyDTO {
 
     private Long id;
     private String name;
-    private Address address;
     private String description;
+    private Address address;
 
 
 }

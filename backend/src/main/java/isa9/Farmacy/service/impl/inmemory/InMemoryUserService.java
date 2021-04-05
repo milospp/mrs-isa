@@ -43,9 +43,9 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
 
         //Adding pharmacy admins---------------------------------------------------------------------------
         PharmacyAdmin pha1 = new PharmacyAdmin(5L, "Nikola", "Nikolic", "nikola@mail.com", "password",
-                ph1, new Address("ulica", "broj", "grad", "drzava"),"111111111");
+                new Address("ulica", "broj", "grad", "drzava"),"111111111", ph1);
         PharmacyAdmin pha2 = new PharmacyAdmin(6L, "Marko", "Markovic", "marko@mail.com", "password",
-                ph2, new Address("ulica", "broj", "grad", "drzava"),"111111111");
+                new Address("ulica", "broj", "grad", "drzava"),"111111111", ph2);
 
 
         users.put(pha1.getId(), pha1);
@@ -71,7 +71,7 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         pha1.setPharmacy(apoteka);
         Pharmacy apoteka2 = new Pharmacy("PrimerApoteke2", new Address("ulica2", "broj2", "grad2", "drzava2"), "opis2", 6L);
 
-        users.put(7l, new PharmacyAdmin(7L, "Admin", "Apoteke", "mejl@mail.com", "1234", apoteka,  new Address("ulica", "broj", "grad", "drzava"), "123-456-789"));
+        users.put(7l, new PharmacyAdmin(7L, "Admin", "Apoteke", "mejl@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789", apoteka));
 
         Pharmacist maja = new Pharmacist(8L, "Maja", "Markovic", "maja@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345");
         users.put(8L, maja);

@@ -13,7 +13,6 @@ import lombok.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 
 public class PatientDTO extends UserDTO{
     private int points;

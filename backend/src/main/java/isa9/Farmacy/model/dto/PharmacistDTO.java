@@ -11,18 +11,25 @@ import lombok.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 
 public class PharmacistDTO extends DoctorDTO {
 
     private Pharmacy pharmacy;
     //private Long id;
 
-
-
+    @Deprecated
     public PharmacistDTO(Long id, String name, String surname, Address address, String phoneNumber, Pharmacy pharmacy) {
-        super(id, name, surname, address, phoneNumber, UserRole.PHARMACIST);
+        super(id, name, surname, address, phoneNumber, UserRole.PHARMACIST, null);
         this.pharmacy = pharmacy;
     }
 
+    public PharmacistDTO(Long id, String name, String surname, Address address, String phoneNumber, UserRole role, String email, Pharmacy pharmacy) {
+        super(id, name, surname, address, phoneNumber, role, email);
+        this.pharmacy = pharmacy;
+    }
+
+    public PharmacistDTO(Long id, String name, String surname, Address address, String phoneNumber, String email, Pharmacy pharmacy) {
+        super(id, name, surname, address, phoneNumber, UserRole.PHARMACIST, email);
+        this.pharmacy = pharmacy;
+    }
 }

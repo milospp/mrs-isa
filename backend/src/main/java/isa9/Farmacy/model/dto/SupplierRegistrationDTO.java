@@ -10,7 +10,6 @@ import lombok.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 
 public class SupplierRegistrationDTO extends UserDTO{
     private Long id;

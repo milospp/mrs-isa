@@ -233,7 +233,7 @@ public class UserController {
         long pharmacyId = newAdminDto.getPharmacyId();
         Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
         PharmacyAdmin newlyRegistered = new PharmacyAdmin(0L, newAdminDto.getName(), newAdminDto.getSurname(), newAdminDto.getEmail(),
-                newAdminDto.getPassword(), pharmacy, newAdminDto.getAddress(), newAdminDto.getPhoneNumber());
+                newAdminDto.getPassword(), newAdminDto.getAddress(), newAdminDto.getPhoneNumber(), UserRole.PHARMACY_ADMIN, pharmacy);
         userService.save(newlyRegistered);
         System.out.println(newlyRegistered);
         return new ResponseEntity<>(true, HttpStatus.OK);
@@ -265,7 +265,7 @@ public class UserController {
         List<PharmacistDTO> povratna = new ArrayList<>();
         for (User u : svi) if (u.getClass() == Pharmacist.class) {
             Pharmacist farmaceut = (Pharmacist) u;
-            if (farmaceut.getPharmacy().equals(admin.getPharmacy()))
+            if (farmaceut.getWorking().iterator().next().getPharmacy().equals(admin.getPharmacy()))
                 povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
@@ -277,7 +277,7 @@ public class UserController {
         List<PharmacistDTO> povratna = new ArrayList<>();
         for (User u : svi) if (u.getClass() == Pharmacist.class) {
             Pharmacist farmaceut = (Pharmacist) u;
-            if (farmaceut.getPharmacy().getId().equals(id))
+            if (farmaceut.getWorking().iterator().next().getPharmacy().getId().equals(id))
                 povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
@@ -292,8 +292,8 @@ public class UserController {
         List<DermatologistDTO> povratna = new ArrayList<>();
         for (User u : svi) if (u.getClass() == Dermatologist.class) {
             Dermatologist dermatolog = (Dermatologist) u;
-            for (Pharmacy apoteka : dermatolog.getPharmacies())
-                if (apoteka.equals(admin.getPharmacy())) {
+            for (Work work : dermatolog.getWorking())
+                if (work.getPharmacy().equals(admin.getPharmacy())) {
                     povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog));
                     break;
                 }
@@ -307,8 +307,8 @@ public class UserController {
         List<DermatologistDTO> povratna = new ArrayList<>();
         for (User u : svi) if (u.getClass() == Dermatologist.class) {
             Dermatologist dermatolog = (Dermatologist) u;
-            for (Pharmacy apoteka : dermatolog.getPharmacies())
-                if (apoteka.getId().equals(id)) {
+            for (Work work : dermatolog.getWorking())
+                if (work.getPharmacy().getId().equals(id)) {
                     povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog));
                     break;
                 }
@@ -332,7 +332,7 @@ public class UserController {
         if(!userService.isAvaibleEmail(newDermatologistDto.getEmail())) return new ResponseEntity<>(false, HttpStatus.OK);
         Dermatologist newlyRegistered = new Dermatologist(0L, newDermatologistDto.getName(), newDermatologistDto.getSurname(),
                 newDermatologistDto.getEmail(), newDermatologistDto.getPassword(),
-                newDermatologistDto.getAddress(), newDermatologistDto.getPhoneNumber());
+                newDermatologistDto.getAddress(), newDermatologistDto.getPhoneNumber(), new HashSet<>());
         userService.save(newlyRegistered);
         System.out.println(newlyRegistered);
         return new ResponseEntity<>(true, HttpStatus.OK);

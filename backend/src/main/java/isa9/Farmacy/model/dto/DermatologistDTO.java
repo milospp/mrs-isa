@@ -14,7 +14,6 @@ import lombok.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 
 public class DermatologistDTO extends DoctorDTO {
 
