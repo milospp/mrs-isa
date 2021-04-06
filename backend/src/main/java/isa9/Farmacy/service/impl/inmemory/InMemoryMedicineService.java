@@ -15,9 +15,9 @@ public class InMemoryMedicineService extends MedicineServiceBase implements Medi
     private final Map<String, Medicine> medicines = new HashMap<>();
 
     InMemoryMedicineService() {
-        Medicine med1 = new Medicine("AZP2", "Phiiizer", "Some good thinkgs",
+        Medicine med1 = new Medicine(1L, "AZP2", "Phiiizer", "Some good thinkgs",
                 "MAANAF", "Do not drive", 2, "Pills", "AntiDepresive", DispencingMedicine.WITH_RECEIPT, null);
-        Medicine med2= new Medicine("GSP2", "Phiiizer", "Some good thinkgs",
+        Medicine med2= new Medicine(2L, "GSP2", "Phiiizer", "Some good thinkgs",
                 "MAANAF", "Do not drive", 2, "Pills", "AntiDepresive", DispencingMedicine.WITH_RECEIPT, new HashSet<Medicine>(Arrays.asList(med1)));
         medicines.put(med1.getCode(), med1);
         medicines.put(med2.getCode(), med2);

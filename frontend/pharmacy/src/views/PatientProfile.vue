@@ -3,9 +3,10 @@
     <NavBar/>
 
 
-
     <div class="container pt-5">
       <PatientProfileInfo/>
+
+
 
 
       <div class="row subsection">

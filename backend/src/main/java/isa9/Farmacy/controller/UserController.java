@@ -78,10 +78,21 @@ public class UserController {
 
     @GetMapping("{id}/allergies")
     public ResponseEntity<List<MedicineDTO>> getUserAlergies(@PathVariable Long id){
-        User user = userService.findOne(id);
-        Set<Medicine> allergies = userService.getPatientAllergies(user);
-
+        Set<Medicine> allergies = userService.getPatientAllergies(id);
         List<MedicineDTO> dto = medicineToMedicineDTO.convert(allergies);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+
+    }
+
+    @PostMapping("{id}/allergies")
+    public ResponseEntity<MedicineDTO> getUserAlergies(@RequestBody MedicineDTO medicine){
+        // TODO: Get patient from session
+        User user = userService.findOne(1L);
+        Patient patient = (Patient) user;
+
+        Medicine allergy = userService.addPatientAllergy(patient, medicine.getId());
+        MedicineDTO dto = medicineToMedicineDTO.convert(allergy);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
 
@@ -247,7 +258,7 @@ public class UserController {
             if (us.getClass()!= PharmacyAdmin.class) continue;
             PharmacyAdmin phAdmin = (PharmacyAdmin) us;
             resultDTOS.add(new PharmacyAdminDTO(phAdmin.getId(), phAdmin.getName(), phAdmin.getSurname(),
-                                                phAdmin.getAddress(), phAdmin.getPhoneNumber(),
+                                                phAdmin.getAddress(), phAdmin.getPhoneNumber(), phAdmin.getEmail(),
                                                 phAdmin.getPharmacy().getId()));
         }
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);

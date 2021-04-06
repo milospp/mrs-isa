@@ -17,6 +17,8 @@ import lombok.*;
 @Entity
 public class Medicine {
     @Id
+    private Long id;
+    @Column
     private String code;
     @Column
     private String name;
@@ -34,7 +36,7 @@ public class Medicine {
     private String type;
     @Enumerated
     private DispencingMedicine perscription;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Medicine> replacementMedication;
 
     // TODO Medicine Stock

@@ -22,8 +22,14 @@ public class PharmacyAdminDTO extends UserDTO{
         this.pharmacyId = pharmacyId;
     }
 
+
     public PharmacyAdminDTO(Long id, String name, String surname, Address address, String phoneNumber, UserRole role, String email, Long pharmacyId) {
         super(id, name, surname, address, phoneNumber, role, email);
+        this.pharmacyId = pharmacyId;
+    }
+
+    public PharmacyAdminDTO(Long id, String name, String surname, Address address, String phoneNumber, String email, Long pharmacyId) {
+        super(id, name, surname, address, phoneNumber, UserRole.PHARMACY_ADMIN, email);
         this.pharmacyId = pharmacyId;
     }
 }

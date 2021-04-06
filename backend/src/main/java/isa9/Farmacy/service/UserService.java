@@ -21,4 +21,7 @@ public interface UserService extends GenericService<User> {
     Patient updatePatient(PatientDTO patientDTO);
 
     //Pharmacy findPharmacistPharmacy(Long id);
+
+    Set<Medicine> getPatientAllergies(Long patientId);
+    Medicine addPatientAllergy(Patient patient, Long medicineId);
 }
