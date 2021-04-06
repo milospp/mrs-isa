@@ -28,16 +28,16 @@ public class Pharmacy {
     private Address address;
     @Column
     private String description;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Work> staff;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<MedicineOrder> orders;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<MedicineInPharmacy> medicines;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Rating> ratings;
 
 

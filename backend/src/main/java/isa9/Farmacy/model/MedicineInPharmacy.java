@@ -14,11 +14,11 @@ import lombok.*;
 @Builder
 
 @Entity
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "currentPrice")
 public class MedicineInPharmacy {
     @Id
-    private String id;
-    @OneToOne
+    private Long id;
+    @OneToOne(cascade = CascadeType.ALL)
     private MedPrice currentPrice;
     @ManyToOne
     private Medicine medicine;

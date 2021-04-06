@@ -28,9 +28,7 @@ public class MedPrice {
     @Column
     private double price;
     @ManyToOne
-    private Medicine medicine;
-    @ManyToOne
-    private Pharmacy pharmacy;
+    private MedicineInPharmacy medicineInPharmacy;
 
 
 

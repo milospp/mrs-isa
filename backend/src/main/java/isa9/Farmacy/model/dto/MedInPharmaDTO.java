@@ -14,7 +14,7 @@ import lombok.*;
 @Builder
 
 public class MedInPharmaDTO {
-    private String id;
+    private Long id;
     private double currentPrice;
     private MedicineDTO medicine;
     private int inStock;

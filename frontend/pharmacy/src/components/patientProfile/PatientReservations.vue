@@ -68,7 +68,7 @@ export default {
 
     },
     mounted() {
-        this.loadPatientSubscriptions();
+        this.loadPatientReservations();
     },
 	created() {
 		  this.id = this.$route.params.id; 
