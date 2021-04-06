@@ -19,8 +19,8 @@ public class PatientDTO extends UserDTO{
     private List<Long> penalties;
     private List<Long> subscriptions;
     private List<Long> myExaminations;
-    private List<String> allergies;
-    private List<String> reservations;
+    private List<Long> allergies;
+    private List<Long> reservations;
 
 
 
@@ -34,7 +34,7 @@ public class PatientDTO extends UserDTO{
         this.reservations = new ArrayList<>();
     }
 
-    public PatientDTO(Long id, String name, String surname, Address address, String phoneNumber, UserRole role, String email, int points, List<Long> penalties, List<Long> subscriptions, List<Long> myExaminations, List<String> allergies, List<String> reservations) {
+    public PatientDTO(Long id, String name, String surname, Address address, String phoneNumber, UserRole role, String email, int points, List<Long> penalties, List<Long> subscriptions, List<Long> myExaminations, List<Long> allergies, List<Long> reservations) {
         super(id, name, surname, address, phoneNumber, role, email);
         this.points = points;
         this.penalties = penalties;
@@ -75,7 +75,7 @@ public class PatientDTO extends UserDTO{
     }
 
     @Deprecated
-    public PatientDTO(Long id, String name, String surname, Address address, String phoneNumber, int points, List<Long> penalties, List<Long> subscriptions, List<Long> myExaminations, List<String> allergies) {
+    public PatientDTO(Long id, String name, String surname, Address address, String phoneNumber, int points, List<Long> penalties, List<Long> subscriptions, List<Long> myExaminations, List<Long> allergies) {
         super(id, name, surname, address, phoneNumber, UserRole.PATIENT);
         this.points = points;
         this.penalties = penalties;

@@ -16,12 +16,14 @@ import lombok.*;
 @Builder
 
 public class MedReservationDTO {
-    private String id;
+    private Long id;
+    private String code;
     private Date reservationDate;
     private Date lastDate;
     private boolean taken;
+    private boolean canceled;
 
-    private String medicine;
+    private Long medicine;
     private int quantity;
 
     private PharmacistDTO issued;

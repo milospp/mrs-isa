@@ -75,6 +75,12 @@ class PatientDataService {
       return false;
     });;
   }
+
+  getPatientReservations(id) {
+    return axios.get(`${API_URL}/api/users/` + id + `/reservations`);
+  }
+
 }
+
 
 export default new PatientDataService();

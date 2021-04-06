@@ -16,7 +16,11 @@ import lombok.*;
 @Entity
 public class MedReservation {
     @Id
-    private String id;
+    private Long id;
+
+    @Column(unique = true)
+    private String code;
+
     @ManyToOne
     private Patient patient;
     @Column
@@ -25,6 +29,8 @@ public class MedReservation {
     private Date lastDate;
     @Column
     private boolean taken;
+    @Column
+    private boolean canceled;
 
     @ManyToOne
     private Medicine medicine;

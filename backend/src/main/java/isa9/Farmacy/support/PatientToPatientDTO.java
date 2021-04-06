@@ -41,7 +41,7 @@ public class PatientToPatientDTO implements Converter<Patient, PatientDTO> {
         );
         dto.setAllergies(
                 patient.getAllergies().stream()
-                        .map(Medicine::getCode)
+                        .map(Medicine::getId)
                         .collect(Collectors.toList())
         );
         dto.setReservations(
