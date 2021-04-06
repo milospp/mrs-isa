@@ -16,9 +16,9 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
     private final Map<Long, User> users = new HashMap<>();
 
     InMemoryUserService() {
-        Medicine med1 = new Medicine("AZP2", "Phiiizer", "Some good thinkgs",
+        Medicine med1 = new Medicine(1L, "AZP2", "Phiiizer", "Some good thinkgs",
                 "MAANAF", "Do not drive", 2, "Pills", "AntiDepresive", DispencingMedicine.WITH_RECEIPT, null);
-        Medicine med2= new Medicine("GSP2", "Phiiizer", "Some good thinkgs",
+        Medicine med2= new Medicine(2L, "GSP2", "Phiiizer", "Some good thinkgs",
                 "MAANAF", "Do not drive", 2, "Pills", "AntiDepresive", DispencingMedicine.WITH_RECEIPT, new HashSet<Medicine>(Arrays.asList(med1)));
 
         Pharmacy ph1 = new Pharmacy("Prima", new Address("Nemanjina", "2", "Belgrade", "Serbia"),
@@ -60,9 +60,9 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
 
         Pharmacy apoteka = new Pharmacy("PrimerApoteke", new Address("ulica", "broj", "grad", "drzava"), "opis", 5L);
 
-        Medicine lek1 = new Medicine("Kod1", "Ime1", "Strkt1", "Man1", "Note1", 1, "Oblik1", "Tip1", null, null);
+        Medicine lek1 = new Medicine(1L, "Kod1", "Ime1", "Strkt1", "Man1", "Note1", 1, "Oblik1", "Tip1", null, null);
         MedPrice cena1 = new MedPrice(17L, LocalDateTime.now(), 20.5, lek1, apoteka);
-        Medicine lek2 = new Medicine("Kod2", "Ime2", "Strk2", "Man2", "Note2", 2, "Oblik2", "Tip2", null, null);
+        Medicine lek2 = new Medicine(2L, "Kod2", "Ime2", "Strk2", "Man2", "Note2", 2, "Oblik2", "Tip2", null, null);
         MedPrice cena2 = new MedPrice(17L, LocalDateTime.now(), 20.5, lek2, apoteka);
         apoteka.getMedicines().add(new MedicineInPharmacy("17", cena1, lek1, 2, apoteka));
         apoteka.getMedicines().add(new MedicineInPharmacy("18", cena2, lek2, 7, apoteka));

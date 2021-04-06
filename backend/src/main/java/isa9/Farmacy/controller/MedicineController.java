@@ -41,6 +41,7 @@ public class MedicineController {
         List<MedicineDTO> resultDTOS = new ArrayList<>();
         for (Medicine medicine : this.medicineService.findAll()) {
             resultDTOS.add(new MedicineDTO(
+                    medicine.getId(),
                     medicine.getCode(),
                     medicine.getName(),
                     medicine.getStructure(),

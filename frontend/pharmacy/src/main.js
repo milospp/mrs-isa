@@ -6,6 +6,7 @@ import 'jquery';
 import $ from 'jquery';
 import 'bootstrap'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'vue-choice'
 
 window.$ = window.jQuery = require('jquery');
 

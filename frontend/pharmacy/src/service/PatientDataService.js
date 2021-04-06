@@ -20,6 +20,23 @@ class PatientDataService {
     return axios.get(`${API_URL}/api/users/` + id + `/allergies`);
   }
 
+  addPatientAllergy(medicine){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/api/users/id/allergies`,
+      data: medicine
+    });
+  }
+
+
+  deletePatientAllergy(medicine){
+    return axios({
+      method: 'delete',
+      url: `${API_URL}/api/users/id/allergies`,
+      data: medicine
+    });
+  }
+
   getPatientSubscriptions(id){
     return axios.get(`${API_URL}/api/users/` + id + `/subscriptions`);
   }

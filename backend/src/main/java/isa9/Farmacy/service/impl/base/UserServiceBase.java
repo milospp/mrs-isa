@@ -2,13 +2,22 @@ package isa9.Farmacy.service.impl.base;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.PatientDTO;
+import isa9.Farmacy.service.MedicineService;
 import isa9.Farmacy.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
 public abstract class UserServiceBase implements UserService {
+    protected MedicineService medicineService;
+
+    @Autowired
+    public void setMedicineService(MedicineService medicineService) {
+        this.medicineService = medicineService;
+    }
+
     @Override
     public Set<Medicine> getPatientAllergies(User patient){
         if (patient.getRole() != UserRole.PATIENT) return new HashSet<>();
@@ -78,5 +87,34 @@ public abstract class UserServiceBase implements UserService {
 
         save(patient);
         return patient;
+    }
+
+    @Override
+    public Set<Medicine> getPatientAllergies(Long patientId) {
+        User user = findOne(patientId);
+
+        if (user.getRole() != UserRole.PATIENT) return new HashSet<>();
+
+        return ((Patient) user).getAllergies();
+    }
+
+    @Override
+    public Medicine addPatientAllergy(Patient patient, Long medicineId) {
+        Medicine medicine = medicineService.findOne(medicineId);
+        if (medicine == null) return null;
+
+        patient.getAllergies().add(medicine);
+        save(patient);
+        return medicine;
+    }
+
+    @Override
+    public Medicine removePatientAllergy(Patient patient, Long medicineId) {
+        Medicine medicine = medicineService.findOne(medicineId);
+        if (medicine == null) return null;
+
+        patient.getAllergies().remove(medicine);
+        save(patient);
+        return medicine;
     }
 }
