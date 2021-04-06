@@ -98,6 +98,17 @@ public class UserController {
 
     }
 
+    @DeleteMapping("{id}/allergies")
+    public ResponseEntity<Void> deleteUserAlergies(@RequestBody MedicineDTO medicine){
+        // TODO: Get patient from session
+        User user = userService.findOne(1L);
+        Patient patient = (Patient) user;
+
+        userService.removePatientAllergy(patient, medicine.getId());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
+
     @GetMapping("{id}/subscriptions")
     public ResponseEntity<List<PharmacyDTO>> getUserSubscriptions(@PathVariable Long id){
         User user = userService.findOne(id);

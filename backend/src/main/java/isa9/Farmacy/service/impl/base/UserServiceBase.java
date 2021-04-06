@@ -107,4 +107,14 @@ public abstract class UserServiceBase implements UserService {
         save(patient);
         return medicine;
     }
+
+    @Override
+    public Medicine removePatientAllergy(Patient patient, Long medicineId) {
+        Medicine medicine = medicineService.findOne(medicineId);
+        if (medicine == null) return null;
+
+        patient.getAllergies().remove(medicine);
+        save(patient);
+        return medicine;
+    }
 }

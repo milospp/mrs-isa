@@ -55,7 +55,7 @@
         <td>
           <button class="btn btn-primary">View</button>
     <!-- <router-link class="btn btn-block btn-primary" :to="{ name: 'MedicinePage', params: { id: a.id  }}">View</router-link> -->
-          <button class="btn btn-danger ml-1">Delete</button>
+          <button class="btn btn-danger ml-1" v-on:click="removeAlergy(a)">Delete</button>
         </td>
       </tr>
     </tbody>
@@ -107,6 +107,12 @@ export default {
         addAlergy(data) {
           var medicine = {id: this.addAlergySelected};
           PatientDataService.addPatientAllergy(medicine).then(response => {
+            this.loadPatientAlergies();
+          });
+        },
+
+        removeAlergy(data) {
+          PatientDataService.deletePatientAllergy(data).then(response => {
             this.loadPatientAlergies();
           });
         }
