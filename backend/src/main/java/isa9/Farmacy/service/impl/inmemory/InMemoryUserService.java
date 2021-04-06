@@ -60,18 +60,27 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
 
         Pharmacy apoteka = new Pharmacy("PrimerApoteke", new Address("ulica", "broj", "grad", "drzava"), "opis", 5L);
 
+
+
         Medicine lek1 = new Medicine(1L, "Kod1", "Ime1", "Strkt1", "Man1", "Note1", 1, "Oblik1", "Tip1", null, null);
-        MedPrice cena1 = new MedPrice(17L, LocalDateTime.now(), 20.5, lek1, apoteka);
+        MedPrice cena1 = new MedPrice(17L, LocalDateTime.now(), 20.5, null);
         Medicine lek2 = new Medicine(2L, "Kod2", "Ime2", "Strk2", "Man2", "Note2", 2, "Oblik2", "Tip2", null, null);
-        MedPrice cena2 = new MedPrice(17L, LocalDateTime.now(), 20.5, lek2, apoteka);
-        apoteka.getMedicines().add(new MedicineInPharmacy("17", cena1, lek1, 2, apoteka));
-        apoteka.getMedicines().add(new MedicineInPharmacy("18", cena2, lek2, 7, apoteka));
+        MedPrice cena2 = new MedPrice(17L, LocalDateTime.now(), 20.5, null);
+
+        MedicineInPharmacy mip1 = new MedicineInPharmacy(17L, cena1, lek1, 2, apoteka);
+        MedicineInPharmacy mip2 = new MedicineInPharmacy(18L, cena2, lek2, 7, apoteka);
+        cena1.setMedicineInPharmacy(mip1);
+        cena2.setMedicineInPharmacy(mip2);
+
+
+        apoteka.getMedicines().add(mip1);
+        apoteka.getMedicines().add(mip2);
         //string code, String name, String structure, String manufacturer, String note, int points, String shape, String type, DispencingMedicine perscription, Set<Medicine> replacementMedication
 
         pha1.setPharmacy(apoteka);
         Pharmacy apoteka2 = new Pharmacy("PrimerApoteke2", new Address("ulica2", "broj2", "grad2", "drzava2"), "opis2", 6L);
 
-        users.put(7l, new PharmacyAdmin(7L, "Admin", "Apoteke", "mejl@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789", apoteka));
+        users.put(7L, new PharmacyAdmin(7L, "Admin", "Apoteke", "mejl@mail.com", "1234", new Address("ulica", "broj", "grad", "drzava"), "123-456-789", apoteka));
 
         Pharmacist maja = new Pharmacist(8L, "Maja", "Markovic", "maja@gmail.com","majacar", new Address("ulica", "broj", "grad", "drzava"), "12345");
         users.put(8L, maja);

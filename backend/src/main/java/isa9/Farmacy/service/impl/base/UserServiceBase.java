@@ -19,7 +19,7 @@ public abstract class UserServiceBase implements UserService {
     }
 
     @Override
-    public Set<Medicine> getPatientAllergies(User patient){
+    public Set<Medicine> getPatientAllergies(User patient) {
         if (patient.getRole() != UserRole.PATIENT) return new HashSet<>();
 
         return ((Patient) patient).getAllergies();
@@ -53,7 +53,7 @@ public abstract class UserServiceBase implements UserService {
 
         int penalties = 0;
 
-        for (Penality penality : ((Patient) user).getPenalties()){
+        for (Penality penality : ((Patient) user).getPenalties()) {
             if (penality.getDate().plusMonths(1).isAfter(LocalDate.now()))
                 ++penalties;
         }
@@ -72,16 +72,16 @@ public abstract class UserServiceBase implements UserService {
     public Patient updatePatient(PatientDTO patientDTO) {
         Patient patient = (Patient) findOne(patientDTO.getId());
 
-        if (patientDTO.getName() != null){
+        if (patientDTO.getName() != null) {
             patient.setName(patientDTO.getName());
         }
-        if (patientDTO.getSurname() != null){
+        if (patientDTO.getSurname() != null) {
             patient.setSurname(patientDTO.getSurname());
         }
-        if (patientDTO.getPhoneNumber() != null){
+        if (patientDTO.getPhoneNumber() != null) {
             patient.setPhoneNumber(patientDTO.getPhoneNumber());
         }
-        if (patientDTO.getAddress() != null){
+        if (patientDTO.getAddress() != null) {
             patient.setAddress(patientDTO.getAddress());
         }
 
@@ -116,5 +116,15 @@ public abstract class UserServiceBase implements UserService {
         patient.getAllergies().remove(medicine);
         save(patient);
         return medicine;
+    }
+
+    @Override
+    public Set<MedReservation> getPatientReservations(Long patientId) {
+        User user = findOne(patientId);
+        if (user.getRole() != UserRole.PATIENT) return new HashSet<>();
+        Patient patient = (Patient) user;
+
+        return patient.getReservations();
+
     }
 }

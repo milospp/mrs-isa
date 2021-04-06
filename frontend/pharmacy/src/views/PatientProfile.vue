@@ -16,6 +16,7 @@
             <h2>TODO AUTH!! More info</h2>
             <ul class="nav nav-tabs">
               <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#tab-alergies">Alergies</a></li>
+              <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab-reservations">Reservations</a></li>
               <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Subscription</a></li>
               <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Penalities</a></li>
               <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#appointments">Appointments</a></li>
@@ -26,6 +27,9 @@
             <div class="tab-content">
               <div id="tab-alergies" class="tab-pane in fade active">
                 <PatientAlergies/>
+              </div>
+              <div id="tab-reservations" class="tab-pane in fade">
+                <PatientReservations/>
               </div>
 
               <div id="menu1" class="tab-pane in fade">
@@ -68,6 +72,7 @@ import PatientSubscription from '../components/patientProfile/PatientSubscriptio
 import PatientPenalities from '../components/patientProfile/PatientPenalities.vue'
 import PatientAppointments from '../components/patientProfile/PatientAppointments.vue'
 import PatientHistory from '../components/patientProfile/PatientHistory.vue'
+import PatientReservations from '../components/patientProfile/PatientReservations.vue'
 
 // @ is an alias to /src
 export default {
@@ -80,6 +85,7 @@ export default {
     PatientPenalities,
     PatientAppointments,
     PatientHistory,
+    PatientReservations,
   }
 }
 </script>

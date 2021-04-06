@@ -28,16 +28,9 @@ public class UserController {
     private final PenalityToPenalityDTO penalityToPenalityDTO;
     private final DermatologistToDermatologistDTO dermatologistToDermatologistDTO;
     private final PharmacistToPharmacistDTO pharmacistToPharmacistDTO;
+    private final MedReservationToMedReservationDTO medReservationToMedReservationDTO;
 
-    @Autowired
-    public UserController(UserService userService,
-                          PharmacyService pharmacyService,
-                          PatientToPatientDTO patientToPatientDTO,
-                          MedicineToMedicineDTO medicineToMedicineDTO,
-                          PharmacyToPharmacyDTO pharmacyToPharmacyDTO,
-                          PenalityToPenalityDTO penalityToPenalityDTO,
-                          DermatologistToDermatologistDTO dermatologistToDermatologistDTO,
-                          PharmacistToPharmacistDTO pharmacistToPharmacistDTO){
+    public UserController(UserService userService, PharmacyService pharmacyService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO) {
         this.userService = userService;
         this.pharmacyService = pharmacyService;
         this.patientToPatientDTO = patientToPatientDTO;
@@ -46,7 +39,11 @@ public class UserController {
         this.penalityToPenalityDTO = penalityToPenalityDTO;
         this.dermatologistToDermatologistDTO = dermatologistToDermatologistDTO;
         this.pharmacistToPharmacistDTO = pharmacistToPharmacistDTO;
+        this.medReservationToMedReservationDTO = medReservationToMedReservationDTO;
     }
+
+    @Autowired
+
 
     @GetMapping("all-users")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -107,6 +104,16 @@ public class UserController {
         userService.removePatientAllergy(patient, medicine.getId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
+    }
+
+    @GetMapping("{id}/reservations")
+    public ResponseEntity<List<MedReservationDTO>> getUserReservations(@PathVariable Long id){
+        User user = userService.findOne(id);
+        Set<MedReservation> reservations = userService.getPatientReservations(id);
+
+        List<MedReservationDTO> dto = medReservationToMedReservationDTO.convert(reservations);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @GetMapping("{id}/subscriptions")

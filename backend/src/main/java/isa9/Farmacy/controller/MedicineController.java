@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -35,7 +36,23 @@ public class MedicineController {
         this.medicineService = medicineService;
     }
 
-    @GetMapping("")
+    @GetMapping("tmp-test")
+    public ResponseEntity<Boolean> debug(){
+        Pharmacy pharmacy = pharmacyService.findOne(1L);
+        Medicine medicine = medicineService.findOne(1L);
+
+        MedicineInPharmacy mip = new MedicineInPharmacy(1L,null , medicine,20, pharmacy);
+        MedPrice mp1 = new MedPrice(1L, LocalDateTime.now(), 20.0, mip);
+        mip.setCurrentPrice(mp1);
+
+        pharmacy.getMedicines().add(mip);
+        pharmacyService.save(pharmacy);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+
+    }
+
+
+        @GetMapping("")
     public ResponseEntity<List<MedicineDTO>> test(){
 
         List<MedicineDTO> resultDTOS = new ArrayList<>();
