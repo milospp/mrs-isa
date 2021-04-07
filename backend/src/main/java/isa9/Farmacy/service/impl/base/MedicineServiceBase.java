@@ -42,6 +42,9 @@ public abstract class MedicineServiceBase implements MedicineService {
 
     @Override
     public MedReservation reserveMedicine(MedReservationFormDTO reservationFormDTO) {
+        if (reservationFormDTO.getExpirityDate() == null) return null;
+        if (reservationFormDTO.getQuantity() < 1) return null;
+
         Pharmacy pharmacy = pharmacyService.findOne(reservationFormDTO.getPharmacyId());
         Medicine medicine = findOne(reservationFormDTO.getMedicineId());
         User user = userService.findOne(reservationFormDTO.getPatientId());
