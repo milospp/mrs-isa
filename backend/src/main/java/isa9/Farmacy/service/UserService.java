@@ -27,4 +27,5 @@ public interface UserService extends GenericService<User> {
     Medicine removePatientAllergy(Patient patient, Long medicineId);
 
     Set<MedReservation> getPatientReservations(Long patientId);
+
 }

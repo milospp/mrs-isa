@@ -1,8 +1,11 @@
 package isa9.Farmacy.service.impl.base;
 
 import isa9.Farmacy.model.*;
+import isa9.Farmacy.model.dto.MedInPharmaDTO;
 import isa9.Farmacy.model.dto.PatientDTO;
+import isa9.Farmacy.service.MedReservationService;
 import isa9.Farmacy.service.MedicineService;
+import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,10 +15,22 @@ import java.util.Set;
 
 public abstract class UserServiceBase implements UserService {
     protected MedicineService medicineService;
+    protected MedReservationService medReservationService;
+    protected PharmacyService pharmacyService;
+
+    @Autowired
+    public void setPharmacyService(PharmacyService pharmacyService) {
+        this.pharmacyService = pharmacyService;
+    }
 
     @Autowired
     public void setMedicineService(MedicineService medicineService) {
         this.medicineService = medicineService;
+    }
+
+    @Autowired
+    public void setMedReservationService(MedReservationService medReservationService) {
+        this.medReservationService = medReservationService;
     }
 
     @Override
@@ -127,4 +142,5 @@ public abstract class UserServiceBase implements UserService {
         return patient.getReservations();
 
     }
+
 }

@@ -17,10 +17,12 @@ import java.util.stream.Collectors;
 public class MedicineInPharmacyToMedInPharmaDTO implements Converter<MedicineInPharmacy, MedInPharmaDTO> {
 
     private final MedicineToMedicineDTO converter;
+    private final PharmacyToPharmacyDTO pharmacyToPharmacyDTO;
 
     @Autowired
-    public MedicineInPharmacyToMedInPharmaDTO(MedicineToMedicineDTO converter) {
+    public MedicineInPharmacyToMedInPharmaDTO(MedicineToMedicineDTO converter, PharmacyToPharmacyDTO pharmacyToPharmacyDTO) {
         this.converter = converter;
+        this.pharmacyToPharmacyDTO = pharmacyToPharmacyDTO;
     }
 
     @Override
@@ -30,7 +32,7 @@ public class MedicineInPharmacyToMedInPharmaDTO implements Converter<MedicineInP
         MedicineDTO medDto = converter.convert(medicineInPharmacy.getMedicine());
 
         dto.setId(medicineInPharmacy.getId());
-        dto.setPharmacyId(medicineInPharmacy.getPharmacy().getId());
+        dto.setPharmacy(pharmacyToPharmacyDTO.convert(medicineInPharmacy.getPharmacy()));
         dto.setMedicine(medDto);
         dto.setCurrentPrice(medicineInPharmacy.getCurrentPrice().getPrice());
         dto.setInStock(medicineInPharmacy.getInStock());

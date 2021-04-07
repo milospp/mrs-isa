@@ -1,6 +1,7 @@
 package isa9.Farmacy.model.dto;
 
 import isa9.Farmacy.model.Medicine;
+import isa9.Farmacy.model.MedicineInPharmacy;
 import isa9.Farmacy.model.Pharmacist;
 import isa9.Farmacy.model.Pharmacy;
 
@@ -24,11 +25,10 @@ public class MedReservationDTO {
     private boolean taken;
     private boolean canceled;
 
-    private MedicineDTO medicine;
+    private MedInPharmaDTO medicineInPharmacy;
     private int quantity;
 
     private PharmacistDTO issued;
-    private PharmacyDTO pharmacy;
 
 
 

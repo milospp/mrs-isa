@@ -16,17 +16,13 @@ import java.util.List;
 public class MedReservationToMedReservationDTO implements Converter<MedReservation, MedReservationDTO> {
 
     PharmacistToPharmacistDTO pharmacistToPharmacistDTO;
-    PharmacyToPharmacyDTO pharmacyToPharmacyDTO;
-    MedicineToMedicineDTO medicineToMedicineDTO;
+    MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO;
 
     @Autowired
-    public MedReservationToMedReservationDTO(PharmacistToPharmacistDTO pharmacistToPharmacistDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, MedicineToMedicineDTO medicineToMedicineDTO) {
+    public MedReservationToMedReservationDTO(PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO) {
         this.pharmacistToPharmacistDTO = pharmacistToPharmacistDTO;
-        this.pharmacyToPharmacyDTO = pharmacyToPharmacyDTO;
-        this.medicineToMedicineDTO = medicineToMedicineDTO;
+        this.medicineInPharmacyToMedInPharmaDTO = medicineInPharmacyToMedInPharmaDTO;
     }
-
-
 
     @Override
     public MedReservationDTO convert(MedReservation medReservation) {
@@ -40,10 +36,9 @@ public class MedReservationToMedReservationDTO implements Converter<MedReservati
         dto.setCanceled(medReservation.isCanceled());
 
 
-        dto.setMedicine(medicineToMedicineDTO.convert(medReservation.getMedicine()));
+        dto.setMedicineInPharmacy(medicineInPharmacyToMedInPharmaDTO.convert(medReservation.getMedicineInPharmacy()));
         dto.setQuantity(medReservation.getQuantity());
 
-        dto.setPharmacy(pharmacyToPharmacyDTO.convert(medReservation.getPharmacy()));
 
         if (medReservation.getIssued() != null)
             dto.setIssued(pharmacistToPharmacistDTO.convert(medReservation.getIssued()));

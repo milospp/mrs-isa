@@ -48,6 +48,7 @@ public abstract class MedicineServiceBase implements MedicineService {
         if (!user.getRole().equals(UserRole.PATIENT)) return null;
         Patient patient = (Patient) user;
 
+        MedicineInPharmacy mip = pharmacyService.gedMedicineInPharmacy(pharmacy, medicine);
 
         MedReservation medReservation = MedReservation.builder()
                 .id(null)
@@ -57,9 +58,9 @@ public abstract class MedicineServiceBase implements MedicineService {
                 .reservationDate(LocalDate.now())
                 .taken(false)
                 .canceled(false)
-                .medicine(medicine)
+                .medicineInPharmacy(mip)
                 .quantity(reservationFormDTO.getQuantity())
-                .pharmacy(pharmacy).build();
+                .build();
 
         patient.getReservations().add(medReservation);
         boolean inStock = pharmacyService.reduceQuantity(pharmacy, medicine, reservationFormDTO.getQuantity());
