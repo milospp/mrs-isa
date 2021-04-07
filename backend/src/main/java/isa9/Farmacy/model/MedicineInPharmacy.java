@@ -14,7 +14,7 @@ import lombok.*;
 @Builder
 
 @Entity
-@EqualsAndHashCode(exclude = "currentPrice")
+@EqualsAndHashCode(exclude = {"currentPrice", "pharmacy"})
 public class MedicineInPharmacy {
     @Id
     private Long id;

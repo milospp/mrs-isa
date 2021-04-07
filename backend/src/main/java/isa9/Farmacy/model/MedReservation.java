@@ -35,14 +35,11 @@ public class MedReservation {
     private boolean canceled;
 
     @ManyToOne
-    private Medicine medicine;
+    private MedicineInPharmacy medicineInPharmacy;
     @Column
     private int quantity;
 
     @ManyToOne
     private Pharmacist issued;
-    @ManyToOne
-    private Pharmacy pharmacy;
-
 
 }

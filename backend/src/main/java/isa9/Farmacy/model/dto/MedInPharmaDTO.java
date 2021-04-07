@@ -18,7 +18,7 @@ public class MedInPharmaDTO {
     private double currentPrice;
     private MedicineDTO medicine;
     private int inStock;
-    private Long pharmacyId;
+    private PharmacyDTO pharmacy;
 
 
 

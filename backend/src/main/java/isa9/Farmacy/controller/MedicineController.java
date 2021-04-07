@@ -28,16 +28,16 @@ public class MedicineController {
     private final UserService userService;
     private final PharmacyService pharmacyService;
     private final MedReservationToMedReservationDTO medReservationToMedReservationDTO;
+    private final MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO;
 
-    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, MedReservationToMedReservationDTO medReservationToMedReservationDTO) {
+    @Autowired
+    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, MedReservationToMedReservationDTO medReservationToMedReservationDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO) {
         this.medicineService = medicineService;
         this.userService = userService;
         this.pharmacyService = pharmacyService;
         this.medReservationToMedReservationDTO = medReservationToMedReservationDTO;
+        this.medicineInPharmacyToMedInPharmaDTO = medicineInPharmacyToMedInPharmaDTO;
     }
-
-    @Autowired
-
 
     @GetMapping("tmp-test")
     public ResponseEntity<Boolean> debug(){
@@ -103,16 +103,14 @@ public class MedicineController {
     public ResponseEntity<List<MedInPharmaDTO>> getAllMedicinePharmacyAdmin(@PathVariable Long id) {
         User user = userService.findOne(id);
         if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        MedicineInPharmacyToMedInPharmaDTO konverter = new MedicineInPharmacyToMedInPharmaDTO(new MedicineToMedicineDTO());
         Set<MedicineInPharmacy> sviLekovi = ((PharmacyAdmin) user).getPharmacy().getMedicines();
-        List<MedInPharmaDTO> povratna = konverter.convert(sviLekovi);
+        List<MedInPharmaDTO> povratna = medicineInPharmacyToMedInPharmaDTO.convert(sviLekovi);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
     @GetMapping("/pharmacy/{id}")
     public ResponseEntity<List<MedInPharmaDTO>> getAllMedicinePharmacy(@PathVariable Long id) {
         Pharmacy apoteka = pharmacyService.findOne(id);
-        MedicineInPharmacyToMedInPharmaDTO konverter = new MedicineInPharmacyToMedInPharmaDTO(new MedicineToMedicineDTO());
-        List<MedInPharmaDTO> povratna = konverter.convert(apoteka.getMedicines());
+        List<MedInPharmaDTO> povratna = medicineInPharmacyToMedInPharmaDTO.convert(apoteka.getMedicines());
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 }

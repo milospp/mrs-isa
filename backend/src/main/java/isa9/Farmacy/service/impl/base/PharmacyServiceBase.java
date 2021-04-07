@@ -31,4 +31,10 @@ public abstract class PharmacyServiceBase implements PharmacyService {
 
         return true;
     }
+
+    @Override
+    public MedicineInPharmacy gedMedicineInPharmacy(Pharmacy pharmacy, Medicine medicine) {
+        //TODO: check if null!!
+        return pharmacy.getMedicines().stream().filter(x -> x.getMedicine().getId().equals(medicine.getId())).findFirst().get();
+    }
 }

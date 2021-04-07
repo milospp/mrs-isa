@@ -17,16 +17,21 @@
     <tbody>
       <tr v-for="r in reservations" v-bind:key="r.id" v-bind:style="{ background: r.canceled ? '#aaa' : ''}">
         <td>{{r.code}}</td>
-        <td>{{r.medicine.name}}</td>
+        <td>{{r.medicineInPharmacy.medicine.name}}</td>
         <td>{{r.quantity}}</td>
         <td>{{UtilService.formatDate(r.reservationDate)}}</td>
         <td>{{UtilService.formatDate(r.lastDate)}}</td>
-        <td>{{r.pharmacy.name}}</td>
-        <td>{{r.pharmacy.name}}</td>
+        <td>{{r.medicineInPharmacy.pharmacy.name}}</td>
+        <td>{{r.taken}}</td>
         <td><input type="checkbox" name="taken" id="taken" v-bind:checked="r.taken"></td>
         <!-- <td><input type="checkbox" name="canceled" id="canceled" v-bind:checked="r.canceled"></td> -->
         
-        <td>
+        <td v-if="r.canceled">
+          <!-- <router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: s.id  }}">View</router-link> -->
+          <span class="badge badge-warning">CANCELED</span>
+        </td>
+        
+        <td v-if="!r.canceled">
           <!-- <router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: s.id  }}">View</router-link> -->
           <button v-bind:disabled="r.canceled" class="btn btn-danger" v-on:click="cancel(r)">Cancel</button>
         </td>
@@ -62,7 +67,11 @@ export default {
         },
 
         cancel(obj) {
-            console.log(obj);
+          PatientDataService.cancelReservation(obj.id).then( response => {
+            obj.canceled = true;
+            console.log("Success");
+          });
+          console.log(obj);
         },
 
 

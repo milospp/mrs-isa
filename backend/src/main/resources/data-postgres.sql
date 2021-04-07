@@ -12,8 +12,10 @@ insert into pharmacy (id, description, name, address_id) values (1, 'Pharm Desc'
 insert into pharmacy (id, description, name, address_id) values (2, 'GOod Pharm Desc', 'Veery Nooice Pharmacy', 3)
 
 
--- insert into med_price(id, price, medicine_id, pharmacy_id) values (1, 200, 1,1)
---
--- insert into medicine_in_pharmacy (id, in_stock, current_price_id, medicine_id, pharmacy_id) values (1, 24, 1,1,1)
---
--- insert into pharmacy_medicines (pharmacy_id, medicines_id) values (1,1)
+insert into med_price(id, price) values (1, 200)
+
+insert into medicine_in_pharmacy (id, in_stock, current_price_id, medicine_id, pharmacy_id) values (1, 24, 1,1,1)
+update med_price SET medicine_in_pharmacy_id = 1
+
+
+insert into pharmacy_medicines (pharmacy_id, medicines_id) values (1,1)

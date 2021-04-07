@@ -42,11 +42,16 @@ public abstract class MedicineServiceBase implements MedicineService {
 
     @Override
     public MedReservation reserveMedicine(MedReservationFormDTO reservationFormDTO) {
+        if (reservationFormDTO.getExpirityDate() == null) return null;
+        if (reservationFormDTO.getQuantity() < 1) return null;
+
         Pharmacy pharmacy = pharmacyService.findOne(reservationFormDTO.getPharmacyId());
         Medicine medicine = findOne(reservationFormDTO.getMedicineId());
         User user = userService.findOne(reservationFormDTO.getPatientId());
         if (!user.getRole().equals(UserRole.PATIENT)) return null;
         Patient patient = (Patient) user;
+
+        MedicineInPharmacy mip = pharmacyService.gedMedicineInPharmacy(pharmacy, medicine);
 
 
         MedReservation medReservation = MedReservation.builder()
@@ -57,9 +62,9 @@ public abstract class MedicineServiceBase implements MedicineService {
                 .reservationDate(LocalDate.now())
                 .taken(false)
                 .canceled(false)
-                .medicine(medicine)
+                .medicineInPharmacy(mip)
                 .quantity(reservationFormDTO.getQuantity())
-                .pharmacy(pharmacy).build();
+                .build();
 
         patient.getReservations().add(medReservation);
         boolean inStock = pharmacyService.reduceQuantity(pharmacy, medicine, reservationFormDTO.getQuantity());

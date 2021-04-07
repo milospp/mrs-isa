@@ -2,6 +2,7 @@ package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.*;
+import isa9.Farmacy.service.MedReservationService;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.support.*;
@@ -21,7 +22,8 @@ public class UserController {
 
     private final UserService userService;
     private final PharmacyService pharmacyService;
-
+    private final MedReservationService medReservationService;
+    
     private final PatientToPatientDTO patientToPatientDTO;
     private final MedicineToMedicineDTO medicineToMedicineDTO;
     private final PharmacyToPharmacyDTO pharmacyToPharmacyDTO;
@@ -30,9 +32,11 @@ public class UserController {
     private final PharmacistToPharmacistDTO pharmacistToPharmacistDTO;
     private final MedReservationToMedReservationDTO medReservationToMedReservationDTO;
 
-    public UserController(UserService userService, PharmacyService pharmacyService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO) {
+    @Autowired
+    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO) {
         this.userService = userService;
         this.pharmacyService = pharmacyService;
+        this.medReservationService = medReservationService;
         this.patientToPatientDTO = patientToPatientDTO;
         this.medicineToMedicineDTO = medicineToMedicineDTO;
         this.pharmacyToPharmacyDTO = pharmacyToPharmacyDTO;
@@ -41,9 +45,6 @@ public class UserController {
         this.pharmacistToPharmacistDTO = pharmacistToPharmacistDTO;
         this.medReservationToMedReservationDTO = medReservationToMedReservationDTO;
     }
-
-    @Autowired
-
 
     @GetMapping("all-users")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -114,6 +115,16 @@ public class UserController {
         List<MedReservationDTO> dto = medReservationToMedReservationDTO.convert(reservations);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @PutMapping("reservations/{reservationId}/cancel")
+    public ResponseEntity<MedReservationDTO> cancelReservation(@PathVariable Long reservationId) {
+        MedReservation medReservation = medReservationService.cancel(reservationId);
+        MedReservationDTO dto = medReservationToMedReservationDTO.convert(medReservation);
+        if (!medReservation.isCanceled())
+            return new ResponseEntity<MedReservationDTO>(dto, HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<MedReservationDTO>(dto, HttpStatus.OK);
     }
 
     @GetMapping("{id}/subscriptions")

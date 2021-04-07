@@ -80,6 +80,10 @@ class PatientDataService {
     return axios.get(`${API_URL}/api/users/` + id + `/reservations`);
   }
 
+  cancelReservation(id) {
+    return axios.put(`${API_URL}/api/users/reservations/` + id + `/cancel`);
+  }
+
 }
 
 
