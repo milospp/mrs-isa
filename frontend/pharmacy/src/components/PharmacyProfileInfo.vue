@@ -152,9 +152,9 @@
         <div class="modal-body" align="left">Type: {{lek_za_prikaz?.medicine.type}}</div>
         <div class="modal-body" align="left">Price: {{lek_za_prikaz?.currentPrice}}</div>
         <div class="modal-body" align="left">Quantity: <input type="text" v-model="kolicina"/> (max = {{lek_za_prikaz?.inStock}})</div>
-        <div class="modal-body" align="left">Expiry date: <input type="text" v-model="datum"/></div>
+        <div class="modal-body" align="left">Expiry date: <input type="date" v-model="datum"/></div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" v-on:click.prevent="provera()">Reserve</button>
+          <button type="button" class="btn btn-primary" v-on:click.prevent="provera(lek_za_prikaz)">Reserve</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -168,6 +168,7 @@
     import DermatologistDataService from '../service/DermatologistDataService';
     import UtilService from '../service/UtilService.js';
     import MedicineDataService from '../service/MedicineDataService.js';
+    import $ from 'jquery';
 
 export default {
     setup() {
@@ -202,31 +203,33 @@ export default {
         this.lek_za_prikaz = l;
         this.max_kolicina = l.quantity;
       },
-      provera() {
+      provera(reserve_data) {
         var provera = 0;
         provera += this.proveri_datum(this.datum);
         provera += this.proveri_broj(this.kolicina, "Quantity must be number.");
         provera += this.proveri_kolicinu(this.kolicina);
         if (provera != 0) return false;
         alert("Everything is okay");
-        return true;
+
+        return this.reserveMedicine(reserve_data);
       },
       proveri_datum() {
-        if (this.datum == null) {
-          alert("You must enter date.\nDate must be in one of the form \n17.03.2021.\n7.3.2021.");
-          return 1;
-        }
-        var splitovano = this.datum.split('.');
-        if (splitovano.length != 4) {
-          alert("You forget dot.\nDate must be in one of the form \n17.03.2021.\n7.3.2021.");
-          return 1;
-        }
-        if (splitovano[0].length == 0 | splitovano[1].length == 0 | splitovano[2].length == 0 | splitovano[3].length != 0 ) {
-          alert("Date must be in one of the form \n17.03.2021.\n7.3.2021.");
-          return 1;
-        }
-        this.proveri_broj(this.datum, "You wrote the letter.\nDate must be in one of the form \n17.03.2021.\n7.3.2021.");
         return 0;
+        // if (this.datum == null) {
+        //   alert("You must enter date.\nDate must be in one of the form \n17.03.2021.\n7.3.2021.");
+        //   return 1;
+        // }
+        // var splitovano = this.datum.split('.');
+        // if (splitovano.length != 4) {
+        //   alert("You forget dot.\nDate must be in one of the form \n17.03.2021.\n7.3.2021.");
+        //   return 1;
+        // }
+        // if (splitovano[0].length == 0 | splitovano[1].length == 0 | splitovano[2].length == 0 | splitovano[3].length != 0 ) {
+        //   alert("Date must be in one of the form \n17.03.2021.\n7.3.2021.");
+        //   return 1;
+        // }
+        // this.proveri_broj(this.datum, "You wrote the letter.\nDate must be in one of the form \n17.03.2021.\n7.3.2021.");
+        // return 0;
       },
       proveri_broj(unos, poruka) {
         if (this.kolicina == null) {
@@ -249,7 +252,36 @@ export default {
           return 1;
         }
         return 0;
+      },
+
+
+      reserveMedicine(reserve_data) {
+
+        let reserve_form = {
+          medicineId: reserve_data.medicine.id,
+          pharmacyId: this.pharmacy.id,
+          patientId: null, // TODO: PATIENT FORM SESSION
+          quantity: this.kolicina,
+          expirityDate: this.datum
+        };
+
+        console.log(reserve_form);
+
+        MedicineDataService.reserveMedicine(reserve_form)
+        .then(response => {
+          console.log("reserved");
+          MedicineDataService.getMedicineForPharmacy(this.id)
+            .then(response => {
+                this.lekovi = response.data;
+            });
+          $('#podaci').modal('hide'); 
+
+        });
+
+
+
       }
+
   },
   created() {
       this.id = this.$route.params.id; 

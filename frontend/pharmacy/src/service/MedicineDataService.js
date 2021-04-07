@@ -32,6 +32,14 @@ class MedicineDataService {
         console.log(error.config);
     });
   }
+
+  reserveMedicine(reserveData){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/` + reserveData.medicineId + `/pharmacy/` + reserveData.pharmacyId + `/reserve`,
+      data: reserveData
+    });
+  }
 }
 
 export default new MedicineDataService();

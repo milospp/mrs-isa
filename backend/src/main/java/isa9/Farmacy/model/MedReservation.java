@@ -1,6 +1,7 @@
 package isa9.Farmacy.model;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 import lombok.*;
@@ -16,6 +17,7 @@ import lombok.*;
 @Entity
 public class MedReservation {
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true)
@@ -24,9 +26,9 @@ public class MedReservation {
     @ManyToOne
     private Patient patient;
     @Column
-    private Date reservationDate;
+    private LocalDate reservationDate;
     @Column
-    private Date lastDate;
+    private LocalDate lastDate;
     @Column
     private boolean taken;
     @Column

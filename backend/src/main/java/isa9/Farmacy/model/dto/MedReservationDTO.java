@@ -4,6 +4,7 @@ import isa9.Farmacy.model.Medicine;
 import isa9.Farmacy.model.Pharmacist;
 import isa9.Farmacy.model.Pharmacy;
 
+import java.time.LocalDate;
 import java.util.Date;
 import lombok.*;
 
@@ -18,12 +19,12 @@ import lombok.*;
 public class MedReservationDTO {
     private Long id;
     private String code;
-    private Date reservationDate;
-    private Date lastDate;
+    private LocalDate reservationDate;
+    private LocalDate lastDate;
     private boolean taken;
     private boolean canceled;
 
-    private Long medicine;
+    private MedicineDTO medicine;
     private int quantity;
 
     private PharmacistDTO issued;
