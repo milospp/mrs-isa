@@ -21,6 +21,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
     @Override
     public Boolean isCancelable(MedReservation medReservation) {
         if (medReservation.isCanceled()) return false;
+        if (medReservation.isTaken()) return false;
 
         LocalDate lastDate = medReservation.getLastDate();
         LocalDate limitDate = lastDate.minusDays(1);

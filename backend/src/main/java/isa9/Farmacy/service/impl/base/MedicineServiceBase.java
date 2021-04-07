@@ -53,6 +53,7 @@ public abstract class MedicineServiceBase implements MedicineService {
 
         MedicineInPharmacy mip = pharmacyService.gedMedicineInPharmacy(pharmacy, medicine);
 
+
         MedReservation medReservation = MedReservation.builder()
                 .id(null)
                 .code(generateString())
