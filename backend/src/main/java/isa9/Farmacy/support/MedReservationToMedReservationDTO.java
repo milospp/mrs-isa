@@ -17,12 +17,16 @@ public class MedReservationToMedReservationDTO implements Converter<MedReservati
 
     PharmacistToPharmacistDTO pharmacistToPharmacistDTO;
     PharmacyToPharmacyDTO pharmacyToPharmacyDTO;
+    MedicineToMedicineDTO medicineToMedicineDTO;
 
     @Autowired
-    public MedReservationToMedReservationDTO(PharmacistToPharmacistDTO pharmacistToPharmacistDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO) {
+    public MedReservationToMedReservationDTO(PharmacistToPharmacistDTO pharmacistToPharmacistDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, MedicineToMedicineDTO medicineToMedicineDTO) {
         this.pharmacistToPharmacistDTO = pharmacistToPharmacistDTO;
         this.pharmacyToPharmacyDTO = pharmacyToPharmacyDTO;
+        this.medicineToMedicineDTO = medicineToMedicineDTO;
     }
+
+
 
     @Override
     public MedReservationDTO convert(MedReservation medReservation) {
@@ -36,11 +40,13 @@ public class MedReservationToMedReservationDTO implements Converter<MedReservati
         dto.setCanceled(medReservation.isCanceled());
 
 
-        dto.setMedicine(medReservation.getMedicine().getId());
+        dto.setMedicine(medicineToMedicineDTO.convert(medReservation.getMedicine()));
         dto.setQuantity(medReservation.getQuantity());
 
         dto.setPharmacy(pharmacyToPharmacyDTO.convert(medReservation.getPharmacy()));
-        dto.setIssued(pharmacistToPharmacistDTO.convert(medReservation.getIssued()));
+
+        if (medReservation.getIssued() != null)
+            dto.setIssued(pharmacistToPharmacistDTO.convert(medReservation.getIssued()));
 
         return dto;
     }

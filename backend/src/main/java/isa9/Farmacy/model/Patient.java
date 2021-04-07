@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = "reservations")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -24,7 +24,7 @@ public class Patient extends User {
     private Set<Examination> myExaminations;
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Medicine> allergies;
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<MedReservation> reservations;
 
 

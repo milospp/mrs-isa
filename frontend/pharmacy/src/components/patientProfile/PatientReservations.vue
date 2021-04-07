@@ -28,7 +28,7 @@
         
         <td>
           <!-- <router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: s.id  }}">View</router-link> -->
-          <button v-bind:disabled="s.unsubscribed" class="btn btn-danger" v-on:click="unsubscribe(s)">Cancel</button>
+          <button v-bind:disabled="r.canceled" class="btn btn-danger" v-on:click="cancel(r)">Cancel</button>
         </td>
       </tr>
     </tbody>
@@ -54,10 +54,10 @@ export default {
         loadPatientReservations() {
             PatientDataService.getPatientReservations(this.id) // HARDCODED
                 .then(response => {
-                    console.log("Load subscriptions");
+                    console.log("Load RESERVAIONS");
                     console.log(response.data);
 
-                    this.subscriptions = response.data;
+                    this.reservations = response.data;
                 });
         },
 

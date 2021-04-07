@@ -1,12 +1,11 @@
 package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.*;
-import isa9.Farmacy.model.dto.MedInPharmaDTO;
-import isa9.Farmacy.model.dto.MedicineDTO;
-import isa9.Farmacy.model.dto.MedicineQuantityDTO;
+import isa9.Farmacy.model.dto.*;
 import isa9.Farmacy.service.MedicineService;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.support.MedReservationToMedReservationDTO;
 import isa9.Farmacy.support.MedicineInPharmacyToMedInPharmaDTO;
 import isa9.Farmacy.support.MedicineToMedicineDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +27,17 @@ public class MedicineController {
     private final MedicineService medicineService;
     private final UserService userService;
     private final PharmacyService pharmacyService;
+    private final MedReservationToMedReservationDTO medReservationToMedReservationDTO;
+
+    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, MedReservationToMedReservationDTO medReservationToMedReservationDTO) {
+        this.medicineService = medicineService;
+        this.userService = userService;
+        this.pharmacyService = pharmacyService;
+        this.medReservationToMedReservationDTO = medReservationToMedReservationDTO;
+    }
 
     @Autowired
-    public MedicineController(MedicineService medicineService, UserService us, PharmacyService ps){
-        this.userService = us;
-        this.pharmacyService = ps;
-        this.medicineService = medicineService;
-    }
+
 
     @GetMapping("tmp-test")
     public ResponseEntity<Boolean> debug(){
@@ -49,6 +52,24 @@ public class MedicineController {
         pharmacyService.save(pharmacy);
         return new ResponseEntity<>(true, HttpStatus.OK);
 
+    }
+
+    @PostMapping("{medId}/pharmacy/{pharmacyId}/reserve")
+    public ResponseEntity<MedReservationDTO> reserveMedicine(@PathVariable Long medId, @PathVariable Long pharmacyId, @RequestBody MedReservationFormDTO form){
+        // TODO: Get patient from session
+        form.setPatientId(1L);
+
+        form.setMedicineId(medId);
+        form.setPharmacyId(pharmacyId);
+        MedReservation medReservation = medicineService.reserveMedicine(form);
+
+        if (medReservation == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
+
+        MedReservationDTO dto = medReservationToMedReservationDTO.convert(medReservation);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
 
