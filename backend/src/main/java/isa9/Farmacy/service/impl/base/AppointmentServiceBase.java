@@ -49,6 +49,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         Examination examination;
         examination = appointment.getExamination();
         if (examination == null) return false;
+        System.out.println(examination.getPatient().getName());
         if (!examination.getPatient().equals(patient)) return false;
 
         return true;
@@ -133,8 +134,10 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     @Override
     public List<Appointment> getPastPatientAppointments(Long patientId) {
         User user = userService.findOne(patientId);
+        System.out.println(user.getName());
         if (!user.getRole().equals(UserRole.PATIENT)) return new ArrayList<>();
         Patient patient = (Patient) user;
+        System.out.println(patient.getName());
 
         List<Appointment> allAppointments;
         allAppointments = findAll().stream()

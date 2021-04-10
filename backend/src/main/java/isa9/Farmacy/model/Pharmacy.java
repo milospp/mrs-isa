@@ -28,7 +28,7 @@ public class Pharmacy {
     private Address address;
     @Column
     private String description;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Work> staff;
 
     @OneToMany(fetch = FetchType.EAGER)

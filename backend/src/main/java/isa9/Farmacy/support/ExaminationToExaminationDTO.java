@@ -39,16 +39,7 @@ public class ExaminationToExaminationDTO implements Converter<Examination, Exami
         dto.setExaminationInfo(examination.getExaminationInfo());
         dto.setDiagnose(examination.getDiagnose());
 
-
-        // TO DO: Check if this works
-        dto.setTherapy(
-                examination.getTherapy().entrySet().stream()
-                        .collect(Collectors.toMap(
-                                e -> e.getKey().getCode(),
-                                Map.Entry::getValue
-                        ))
-        );
-
+        dto.setTherapy(examination.getTherapy());
         
         return dto;
     }

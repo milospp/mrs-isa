@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 import lombok.*;
 
+import javax.persistence.Entity;
+
 @Getter
 @Setter
 @ToString
@@ -13,6 +15,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 
+@Entity
 public class Dermatologist extends Doctor{
 
     public Dermatologist(Long id, String name, String surname, String email, String password, Address address, String phoneNumber) {

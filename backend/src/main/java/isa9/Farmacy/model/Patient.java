@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode(callSuper = true, exclude = "reservations")
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -15,6 +15,7 @@ import lombok.*;
 @Entity
 public class Patient extends User {
     @Column
+    @EqualsAndHashCode.Include
     private int points;
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Penality> penalties;

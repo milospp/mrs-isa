@@ -41,15 +41,15 @@ public abstract class User {
     @Enumerated
     private UserRole role;
 
-    @Deprecated
-    public User(Long id, String name, String surname, String email, String password, Address address, String phoneNumber) {
-        this.address = address;
-        this.phoneNumber = phoneNumber;
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.password = password;
-    }
+//    @Deprecated
+//    public User(Long id, String name, String surname, String email, String password, Address address, String phoneNumber) {
+//        this.address = address;
+//        this.phoneNumber = phoneNumber;
+//        this.id = id;
+//        this.name = name;
+//        this.surname = surname;
+//        this.email = email;
+//        this.password = password;
+//    }
 
 }
