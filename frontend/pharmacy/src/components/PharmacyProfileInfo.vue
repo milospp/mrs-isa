@@ -89,6 +89,7 @@
               </div>
             </div>
             <div id="menu4" class="tab-pane fade">
+              <Mapa/>
             </div>
             
             <div id="menu1" class="tab-pane fade">
@@ -168,9 +169,12 @@
     import DermatologistDataService from '../service/DermatologistDataService';
     import UtilService from '../service/UtilService.js';
     import MedicineDataService from '../service/MedicineDataService.js';
-    import $ from 'jquery';
+    import Mapa from "../components/Maps.vue";
 
 export default {
+  components: {
+    Mapa
+  },
     setup() {
       return { UtilService}
     },
@@ -205,31 +209,12 @@ export default {
       },
       provera(reserve_data) {
         var provera = 0;
-        provera += this.proveri_datum(this.datum);
         provera += this.proveri_broj(this.kolicina, "Quantity must be number.");
         provera += this.proveri_kolicinu(this.kolicina);
         if (provera != 0) return false;
         alert("Everything is okay");
 
         return this.reserveMedicine(reserve_data);
-      },
-      proveri_datum() {
-        return 0;
-        // if (this.datum == null) {
-        //   alert("You must enter date.\nDate must be in one of the form \n17.03.2021.\n7.3.2021.");
-        //   return 1;
-        // }
-        // var splitovano = this.datum.split('.');
-        // if (splitovano.length != 4) {
-        //   alert("You forget dot.\nDate must be in one of the form \n17.03.2021.\n7.3.2021.");
-        //   return 1;
-        // }
-        // if (splitovano[0].length == 0 | splitovano[1].length == 0 | splitovano[2].length == 0 | splitovano[3].length != 0 ) {
-        //   alert("Date must be in one of the form \n17.03.2021.\n7.3.2021.");
-        //   return 1;
-        // }
-        // this.proveri_broj(this.datum, "You wrote the letter.\nDate must be in one of the form \n17.03.2021.\n7.3.2021.");
-        // return 0;
       },
       proveri_broj(unos, poruka) {
         if (this.kolicina == null) {
