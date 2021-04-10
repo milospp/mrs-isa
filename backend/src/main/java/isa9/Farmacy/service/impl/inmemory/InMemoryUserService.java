@@ -146,6 +146,11 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         return phAdmin;
     }
 
+    @Override
+    public List<Patient> getAllMyPatients(Integer pageNo, Integer pageSize, String sortBy, Long doctorId, Integer asc) {
+        return null;
+    }
+
 //    @Override
 //    public Pharmacy findPharmacistPharmacy(Long id) {
 //        User user = findOne(id);

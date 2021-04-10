@@ -7,6 +7,9 @@ import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -214,11 +217,21 @@ public class UserController {
     }
 
     @RequestMapping(value="/patients", produces="application/json")
-    public ResponseEntity<List<Patient>> getAllPatients() {
-        List<User> svi = userService.findAll();
-        List<Patient> povratna = new ArrayList<>();
-        for (User u : svi) if (u.getClass() == Patient.class) povratna.add((Patient) u);
-        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    public ResponseEntity<List<PatientDTO>> getAllPatients(@RequestParam(defaultValue = "0") Integer pageNo,
+                                                        @RequestParam(defaultValue = "1") Integer pageSize,
+                                                        @RequestParam(defaultValue = "id") String sortBy,
+                                                        @RequestParam(defaultValue = "2") Long doctorId,
+                                                           @RequestParam(defaultValue = "1") Integer asc) {
+        System.out.println(pageNo + pageSize + sortBy + doctorId + asc);
+//        Pageable page = PageRequest.of(0, 1, Sort.by(sortPolicy));
+//        List<User> svi = userService.findAll();
+//        Page<Patient> povratna = new ArrayList<>();
+//        for (User u : svi) if (u.getClass() == Patient.class) povratna.add((Patient) u);
+//        return new ResponseEntity<>(povratna, HttpStatus.OK);
+        List<Patient> list = userService.getAllMyPatients(pageNo, pageSize, sortBy, doctorId, asc);
+        List<PatientDTO> convertedList = patientToPatientDTO.convert(list);
+
+        return new ResponseEntity<List<PatientDTO>>(convertedList, HttpStatus.OK);
     }
 
     @GetMapping("all-patients")

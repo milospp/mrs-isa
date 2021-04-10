@@ -4,8 +4,9 @@ import axios from "axios";
 const API_URL = "http://localhost:8080";
 
 class PatientDataService {
-  retrieveAllPatients() {
-    return axios.get(`${API_URL}/api/users/all-patients`);
+  retrieveAllPatients(pageNo, pageSize, sortBy, doctorId, asc) {
+    //return axios.get(`${API_URL}/api/users/all-patients`);
+    return axios.get(`${API_URL}/api/users/patients?pageNo=`+ pageNo +`&pageSize=`+ pageSize +`&sortBy=`+ sortBy +`&doctorId=`+ doctorId + `&asc=` + asc);
   }
 
   searchPatients(name, surname) {
@@ -73,7 +74,7 @@ class PatientDataService {
       }
       alert("Email is not unique!");
       return false;
-    });;
+    });
   }
 
   getPatientReservations(id) {
