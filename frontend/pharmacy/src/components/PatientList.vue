@@ -76,8 +76,10 @@
 
 
                 <!-- <div id="page-selection">Pagination goes here</div> -->
-
-                <pagination v-model="currentPage" :records="totalPatients" :per-page="perPage" @paginate="refreshPatients($event)"/>
+                <div class="d-flex justify-content-center">
+                  <pagination v-model="currentPage" :records="totalPatients" :per-page="perPage" @paginate="refreshPatients($event)"/>
+                </div>
+                
 
             </div>
         </div>
@@ -277,7 +279,7 @@ export default {
             currentPage: 1,
             perPage: 2,
             totalPatients: 6, // hardcoded
-            sortBy: 'name',
+            sortBy: 'id',
             doctorId: 2,
 
             reverse: 1,
