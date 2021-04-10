@@ -148,6 +148,7 @@
 
                     <thead>
                       <tr>
+                        <th>Patient Name</th>
                         <th>TYPE</th>
                         <th>Doctor Name</th>
                         <th>Pharmacy</th>
@@ -160,6 +161,7 @@
 
                     <tbody>
                       <tr class="v-middle" v-for="a in filteredHistory" v-bind:style="{ background: isCanceled(a) ? '#aaa' : ''}" v-bind:key="a.id">
+                        <td>{{a.patient.name}} {{a.patient.surname}}</td>
                         <td v-bind:class="{ 'badge-info': a.type == 'COUNSELING', 'badge-primary': a.type == 'EXAMINATION' }" class="badge">{{a.type}}
                           <br><span v-if="isCanceled(a)" class="badge badge-danger">CALCELED</span>
                         </td>
@@ -174,6 +176,7 @@
                       </tr>
                       <!-- dummy podaci -->
                       <tr class="v-middle">
+                        <td>name Surname</td>
                         <td>EXAMINATION
                         </td>
                         <td>Imenko Prezimic</td>
