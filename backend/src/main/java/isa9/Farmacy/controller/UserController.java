@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.Flow;
@@ -44,6 +45,23 @@ public class UserController {
         this.dermatologistToDermatologistDTO = dermatologistToDermatologistDTO;
         this.pharmacistToPharmacistDTO = pharmacistToPharmacistDTO;
         this.medReservationToMedReservationDTO = medReservationToMedReservationDTO;
+    }
+
+    @GetMapping("tmp-test")
+    public ResponseEntity<Boolean> debug(){
+        Pharmacy pharmacy = pharmacyService.findOne(1L);
+
+        Dermatologist d1 = (Dermatologist) userService.findOne(2L);//new Dermatologist(2L, "Dr", "Mr", "drmr@mail.com", "111111", new Address("a","a","a","a"), "123456789");
+        //userService.save(d1);
+        System.out.println(d1.getName());
+
+        Pharmacist p1 = (Pharmacist) userService.findOne(3L);
+        System.out.println(p1.getName());
+
+        //pharmacy.hireDoctor(1L, d1, LocalTime.now(), LocalTime.now());
+        //pharmacyService.save(pharmacy);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+
     }
 
     @GetMapping("all-users")

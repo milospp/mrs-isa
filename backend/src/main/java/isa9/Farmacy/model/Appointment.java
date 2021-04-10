@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -17,18 +17,23 @@ import lombok.*;
 @Entity
 public class Appointment {
     @Id
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column
+    @EqualsAndHashCode.Include
     private LocalDateTime startTime;
 
     @Column
+    @EqualsAndHashCode.Include
     private double price;
     @Column
+    @EqualsAndHashCode.Include
     private int durationInMins;
 
     @Column
     @Enumerated
+    @EqualsAndHashCode.Include
     private TypeOfReview type;
 
     @ManyToOne
@@ -39,7 +44,7 @@ public class Appointment {
     @JoinColumn(name = "pharmacy_id")
     private Pharmacy pharmacy;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "examination_id")
     private Examination examination;
 

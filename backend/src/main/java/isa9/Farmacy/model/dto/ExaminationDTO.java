@@ -4,6 +4,8 @@ import isa9.Farmacy.model.*;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+
 import lombok.*;
 
 @Getter
@@ -22,7 +24,7 @@ public class ExaminationDTO {
     private ExaminationStatus status; // held, not held or canceled
     private String examinationInfo;
     private String diagnose;
-    private Map<String, Integer> therapy; // maybe should be the code of the medicine
+    private Set<TherapyItem> therapy; // maybe should be the code of the medicine
     private TypeOfReview type;
 
 

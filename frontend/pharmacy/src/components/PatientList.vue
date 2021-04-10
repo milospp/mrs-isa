@@ -41,14 +41,14 @@
         </div>
         <!--MODAL-->
         <div>
-          <div class="modal fade" id="appointmentModal" tabindex="-1" role="dialog" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+          <div class="modal fade" id="appointmentDetailsModal" tabindex="-1" role="dialog" aria-labelledby="appointmentDetailsModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div v-if="selectedAppointment" class="modal-content">
                 <div class="modal-header">
                   <span v-bind:class="{ 'badge-info': selectedAppointment.type == 'COUNSELING', 'badge-primary': selectedAppointment.type == 'EXAMINATION' }" class="badge">{{selectedAppointment.type}}
                   <span v-if="false" class="badge badge-danger">CALCELED</span>
                   </span>
-                  <h5 class="modal-title" id="appointmentModalLabel">Appointment</h5>
+                  <h5 class="modal-title" id="appointmentDetailsModalLabel">Appointment</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
@@ -102,12 +102,12 @@
                       <tr>
                         <th>Medicine code</th>
                         <!-- <th>Medicine name</th> -->
-                        <th>Quantity</th>
+                        <th>Days</th>
                       </tr>
-                      <tr v-for="v,k in selectedAppointment.examination.therapy">
-                        <td>{{k}}</td>
+                      <tr v-for="t in selectedAppointment.examination.therapy">
+                        <td>{{t.medicine.code}}</td>
                         <!-- <td>m.name</td> -->
-                        <td>{{v}}</td>
+                        <td>{{t.days}}</td>
                       </tr>
                     </thead>
                   </table>
@@ -119,11 +119,11 @@
             </div>
           </div>
 
-          <div class="modal fade" id="appointmentModal1" tabindex="-1" role="dialog" aria-labelledby="appointmentModal1Label" aria-hidden="true">
+          <div class="modal fade" id="appointmentsModal" tabindex="-1" role="dialog" aria-labelledby="appointmentsModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="appointmentModal1Label">Examination history</h5>
+                  <h5 class="modal-title" id="appointmentsModalLabel">Examination history</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
@@ -160,8 +160,8 @@
                     </thead>
 
                     <tbody>
-                      <tr class="v-middle" v-for="a in filteredHistory" v-bind:style="{ background: isCanceled(a) ? '#aaa' : ''}" v-bind:key="a.id">
-                        <td>{{a.patient.name}} {{a.patient.surname}}</td>
+                      <tr class="v-middle" v-for="a in appointments" v-bind:style="{ background: isCanceled(a) ? '#aaa' : ''}" v-bind:key="a.id">
+                        <td>{{a.examination.patient.name}} {{a.examination.patient.surname}}</td>
                         <td v-bind:class="{ 'badge-info': a.type == 'COUNSELING', 'badge-primary': a.type == 'EXAMINATION' }" class="badge">{{a.type}}
                           <br><span v-if="isCanceled(a)" class="badge badge-danger">CALCELED</span>
                         </td>
@@ -175,7 +175,7 @@
                         </td>
                       </tr>
                       <!-- dummy podaci -->
-                      <tr class="v-middle">
+                      <!-- <tr class="v-middle">
                         <td>name Surname</td>
                         <td>EXAMINATION
                         </td>
@@ -187,7 +187,7 @@
                         <td>
                           <button class="btn btn-primary" v-on:click="showModalDetails(a)">Details</button>
                         </td>
-                      </tr>
+                      </tr> -->
                     </tbody>
                   
                   </table>
@@ -274,11 +274,12 @@ export default {
         showModal(patient) {
           this.selectedPatient = patient;
           console.log(patient);
-          $('#appointmentModal1').modal();
-          $('#appointmentModal1').modal('handleUpdate');
+          this.loadPatientSubscriptions(patient.id);
+          $('#appointmentsModal').modal();
+          $('#appointmentsModal').modal('handleUpdate');
         },
-        loadPatientSubscriptions() {
-            AppointmentDataService.getAllUserPastAppointments(selectedPatient.id) //this.id
+        loadPatientSubscriptions(patientId) {
+            AppointmentDataService.getAllUserPastAppointments(patientId) //this.id
                 .then(response => {
                     console.log("Load Appointments");
                     console.log(response.data);
@@ -296,18 +297,31 @@ export default {
           return false;
         },
 
-        showModalDetail(appointment) {
+        showModalDetails(appointment) {
           this.selectedAppointment = appointment;
-          $('#appointmentModal').modal();
+          $('#appointmentDetailsModal').modal();
         },
-    },
 
-    mounted() {
-        this.refreshPatients();
-    },
-    created() {
-        this.refreshPatients();
-    }
+        filteredHistory() {
+          let selected = this.historyFilter;
+          var filteredList = this.appointments;
+
+          // if (selected === "all")
+          //   return filteredList;
+
+          filteredList = filteredList.filter(appointment => appointment.type === selected)
+
+          return filteredList;
+        }
+      },
+
+      mounted() {
+          this.refreshPatients();
+      },
+
+      created() {
+          this.refreshPatients();
+      }
 }
 </script>
 

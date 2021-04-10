@@ -1,9 +1,6 @@
 package isa9.Farmacy.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +18,7 @@ import lombok.*;
 @Inheritance(strategy= InheritanceType.JOINED)
 public abstract class Doctor extends User{
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Work> working;
 
 
