@@ -3,6 +3,7 @@ package isa9.Farmacy.service;
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.PatientDTO;
 
+import java.util.List;
 import java.util.Set;
 
 public interface UserService extends GenericService<User> {
@@ -27,5 +28,7 @@ public interface UserService extends GenericService<User> {
     Medicine removePatientAllergy(Patient patient, Long medicineId);
 
     Set<MedReservation> getPatientReservations(Long patientId);
+
+    List<Patient> getAllMyPatients(Integer pageNo, Integer pageSize, String sortBy, Long doctorId, Integer asc);
 
 }

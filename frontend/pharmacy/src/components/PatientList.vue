@@ -17,17 +17,33 @@
                 </form>
             </div>
             <div class="container" style="padding: 0px;">
-                <table class="table table-hover table-striped box-shadow">
+                <table id="patientsTable" class="table table-hover table-striped box-shadow"><!-- data-toggle="table" ;;;; table-sortable sortable
+  data-height="460"
+  data-url="json/data1.json" -->
                     <thead class="card-header">
-                        <th style="">First name</th>
-                        <th>Last name</th>
-                        <th>Address</th>
+                      <tr>
+                        <th id="name" >
+                          First name
+                          <button style="border: none; background-color: inherit;" v-on:click="changeOrder('name')">
+                            <span v-if="reverse === -1">△</span>
+                            <span v-if="reverse === 1">▽</span>
+                          </button>
+                        </th> <!--data-type="string" data-field="name" data-sortable="true" ;;; data-field="name" data-sortable="true"-->
+                        <th id="surname">
+                          Last name
+                          <button style="border: none; background-color: inherit;" v-on:click="changeOrder('surname')">
+                            <span v-if="reverse === -1">△</span>
+                            <span v-if="reverse === 1">▽</span>
+                          </button>
+                        </th>
+                        <th id="address">Address</th>
                         <th>Phone number</th>
                         <th></th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <tr :key="p.username" v-for="p in patients" v-on:dblclick="patientInfo(Object.values(p))" class="clickable">
-                            <td>{{p.name}}</td>
+                        <tr :key="p.username" v-for="p in patients" v-on:dblclick="patientInfo(Object.values(p))" class="clickable" data-index="{{p.id}}">
+                            <td scope="row">{{p.name}}</td>
                             <td>{{p.surname}}</td>
                             <td>{{UtilService.AddressToString(p.address)}}</td>
                             <td>{{p.phoneNumber}}</td>
@@ -37,9 +53,35 @@
                         </tr>
                     </tbody>
                 </table>
+
+                <!-- <nav aria-label="Page navigation">
+                  <ul class="pagination justify-content-center">
+                    <li class="page-item" id="previous">
+                      <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                      </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                      <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                      </a>
+                    </li>
+                  </ul>
+                </nav> -->
+
+
+                <!-- <div id="page-selection">Pagination goes here</div> -->
+
+                <pagination v-model="currentPage" :records="totalPatients" :per-page="perPage" @paginate="refreshPatients($event)"/>
+
             </div>
         </div>
-        <!--MODAL-->
+        <!--MODALS-->
         <div>
           <div class="modal fade" id="appointmentDetailsModal" tabindex="-1" role="dialog" aria-labelledby="appointmentDetailsModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -202,14 +244,6 @@
         </div>
       </div>
     </div>
-    
-
-
-    
-<!-- Modal -->
-
-
-    <!-- <ExamHistory :role="role" :id="selectedPatient.id"/> -->
 </template>
 
 <script>
@@ -217,7 +251,8 @@ import PatientDataService from '../service/PatientDataService.js';
 import UtilService from '../service/UtilService.js';
 import AppointmentDataService from '@/service/AppointmentDataService.js';
 import $ from 'jquery';
-//import ExamHistory from '@/components/ExamHistory';
+//import 'bootpag/lib/jquery.bootpag.min';
+import Pagination from 'v-pagination-3';
 
 export default {
     name: 'PatientList',
@@ -226,6 +261,7 @@ export default {
     },
     components: {
         //ExamHistory
+        Pagination
     },
     data() {
         return {
@@ -235,13 +271,25 @@ export default {
             searchSurname: "",
             selectedPatient: null,
             historyFilter: "all",
-      appointments: [],
-      selectedAppointment: null,
+            appointments: [],
+            selectedAppointment: null,
+
+            currentPage: 1,
+            perPage: 2,
+            totalPatients: 6, // hardcoded
+            sortBy: 'name',
+            doctorId: 2,
+
+            reverse: 1,
+
         };
     },
     methods: {
-        refreshPatients() {
-            PatientDataService.retrieveAllPatients() // HARDCODED
+        refreshPatients(e) {
+          console.log(this.currentPage-1);
+          if (!this.currentPage) this.currentPage = 0;
+          console.log(this.currentPage);
+            PatientDataService.retrieveAllPatients(this.currentPage - 1, this.perPage, this.sortBy, this.doctorId, this.reverse) // HARDCODED
                 .then(response => {
                     this.patients = response.data;
                     console.log(response.data);
@@ -312,15 +360,71 @@ export default {
           filteredList = filteredList.filter(appointment => appointment.type === selected)
 
           return filteredList;
+        },
+
+        changeOrder(sort) {
+          this.reverse = this.reverse * -1;
+          this.sortBy = sort;
+          this.refreshPatients();
+          // var newItems = self.patients.slice().sort(function (a, b) { 
+          //   var result;
+          //   if (a.name < b.name) {
+          //     result = 1
+          //   }
+          //   else if (a.name > b.name) {
+          //     result = -1
+          //   }
+          //   else {
+          //     result = 0
+          //   }
+          //   return result * self.reverse
+          // })
+          // newItems.forEach(function (item, index) {
+          //   item.position = index;
+          // });
         }
       },
 
       mounted() {
+          //this.refreshPatients(0, 1, 'name', 2);
           this.refreshPatients();
       },
 
       created() {
-          this.refreshPatients();
+        this.refreshPatients();
+          //this.refreshPatients(0, 1, 'name', 2);
+          // $(document).ready(function () {
+          //     $('#patientsTable').DataTable();
+          //     $('.dataTables_length').addClass('bs-select');
+          // });
+          //$('patientsTable').DataTable();
+
+          // init bootpag
+        // $('#page-selection').bootpag({
+        //     total: 2
+        // }).on("page", function(event, /* page number here */ num){
+        //      this.refreshPatients(num, 1, 'name', 2); // some ajax content loading...
+        //      $(this).bootpag({total: 10, maxVisible: 10});
+        // });
+//         $('#page-selection').bootpag({
+//        total: 53,
+//        page: 2,
+//        maxVisible: 5,
+//        leaps: true,
+//        firstLastUse: true,
+//        first: '←',
+//        last: '→',
+//        wrapClass: 'pagination',
+//        activeClass: 'active',
+//        disabledClass: 'disabled',
+//        nextClass: 'next',
+//        prevClass: 'prev',
+//        lastClass: 'last',
+//        firstClass: 'first'
+// }).on('page', function(event, num)
+// {
+//      this.refreshPatients(num, 1, 'name', 2); // some ajax content loading...
+// });
       }
 }
 </script>
@@ -343,4 +447,58 @@ export default {
         color:  #007bff;
         text-decoration: none;
     }*/
+    /* table.dataTable thead .sorting:after,
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_asc_disabled:after,
+table.dataTable thead .sorting_asc_disabled:before,
+table.dataTable thead .sorting_desc:after,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_desc_disabled:after,
+table.dataTable thead .sorting_desc_disabled:before {
+bottom: .5em;
+} */
+.table-sortable > thead > tr > th {
+    cursor: pointer;
+    position: relative;
+}
+
+.table-sortable > thead > tr > th:after,
+.table-sortable > thead > tr > th:after,
+.table-sortable > thead > tr > th:after {
+    content: ' ';
+    position: absolute;
+    height: 0;
+    width: 0;
+    right: 10px;
+    top: 16px;
+}
+.table-sortable > thead > tr > th:after {
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #ccc;
+    border-bottom: 0px solid transparent;
+}
+
+.table-sortable > thead > tr > th:hover:after {
+    border-top: 5px solid #888;
+}
+
+.table-sortable > thead > tr > th.asc:after {
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 0px solid transparent;
+    border-bottom: 5px solid #333;
+}
+.table-sortable > thead > tr > th.asc:hover:after {
+    border-bottom: 5px solid #888;
+}
+
+.table-sortable > thead > tr > th.desc:after {    
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #333;
+    border-bottom: 5px solid transparent;
+}
 </style>
