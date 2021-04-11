@@ -4,7 +4,7 @@ import axios from "axios";
 const API_URL = "http://localhost:8080/api/medicines";
 
 class MedicineDataService {
-  getAllMedicines(id) {
+  getAllMedicines() {
     return axios.get(`${API_URL}`);
   }
 
@@ -38,6 +38,16 @@ class MedicineDataService {
       method: 'post',
       url: `${API_URL}/` + reserveData.medicineId + `/pharmacy/` + reserveData.pharmacyId + `/reserve`,
       data: reserveData
+    });
+  }
+
+  sendMedicine(newMedicine){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/newMedicine`,
+      data: newMedicine
+      }).then(response => {
+        if (response.data == 1) alert("This medicine code is taken!");
     });
   }
 }

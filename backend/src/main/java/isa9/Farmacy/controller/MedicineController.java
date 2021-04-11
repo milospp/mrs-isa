@@ -116,9 +116,10 @@ public class MedicineController {
 
     @PostMapping("/newMedicine")
     public ResponseEntity<Integer> addMedicine(@RequestBody MedicineDTO medicineDTO){
+        List<Long> replacementMedsIds = medicineDTO.getReplacementMedicationIds().stream().map(Long::parseLong).collect(Collectors.toList());
         Medicine newMedicine = new Medicine(0L, medicineDTO.getCode(), medicineDTO.getName(), medicineDTO.getStructure(),
                 medicineDTO.getManufacturer(), medicineDTO.getNote(), medicineDTO.getPoints(), medicineDTO.getShape(),
-                medicineDTO.getType(), medicineDTO.getPerscription(), null);
+                medicineDTO.getType(), medicineDTO.getPerscription(), medicineService.idsToMedicines(replacementMedsIds));
         boolean checkCode = this.medicineService.isCodeAvailable(newMedicine.getCode());
         if(checkCode){
             this.medicineService.save(newMedicine);
