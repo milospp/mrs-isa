@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -38,5 +39,12 @@ public class dbMedicineService extends MedicineServiceBase implements MedicineSe
         return this.medicineRepository.save(entity);
     }
 
-
+    @Override
+    public Boolean isCodeAvailable(String medicineId) {
+        List<Medicine> allMeds = this.medicineRepository.findAll();
+        for(Medicine med : allMeds){
+            if(med.getCode().equals(medicineId)) return false;
+        }
+        return true;
+    }
 }

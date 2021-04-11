@@ -39,5 +39,8 @@ public class InMemoryMedicineService extends MedicineServiceBase implements Medi
         return entity;
     }
 
-
+    @Override
+    public Boolean isCodeAvailable(String medicineId) {
+        return false;
+    }
 }
