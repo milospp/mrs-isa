@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -17,24 +17,33 @@ import lombok.*;
 @Entity
 public class Medicine {
     @Id
+    @EqualsAndHashCode.Include
     private Long id;
     @Column
+    @EqualsAndHashCode.Include
     private String code;
     @Column
+    @EqualsAndHashCode.Include
     private String name;
     @Column
+    @EqualsAndHashCode.Include
     private String structure;
     @Column
+    @EqualsAndHashCode.Include
     private String manufacturer;
     @Column
+    @EqualsAndHashCode.Include
     private String note;
     @Column
     private int points;
     @Column
+    @EqualsAndHashCode.Include
     private String shape;
     @Column
+    @EqualsAndHashCode.Include
     private String type;
     @Enumerated
+    @EqualsAndHashCode.Include
     private DispencingMedicine perscription;
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Medicine> replacementMedication;

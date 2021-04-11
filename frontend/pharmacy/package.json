@@ -17,6 +17,7 @@
     "moment": "^2.29.1",
     "popper.js": "^1.16.1",
     "select2": "^4.1.0-rc.0",
+    "v-pagination-3": "^0.1.2",
     "vue": "^3.0.0",
     "vue-axios": "^3.2.4",
     "vue-choice": "^0.2.3",

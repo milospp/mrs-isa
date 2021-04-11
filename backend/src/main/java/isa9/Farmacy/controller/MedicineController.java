@@ -2,12 +2,12 @@ package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.*;
+import isa9.Farmacy.service.MedReservationService;
 import isa9.Farmacy.service.MedicineService;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.support.MedReservationToMedReservationDTO;
 import isa9.Farmacy.support.MedicineInPharmacyToMedInPharmaDTO;
-import isa9.Farmacy.support.MedicineToMedicineDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +27,16 @@ public class MedicineController {
     private final MedicineService medicineService;
     private final UserService userService;
     private final PharmacyService pharmacyService;
+    private final MedReservationService medReservationService;
     private final MedReservationToMedReservationDTO medReservationToMedReservationDTO;
     private final MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO;
 
     @Autowired
-    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, MedReservationToMedReservationDTO medReservationToMedReservationDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO) {
+    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, MedReservationToMedReservationDTO medReservationToMedReservationDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO) {
         this.medicineService = medicineService;
         this.userService = userService;
         this.pharmacyService = pharmacyService;
+        this.medReservationService = medReservationService;
         this.medReservationToMedReservationDTO = medReservationToMedReservationDTO;
         this.medicineInPharmacyToMedInPharmaDTO = medicineInPharmacyToMedInPharmaDTO;
     }
@@ -61,7 +63,7 @@ public class MedicineController {
 
         form.setMedicineId(medId);
         form.setPharmacyId(pharmacyId);
-        MedReservation medReservation = medicineService.reserveMedicine(form);
+        MedReservation medReservation = medReservationService.reserveMedicine(form);
 
         if (medReservation == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
