@@ -2,13 +2,13 @@
     <div class="container">
         <div class="row">
             <div class="container" style="padding: 0px;">
-                <form v-on:submit.prevent="searchPatients(this)" style="float: right;">
+                <form v-on:submit.prevent="refreshPatients(event)" style="float: right;">
                     <div class="form-row form-inline mb-2" >
                         <div class="form-group col-auto">
-                            <input v-model="searchName" type="text" class="form-control" id="name" placeholder="First Name">
+                            <input v-model="refreshData.searchParams.name" type="text" class="form-control" id="name" placeholder="First Name">
                         </div>
                         <div class="form-group col-auto">
-                            <input v-model="searchSurname" type="text" class="form-control" id="surname" placeholder="Last Name">
+                            <input v-model="refreshData.searchParams.surname" type="text" class="form-control" id="surname" placeholder="Last Name">
                         </div>
                         <div class="col-auto">
                             <button type="submit" class="btn btn-primary">Search</button>
@@ -25,15 +25,15 @@
                         <th id="name" >
                           First name
                           <button style="border: none; background-color: inherit;" v-on:click="changeOrder('name')">
-                            <span v-if="reverse === -1">△</span>
-                            <span v-if="reverse === 1">▽</span>
+                            <span v-if="refreshData.ascending">△</span>
+                            <span v-if="!refreshData.ascending">▽</span>
                           </button>
                         </th> <!--data-type="string" data-field="name" data-sortable="true" ;;; data-field="name" data-sortable="true"-->
                         <th id="surname">
                           Last name
                           <button style="border: none; background-color: inherit;" v-on:click="changeOrder('surname')">
-                            <span v-if="reverse === -1">△</span>
-                            <span v-if="reverse === 1">▽</span>
+                            <span v-if="refreshData.ascending">△</span>
+                            <span v-if="!refreshData.ascending">▽</span>
                           </button>
                         </th>
                         <th id="address">Address</th>
@@ -77,7 +77,7 @@
 
                 <!-- <div id="page-selection">Pagination goes here</div> -->
                 <div class="d-flex justify-content-center">
-                  <pagination v-model="currentPage" :records="totalPatients" :per-page="perPage" @paginate="refreshPatients($event)"/>
+                  <pagination v-model="refreshData.pageNo" :records="totalPatients" :per-page="refreshData.pageSize" @paginate="refreshPatients($event)"/>
                 </div>
                 
 
@@ -269,58 +269,71 @@ export default {
         return {
             patients: [],
             message: null,
-            searchName: "",
-            searchSurname: "",
+            // searchName: "",
+            // searchSurname: "",
             selectedPatient: null,
             historyFilter: "all",
             appointments: [],
             selectedAppointment: null,
 
-            currentPage: 1,
-            perPage: 2,
+            // currentPage: 1,
+            // perPage: 2,
             totalPatients: 6, // hardcoded
-            sortBy: 'id',
-            doctorId: 2,
+            // sortBy: 'id',
+            // doctorId: 2,
 
-            reverse: 1,
+            // reverse: 1,
+
+            refreshData: {
+              pageNo: 1,
+              pageSize: 2,
+              sortBy: 'id',
+              searchParams: {
+                doctorId: 2,
+                name: "",
+                surname: ""
+              },
+              ascending: true
+            }
 
         };
     },
     methods: {
         refreshPatients(e) {
-          console.log(this.currentPage-1);
-          if (!this.currentPage) this.currentPage = 0;
-          console.log(this.currentPage);
-            PatientDataService.retrieveAllPatients(this.currentPage - 1, this.perPage, this.sortBy, this.doctorId, this.reverse) // HARDCODED
+          console.log(this.refreshData.pageNo);
+          if (!this.refreshData.pageNo) this.refreshData.pageNo = 1;
+          console.log(this.refreshData.pageNo);
+            PatientDataService.retrieveAllPatients(this.refreshData) // HARDCODED
                 .then(response => {
-                    this.patients = response.data;
+                    this.patients = response.data.patients;
+                    this.totalPatients = response.data.count;
                     console.log(response.data);
                 });
         },
         patientInfo(patient) {
             alert(patient);
         },
-        searchPatients(e) {
-            if (this.searchName || this.searchSurname){
-                PatientDataService.searchPatients(this.searchName, this.searchSurname)
-                .then(response => {
-                        this.patients = response.data;
-                        console.log(response.data);
-                    })
-                .catch(function (error) {
-                    if (error.response) {
-                    console.log(error.response.data);
-                    } else if (error.request) {
-                    console.log(error.request);
-                    }
-                    console.log("error.config");
-                    console.log(error.config);
-                });
-            }
-            else {
-                this.refreshPatients();
-            }
-        },
+        // searchPatients(e) {
+        //     if (this.searchName || this.searchSurname){
+        //         PatientDataService.searchPatients(this.searchName, this.searchSurname)
+        //         .then(response => {
+        //                 this.patients = response.data;
+        //                 console.log(response.data);
+        //             })
+        //         .catch(function (error) {
+        //             if (error.response) {
+        //             console.log(error.response.data);
+        //             } else if (error.request) {
+        //             console.log(error.request);
+        //             }
+        //             console.log("error.config");
+        //             console.log(error.config);
+        //         });
+        //     }
+        //     else {
+        //         this.refreshPatients();
+        //     }
+        // },
         showModal(patient) {
           this.selectedPatient = patient;
           console.log(patient);
@@ -365,8 +378,10 @@ export default {
         },
 
         changeOrder(sort) {
-          this.reverse = this.reverse * -1;
-          this.sortBy = sort;
+          if (this.refreshData.ascending) {this.refreshData.ascending = false}
+          else {this.refreshData.ascending = true}
+          //this.reverse = this.reverse * -1;
+          this.refreshData.sortBy = sort;
           this.refreshPatients();
           // var newItems = self.patients.slice().sort(function (a, b) { 
           //   var result;
@@ -389,10 +404,26 @@ export default {
 
       mounted() {
           //this.refreshPatients(0, 1, 'name', 2);
+          // this.refreshData.pageNo = 1;
+          // this.refreshData.pageSize = 2;
+          // this.refreshData.sortBy = "id";
+          // this.refreshData.searchParams.doctorId = 2;
+          // this.refreshData.searchParams.name = "";
+          // this.refreshData.searchParams.surname = "";
+          // this.refreshData.ascending = true;
+            
           this.refreshPatients();
       },
 
       created() {
+        // this.refreshData.pageNo = 1;
+        //   this.refreshData.pageSize = 2;
+        //   this.refreshData.sortBy = "id";
+        //   this.refreshData.searchParams.doctorId = 2;
+        //   this.refreshData.searchParams.name = "";
+        //   this.refreshData.searchParams.surname = "";
+        //   this.refreshData.ascending = true;
+
         this.refreshPatients();
           //this.refreshPatients(0, 1, 'name', 2);
           // $(document).ready(function () {
@@ -461,7 +492,7 @@ table.dataTable thead .sorting_desc_disabled:after,
 table.dataTable thead .sorting_desc_disabled:before {
 bottom: .5em;
 } */
-.table-sortable > thead > tr > th {
+/* .table-sortable > thead > tr > th {
     cursor: pointer;
     position: relative;
 }
@@ -502,5 +533,5 @@ bottom: .5em;
     border-right: 5px solid transparent;
     border-top: 5px solid #333;
     border-bottom: 5px solid transparent;
-}
+} */
 </style>
