@@ -16,5 +16,5 @@ public class PaginationSortSearchDTO {
     private int pageSize;
     private String sortBy;
     private boolean ascending;
-    private Map<String, String> searchParams;
+    private Map<String, String> searchParams; // here goes doctor id also
 }

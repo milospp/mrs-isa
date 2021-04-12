@@ -10,6 +10,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.List;
 
 public interface PatientRepository extends JpaRepository<Patient, Long> {
+
     Page<Patient> findByNameIgnoreCaseContainingAndSurnameIgnoreCaseContaining(String name, String surname, Pageable paging);
 
     long countByNameIgnoreCaseContainingAndSurnameIgnoreCaseContaining(String name, String surname);

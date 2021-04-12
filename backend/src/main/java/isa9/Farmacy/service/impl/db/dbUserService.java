@@ -15,13 +15,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.List;
 
+@Component
 @Primary
 @Service
 public class dbUserService extends UserServiceBase implements UserService {

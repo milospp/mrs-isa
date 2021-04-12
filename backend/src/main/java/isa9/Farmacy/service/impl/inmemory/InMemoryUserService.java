@@ -156,4 +156,5 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
     public long getAllMyPatientsTotalCount(PaginationSortSearchDTO pssDTO) {
         return 0;
     }
+
 }

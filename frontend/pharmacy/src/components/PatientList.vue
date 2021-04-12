@@ -239,13 +239,13 @@ export default {
         return {
             patients: [],
             message: null,
+
             selectedPatient: null,
             historyFilter: "all",
             appointments: [],
             selectedAppointment: null,
 
             totalPatients: 0,
-
             refreshData: {
               pageNo: 1,
               pageSize: 2,
@@ -332,7 +332,7 @@ export default {
         }
       },
 
-      mounted() {            
+      mounted() {
           this.refreshPatients();
       },
 
@@ -372,7 +372,7 @@ table.dataTable thead .sorting_desc_disabled:after,
 table.dataTable thead .sorting_desc_disabled:before {
 bottom: .5em;
 } */
-.table-sortable > thead > tr > th {
+/* .table-sortable > thead > tr > th {
     cursor: pointer;
     position: relative;
 }
@@ -413,5 +413,5 @@ bottom: .5em;
     border-right: 5px solid transparent;
     border-top: 5px solid #333;
     border-bottom: 5px solid transparent;
-}
+} */
 </style>
