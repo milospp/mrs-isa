@@ -2,13 +2,13 @@
     <div class="container">
         <div class="row">
             <div class="container" style="padding: 0px;">
-                <form v-on:submit.prevent="refreshPatients(event)" style="float: right;">
+                <form v-on:submit.prevent="searchPatients(event)" style="float: right;">
                     <div class="form-row form-inline mb-2" >
                         <div class="form-group col-auto">
-                            <input v-model="refreshData.searchParams.name" type="text" class="form-control" id="name" placeholder="First Name">
+                            <input type="text" class="form-control" id="nameInput" placeholder="First Name">
                         </div>
                         <div class="form-group col-auto">
-                            <input v-model="refreshData.searchParams.surname" type="text" class="form-control" id="surname" placeholder="Last Name">
+                            <input type="text" class="form-control" id="surnameInput" placeholder="Last Name">
                         </div>
                         <div class="col-auto">
                             <button type="submit" class="btn btn-primary">Search</button>
@@ -36,6 +36,13 @@
                             <span v-if="!refreshData.ascending">▽</span>
                           </button>
                         </th>
+                        <!-- <th id="surname">
+                          Last appointment
+                          <button style="border: none; background-color: inherit;" v-on:click="changeOrder('name')"> temporarily until the authorisation is implemented
+                            <span v-if="refreshData.ascending">△</span>
+                            <span v-if="!refreshData.ascending">▽</span>
+                          </button>
+                        </th> -->
                         <th id="address">Address</th>
                         <th>Phone number</th>
                         <th></th>
@@ -45,6 +52,7 @@
                         <tr :key="p.username" v-for="p in patients" v-on:dblclick="patientInfo(Object.values(p))" class="clickable" data-index="{{p.id}}">
                             <td scope="row">{{p.name}}</td>
                             <td>{{p.surname}}</td>
+                            <!-- <td>{{UtilService.formatDateTime(p.lastAppointmentDate)}}</td> -->
                             <td>{{UtilService.AddressToString(p.address)}}</td>
                             <td>{{p.phoneNumber}}</td>
                             <td>
@@ -54,28 +62,6 @@
                     </tbody>
                 </table>
 
-                <!-- <nav aria-label="Page navigation">
-                  <ul class="pagination justify-content-center">
-                    <li class="page-item" id="previous">
-                      <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                        <span class="sr-only">Previous</span>
-                      </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                      <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                        <span class="sr-only">Next</span>
-                      </a>
-                    </li>
-                  </ul>
-                </nav> -->
-
-
-                <!-- <div id="page-selection">Pagination goes here</div> -->
                 <div class="d-flex justify-content-center">
                   <pagination v-model="refreshData.pageNo" :records="totalPatients" :per-page="refreshData.pageSize" @paginate="refreshPatients($event)"/>
                 </div>
@@ -218,20 +204,6 @@
                           <button class="btn btn-primary" v-on:click="showModalDetails(a)">Details</button>
                         </td>
                       </tr>
-                      <!-- dummy podaci -->
-                      <!-- <tr class="v-middle">
-                        <td>name Surname</td>
-                        <td>EXAMINATION
-                        </td>
-                        <td>Imenko Prezimic</td>
-                        <td>Appotekaa</td>
-                        <td>01-02-2021</td>
-                        <td>20min</td>
-                        <td>100RSD</td>
-                        <td>
-                          <button class="btn btn-primary" v-on:click="showModalDetails(a)">Details</button>
-                        </td>
-                      </tr> -->
                     </tbody>
                   
                   </table>
@@ -253,7 +225,6 @@ import PatientDataService from '../service/PatientDataService.js';
 import UtilService from '../service/UtilService.js';
 import AppointmentDataService from '@/service/AppointmentDataService.js';
 import $ from 'jquery';
-//import 'bootpag/lib/jquery.bootpag.min';
 import Pagination from 'v-pagination-3';
 
 export default {
@@ -262,28 +233,19 @@ export default {
       return {UtilService}
     },
     components: {
-        //ExamHistory
         Pagination
     },
     data() {
         return {
             patients: [],
             message: null,
-            // searchName: "",
-            // searchSurname: "",
+
             selectedPatient: null,
             historyFilter: "all",
             appointments: [],
             selectedAppointment: null,
 
-            // currentPage: 1,
-            // perPage: 2,
-            totalPatients: 6, // hardcoded
-            // sortBy: 'id',
-            // doctorId: 2,
-
-            // reverse: 1,
-
+            totalPatients: 0,
             refreshData: {
               pageNo: 1,
               pageSize: 2,
@@ -313,27 +275,14 @@ export default {
         patientInfo(patient) {
             alert(patient);
         },
-        // searchPatients(e) {
-        //     if (this.searchName || this.searchSurname){
-        //         PatientDataService.searchPatients(this.searchName, this.searchSurname)
-        //         .then(response => {
-        //                 this.patients = response.data;
-        //                 console.log(response.data);
-        //             })
-        //         .catch(function (error) {
-        //             if (error.response) {
-        //             console.log(error.response.data);
-        //             } else if (error.request) {
-        //             console.log(error.request);
-        //             }
-        //             console.log("error.config");
-        //             console.log(error.config);
-        //         });
-        //     }
-        //     else {
-        //         this.refreshPatients();
-        //     }
-        // },
+        searchPatients(e) {
+          this.refreshData.searchParams.name = $('#nameInput').val();
+          console.log($('#nameInput').val());
+          this.refreshData.searchParams.surname = $('#surnameInput').val();
+          console.log($('#surnameInput').val());
+          this.refreshData.pageNo = 1;
+          this.refreshPatients();
+        },
         showModal(patient) {
           this.selectedPatient = patient;
           console.log(patient);
@@ -369,9 +318,6 @@ export default {
           let selected = this.historyFilter;
           var filteredList = this.appointments;
 
-          // if (selected === "all")
-          //   return filteredList;
-
           filteredList = filteredList.filter(appointment => appointment.type === selected)
 
           return filteredList;
@@ -380,84 +326,18 @@ export default {
         changeOrder(sort) {
           if (this.refreshData.ascending) {this.refreshData.ascending = false}
           else {this.refreshData.ascending = true}
-          //this.reverse = this.reverse * -1;
           this.refreshData.sortBy = sort;
+          this.refreshData.pageNo = 1;
           this.refreshPatients();
-          // var newItems = self.patients.slice().sort(function (a, b) { 
-          //   var result;
-          //   if (a.name < b.name) {
-          //     result = 1
-          //   }
-          //   else if (a.name > b.name) {
-          //     result = -1
-          //   }
-          //   else {
-          //     result = 0
-          //   }
-          //   return result * self.reverse
-          // })
-          // newItems.forEach(function (item, index) {
-          //   item.position = index;
-          // });
         }
       },
 
       mounted() {
-          //this.refreshPatients(0, 1, 'name', 2);
-          // this.refreshData.pageNo = 1;
-          // this.refreshData.pageSize = 2;
-          // this.refreshData.sortBy = "id";
-          // this.refreshData.searchParams.doctorId = 2;
-          // this.refreshData.searchParams.name = "";
-          // this.refreshData.searchParams.surname = "";
-          // this.refreshData.ascending = true;
-            
           this.refreshPatients();
       },
 
       created() {
-        // this.refreshData.pageNo = 1;
-        //   this.refreshData.pageSize = 2;
-        //   this.refreshData.sortBy = "id";
-        //   this.refreshData.searchParams.doctorId = 2;
-        //   this.refreshData.searchParams.name = "";
-        //   this.refreshData.searchParams.surname = "";
-        //   this.refreshData.ascending = true;
-
         this.refreshPatients();
-          //this.refreshPatients(0, 1, 'name', 2);
-          // $(document).ready(function () {
-          //     $('#patientsTable').DataTable();
-          //     $('.dataTables_length').addClass('bs-select');
-          // });
-          //$('patientsTable').DataTable();
-
-          // init bootpag
-        // $('#page-selection').bootpag({
-        //     total: 2
-        // }).on("page", function(event, /* page number here */ num){
-        //      this.refreshPatients(num, 1, 'name', 2); // some ajax content loading...
-        //      $(this).bootpag({total: 10, maxVisible: 10});
-        // });
-//         $('#page-selection').bootpag({
-//        total: 53,
-//        page: 2,
-//        maxVisible: 5,
-//        leaps: true,
-//        firstLastUse: true,
-//        first: '←',
-//        last: '→',
-//        wrapClass: 'pagination',
-//        activeClass: 'active',
-//        disabledClass: 'disabled',
-//        nextClass: 'next',
-//        prevClass: 'prev',
-//        lastClass: 'last',
-//        firstClass: 'first'
-// }).on('page', function(event, num)
-// {
-//      this.refreshPatients(num, 1, 'name', 2); // some ajax content loading...
-// });
       }
 }
 </script>

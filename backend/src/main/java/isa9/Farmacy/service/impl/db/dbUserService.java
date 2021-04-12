@@ -70,6 +70,7 @@ public class dbUserService extends UserServiceBase implements UserService {
 //        return null;
     }
 
+    @Override
     public List<Patient> getAllMyPatientsPaged(PaginationSortSearchDTO pssDTO)
     {
         Pageable paging;

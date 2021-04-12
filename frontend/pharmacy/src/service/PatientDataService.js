@@ -5,7 +5,6 @@ const API_URL = "http://localhost:8080";
 
 class PatientDataService {
   retrieveAllPatients(refreshData) {
-    //return axios.get(`${API_URL}/api/users/all-patients`);
     return axios({
       method: 'post',
       url: `${API_URL}/api/users/patients`,

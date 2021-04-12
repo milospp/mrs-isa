@@ -219,34 +219,13 @@ public class UserController {
     //@RequestMapping(value="/patients", produces="application/json", consumes="application/json")
     @PostMapping("/patients")
     public ResponseEntity<PatientsPagesDTO> getAllPatients(@RequestBody PaginationSortSearchDTO pssDTO) {
-        //    Map<String, Object> o
-        //    @RequestParam(defaultValue = "0") Integer pageNo,
-//                                                        @RequestParam(defaultValue = "1") Integer pageSize,
-//                                                        @RequestParam(defaultValue = "id") String sortBy,
-//                                                        @RequestParam(defaultValue = "2") Long doctorId,
-//                                                           @RequestParam(defaultValue = "1") Integer asc,
-//        int pageNo = (int) o.get("pageNo");
-//        int pageSize = (int) o.get("pageSize");
-//        String sortBy = (String) o.get("sortBy");
-//        boolean ascending = (boolean) o.get("ascending");
-//
-//        Map<String, String> searchParams = (HashMap<String, String>) o.get("searchParams");
-//        String name = searchParams.get("name");
-//        String doctorId = searchParams.get("doctorId");
-//        String surname = searchParams.get("surname");
-//
-//        System.out.println(pageNo + pageSize + sortBy + doctorId + ascending + name + surname);
-//
-//        PaginationSortSearchDTO pssDTO = new PaginationSortSearchDTO(pageNo, pageSize, sortBy, ascending, searchParams);
+
         System.out.println(pssDTO.getPageNo() + pssDTO.getPageSize() + pssDTO.getSortBy()
                 + pssDTO.getSearchParams().get("doctorId") + pssDTO.isAscending()
                 + pssDTO.getSearchParams().get("name") + pssDTO.getSearchParams().get("surname"));
-//        Pageable page = PageRequest.of(0, 1, Sort.by(sortPolicy));
-//        List<User> svi = userService.findAll();
-//        Page<Patient> povratna = new ArrayList<>();
-//        for (User u : svi) if (u.getClass() == Patient.class) povratna.add((Patient) u);
-//        return new ResponseEntity<>(povratna, HttpStatus.OK);
+
         List<Patient> list = userService.getAllMyPatientsPaged(pssDTO);
+
         List<PatientDTO> convertedList = patientToPatientDTO.convert(list);
 
         long totalCount = userService.getAllMyPatientsTotalCount(pssDTO);
