@@ -7,6 +7,7 @@ import isa9.Farmacy.repository.PatientRepository;
 import isa9.Farmacy.repository.UserRepository;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.impl.base.UserServiceBase;
+import isa9.Farmacy.support.PaginationSortSearchDTO;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -64,21 +65,29 @@ public class dbUserService extends UserServiceBase implements UserService {
 //        return null;
     }
 
-    public List<Patient> getAllMyPatients(Integer pageNo, Integer pageSize, String sortBy, Long doctorId, Integer asc)
+    @Override
+    public List<Patient> getAllMyPatientsPaged(PaginationSortSearchDTO pssDTO)
     {
         Pageable paging;
-        if (asc == -1){
-            paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
+        if (pssDTO.isAscending()){
+            paging = PageRequest.of(pssDTO.getPageNo() - 1, pssDTO.getPageSize(), Sort.by(pssDTO.getSortBy()).ascending());
         } else {
-            paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
+            paging = PageRequest.of(pssDTO.getPageNo() - 1, pssDTO.getPageSize(), Sort.by(pssDTO.getSortBy()).descending());
         }
 
-        Page<Patient> pagedResult = patientRepository.findAll(paging);
+        Page<Patient> pagedResult = patientRepository.findByNameIgnoreCaseContainingAndSurnameIgnoreCaseContaining(pssDTO.getSearchParams().get("name"),
+                pssDTO.getSearchParams().get("surname"), paging);//findAll(paging);
 
         if(pagedResult.hasContent()) {
             return pagedResult.getContent();
         } else {
             return new ArrayList<Patient>();
         }
+    }
+
+    @Override
+    public long getAllMyPatientsTotalCount(PaginationSortSearchDTO pssDTO) {
+        return patientRepository.countByNameIgnoreCaseContainingAndSurnameIgnoreCaseContaining(pssDTO.getSearchParams().get("name"),
+                pssDTO.getSearchParams().get("surname"));
     }
 }

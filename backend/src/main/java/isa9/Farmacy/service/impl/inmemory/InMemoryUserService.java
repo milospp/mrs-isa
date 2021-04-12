@@ -3,6 +3,7 @@ package isa9.Farmacy.service.impl.inmemory;
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.impl.base.UserServiceBase;
+import isa9.Farmacy.support.PaginationSortSearchDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -147,16 +148,12 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
     }
 
     @Override
-    public List<Patient> getAllMyPatients(Integer pageNo, Integer pageSize, String sortBy, Long doctorId, Integer asc) {
+    public List<Patient> getAllMyPatientsPaged(PaginationSortSearchDTO pssDTO) {
         return null;
     }
 
-//    @Override
-//    public Pharmacy findPharmacistPharmacy(Long id) {
-//        User user = findOne(id);
-//        if (user.getRole() == UserRole.PHARMACIST)
-//            return ((Pharmacist)user).getPharmacy();
-//        else
-//            return null;
-//    }
+    @Override
+    public long getAllMyPatientsTotalCount(PaginationSortSearchDTO pssDTO) {
+        return 0;
+    }
 }

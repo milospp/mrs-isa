@@ -4,6 +4,7 @@ import isa9.Farmacy.model.Appointment;
 import isa9.Farmacy.model.Doctor;
 import isa9.Farmacy.model.Patient;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AppointmentService extends GenericService<Appointment>{

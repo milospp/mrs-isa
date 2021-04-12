@@ -68,7 +68,4 @@ public class InMemoryAppointmentService extends AppointmentServiceBase implement
         this.appointments.put(id, entity);
         return entity;
     }
-
-
-
 }
