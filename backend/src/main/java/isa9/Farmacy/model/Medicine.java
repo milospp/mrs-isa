@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 @Getter
 @Setter
@@ -45,7 +46,7 @@ public class Medicine {
     @Enumerated
     @EqualsAndHashCode.Include
     private DispencingMedicine perscription;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
     private Set<Medicine> replacementMedication;
 
     // TODO Medicine Stock

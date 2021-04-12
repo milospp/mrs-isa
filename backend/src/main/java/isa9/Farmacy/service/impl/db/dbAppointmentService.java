@@ -43,5 +43,4 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
         return this.appointmentRepository.save(entity);
     }
 
-
 }
