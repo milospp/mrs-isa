@@ -10,22 +10,40 @@ import {Vector as VectorLayer} from 'ol/layer';
 import {OSM, Vector as VectorSource} from 'ol/source';
 import { defaults as defaultControls, ScaleLine } from 'ol/control';
 import * as proj from 'ol/proj';
+import * as ol from 'ol';
+import * as geom from 'ol/geom';
+import {Point as tacka} from 'ol/geom';
+import {Feature as Feature} from 'ol/Feature';
+import { DragFeature as DragFeature } from 'ol/control';
 
 export default {
-    data: function () {
-        return {
-        }
+    data() {
+         return {
+                trenutnaPozicija: {lat: 45.252600, lon: 19.830002, adresa: "Cirpanova 51, Novi Sad"}
+            }
     },
-    async mounted() { 
-        await this.kreiranjeMape();
-    },
-    created() {
+    mounted() { 
+        this.kreiranjeMape();
     },
     methods: {
+       obeleziTackom(koordinate) {
+        //    ovo zavisi da li korisnik odabere ok
+           this.trenutnaPozicija.lon = koordinate[0];
+           this.trenutnaPozicija.lat = koordinate[1];
+            fetch('http://nominatim.openstreetmap.org/reverse?format=json&lon=' + this.trenutnaPozicija.lon + '&lat=' + this.trenutnaPozicija.lat)
+                 .then(function(response) {
+                        return response.json();
+                    }).then(function(json) {
+                        console.log(json);
+                        
+                    });
+        },
         kreiranjeMape() {
+            let self = this;
             // kreiranje vektora
+            var vectorSource = new VectorSource({});
             var vektor = new VectorLayer({
-                source: new VectorSource(),
+                source: vectorSource,
             });
             // kreiranje prikaza
             var prikaz = new TileLayer({
@@ -47,11 +65,14 @@ export default {
                     }),
                 });
             mapa.on('singleclick', function (evt) {
-                var koordinate = proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326');
-                alert(koordinate);
+                var koordinate = proj.toLonLat(evt.coordinate);
+                var kruzic = new ol.Feature(new tacka(proj.fromLonLat(koordinate)));
+                vectorSource.addFeature(kruzic);
+                self.obeleziTackom(koordinate);
+
             });
         },
-    },
+    }
 };
 </script>
 <style>
