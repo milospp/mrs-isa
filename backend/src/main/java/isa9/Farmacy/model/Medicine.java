@@ -10,7 +10,7 @@ import org.hibernate.annotations.Cascade;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -18,24 +18,33 @@ import org.hibernate.annotations.Cascade;
 @Entity
 public class Medicine {
     @Id
+    @EqualsAndHashCode.Include
     private Long id;
     @Column
+    @EqualsAndHashCode.Include
     private String code;
     @Column
+    @EqualsAndHashCode.Include
     private String name;
     @Column
+    @EqualsAndHashCode.Include
     private String structure;
     @Column
+    @EqualsAndHashCode.Include
     private String manufacturer;
     @Column
+    @EqualsAndHashCode.Include
     private String note;
     @Column
     private int points;
     @Column
+    @EqualsAndHashCode.Include
     private String shape;
     @Column
+    @EqualsAndHashCode.Include
     private String type;
     @Enumerated
+    @EqualsAndHashCode.Include
     private DispencingMedicine perscription;
     @ManyToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
     private Set<Medicine> replacementMedication;

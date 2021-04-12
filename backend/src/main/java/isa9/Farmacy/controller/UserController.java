@@ -335,7 +335,7 @@ public class UserController {
         List<PharmacistDTO> povratna = new ArrayList<>();
         for (User u : svi) if (u.getClass() == Pharmacist.class) {
             Pharmacist farmaceut = (Pharmacist) u;
-            if (farmaceut.getWorking().iterator().next().getPharmacy().equals(admin.getPharmacy()))
+            if (!farmaceut.getWorking().isEmpty() && farmaceut.getWorking().iterator().next().getPharmacy().equals(admin.getPharmacy()))
                 povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
@@ -347,7 +347,7 @@ public class UserController {
         List<PharmacistDTO> povratna = new ArrayList<>();
         for (User u : svi) if (u.getClass() == Pharmacist.class) {
             Pharmacist farmaceut = (Pharmacist) u;
-            if (farmaceut.getWorking().iterator().next().getPharmacy().getId().equals(id))
+            if (!farmaceut.getWorking().isEmpty() && farmaceut.getWorking().iterator().next().getPharmacy().getId().equals(id))
                 povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
