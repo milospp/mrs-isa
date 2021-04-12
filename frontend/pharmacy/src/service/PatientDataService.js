@@ -4,9 +4,14 @@ import axios from "axios";
 const API_URL = "http://localhost:8080";
 
 class PatientDataService {
-  retrieveAllPatients(pageNo, pageSize, sortBy, doctorId, asc) {
+  retrieveAllPatients(refreshData) {
     //return axios.get(`${API_URL}/api/users/all-patients`);
-    return axios.get(`${API_URL}/api/users/patients?pageNo=`+ pageNo +`&pageSize=`+ pageSize +`&sortBy=`+ sortBy +`&doctorId=`+ doctorId + `&asc=` + asc);
+    return axios({
+      method: 'post',
+      url: `${API_URL}/api/users/patients`,
+      data: refreshData
+    });
+    //return axios.get(`${API_URL}/api/users/patients?pageNo=`+ pageNo +`&pageSize=`+ pageSize +`&sortBy=`+ sortBy +`&doctorId=`+ doctorId + `&asc=` + asc);
   }
 
   searchPatients(name, surname) {

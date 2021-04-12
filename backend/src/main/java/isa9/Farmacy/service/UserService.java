@@ -2,6 +2,7 @@ package isa9.Farmacy.service;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.PatientDTO;
+import isa9.Farmacy.support.PaginationSortSearchDTO;
 
 import java.util.List;
 import java.util.Set;
@@ -29,6 +30,7 @@ public interface UserService extends GenericService<User> {
 
     Set<MedReservation> getPatientReservations(Long patientId);
 
-    List<Patient> getAllMyPatients(Integer pageNo, Integer pageSize, String sortBy, Long doctorId, Integer asc);
+    List<Patient> getAllMyPatientsPaged(PaginationSortSearchDTO pssDTO);
+    long getAllMyPatientsTotalCount(PaginationSortSearchDTO pssDTO);
 
 }
