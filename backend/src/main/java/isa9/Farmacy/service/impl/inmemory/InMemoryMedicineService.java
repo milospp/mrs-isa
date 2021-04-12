@@ -39,5 +39,13 @@ public class InMemoryMedicineService extends MedicineServiceBase implements Medi
         return entity;
     }
 
+    @Override
+    public Boolean isCodeAvailable(String medicineId) {
+        return false;
+    }
 
+    @Override
+    public Set<Medicine> idsToMedicines(List<Long> ids) {
+        return null;
+    }
 }
