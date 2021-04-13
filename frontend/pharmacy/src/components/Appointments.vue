@@ -30,7 +30,7 @@
                 </tr>
               </table>
               <br/>
-              <button class="btn btn-block btn-primary">Book a appointment</button>
+              <button class="btn btn-block btn-primary" v-bind:disabled="a.booked" v-on:click="bookAppointment(a)">Book a appointment</button>
             </div>
           </div>
         </div>
@@ -72,6 +72,16 @@ export default {
                     console.log(response.data);
                 });
         },
+
+        bookAppointment(a) {
+          // TODO: Getloggedin user id
+          let userId = 1;
+
+          AppointmentDataService.bookAppointment(a.id, userId).then(response => {
+            a.booked = true;
+            alert("Succesfully reserved");
+          });
+        }
     },
     mounted() {
         this.getDermatologAppointments();

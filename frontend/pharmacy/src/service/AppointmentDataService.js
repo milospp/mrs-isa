@@ -21,6 +21,14 @@ class MedicineDataService {
     return axios.get(`${API_URL}/dermatologist/free`);
   }
 
+  bookAppointment(userId, appointmentId) {
+    return axios({
+      method: 'post',
+      url: `${API_URL}/` + appointmentId + `/book`,
+      data: {"id": userId}
+    })
+  }
+
   cancelAppointment(id){
     return;
   }
