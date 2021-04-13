@@ -68,17 +68,17 @@ update appointment SET examination_id = 3 WHERE id = 4;
 update appointment SET examination_id = 4 WHERE id = 5;
 
 
-insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 1);
-insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 2);
-insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 3);
+-- insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 1);
+-- insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 2);
+-- insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 3);
 
 
---Therapy
-insert into therapy_item (days, medicine_id) values (5, 1);
-insert into therapy_item (days, medicine_id) values (5, 2);
-
-insert into examination_therapy (examination_id, therapy_id) values (1,1);
-insert into examination_therapy (examination_id, therapy_id) values (1,2);
+-- --Therapy
+-- insert into therapy_item (days, medicine_id) values (5, 1);
+-- insert into therapy_item (days, medicine_id) values (5, 2);
+--
+-- insert into examination_therapy (examination_id, therapy_id) values (1,1);
+-- insert into examination_therapy (examination_id, therapy_id) values (1,2);
 
 
 -- Penalities

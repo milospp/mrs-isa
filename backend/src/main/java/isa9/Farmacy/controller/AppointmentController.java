@@ -77,6 +77,20 @@ public class AppointmentController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
         Appointment appointment = appointmentService.bookAnAppointment(patientDTO.getId(), id);
+        if (appointment == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
+        AppointmentDTO dto = appointmentToAppointmentDTO.convert(appointment);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+
+    }
+
+    @PostMapping("{id}/cancel")
+    public ResponseEntity<AppointmentDTO> cancelAnAppointment(@PathVariable Long id) {
+        // TODO: Check for user rights
+
+        Appointment appointment = appointmentService.cancelAppointment(id);
+        if (appointment == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
         AppointmentDTO dto = appointmentToAppointmentDTO.convert(appointment);
         return new ResponseEntity<>(dto, HttpStatus.OK);
 
@@ -87,7 +101,6 @@ public class AppointmentController {
         List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.getAllFreeDermatologist());
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
-
     }
 
     @GetMapping("dermatologist/patient-upcoming/{id}")
