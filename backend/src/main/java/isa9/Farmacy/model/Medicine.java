@@ -19,6 +19,7 @@ import org.hibernate.annotations.Cascade;
 public class Medicine {
     @Id
     @EqualsAndHashCode.Include
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
     @EqualsAndHashCode.Include

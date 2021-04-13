@@ -15,6 +15,8 @@ import * as geom from 'ol/geom';
 import {Point as tacka} from 'ol/geom';
 import {Feature as Feature} from 'ol/Feature';
 import { DragFeature as DragFeature } from 'ol/control';
+import 'ol/ol.css'
+
 
 export default {
     data() {

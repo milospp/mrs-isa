@@ -1,9 +1,6 @@
 package isa9.Farmacy.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.Objects;
 import lombok.*;
 
@@ -20,6 +17,7 @@ public class MedPrescription {
 
     @Column
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String code;
     @Column
     private String medName;

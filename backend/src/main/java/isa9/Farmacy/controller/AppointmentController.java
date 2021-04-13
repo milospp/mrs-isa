@@ -37,7 +37,7 @@ public class AppointmentController {
     public ResponseEntity<Boolean> debug(){
         Pharmacy pharmacy = pharmacyService.findOne(1L);
         Patient p = (Patient) userService.findOne(1L);
-        Dermatologist derma = (Dermatologist) userService.findOne(2L);
+        Dermatologist derma = (Dermatologist) userService.findOne(7L);
         //Appointment a1 = new Appointment(1L, LocalDateTime.now(), 200.0, 30, TypeOfReview.EXAMINATION, derma, pharmacy, null);
         Appointment a1 = appointmentService.findOne(1L);
 
@@ -98,7 +98,7 @@ public class AppointmentController {
 
     @GetMapping("patient-upcoming/{id}")
     public ResponseEntity<List<AppointmentDTO>> getPatientUpcomingAppointments(@PathVariable Long id) {
-
+        this.appointmentService.getPatientUpcomingAppointments(id);
         List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.getPatientUpcomingAppointments(id));
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);

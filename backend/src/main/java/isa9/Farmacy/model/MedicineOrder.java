@@ -15,6 +15,7 @@ import lombok.*;
 @Entity
 public class MedicineOrder {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
     private LocalDateTime startDate;

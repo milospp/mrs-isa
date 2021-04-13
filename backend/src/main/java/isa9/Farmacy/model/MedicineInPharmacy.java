@@ -17,6 +17,7 @@ import lombok.*;
 @EqualsAndHashCode(exclude = {"currentPrice", "pharmacy"})
 public class MedicineInPharmacy {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne(cascade = CascadeType.ALL)
     private MedPrice currentPrice;

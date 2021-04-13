@@ -7,8 +7,8 @@
 
 
       
-    <div class="col-md-3" v-for="p in pharmaciesSlice">
-      <div class="card mb-4 box-shadow">
+    <div class="col-md-3 py-2" v-for="p in pharmaciesSlice">
+      <div class="card h-100 box-shadow">
         <div class="card-header">
             <h4 class="my-0 font-weight-normal">{{p.name}}</h4>
           </div>

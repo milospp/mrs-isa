@@ -17,6 +17,7 @@ import lombok.*;
 @Entity
 public class Appointment {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
 

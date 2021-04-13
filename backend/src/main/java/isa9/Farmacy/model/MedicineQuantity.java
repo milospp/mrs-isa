@@ -1,10 +1,7 @@
 package isa9.Farmacy.model;
 // klasa za lekove koji su poruceni u narudzbenici
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.Objects;
 import lombok.*;
 
@@ -19,6 +16,7 @@ import lombok.*;
 @Entity
 public class MedicineQuantity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     private Medicine medicine;

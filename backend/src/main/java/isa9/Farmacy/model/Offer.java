@@ -16,6 +16,7 @@ import lombok.*;
 @Entity
 public class Offer {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
     private double price;

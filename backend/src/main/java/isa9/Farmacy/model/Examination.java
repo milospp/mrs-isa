@@ -18,6 +18,7 @@ import lombok.*;
 @Entity
 public class Examination {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
     @ManyToOne

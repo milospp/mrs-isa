@@ -56,7 +56,7 @@ public abstract class UserServiceBase implements UserService {
         Set<Pharmacy> subscriptions = ((Patient) patient).getSubscriptions();
         subscriptions.remove(pharmacy);
         patient.setSubscriptions(subscriptions);
-
+        save(patient);
         return;
 
     }

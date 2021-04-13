@@ -20,6 +20,7 @@ import lombok.*;
 @ToString
 public class Pharmacy {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column

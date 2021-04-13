@@ -2,10 +2,7 @@ package isa9.Farmacy.model;
 
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.*;
@@ -22,6 +19,7 @@ import lombok.*;
 public class MedPrice {
     // za svaku promenu cene, pravi se nova klasa cene
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
     private LocalDateTime startDate;

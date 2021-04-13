@@ -121,6 +121,9 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     @Override
     public List<Appointment> getPatientUpcomingAppointments(Long patientId) {
         User user = userService.findOne(patientId);
+        System.out.println(user.getRole());
+        System.out.println(user.getRole());
+        System.out.println(user.getRole());
         if (!user.getRole().equals(UserRole.PATIENT)) return new ArrayList<>();
         Patient patient = (Patient) user;
 
