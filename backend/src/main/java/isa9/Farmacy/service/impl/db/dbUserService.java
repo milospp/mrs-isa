@@ -47,27 +47,39 @@ public class dbUserService extends UserServiceBase implements UserService {
 
     @Override
     public User findOne(Long id) {
-        return this.userRepository.findById(id).orElseGet(null);
+        return this.userRepository.findById(id).orElse(null);
     }
 
     @Override
     public User save(User entity) {
-        return userRepository.save(entity);
+        long nrOfUsers = this.userRepository.findAll().size();
+        entity.setId(nrOfUsers + 1);
+
+        while(this.findOne(entity.getId()) != null){
+            entity.setId(entity.getId() + 1);
+        }
+
+        return this.userRepository.save(entity);
     }
 
     @Override
     public boolean isAvaibleEmail(String em) {
+        List<User> allUsers = this.findAll();
+
+        for(User u : allUsers){
+            if(u.getEmail().equals(em)) return false;
+        }
+
         return true;
-//        throw new NotYetImplementedException();
-//        return false;
     }
 
     @Override
     public PharmacyAdmin findPharmacyAdmin(Long pharmacyId) {
-//        return true;
-        System.out.println("FindPharmacyAdmin Not implemented");
-        throw new NotYetImplementedException();
-//        return null;
+        PharmacyAdmin phAdmin = null;
+
+
+
+        return phAdmin;
     }
 
     @Override
