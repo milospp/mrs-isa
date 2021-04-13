@@ -135,6 +135,7 @@ export default {
         }
     },
     created() {
+        console.log("evo ga ucitava apoteke kao");
         PharmacyDataService.getAvailablePharmacies()
         .then(
             response => {

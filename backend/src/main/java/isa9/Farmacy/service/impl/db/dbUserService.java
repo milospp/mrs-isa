@@ -3,6 +3,7 @@ package isa9.Farmacy.service.impl.db;
 import isa9.Farmacy.model.Patient;
 import isa9.Farmacy.model.PharmacyAdmin;
 import isa9.Farmacy.model.User;
+import isa9.Farmacy.model.UserRole;
 import isa9.Farmacy.repository.PatientRepository;
 import isa9.Farmacy.repository.UserRepository;
 import isa9.Farmacy.service.UserService;
@@ -47,27 +48,41 @@ public class dbUserService extends UserServiceBase implements UserService {
 
     @Override
     public User findOne(Long id) {
-        return this.userRepository.findById(id).orElseGet(null);
+        return this.userRepository.findById(id).orElse(null);
     }
 
     @Override
-    public User save(User entity) {
-        return userRepository.save(entity);
-    }
+    public User save(User entity) { return this.userRepository.save(entity); }
 
     @Override
     public boolean isAvaibleEmail(String em) {
+        List<User> allUsers = this.findAll();
+
+        for(User u : allUsers){
+            if(u.getEmail().equals(em)) return false;
+        }
+
         return true;
-//        throw new NotYetImplementedException();
-//        return false;
     }
 
     @Override
     public PharmacyAdmin findPharmacyAdmin(Long pharmacyId) {
-//        return true;
-        System.out.println("FindPharmacyAdmin Not implemented");
-        throw new NotYetImplementedException();
-//        return null;
+        PharmacyAdmin phAdmin = null;
+
+        List<User> allUsers = this.findAll();
+        for(User u : allUsers){
+            if(u.getRole() == UserRole.PHARMACY_ADMIN){
+                phAdmin = (PharmacyAdmin) u;
+                try{
+                    if(phAdmin.getPharmacy().getId() == pharmacyId) return phAdmin;
+                }catch(NullPointerException e){
+                    e.printStackTrace();
+                    continue;
+                }
+            }
+        }
+
+        return phAdmin;
     }
 
     @Override

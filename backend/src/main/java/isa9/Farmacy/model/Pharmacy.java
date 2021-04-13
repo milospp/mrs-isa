@@ -25,7 +25,7 @@ public class Pharmacy {
 
     @Column
     private String name;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Address address;
     @Column
     private String description;
