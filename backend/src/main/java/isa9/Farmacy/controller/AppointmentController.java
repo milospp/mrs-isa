@@ -2,6 +2,7 @@ package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.AppointmentDTO;
+import isa9.Farmacy.model.dto.PatientDTO;
 import isa9.Farmacy.service.*;
 import isa9.Farmacy.support.AppointmentToAppointmentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,19 @@ public class AppointmentController {
         List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.findAll());
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
+
+    @PostMapping("{id}/book")
+    public ResponseEntity<AppointmentDTO> bookAnAppointment(@RequestBody PatientDTO patientDTO, @PathVariable Long id) {
+        if (patientDTO == null){
+            // TODO: Get logged user
+            System.out.println("Get logged in user");
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        Appointment appointment = appointmentService.bookAnAppointment(patientDTO.getId(), id);
+        AppointmentDTO dto = appointmentToAppointmentDTO.convert(appointment);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
 
     }
 

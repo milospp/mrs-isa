@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -86,6 +87,14 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     }
 
     @Override
+    public Boolean isAppointmentFree(Appointment appointment) {
+        if (appointment.getExamination() == null) return true;
+        if (appointment.getExamination().getPatient() == null) return true;
+
+        return false;
+    }
+
+    @Override
     public List<Appointment> getAllFreeDermatologist() {
         List<Appointment> allAppointments;
         allAppointments = findAll().stream().filter(x -> isFreeDermAppointment(x)).collect(Collectors.toList());
@@ -147,5 +156,26 @@ public abstract class AppointmentServiceBase implements AppointmentService {
                 .filter(x -> isAssignedToPatient(x, patient) && !isUpcoming(x))
                 .collect(Collectors.toList());
         return allAppointments;
+    }
+
+    @Override
+    public Appointment bookAnAppointment(Long patientId, Long appointmentId) {
+        User user = userService.findOne(patientId);
+        if (!user.getRole().equals(UserRole.PATIENT)) return null;
+        Patient patient = (Patient) user;
+
+        Appointment appointment = findOne(appointmentId);
+
+        if (!isAppointmentFree(appointment)) return null;
+
+        Examination examination = Examination.builder()
+                .patient(patient)
+                .status(ExaminationStatus.NOT_HELD)
+                .appointment(appointment)
+                .therapy(new HashSet<>())
+                .build();
+        appointment.setExamination(examination);
+        save(appointment);
+        return appointment;
     }
 }
