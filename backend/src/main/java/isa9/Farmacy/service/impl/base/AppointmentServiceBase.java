@@ -7,6 +7,7 @@ import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -95,6 +96,15 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     }
 
     @Override
+    public Boolean isCancelable(Appointment appointment) {
+        if (isAppointmentFree(appointment)) return false;
+        if (appointment.getStartTime().minusDays(1).isBefore(LocalDateTime.now())) return false;
+        if (appointment.getExamination().getStatus() == ExaminationStatus.CANCELED) return false;
+
+        return true;
+    }
+
+    @Override
     public List<Appointment> getAllFreeDermatologist() {
         List<Appointment> allAppointments;
         allAppointments = findAll().stream().filter(x -> isFreeDermAppointment(x)).collect(Collectors.toList());
@@ -175,6 +185,18 @@ public abstract class AppointmentServiceBase implements AppointmentService {
                 .therapy(new HashSet<>())
                 .build();
         appointment.setExamination(examination);
+        save(appointment);
+        return appointment;
+    }
+
+    @Override
+    public Appointment cancelAppointment(Long appointmentId) {
+        Appointment appointment = findOne(appointmentId);
+        if (appointment == null) return null;
+        if (!isCancelable(appointment)) return null;
+
+        appointment.getExamination().setStatus(ExaminationStatus.CANCELED);
+
         save(appointment);
         return appointment;
     }

@@ -30,7 +30,7 @@ class MedicineDataService {
   }
 
   cancelAppointment(id){
-    return;
+    return axios.post(`${API_URL}/` + id + `/cancel`);
   }
 
 }

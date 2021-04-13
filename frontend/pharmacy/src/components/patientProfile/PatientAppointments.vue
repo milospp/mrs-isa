@@ -26,7 +26,7 @@
 
         <td>
           
-          <button v-bind:disabled="isCanceled(a)" class="btn btn-danger" v-on:click="cancelAppointment(a)">Cancel</button>
+          <button v-bind:disabled="isCanceled(a) || isCancelable(a)" class="btn btn-danger" v-on:click="cancelAppointment(a)">Cancel</button>
         </td>
       </tr>
     </tbody>
@@ -65,7 +65,7 @@ export default {
         },
 
         cancelAppointment(obj) {
-            AppointmentDataService.cancelAppointment(this.id, obj.id)
+            AppointmentDataService.cancelAppointment(obj.id)
                 .then(response => {
                     console.log("Cancel " + obj.id);
                     obj.examination.status = "CANCELED";
@@ -78,8 +78,17 @@ export default {
               return true;
             }
           }
+
           return false;
         },
+
+        isCancelable(obj) {
+          if (UtilService.isPastDate(UtilService.addDate(obj.startTime, 'd', -1))){
+            return true;
+          }
+
+          return false;
+        }
 
 
     },
