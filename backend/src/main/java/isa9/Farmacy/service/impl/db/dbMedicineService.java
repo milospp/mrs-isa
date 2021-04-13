@@ -37,16 +37,7 @@ public class dbMedicineService extends MedicineServiceBase implements MedicineSe
     }
 
     @Override
-    public Medicine save(Medicine entity) {
-        long nrOfAllMedicines = this.medicineRepository.findAll().size();
-        entity.setId(nrOfAllMedicines + 1);
-
-        while(this.findOne(entity.getId()) != null){
-            entity.setId(entity.getId() + 1);
-        }
-
-        return this.medicineRepository.save(entity);
-    }
+    public Medicine save(Medicine entity) { return this.medicineRepository.save(entity); }
 
     @Override
     public Boolean isCodeAvailable(String medicineId) {
