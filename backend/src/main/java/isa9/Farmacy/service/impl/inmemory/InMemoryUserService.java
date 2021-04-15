@@ -157,4 +157,9 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         return 0;
     }
 
+    @Override
+    public Doctor getDoctorById(Long id) {
+        return null;
+    }
+
 }

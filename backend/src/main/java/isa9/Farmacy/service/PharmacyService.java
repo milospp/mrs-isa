@@ -1,8 +1,8 @@
 package isa9.Farmacy.service;
 
-import isa9.Farmacy.model.Medicine;
-import isa9.Farmacy.model.MedicineInPharmacy;
-import isa9.Farmacy.model.Pharmacy;
+import isa9.Farmacy.model.*;
+
+import java.util.List;
 
 public interface PharmacyService extends GenericService<Pharmacy> {
 
@@ -11,5 +11,7 @@ public interface PharmacyService extends GenericService<Pharmacy> {
     boolean reduceQuantity(Pharmacy pharmacy, Medicine medicine, int resQuantity);
 
     MedicineInPharmacy gedMedicineInPharmacy(Pharmacy pharmacy, Medicine medicine);
+
+    List<Work> findDoctorsWork(Doctor doctor);
 
 }

@@ -39,6 +39,8 @@ insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (7, CURRE
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 1);
 insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (8, CURRENT_TIME, 1, CURRENT_TIME);
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 2);
+insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (7, CURRENT_TIME, 2, CURRENT_TIME);
+insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 3);
 
 --med price
 insert into med_price(price) values (200);

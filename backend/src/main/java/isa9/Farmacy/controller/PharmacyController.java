@@ -56,7 +56,6 @@ public class PharmacyController {
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
     }
-
   
     @GetMapping("{id}")
     public ResponseEntity<PharmacyDTO> getPharmacy(@PathVariable Long id) {
@@ -68,7 +67,6 @@ public class PharmacyController {
                 pharmacy.getDescription(), pharmacy.getAddress());
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
-
 
     @PostMapping("register/pharmacy")
     public ResponseEntity<Boolean> registerPharmacy(@RequestBody PharmacyDTO pDTO) {
@@ -83,31 +81,10 @@ public class PharmacyController {
 
     @GetMapping("working/{doctorId}")
     public ResponseEntity<List<WorkDTO>> getPharmacistPharmacy(@PathVariable Long doctorId) {
-        User doctor = userService.findOne(doctorId);
-        System.out.println("Looking for jobs");
-
-        if (doctor.getRole() == UserRole.PHARMACIST || doctor.getClass() == Pharmacist.class){
-            System.out.println("Look! Pharmacist!");
-            Pharmacist p = (Pharmacist) doctor;
-            System.out.println("Look! REAL Pharmacist!");
-            List<WorkDTO> work = this.workToWorkDTO.convert(p.getWorking());
-            System.out.println("Look! " + p.getWorking().iterator().next().toString());
-            return new ResponseEntity<>(work, HttpStatus.OK);
-        }
-        else if (doctor.getRole() == UserRole.DERMATOLOGIST || doctor.getClass() == Dermatologist.class){
-            System.out.println("Look! Dermatologist!");
-            Dermatologist d = (Dermatologist) doctor;
-            List<WorkDTO> work = this.workToWorkDTO.convert(d.getWorking());
-            return new ResponseEntity<>(work, HttpStatus.OK);
-        } else{
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-
-//        if (pharmacy == null) return new ResponseEntity(HttpStatus.NOT_FOUND);
-//
-//        PharmacyDTO dto = new PharmacyDTO(pharmacy.getId(), pharmacy.getName(),
-//                pharmacy.getDescription(), pharmacy.getAddress());
-//        return new ResponseEntity<>(dto, HttpStatus.OK);
+        Doctor doctor = userService.getDoctorById(doctorId);
+        List<Work> work = pharmacyService.findDoctorsWork(doctor);
+        List<WorkDTO> convertedWork = this.workToWorkDTO.convert(work);
+        return new ResponseEntity<>(convertedWork, HttpStatus.OK);
     }
 
     @GetMapping("/admin/{id}")
@@ -117,6 +94,7 @@ public class PharmacyController {
         Pharmacy apoteka = ((PharmacyAdmin) user).getPharmacy();
         return new ResponseEntity<>((new PharmacyToPharmacyDTO()).convert(apoteka), HttpStatus.OK);
     }
+
     @PostMapping("/setPharmacyInfo")
     public ResponseEntity<Boolean> setPharmacyInfo(@RequestBody PharmacyDTO apotekaDTO) {
         Pharmacy apoteka = pharmacyService.findOne(apotekaDTO.getId());

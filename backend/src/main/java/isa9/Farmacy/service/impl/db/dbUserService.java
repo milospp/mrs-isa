@@ -1,9 +1,7 @@
 package isa9.Farmacy.service.impl.db;
 
-import isa9.Farmacy.model.Patient;
-import isa9.Farmacy.model.PharmacyAdmin;
-import isa9.Farmacy.model.User;
-import isa9.Farmacy.model.UserRole;
+import isa9.Farmacy.model.*;
+import isa9.Farmacy.repository.DoctorRepository;
 import isa9.Farmacy.repository.PatientRepository;
 import isa9.Farmacy.repository.UserRepository;
 import isa9.Farmacy.service.UserService;
@@ -34,11 +32,13 @@ public class dbUserService extends UserServiceBase implements UserService {
 
     private UserRepository userRepository;
     private PatientRepository patientRepository;
+    private DoctorRepository doctorRepository;
 
     @Autowired
-    public dbUserService(UserRepository userRepository, PatientRepository p) {
+    public dbUserService(UserRepository userRepository, PatientRepository p, DoctorRepository d) {
         this.userRepository = userRepository;
         this.patientRepository = p;
+        this.doctorRepository = d;
     }
 
     @Override
@@ -109,5 +109,10 @@ public class dbUserService extends UserServiceBase implements UserService {
     public long getAllMyPatientsTotalCount(PaginationSortSearchDTO pssDTO) {
         return patientRepository.countByNameIgnoreCaseContainingAndSurnameIgnoreCaseContaining(pssDTO.getSearchParams().get("name"),
                 pssDTO.getSearchParams().get("surname"));
+    }
+
+    @Override
+    public Doctor getDoctorById(Long id) {
+        return this.doctorRepository.findById(id).orElse(null);
     }
 }

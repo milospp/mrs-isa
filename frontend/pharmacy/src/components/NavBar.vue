@@ -49,11 +49,11 @@
 					<router-link to="/register" class="nav-link">Register</router-link>
 				</div>
 			  	<div v-else-if="role === 'pharmacist'" class="navbar-nav my-2 my-lg-0">
-					<router-link to="/pharmacist/profile/8" class="nav-link">Profile</router-link>
+					<router-link to="/pharmacist/profile/3" class="nav-link">Profile</router-link>
 					<router-link to="/logout" class="nav-link">Logout</router-link>
 				</div>
 				<div v-else-if="role === 'dermatologist'" class="navbar-nav my-2 my-lg-0">
-					<router-link to="/dermatologist/profile/10" class="nav-link">Profile</router-link>
+					<router-link to="/dermatologist/profile/7" class="nav-link">Profile</router-link>
 					<router-link to="/logout" class="nav-link">Logout</router-link>
 				</div>
 				<div v-else class="navbar-nav my-2 my-lg-0">
