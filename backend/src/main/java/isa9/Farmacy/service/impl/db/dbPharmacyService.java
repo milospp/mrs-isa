@@ -1,8 +1,11 @@
 package isa9.Farmacy.service.impl.db;
 
-import isa9.Farmacy.model.Pharmacy;
+import isa9.Farmacy.model.*;
+import isa9.Farmacy.repository.DoctorRepository;
 import isa9.Farmacy.repository.PharmacyRepository;
+import isa9.Farmacy.repository.WorkRepository;
 import isa9.Farmacy.service.PharmacyService;
+import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.impl.base.PharmacyServiceBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -17,10 +20,12 @@ import java.util.List;
 public class dbPharmacyService extends PharmacyServiceBase implements PharmacyService {
 
     private final PharmacyRepository pharmacyRepository;
+    private final WorkRepository workRepository;
 
     @Autowired
-    public dbPharmacyService(PharmacyRepository pharmacyRepository) {
+    public dbPharmacyService(PharmacyRepository pharmacyRepository, WorkRepository workRepository) {
         this.pharmacyRepository = pharmacyRepository;
+        this.workRepository = workRepository;
     }
 
     @Override
@@ -39,4 +44,8 @@ public class dbPharmacyService extends PharmacyServiceBase implements PharmacySe
     }
 
 
+    @Override
+    public List<Work> findDoctorsWork(Doctor doctor) {
+        return workRepository.findAllByDoctor(doctor);
+    }
 }

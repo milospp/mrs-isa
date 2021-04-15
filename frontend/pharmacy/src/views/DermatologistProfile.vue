@@ -13,7 +13,7 @@
     <div class="container pt-5">
         <DermatologistProfileInfo/>
     </div>
-    <PharmacyWorkingCard doctorId="10"/> <!-- HARDCODED -->
+    <PharmacyWorkingCard doctorId="7"/> <!-- HARDCODED -->
 </template>
 
 <style>

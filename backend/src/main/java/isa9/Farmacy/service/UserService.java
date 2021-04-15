@@ -33,4 +33,6 @@ public interface UserService extends GenericService<User> {
     List<Patient> getAllMyPatientsPaged(PaginationSortSearchDTO pssDTO);
     long getAllMyPatientsTotalCount(PaginationSortSearchDTO pssDTO);
 
+    Doctor getDoctorById(Long id);
+
 }

@@ -65,5 +65,8 @@ public class InMemoryPharmacyService extends PharmacyServiceBase implements Phar
     }
 
 
-
+    @Override
+    public List<Work> findDoctorsWork(Doctor doctor) {
+        return null;
+    }
 }
