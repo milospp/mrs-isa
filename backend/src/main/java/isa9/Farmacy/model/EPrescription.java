@@ -17,6 +17,8 @@ import lombok.*;
 public class EPrescription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column
     private String code;
     @ManyToOne
     private Patient patient;
