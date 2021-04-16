@@ -47,6 +47,11 @@ class UtilService {
     return moment(date).isBefore();
   }
 
+  lessThan24HoursLeft(date){
+    console.log(moment(-1));
+    return moment(date) > moment().subtract(1, 'd');
+  }
+
 }
 
 export default new UtilService();

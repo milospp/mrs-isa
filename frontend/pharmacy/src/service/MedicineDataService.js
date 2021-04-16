@@ -50,6 +50,10 @@ class MedicineDataService {
         if (response.data == 1) alert("This medicine code is taken!");
     });
   }
+
+  getReservation(code){
+    return axios.get(`${API_URL}/reservation/` + code);
+  }
 }
 
 export default new MedicineDataService();
