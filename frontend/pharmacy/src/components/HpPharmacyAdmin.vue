@@ -37,6 +37,7 @@
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Pharmacists</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Dermatologists</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu3">Invalid receipts</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu4">Map</a></li>
           </ul>
         
           <div class="tab-content">
@@ -84,6 +85,22 @@
             </div>
             <div id="menu2" class="tab-pane fade">
               <h3>Dermatologists</h3>
+              <table>
+                <tr>
+                  <td> &emsp; </td>
+                  <td> <form v-on:click.prevent=""><input type="submit" value="Filter"></form> </td>
+                  <td> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+                  
+                    <td> <input type="text" v-model="dermaSearch"  size="50"/></td>
+                    <td> <form v-on:click.prevent="pretraga()"> <input type="submit" value="Search"/></form></td>
+                </tr>
+                <tr>
+                  <td> &emsp; </td>
+                </tr>
+              </table>
                 <table class="table table-striped">
                   <thead class="card-header">
                   <th>First name</th>
@@ -121,6 +138,10 @@
                   </tr>
                 </tbody>
               </table>
+            </div>
+            <!-- mora na kraj jer inace ne radi kako valja -->
+            <div id="menu4" class="tab-pane fade active">
+					          <Mapa/>
             </div>
           </div>
         </div>
@@ -178,6 +199,7 @@ import DermatologistDataService from '../service/DermatologistDataService.js';
 import PharmacistDataService from '../service/PharmacistDataService.js';
 import PharmacyDataService from '../service/PharmacyDataService.js';
 import MedicineDataService from '../service/MedicineDataService.js';
+import Mapa from "../components/Maps.vue";
 export default {
     name: 'HpPharmacyAdmin',
     data() {
@@ -188,7 +210,8 @@ export default {
             pharmacyName: null, pharmacyDesc: null,
             lekovi: [],
             name: null, structure: null, manufacturer: null, price: null,
-            note: null, points: null, type: null, quantity: null
+            note: null, points: null, type: null, quantity: null,
+            dermaSearch: "",
         };
     },
     created() {
@@ -220,6 +243,15 @@ export default {
           this.sviZaposleniDermatolozi = response.data;});
     },
     methods : {
+      pretraga() {
+        if (this.dermaSearch.length == 0) {
+          alert("Input someting for searching");
+          return;
+        }
+        DermatologistDataService.searchDermatologistAdmin(this.id, this.dermaSearch)
+        .then(response => {
+          this.sviZaposleniDermatolozi = response.data;});
+      },
       DodajFarmaceuta() {
         window.location.href = "/addPharmacist/" + this.id;
       },

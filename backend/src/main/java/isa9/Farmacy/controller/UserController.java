@@ -335,7 +335,8 @@ public class UserController {
         List<PharmacistDTO> povratna = new ArrayList<>();
         for (User u : svi) if (u.getClass() == Pharmacist.class) {
             Pharmacist farmaceut = (Pharmacist) u;
-            if (!farmaceut.getWorking().isEmpty() && farmaceut.getWorking().iterator().next().getPharmacy().equals(admin.getPharmacy()))
+            if (!farmaceut.getWorking().isEmpty() && farmaceut.getWorking().iterator().next().getPharmacy().getId()
+                    .equals(admin.getPharmacy().getId()))
                 povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
@@ -363,10 +364,31 @@ public class UserController {
         for (User u : svi) if (u.getClass() == Dermatologist.class) {
             Dermatologist dermatolog = (Dermatologist) u;
             for (Work work : dermatolog.getWorking())
-                if (work.getPharmacy().equals(admin.getPharmacy())) {
+                if (work.getPharmacy().getId().equals(admin.getPharmacy().getId())) {
                     povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog));
                     break;
                 }
+        }
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @GetMapping("/dermatologists/admin/{id}/{search}")
+    public ResponseEntity<List<DermatologistDTO>> searchDermatologistsAdmin(@PathVariable Long id, @PathVariable String search) {
+        List<User> svi = userService.findAll();
+        if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
+        // tehnicki suvisna provera ali dok ne sredimo registraciju
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
+        List<DermatologistDTO> povratna = new ArrayList<>();
+        for (User u : svi) if (u.getClass() == Dermatologist.class) {
+            Dermatologist dermatolog = (Dermatologist) u;
+            for (Work work : dermatolog.getWorking()) {
+                if (work.getPharmacy().getId().equals(admin.getPharmacy().getId())) {
+                    if (dermatolog.getSurname().toLowerCase().contains(search.toLowerCase()) ||
+                            dermatolog.getName().toLowerCase().contains(search.toLowerCase())) {
+                        povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog));
+                    }
+                    break;
+                }}
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
