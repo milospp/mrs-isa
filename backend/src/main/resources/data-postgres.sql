@@ -90,3 +90,13 @@ insert into patient_penalties (patient_id, penalties_id) values (1,1);
 -- Subscriptions
 insert into patient_subscriptions (patient_id, subscriptions_id) values (1,1);
 insert into patient_subscriptions (patient_id, subscriptions_id) values (1,2);
+
+
+-- pharmacy admin
+insert into users (address_id, email, name, password, phone_number, role, surname) values (1, 'nesto@nesto.com', 'ANana', 'password', '012456789', 0, 'S');
+insert into pharmacy_admin (id, pharmacy_id) values (9, 1);
+
+-- docrot_working
+insert into doctor_working (doctor_id, working_id) values (7, 1);
+insert into doctor_working (doctor_id, working_id) values (8, 2);
+insert into doctor_working (doctor_id, working_id) values (7, 3);

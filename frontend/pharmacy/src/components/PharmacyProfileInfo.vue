@@ -60,38 +60,6 @@
               </table>
             </div>
             
-            <div id="menu3" class="tab-pane in fade">
-
-              <h3>Appointments</h3>
-
-              <div class="appointment card mb-4">
-                <div class="card-header">
-                  <h5>Free apointment at 08:00 (30min)</h5>
-                </div>
-                <div class="card-body text-left">
-                  <div class="row">
-                    <div class="col-sm-6 h4">
-                      <table>
-                        <tr><td>Pharmacist: </td><td class="pl-5"><strong>Dr.Mr.Phill</strong></td></tr>
-                        <tr><td>Pharmacy: </td><td class="pl-5"><strong>Phara</strong></td></tr>
-                        <tr><td>Price per hour: </td><td class="pl-5"><strong>$20.00 USD</strong></td></tr>
-                      </table>
-                    </div>
-                    <div class="col-sm-6 h5">
-                      <table>
-                        <tr><td>Starting at: </td><td class="pl-5"><strong>20/5/2021 08:00</strong></td></tr>
-                      </table>
-                      <br>
-                      <button class="btn btn-block btn-primary">Book a appointment</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div id="menu4" class="tab-pane fade active">
-					          <Mapa/>
-            </div>
-            
             <div id="menu1" class="tab-pane fade">
               <h3>Pharmacists</h3>
                 <table class="table table-striped">
@@ -130,6 +98,38 @@
                 </tbody>
               </table>
             </div>
+            <div id="menu3" class="tab-pane in fade">
+
+              <h3>Appointments</h3>
+
+              <div class="appointment card mb-4">
+                <div class="card-header">
+                  <h5>Free apointment at 08:00 (30min)</h5>
+                </div>
+                <div class="card-body text-left">
+                  <div class="row">
+                    <div class="col-sm-6 h4">
+                      <table>
+                        <tr><td>Pharmacist: </td><td class="pl-5"><strong>Dr.Mr.Phill</strong></td></tr>
+                        <tr><td>Pharmacy: </td><td class="pl-5"><strong>Phara</strong></td></tr>
+                        <tr><td>Price per hour: </td><td class="pl-5"><strong>$20.00 USD</strong></td></tr>
+                      </table>
+                    </div>
+                    <div class="col-sm-6 h5">
+                      <table>
+                        <tr><td>Starting at: </td><td class="pl-5"><strong>20/5/2021 08:00</strong></td></tr>
+                      </table>
+                      <br>
+                      <button class="btn btn-block btn-primary">Book a appointment</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="menu4" class="tab-pane fade active">
+					          <Mapa/>
+            </div>
+            
           </div>
         </div>
       </div>
