@@ -57,10 +57,10 @@ insert into pharmacy_medicines (pharmacy_id, medicines_id) values (1,2);
 
 --appointments
 -- id 1
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (7, 30, null, 1, 200, current_timestamp, 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (7, 30, null, 1, 200, current_timestamp + INTERVAL '3day', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (7, 30, null, 1, 300, current_timestamp, 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (7, 30, null, 1, 300, current_timestamp, 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (7, 30, null, 1, 300, current_timestamp, 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (7, 30, null, 1, 400, current_timestamp, 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (7, 30, null, 1, 500, current_timestamp, 0);
 insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Diagnose', 'Exam infoo NOTHELD', 0, 2, 1);
 insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Diagnose', 'Exam infoo NOTHELD', 1, 3, 1);
 insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Diagnose', 'Exam infoo NOTHELD', 2, 4, 1);
@@ -86,6 +86,10 @@ update appointment SET examination_id = 4 WHERE id = 5;
 -- Penalities
 insert into penality (date, reason) values (current_timestamp, 'reason 1');
 insert into patient_penalties (patient_id, penalties_id) values (1,1);
+-- insert into penality (date, reason) values (current_timestamp, 'reason 2');
+-- insert into penality (date, reason) values (current_timestamp, 'reason 3');
+-- insert into patient_penalties (patient_id, penalties_id) values (1,2);
+-- insert into patient_penalties (patient_id, penalties_id) values (1,3);
 
 -- Subscriptions
 insert into patient_subscriptions (patient_id, subscriptions_id) values (1,1);

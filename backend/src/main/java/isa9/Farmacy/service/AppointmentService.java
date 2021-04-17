@@ -17,9 +17,12 @@ public interface AppointmentService extends GenericService<Appointment>{
     Boolean isUpcoming(Appointment appointment);
     Boolean isAppointmentFree(Appointment appointment);
     Boolean isCancelable(Appointment appointment);
+    Boolean isPatientValid(Patient patient);
 
     Appointment bookAnAppointment(Long patientId, Long appointmentId);
     Appointment cancelAppointment(Long appointmentId);
+    Appointment cloneAppointment(Appointment appointment);
+
 
     List<Appointment> getAllFreeDermatologist();
 

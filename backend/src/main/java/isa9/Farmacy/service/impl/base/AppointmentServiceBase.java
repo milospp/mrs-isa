@@ -88,6 +88,12 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     }
 
     @Override
+    public Boolean isPatientValid(Patient patient) {
+        int penalties = userService.countActivePenalties(patient);
+        return penalties < 3;
+    }
+
+    @Override
     public Boolean isAppointmentFree(Appointment appointment) {
         if (appointment.getExamination() == null) return true;
         if (appointment.getExamination().getPatient() == null) return true;
@@ -173,10 +179,12 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         User user = userService.findOne(patientId);
         if (!user.getRole().equals(UserRole.PATIENT)) return null;
         Patient patient = (Patient) user;
+        if (!isPatientValid(patient)) return null;
 
         Appointment appointment = findOne(appointmentId);
 
         if (!isAppointmentFree(appointment)) return null;
+
 
         Examination examination = Examination.builder()
                 .patient(patient)
@@ -186,7 +194,24 @@ public abstract class AppointmentServiceBase implements AppointmentService {
                 .build();
         appointment.setExamination(examination);
         save(appointment);
+
         return appointment;
+    }
+
+    @Override
+    public Appointment cloneAppointment(Appointment appointment) {
+        Appointment cloned = Appointment.builder()
+                .startTime(appointment.getStartTime())
+                .price(appointment.getPrice())
+                .durationInMins(appointment.getDurationInMins())
+                .type(appointment.getType())
+                .doctor(appointment.getDoctor())
+                .pharmacy(appointment.getPharmacy())
+                .examination(appointment.getExamination())
+                .examination(null)
+                .build();
+
+        return cloned;
     }
 
     @Override
@@ -198,6 +223,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         appointment.getExamination().setStatus(ExaminationStatus.CANCELED);
 
         save(appointment);
+        save(cloneAppointment(appointment));
         return appointment;
     }
 }
