@@ -62,6 +62,22 @@
             
             <div id="menu1" class="tab-pane fade">
               <h3>Pharmacists</h3>
+              <table>
+                <tr>
+                  <td> &emsp; </td>
+                  <td> <form v-on:click.prevent=""><input type="submit" value="Filter"></form> </td>
+                  <td> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+                  
+                    <td> <input type="text" v-model="pharmaSearch"  size="50"/></td>
+                    <td> <form v-on:click.prevent="pretragaFarm()"> <input type="submit" value="Search"/></form></td>
+                </tr>
+                <tr>
+                  <td> &emsp; </td>
+                </tr>
+              </table>
                 <table class="table table-striped">
                   <thead class="card-header">
                   <th>First name</th>
@@ -188,7 +204,8 @@ export default {
             lek_za_prikaz: null,
             datum: null,
             kolicina: null,
-            max_kolicina: 1
+            max_kolicina: 1,
+            pharmaSearch: "",
 		}
 	},
   methods: {
@@ -202,6 +219,18 @@ export default {
                   this.patients = response.data;
                   console.log(response.data);
               });
+      },
+      pretragaFarm() {
+        if (this.pharmaSearch.length == 0) {
+          alert("Input someting for searching");
+          return;
+        }
+        PharmacistDataService.searchPharmacistPharmacy(this.id, this.pharmaSearch)
+        .then(response => {
+          this.sviZaposleniFarmaceuti = response.data;});
+      },
+      DodajFarmaceuta() {
+        window.location.href = "/addPharmacist/" + this.id;
       },
       funkcija(l) {
         this.lek_za_prikaz = l;
