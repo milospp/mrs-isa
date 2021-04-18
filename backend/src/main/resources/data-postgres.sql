@@ -34,6 +34,7 @@ insert into medicine (code, manufacturer, name, note, perscription, points, shap
 insert into pharmacy (description, name, address_id) values ('Pharm Desc', 'Nooice Pharmacy', 2);
 insert into pharmacy (description, name, address_id) values ('GOod Pharm Desc', 'Veery Nooice Pharmacy', 3);
 
+
 --works
 insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (7, CURRENT_TIME, 1, CURRENT_TIME);
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 1);
@@ -41,6 +42,10 @@ insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (8, CURRE
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 2);
 insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (7, CURRENT_TIME, 2, CURRENT_TIME);
 insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 3);
+insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (7, CURRENT_TIME, 1, CURRENT_TIME);
+insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 4);
+insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (7, CURRENT_TIME, 1, CURRENT_TIME);
+insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 5);
 
 --med price
 insert into med_price(price) values (200);
@@ -97,10 +102,36 @@ insert into patient_subscriptions (patient_id, subscriptions_id) values (1,2);
 
 
 -- pharmacy admin
-insert into users (address_id, email, name, password, phone_number, role, surname) values (1, 'nesto@nesto.com', 'ANana', 'password', '012456789', 0, 'S');
+insert into users (address_id, email, name, password, phone_number, role, surname) values (1, 'nesto9@nesto.com', 'ANana', 'password', '012456789', 0, 'S');
 insert into pharmacy_admin (id, pharmacy_id) values (9, 1);
 
 -- docrot_working
 insert into doctor_working (doctor_id, working_id) values (7, 1);
 insert into doctor_working (doctor_id, working_id) values (8, 2);
 insert into doctor_working (doctor_id, working_id) values (7, 3);
+
+-- for filter dermatologist and pharmacist
+        -- farm
+insert into users (address_id, email, name, password, phone_number, role, surname) values (2, 'nesto10@nesto.com', 'Pharmac', 'password10', '0124567893', 2, 'Prezimic');
+insert into doctor (id) values (10);
+insert into pharmacist (id) values (10);
+        -- derm
+insert into users (address_id, email, name, password, phone_number, role, surname) values (2, 'nesto11@nesto.com', 'Dermy', 'password11', '0124567891', 1, 'Dermic');
+insert into doctor (id) values (11);
+insert into dermatologist (id) values (11);
+
+insert into users (address_id, email, name, password, phone_number, role, surname) values (2, 'nesto12@nesto.com', 'Derma12', 'password12', '0124567892', 1, 'Dermicy');
+insert into doctor (id) values (12);
+insert into dermatologist (id) values (12);
+        -- works
+insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (10, CURRENT_TIME, 1, CURRENT_TIME);
+insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 6);
+insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (11, CURRENT_TIME, 1, CURRENT_TIME);
+insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 7);
+insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (12, CURRENT_TIME, 1, CURRENT_TIME);
+insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 8);
+        -- doctor_working
+insert into doctor_working (doctor_id, working_id) values (10, 6);
+insert into doctor_working (doctor_id, working_id) values (11, 7);
+insert into doctor_working (doctor_id, working_id) values (12, 8);
+

@@ -29,6 +29,43 @@ class DermatologistDataService {
       console.log(error.config);
   });
   }
+
+  filterDermatologistAdmin(idAdminaApoteke, filterIme, filterPrez, filterBroj, 
+      filterAdrD, filterAdrG, filterAdrU, filterAdrB) {
+    if (filterIme.length == 0) filterIme = "nema";
+    if (filterPrez.length == 0) filterPrez = "nema";
+    if (filterBroj.length == 0) filterBroj = "nema";
+    if (filterAdrD.length == 0) filterAdrD = "nema";
+    if (filterAdrG.length == 0) filterAdrG = "nema";
+    if (filterAdrU.length == 0) filterAdrU = "nema";
+    if (filterAdrB.length == 0) filterAdrB = "nema";
+    return axios.get(API_URL + "/api/users/dermatologists/admin/" + idAdminaApoteke + "/" + filterIme + "/" + filterPrez
+      + "/" + filterBroj + "/" + filterAdrD + "/" + filterAdrG + "/" + filterAdrU + "/" + filterAdrB)
+    .catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("Error");
+      console.log(error.config);
+  });
+//   var niz = [filterIme, filterPrez, filterBroj, filterAdrD, filterAdrG, filterAdrU, filterAdrB];
+//   alert(niz);
+//   return axios({
+//     method: 'post',
+//     url: API_URL + "/api/users/dermatologists/filter/admin/" + idAdminaApoteke,
+//     data: niz
+// }).catch(function (error) {
+//       if (error.response) {
+//         console.log(error.response.data);
+//       } else if (error.request) {
+//         console.log(error.request);
+//       }
+//       console.log("Error");
+//       console.log(error.config);
+//   });
+  }
   
   getAllDermatologistsPharmacy(idApoteke) {
     return axios.get(API_URL + "/api/users/dermatologists/pharmacy/" + idApoteke)
