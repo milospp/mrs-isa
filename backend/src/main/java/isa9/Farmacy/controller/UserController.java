@@ -342,6 +342,25 @@ public class UserController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
+    @GetMapping("/pharmacists/admin/{id}/{search}")
+    public ResponseEntity<List<PharmacistDTO>> searchPharmacistsAdmin(@PathVariable Long id, @PathVariable String search) {
+        List<User> svi = userService.findAll();
+        if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
+        // tehnicki suvisna provera ali dok ne sredimo registraciju
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
+        List<PharmacistDTO> povratna = new ArrayList<>();
+        for (User u : svi) if (u.getClass() == Pharmacist.class) {
+            Pharmacist farmaceut = (Pharmacist) u;
+            if (!farmaceut.getWorking().isEmpty() && farmaceut.getWorking().iterator().next().getPharmacy().getId()
+                    .equals(admin.getPharmacy().getId()))
+                if (farmaceut.getSurname().toLowerCase().contains(search.toLowerCase()) ||
+                        farmaceut.getName().toLowerCase().contains(search.toLowerCase())) {
+                    povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
+                }
+        }
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
     @GetMapping("/pharmacists/pharmacy/{id}")
     public ResponseEntity<List<PharmacistDTO>> getAllPharmacistsPharmacy(@PathVariable Long id) {
         List<User> svi = userService.findAll();
@@ -353,6 +372,7 @@ public class UserController {
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
+
 
     @GetMapping("/dermatologists/admin/{id}")
     public ResponseEntity<List<DermatologistDTO>> getAllDermatologistsAdmin(@PathVariable Long id) {
