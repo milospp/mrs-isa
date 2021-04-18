@@ -356,6 +356,32 @@ public class UserController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
+    @GetMapping("/pharmacists/admin/{id}/{ime}/{prez}/{br}/{adrD}/{adrG}/{adrU}/{adrB}")
+    public ResponseEntity<List<PharmacistDTO>> searchPharmacistsAdmin(@PathVariable Long id,
+             @PathVariable String ime, @PathVariable String prez, @PathVariable String br, @PathVariable String adrD,
+             @PathVariable String adrG, @PathVariable String adrU, @PathVariable String adrB) {
+        List<User> svi = userService.findAll();
+        if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
+        // tehnicki suvisna provera ali dok ne sredimo registraciju
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
+        List<PharmacistDTO> povratna = new ArrayList<>();
+        for (User u : svi) if (u.getClass() == Pharmacist.class) {
+            Pharmacist farmaceut = (Pharmacist) u;
+            if (!farmaceut.getWorking().isEmpty() && farmaceut.getWorking().iterator().next().getPharmacy().getId()
+                    .equals(admin.getPharmacy().getId()))
+                if (farmaceut.getName().toLowerCase().contains(ime.toLowerCase())||
+                        farmaceut.getSurname().toLowerCase().contains(prez.toLowerCase()) ||
+                        farmaceut.getAddress().getState().toLowerCase().contains(adrD.toLowerCase()) ||
+                        farmaceut.getAddress().getCity().toLowerCase().contains(adrG.toLowerCase()) ||
+                        farmaceut.getAddress().getStreet().toLowerCase().contains(adrU.toLowerCase()) ||
+                        farmaceut.getAddress().getNumber().toLowerCase().contains(adrB.toLowerCase()) ||
+                        farmaceut.getPhoneNumber().toLowerCase().contains(br.toLowerCase())) {
+                    povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
+                }
+        }
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
     @GetMapping("/pharmacists/pharmacy/{id}")
     public ResponseEntity<List<PharmacistDTO>> getAllPharmacistsPharmacy(@PathVariable Long id) {
         List<User> svi = userService.findAll();
