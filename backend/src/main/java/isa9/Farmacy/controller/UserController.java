@@ -374,6 +374,21 @@ public class UserController {
     }
 
 
+    @GetMapping("/pharmacists/pharmacy/{id}/{search}")
+    public ResponseEntity<List<PharmacistDTO>> searchPharmacistsPharmacy(@PathVariable Long id, @PathVariable String search) {
+        List<User> svi = userService.findAll();
+        List<PharmacistDTO> povratna = new ArrayList<>();
+        for (User u : svi) if (u.getClass() == Pharmacist.class) {
+            Pharmacist farmaceut = (Pharmacist) u;
+            if (!farmaceut.getWorking().isEmpty() && farmaceut.getWorking().iterator().next().getPharmacy().getId().equals(id))
+                if (farmaceut.getSurname().toLowerCase().contains(search.toLowerCase()) ||
+                        farmaceut.getName().toLowerCase().contains(search.toLowerCase())) {
+                    povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
+                }
+        }
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
     @GetMapping("/dermatologists/admin/{id}")
     public ResponseEntity<List<DermatologistDTO>> getAllDermatologistsAdmin(@PathVariable Long id) {
         List<User> svi = userService.findAll();
