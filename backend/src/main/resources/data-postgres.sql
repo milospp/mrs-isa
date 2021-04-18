@@ -37,15 +37,15 @@ insert into pharmacy (description, name, address_id) values ('GOod Pharm Desc', 
 
 --works
 insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (7, CURRENT_TIME, 1, CURRENT_TIME);
---insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 1);
+insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 1);
 insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (8, CURRENT_TIME, 1, CURRENT_TIME);
---insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 2);
+insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 2);
 insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (7, CURRENT_TIME, 2, CURRENT_TIME);
---insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 3);
+insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 3);
 insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (7, CURRENT_TIME, 1, CURRENT_TIME);
---insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 1);
+insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 4);
 insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (7, CURRENT_TIME, 1, CURRENT_TIME);
---insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 1);
+insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 5);
 
 --med price
 insert into med_price(price) values (200);
@@ -125,11 +125,11 @@ insert into doctor (id) values (12);
 insert into dermatologist (id) values (12);
         -- works
 insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (10, CURRENT_TIME, 1, CURRENT_TIME);
---insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 10);
+insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 6);
 insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (11, CURRENT_TIME, 1, CURRENT_TIME);
---insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 11);
+insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 7);
 insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (12, CURRENT_TIME, 1, CURRENT_TIME);
---insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 12);
+insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 8);
         -- doctor_working
 insert into doctor_working (doctor_id, working_id) values (10, 6);
 insert into doctor_working (doctor_id, working_id) values (11, 7);
