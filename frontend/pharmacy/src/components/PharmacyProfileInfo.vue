@@ -97,6 +97,22 @@
             </div>
             <div id="menu2" class="tab-pane fade">
               <h3>Dermatologists</h3>
+              <table>
+                <tr>
+                  <td> &emsp; </td>
+                  <td> <form v-on:click.prevent=""><input type="submit" value="Filter"></form> </td>
+                  <td> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+                  
+                    <td> <input type="text" v-model="dermaSearch"  size="50"/></td>
+                    <td> <form v-on:click.prevent="pretraga()"> <input type="submit" value="Search"/></form></td>
+                </tr>
+                <tr>
+                  <td> &emsp; </td>
+                </tr>
+              </table>
                 <table class="table table-striped">
                   <thead class="card-header">
                   <th>First name</th>
@@ -205,10 +221,19 @@ export default {
             datum: null,
             kolicina: null,
             max_kolicina: 1,
-            pharmaSearch: "",
+            pharmaSearch: "", dermaSearch: "",
 		}
 	},
   methods: {
+    pretraga() {
+        if (this.dermaSearch.length == 0) {
+          alert("Input someting for searching");
+          return;
+        }
+        DermatologistDataService.searchDermatologistPharmacy(this.id, this.dermaSearch)
+        .then(response => {
+          this.sviZaposleniDermatolozi = response.data;});
+      },
       loadPharmacyData() {
           let self = this;
 

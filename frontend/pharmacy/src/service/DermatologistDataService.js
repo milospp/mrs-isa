@@ -43,6 +43,19 @@ class DermatologistDataService {
   });
   }
 
+  searchDermatologistPharmacy(idApoteke, search) {
+    return axios.get(API_URL + "/api/users/dermatologists/pharmacy/" + idApoteke + "/" + search)
+    .catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("Error");
+      console.log(error.config);
+  });
+  }
+
   getDermatologist(id){
     return axios.get(`${API_URL}/api/users/` + id);
   }

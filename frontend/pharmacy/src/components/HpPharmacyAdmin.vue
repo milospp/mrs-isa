@@ -66,6 +66,22 @@
             </div>
             <div id="menu1" class="tab-pane fade">
               <h3>Pharmacists</h3>
+              <table>
+                <tr>
+                  <td> &emsp; </td>
+                  <td> <form v-on:click.prevent=""><input type="submit" value="Filter"></form> </td>
+                  <td> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+                  
+                    <td> <input type="text" v-model="pharmaSearch"  size="50"/></td>
+                    <td> <form v-on:click.prevent="pretragaFarm()"> <input type="submit" value="Search"/></form></td>
+                </tr>
+                <tr>
+                  <td> &emsp; </td>
+                </tr>
+              </table>
                 <table class="table table-striped">
                   <thead class="card-header">
                   <th>First name</th>
@@ -211,7 +227,7 @@ export default {
             lekovi: [],
             name: null, structure: null, manufacturer: null, price: null,
             note: null, points: null, type: null, quantity: null,
-            dermaSearch: "",
+            dermaSearch: "", pharmaSearch: "",
         };
     },
     created() {
@@ -251,6 +267,15 @@ export default {
         DermatologistDataService.searchDermatologistAdmin(this.id, this.dermaSearch)
         .then(response => {
           this.sviZaposleniDermatolozi = response.data;});
+      },
+      pretragaFarm() {
+        if (this.pharmaSearch.length == 0) {
+          alert("Input someting for searching");
+          return;
+        }
+        PharmacistDataService.searchPharmacistAdmin(this.id, this.pharmaSearch)
+        .then(response => {
+          this.sviZaposleniFarmaceuti = response.data;});
       },
       DodajFarmaceuta() {
         window.location.href = "/addPharmacist/" + this.id;

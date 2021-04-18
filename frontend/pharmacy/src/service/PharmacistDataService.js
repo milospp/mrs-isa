@@ -16,6 +16,7 @@ class PharmacistDataService {
     });
   }
 
+  
   getAllPharmacistAdmin(idAdminaApoteke) {
     return axios.get(API_URL + "/api/users/pharmacists/admin/" + idAdminaApoteke)
     .catch(function (error) {
@@ -29,6 +30,21 @@ class PharmacistDataService {
     });
   }
 
+  
+  searchPharmacistAdmin(idAdminaApoteke, search) {
+    return axios.get(API_URL + "/api/users/pharmacists/admin/" + idAdminaApoteke + "/" + search)
+    .catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("Error");
+      console.log(error.config);
+    });
+  }
+  
+  
   getAllPharmacistPharmacy(idApoteke) {
     return axios.get(API_URL + "/api/users/pharmacists/pharmacy/" + idApoteke)
     .catch(function (error) {
