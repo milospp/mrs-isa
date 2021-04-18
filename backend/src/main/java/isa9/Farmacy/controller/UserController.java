@@ -394,7 +394,6 @@ public class UserController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
-
     @GetMapping("/pharmacists/pharmacy/{id}/{search}")
     public ResponseEntity<List<PharmacistDTO>> searchPharmacistsPharmacy(@PathVariable Long id, @PathVariable String search) {
         List<User> svi = userService.findAll();
@@ -404,6 +403,28 @@ public class UserController {
             if (!farmaceut.getWorking().isEmpty() && farmaceut.getWorking().iterator().next().getPharmacy().getId().equals(id))
                 if (farmaceut.getSurname().toLowerCase().contains(search.toLowerCase()) ||
                         farmaceut.getName().toLowerCase().contains(search.toLowerCase())) {
+                    povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
+                }
+        }
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @GetMapping("/pharmacists/pharmacy/{id}/{ime}/{prez}/{br}/{adrD}/{adrG}/{adrU}/{adrB}")
+    public ResponseEntity<List<PharmacistDTO>> filterPharmacistsPharmacy(@PathVariable Long id,
+            @PathVariable String ime, @PathVariable String prez, @PathVariable String br, @PathVariable String adrD,
+            @PathVariable String adrG, @PathVariable String adrU, @PathVariable String adrB) {
+        List<User> svi = userService.findAll();
+        List<PharmacistDTO> povratna = new ArrayList<>();
+        for (User u : svi) if (u.getClass() == Pharmacist.class) {
+            Pharmacist farmaceut = (Pharmacist) u;
+            if (!farmaceut.getWorking().isEmpty() && farmaceut.getWorking().iterator().next().getPharmacy().getId().equals(id))
+                if (farmaceut.getName().toLowerCase().contains(ime.toLowerCase())||
+                        farmaceut.getSurname().toLowerCase().contains(prez.toLowerCase()) ||
+                        farmaceut.getAddress().getState().toLowerCase().contains(adrD.toLowerCase()) ||
+                        farmaceut.getAddress().getCity().toLowerCase().contains(adrG.toLowerCase()) ||
+                        farmaceut.getAddress().getStreet().toLowerCase().contains(adrU.toLowerCase()) ||
+                        farmaceut.getAddress().getNumber().toLowerCase().contains(adrB.toLowerCase()) ||
+                        farmaceut.getPhoneNumber().toLowerCase().contains(br.toLowerCase())) {
                     povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
                 }
         }

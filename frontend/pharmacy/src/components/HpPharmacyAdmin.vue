@@ -320,7 +320,6 @@ export default {
     },
     methods : {
       filter(filtDermatologa) {
-        alert(filtDermatologa == true);
         var suma = this.filterIme.length + this.filterPrez.length + this.filterBroj 
           + this.filterAdrD.length + this.filterAdrG.length + this.filterAdrU.length + this.filterAdrB.length;
         if (suma == 0) {
