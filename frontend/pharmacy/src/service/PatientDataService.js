@@ -76,7 +76,7 @@ class PatientDataService {
         alert("Successfully added patient!");
         return true;
       }
-      alert("Email is not unique!");
+      alert("This e-mail is already taken!");
       return false;
     });
   }

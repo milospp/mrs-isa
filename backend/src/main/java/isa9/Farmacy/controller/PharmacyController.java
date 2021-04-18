@@ -49,7 +49,8 @@ public class PharmacyController {
     public ResponseEntity<List<PharmacyDTO>> getAvailablePharmacies(){
         List<PharmacyDTO> resultDTOS = new ArrayList<>();
         for (Pharmacy p : this.pharmacyService.findAll()){
-            if(userService.findPharmacyAdmin(p.getId()) == null) {
+            PharmacyAdmin phAdmin = userService.findPharmacyAdmin(p.getId());
+            if(phAdmin == null) {
                 resultDTOS.add(new PharmacyDTO(p.getId(), p.getName(), p.getDescription(), p.getAddress()));
             }
         }

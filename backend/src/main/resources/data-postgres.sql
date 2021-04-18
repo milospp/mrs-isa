@@ -1,51 +1,96 @@
-insert into address (city, number, state, street) values ('Citty', 'Numbeer', 'Sstate', 'Street');
-insert into address (city, number, state, street) values ('Citty2', 'Numbeer2', 'Sstate2', 'Street2');
-insert into address (city, number, state, street) values ('Citty3', 'Numbeer3', 'Sstate3', 'Street3');
+insert into address (city, number, state, street) values ('Beograd', '2', 'Serbia', 'Nemanjina');
+insert into address (city, number, state, street) values ('Beograd', '33', 'Serbia', 'Laze Kostića');
+insert into address (city, number, state, street) values ('Beograd', '21', 'Serbia', 'Brodarska');
+insert into address (city, number, state, street) values ('Beograd', '11', 'Serbia', 'Vuka Karadžića');
+insert into address (city, number, state, street) values ('Beograd', '2', 'Serbia', 'Magelanova');
+insert into address (city, number, state, street) values ('Beograd', '26', 'Serbia', 'Partizanska');
+insert into address (city, number, state, street) values ('Beograd', '17', 'Serbia', 'Kolarčeva');
+insert into address (city, number, state, street) values ('Beograd', '9', 'Serbia', 'Aleksandra Fleminga');
+insert into address (city, number, state, street) values ('Beograd', '31', 'Serbia', 'Bajronova');
+insert into address (city, number, state, street) values ('Beograd', '49', 'Serbia', 'Ljutice Bogdana');
+insert into address (city, number, state, street) values ('Beograd', '25', 'Serbia', 'Karađorđeva');
+insert into address (city, number, state, street) values ('Beograd', '3', 'Serbia', 'Makedonska');
+insert into address (city, number, state, street) values ('Beograd', '13', 'Serbia', 'Stevana Sremca');
+insert into address (city, number, state, street) values ('Beograd', '13', 'Serbia', 'Varvarinska');
+insert into address (city, number, state, street) values ('Beograd', '50', 'Serbia', 'Bežanijska');
+insert into address (city, number, state, street) values ('Beograd', '14', 'Serbia', 'Plitvička');
+insert into address (city, number, state, street) values ('Beograd', '9', 'Serbia', 'Ustanička');
+insert into address (city, number, state, street) values ('Beograd', '29', 'Serbia', 'Bore Stankovića');
+insert into address (city, number, state, street) values ('Beograd', '35', 'Serbia', 'Milunke Savić');
+insert into address (city, number, state, street) values ('Beograd', '12', 'Serbia', 'Filipa Višnjića');
+insert into address (city, number, state, street) values ('Beograd', '8', 'Serbia', 'Nikolaja Gogolja');
+insert into address (city, number, state, street) values ('Beograd', '28', 'Serbia', 'Petra Kočića');
+insert into address (city, number, state, street) values ('Beograd', '100', 'Serbia', 'Bulevar Arsenija Čarnojevića');
+insert into address (city, number, state, street) values ('Beograd', '18', 'Serbia', 'Laze Lazarevića');
+insert into address (city, number, state, street) values ('Beograd', '23', 'Serbia', 'Karlovačka');
+insert into address (city, number, state, street) values ('Beograd', '90', 'Serbia', 'Lenjinov bulevar');
+insert into address (city, number, state, street) values ('Beograd', '47', 'Serbia', 'Mačvanska');
+insert into address (city, number, state, street) values ('Beograd', '30', 'Serbia', 'Terazije');
+insert into address (city, number, state, street) values ('Beograd', '29', 'Serbia', 'Avalska');
+insert into address (city, number, state, street) values ('Beograd', '41', 'Serbia', 'Milutina Milankoviča');
+insert into address (city, number, state, street) values ('Novi Sad', '128', 'Serbia', 'Bulevar oslobođenja');
+insert into address (city, number, state, street) values ('Novi Sad', '43', 'Serbia', 'Bulevar oslobođenja');
+insert into address (city, number, state, street) values ('Novi Sad', '8', 'Serbia', 'Trg slobode');
+insert into address (city, number, state, street) values ('Novi Sad', '20', 'Serbia', 'Stražilovska');
+insert into address (city, number, state, street) values ('Novi Sad', '23', 'Serbia', 'Vuka Karadžića');
 
 --patients
-insert into users (address_id, email, name, password, phone_number, role, surname) values (1, 'nesto@nesto.com', 'A', 'password', '012456789', 0, 'S');
+insert into users (address_id, email, name, password, phone_number, role, surname) values (10, 'oprincominero@maildrop.cc', 'Petar', 'peca', '0645597841', 0, 'Petrović');
 insert into patient (points, id) values (10, 1);
-insert into users (address_id, email, name, password, phone_number, role, surname) values (2, 'nesto4@nesto.com', 'C', 'password', '012456789', 0, 'T');
+insert into users (address_id, email, name, password, phone_number, role, surname) values (5, 'maya@maildrop.cc', 'Maja', 'sifra', '0617794512', 0, 'Marković');
 insert into patient (points, id) values (1, 2);
-insert into users (address_id, email, name, password, phone_number, role, surname) values (1, 'nesto5@nesto.com', 'B', 'password', '012456789', 0, 'Q');
+insert into users (address_id, email, name, password, phone_number, role, surname) values (7, 'zija123@maildrop.cc', 'Živorad', 'teka', '0629745132', 0, 'Pantić');
 insert into patient (points, id) values (12, 3);
-insert into users (address_id, email, name, password, phone_number, role, surname) values (1, 'nesto6@nesto.com', 'D', 'password', '012456789', 0, 'R');
+insert into users (address_id, email, name, password, phone_number, role, surname) values (13, 'zki@maildrop.cc', 'Zoran', 'zoca', '0649985123', 0, 'Radovanović');
 insert into patient (points, id) values (10, 4);
-insert into users (address_id, email, name, password, phone_number, role, surname) values (1, 'nesto7@nesto.com', 'F', 'password', '012456789', 0, 'P');
+insert into users (address_id, email, name, password, phone_number, role, surname) values (19, 'natasha@maildrop.cc', 'Nataša', 'nata', '0635668741', 0, 'Bajunović');
 insert into patient (points, id) values (1, 5);
-insert into users (address_id, email, name, password, phone_number, role, surname) values (1, 'nesto8@nesto.com', 'E', 'password', '012456789', 0, 'U');
+insert into users (address_id, email, name, password, phone_number, role, surname) values (4, 'violet@maildrop.cc', 'Violeta', 'vixi', '0629541238', 0, 'Milutinović');
 insert into patient (points, id) values (12, 6);
+insert into users (address_id, email, name, password, phone_number, role, surname) values (20, 'gidra@maildrop.cc', 'Dragan', 'magi', '0619745231', 0, 'Petrović');
+insert into patient (points, id) values (0, 7);
+insert into users (address_id, email, name, password, phone_number, role, surname) values (15, 'vesna123@maildrop.cc', 'Vesna', 'veka', '0615217941', 0, 'Tomašević');
+insert into patient (points, id) values (3, 8);
+insert into users (address_id, email, name, password, phone_number, role, surname) values (2, 'abcdefgh@maildrop.cc', 'Mirko', 'miki', '0619874511', 0, 'Ivanić');
+insert into patient (points, id) values (5, 9);
+insert into users (address_id, email, name, password, phone_number, role, surname) values (6, 'extramail@maildrop.cc', 'Žarko', 'zax', '0649874771', 0, 'Nikolić');
+insert into patient (points, id) values (0, 10);
 
 --dermatologists
-insert into users (address_id, email, name, password, phone_number, role, surname) values (2, 'nesto2@nesto.com', 'Derma', 'password', '012456789', 1, 'Dermic');
-insert into doctor (id) values (7);
-insert into dermatologist (id) values (7);
+insert into users (address_id, email, name, password, phone_number, role, surname) values (11, 'gordop@maildrop.cc', 'Gordan', 'password', '0635521478', 1, 'Popović');
+insert into doctor (id) values (11);
+insert into dermatologist (id) values (11);
 
 --pharmacists
-insert into users (address_id, email, name, password, phone_number, role, surname) values (2, 'nesto3@nesto.com', 'Pharma', 'password', '012456789', 2, 'Pharmic');
-insert into doctor (id) values (8);
-insert into pharmacist (id) values (8);
+insert into users (address_id, email, name, password, phone_number, role, surname) values (21, 'drmili@maildrop.cc', 'Milisav', 'password', '0612223855', 2, 'Nikolić');
+insert into doctor (id) values (12);
+insert into pharmacist (id) values (12);
+insert into users (address_id, email, name, password, phone_number, role, surname) values (22, 'nadamm28@maildrop.cc', 'Nada', 'slojevito', '0638895221', 2, 'Macura');
+insert into doctor (id) values (13);
+insert into dermatologist (id) values (13);
 
 --medicine
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, structure, type) values ('AZ45', 'Nemci', 'PHIIIZER', 'vakcina', 0, 3, 'PILL', 'struucturee', 'some type idl');
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, structure, type) values ('BZ55', 'Kinezi', 'Sinopharm', 'vakcina', 0, 5, 'PILL', 'struucturee', 'some type idl');
+insert into medicine (code, manufacturer, name, note, perscription, points, shape, structure, type) values ('FAR-123', 'Galenika','Farin','Piti isključivo prema receptu',0,2,'tablets','varfarin','antikoagulans');
 
 --pharmacies
-insert into pharmacy (description, name, address_id) values ('Pharm Desc', 'Nooice Pharmacy', 2);
-insert into pharmacy (description, name, address_id) values ('GOod Pharm Desc', 'Veery Nooice Pharmacy', 3);
+insert into pharmacy (description, name, address_id) values ('Otvoreni smo non-stop', 'Prima', 1);
+insert into pharmacy (description, name, address_id) values ('', 'Apoteka Janković', 31);
+insert into pharmacy (description, name, address_id) values ('Nema leka bez recepta!', 'Benu', 32);
+insert into pharmacy (description, name, address_id) values ('Nedeljom ne radimo', 'Laurus', 33);
 
+-- pharmacy admin
+insert into users (address_id, email, name, password, phone_number, role, surname) values (24, 'coa@maildrop.cc', 'Aleksandar', 'aaaaaa', '0635584712', 5, 'Vasić');
+insert into pharmacy_admin (id, pharmacy_id) values (14, 1);
 
 --works
-insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (7, CURRENT_TIME, 1, CURRENT_TIME);
+insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (11, CURRENT_TIME, 1, CURRENT_TIME);
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 1);
-insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (8, CURRENT_TIME, 1, CURRENT_TIME);
+insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (12, CURRENT_TIME, 1, CURRENT_TIME);
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 2);
-insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (7, CURRENT_TIME, 2, CURRENT_TIME);
+insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (11, CURRENT_TIME, 2, CURRENT_TIME);
 insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 3);
-insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (7, CURRENT_TIME, 1, CURRENT_TIME);
-insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 4);
-insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (7, CURRENT_TIME, 1, CURRENT_TIME);
-insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 5);
 
 --med price
 insert into med_price(price) values (200);
@@ -62,10 +107,10 @@ insert into pharmacy_medicines (pharmacy_id, medicines_id) values (1,2);
 
 --appointments
 -- id 1
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (7, 30, null, 1, 200, current_timestamp + INTERVAL '3day', 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (7, 30, null, 1, 300, current_timestamp, 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (7, 30, null, 1, 400, current_timestamp, 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (7, 30, null, 1, 500, current_timestamp, 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 200, current_timestamp + INTERVAL '3day', 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 300, current_timestamp, 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 400, current_timestamp, 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 500, current_timestamp, 0);
 insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Diagnose', 'Exam infoo NOTHELD', 0, 2, 1);
 insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Diagnose', 'Exam infoo NOTHELD', 1, 3, 1);
 insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Diagnose', 'Exam infoo NOTHELD', 2, 4, 1);
@@ -101,37 +146,7 @@ insert into patient_subscriptions (patient_id, subscriptions_id) values (1,1);
 insert into patient_subscriptions (patient_id, subscriptions_id) values (1,2);
 
 
--- pharmacy admin
-insert into users (address_id, email, name, password, phone_number, role, surname) values (1, 'nesto9@nesto.com', 'ANana', 'password', '012456789', 0, 'S');
-insert into pharmacy_admin (id, pharmacy_id) values (9, 1);
-
 -- docrot_working
-insert into doctor_working (doctor_id, working_id) values (7, 1);
-insert into doctor_working (doctor_id, working_id) values (8, 2);
-insert into doctor_working (doctor_id, working_id) values (7, 3);
-
--- for filter dermatologist and pharmacist
-        -- farm
-insert into users (address_id, email, name, password, phone_number, role, surname) values (2, 'nesto10@nesto.com', 'Pharmac', 'password10', '0124567893', 2, 'Prezimic');
-insert into doctor (id) values (10);
-insert into pharmacist (id) values (10);
-        -- derm
-insert into users (address_id, email, name, password, phone_number, role, surname) values (2, 'nesto11@nesto.com', 'Dermy', 'password11', '0124567891', 1, 'Dermic');
-insert into doctor (id) values (11);
-insert into dermatologist (id) values (11);
-
-insert into users (address_id, email, name, password, phone_number, role, surname) values (2, 'nesto12@nesto.com', 'Derma12', 'password12', '0124567892', 1, 'Dermicy');
-insert into doctor (id) values (12);
-insert into dermatologist (id) values (12);
-        -- works
-insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (10, CURRENT_TIME, 1, CURRENT_TIME);
-insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 6);
-insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (11, CURRENT_TIME, 1, CURRENT_TIME);
-insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 7);
-insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (12, CURRENT_TIME, 1, CURRENT_TIME);
-insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 8);
-        -- doctor_working
-insert into doctor_working (doctor_id, working_id) values (10, 6);
-insert into doctor_working (doctor_id, working_id) values (11, 7);
-insert into doctor_working (doctor_id, working_id) values (12, 8);
-
+insert into doctor_working (doctor_id, working_id) values (11, 1);
+insert into doctor_working (doctor_id, working_id) values (12, 2);
+insert into doctor_working (doctor_id, working_id) values (11, 3);
