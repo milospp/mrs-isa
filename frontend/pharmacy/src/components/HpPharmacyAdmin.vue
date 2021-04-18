@@ -66,6 +66,24 @@
             </div>
             <div id="menu1" class="tab-pane fade">
               <h3>Pharmacists</h3>
+              <table>
+                <tr>
+                  <td> &emsp; </td>
+                  
+                  <td align="left"><button type="button" class="btn btn-primary" data-toggle="modal" 
+                    data-target="#filterFar">Filter</button></td>
+                  <td> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+                  
+                    <td> <input type="text" v-model="pharmaSearch"  size="50"/></td>
+                    <td> <form v-on:click.prevent="pretragaFarm()"> <input type="submit" value="Search"/></form></td>
+                </tr>
+                <tr>
+                  <td> &emsp; </td>
+                </tr>
+              </table>
                 <table class="table table-striped">
                   <thead class="card-header">
                   <th>First name</th>
@@ -88,14 +106,15 @@
               <table>
                 <tr>
                   <td> &emsp; </td>
-                  <td> <form v-on:click.prevent=""><input type="submit" value="Filter"></form> </td>
+                  <td align="left"><button type="button" class="btn btn-primary" data-toggle="modal" 
+                    data-target="#filterDer">Filter</button></td>
                   <td> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
                   
                     <td> <input type="text" v-model="dermaSearch"  size="50"/></td>
-                    <td> <form v-on:click.prevent="pretraga()"> <input type="submit" value="Search"/></form></td>
+                    <td> <form v-on:click.prevent="pretragaDerm()"> <input type="submit" value="Search"/></form></td>
                 </tr>
                 <tr>
                   <td> &emsp; </td>
@@ -153,7 +172,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="PharmacyInfo">Pharmacy info</h5>
+          <h5 class="modal-title" id="PharmacyInfo">Pharmacy information</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -167,6 +186,7 @@
       </div>
     </div>
   </div>
+
   <!-- Info o leku -->
   <div class="modal fade" id="podaci" tabindex="-1" role="dialog" aria-labelledby="About medicine" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -192,6 +212,57 @@
       </div>
     </div>
   </div>
+
+      <!-- Filter dermatolog -->
+  <div class="modal fade" id="filterDer" tabindex="-1" role="dialog" aria-labelledby="Filter" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="Filtercic">Infomation for search</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" align="left">First name: <input type="text" v-model="filterIme"/></div>
+        <div class="modal-body" align="left">Last name: <input type="text" v-model="filterPrez"/></div>
+        <div class="modal-body" align="left">Phone number: <input type="text" v-model="filterBroj"/></div>
+        <div class="modal-body" align="left">State: <input type="text" v-model="filterAdrD"/></div>
+        <div class="modal-body" align="left">City: <input type="text" v-model="filterAdrG"/></div>
+        <div class="modal-body" align="left">Street: <input type="text" v-model="filterAdrU"/></div>
+        <div class="modal-body" align="left">Number: <input type="text" v-model="filterAdrB"/></div>
+         <div class="modal-footer">
+          <button type="button" class="btn btn-primary" v-on:click.prevent="filter(true)">Seaarch</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+   <!-- Filter farmaceut -->
+  <div class="modal fade" id="filterFar" tabindex="-1" role="dialog" aria-labelledby="Filter" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="Filtercic">Infomation for search</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" align="left">First name: <input type="text" v-model="filterIme"/></div>
+        <div class="modal-body" align="left">Last name: <input type="text" v-model="filterPrez"/></div>
+        <div class="modal-body" align="left">Phone number: <input type="text" v-model="filterBroj"/></div>
+        <div class="modal-body" align="left">State: <input type="text" v-model="filterAdrD"/></div>
+        <div class="modal-body" align="left">City: <input type="text" v-model="filterAdrG"/></div>
+        <div class="modal-body" align="left">Street: <input type="text" v-model="filterAdrU"/></div>
+        <div class="modal-body" align="left">Number: <input type="text" v-model="filterAdrB"/></div>
+         <div class="modal-footer">
+          <button type="button" class="btn btn-primary" v-on:click.prevent="filter(false)">Seaarch</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <script>
@@ -202,6 +273,9 @@ import MedicineDataService from '../service/MedicineDataService.js';
 import Mapa from "../components/Maps.vue";
 export default {
     name: 'HpPharmacyAdmin',
+    components: {
+      Mapa
+    },
     data() {
         return {
             sviZaposleniFarmaceuti : [],
@@ -211,7 +285,9 @@ export default {
             lekovi: [],
             name: null, structure: null, manufacturer: null, price: null,
             note: null, points: null, type: null, quantity: null,
-            dermaSearch: "",
+            dermaSearch: "", pharmaSearch: "",
+            filterIme: "", filterPrez: "", filterBroj: "",
+            filterAdrD: "", filterAdrG: "", filterAdrU: "", filterAdrB: "", 
         };
     },
     created() {
@@ -243,7 +319,30 @@ export default {
           this.sviZaposleniDermatolozi = response.data;});
     },
     methods : {
-      pretraga() {
+      filter(filtDermatologa) {
+        alert(filtDermatologa == true);
+        var suma = this.filterIme.length + this.filterPrez.length + this.filterBroj 
+          + this.filterAdrD.length + this.filterAdrG.length + this.filterAdrU.length + this.filterAdrB.length;
+        if (suma == 0) {
+          alert("You must enter some parameter for filter");
+          return;
+        }
+
+        if (filtDermatologa) {            // za dermatologe
+          DermatologistDataService.filterDermatologistAdmin(this.id, this.filterIme, this.filterPrez, this.filterBroj, 
+            this.filterAdrD, this.filterAdrG, this.filterAdrU, this.filterAdrB,)
+            .then(response => {
+              this.sviZaposleniDermatolozi = response.data;});
+        }
+        else {                            // za farmaceute
+          PharmacistDataService.filterPharmacistAdmin(this.id, this.filterIme, this.filterPrez, this.filterBroj, 
+            this.filterAdrD, this.filterAdrG, this.filterAdrU, this.filterAdrB,)
+            .then(response => {
+              this.sviZaposleniFarmaceuti = response.data;});
+        }
+
+      },
+      pretragaDerm() {
         if (this.dermaSearch.length == 0) {
           alert("Input someting for searching");
           return;
@@ -251,6 +350,15 @@ export default {
         DermatologistDataService.searchDermatologistAdmin(this.id, this.dermaSearch)
         .then(response => {
           this.sviZaposleniDermatolozi = response.data;});
+      },
+      pretragaFarm() {
+        if (this.pharmaSearch.length == 0) {
+          alert("Input someting for searching");
+          return;
+        }
+        PharmacistDataService.searchPharmacistAdmin(this.id, this.pharmaSearch)
+        .then(response => {
+          this.sviZaposleniFarmaceuti = response.data;});
       },
       DodajFarmaceuta() {
         window.location.href = "/addPharmacist/" + this.id;
