@@ -393,6 +393,24 @@ public class UserController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
+    @GetMapping("/dermatologists/pharmacy/{id}/{search}")
+    public ResponseEntity<List<DermatologistDTO>> getAllDermatologistsPharmacy(@PathVariable Long id, @PathVariable String search) {
+        List<User> svi = userService.findAll();
+        List<DermatologistDTO> povratna = new ArrayList<>();
+        for (User u : svi) if (u.getClass() == Dermatologist.class) {
+            Dermatologist dermatolog = (Dermatologist) u;
+            for (Work work : dermatolog.getWorking())
+                if (work.getPharmacy().getId().equals(id)) {
+                    if (dermatolog.getSurname().toLowerCase().contains(search.toLowerCase()) ||
+                            dermatolog.getName().toLowerCase().contains(search.toLowerCase())) {
+                        povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog));
+                    }
+                    break;
+                }
+        }
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
     @GetMapping("/dermatologists/pharmacy/{id}")
     public ResponseEntity<List<DermatologistDTO>> getAllDermatologistsPharmacy(@PathVariable Long id) {
         List<User> svi = userService.findAll();
