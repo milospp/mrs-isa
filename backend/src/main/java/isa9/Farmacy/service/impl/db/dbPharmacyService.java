@@ -35,7 +35,7 @@ public class dbPharmacyService extends PharmacyServiceBase implements PharmacySe
 
     @Override
     public Pharmacy findOne(Long id) {
-        return this.pharmacyRepository.findById(id).orElseGet(null);
+        return this.pharmacyRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -47,5 +47,16 @@ public class dbPharmacyService extends PharmacyServiceBase implements PharmacySe
     @Override
     public List<Work> findDoctorsWork(Doctor doctor) {
         return workRepository.findAllByDoctor(doctor);
+    }
+
+    @Override
+    public boolean pharmacyExists(Pharmacy p) {
+        List<Pharmacy> allPharmacies = this.findAll();
+
+        for(Pharmacy ph : allPharmacies){
+            if(p.equals(ph)) return true;
+        }
+
+        return false;
     }
 }

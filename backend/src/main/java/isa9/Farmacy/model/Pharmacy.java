@@ -16,8 +16,8 @@ import lombok.*;
 @Builder
 
 @Entity
-@EqualsAndHashCode(exclude = "medicines")
-@ToString
+@EqualsAndHashCode(exclude = {"medicines","orders","staff","ratings","description","id"})
+@ToString(exclude = {"staff", "medicines"})
 public class Pharmacy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

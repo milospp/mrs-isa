@@ -129,13 +129,18 @@ export default {
 					console.log("error.config");
 					console.log(error.config);
 				});
+			PharmacyDataService.getAvailablePharmacies()
+			.then(
+				response => {
+					this.availablePharmacies = response.data;
+            }
+        );
         },
         selectedPharmacy(e){
-            console.log(this.registerData.pharmacyId);
+            console.log(this.availablePharmacies);
         }
     },
     created() {
-        console.log("evo ga ucitava apoteke kao");
         PharmacyDataService.getAvailablePharmacies()
         .then(
             response => {

@@ -10,7 +10,12 @@ class PharmacyAdminDataService {
             url: `${API_URL}/register/pharmacyAdmin`,
             data: newAdmin
         }).then(response => {
-            if (response.data == false) alert("This e-mail is taken!");
+            if (response.data) {
+				alert("Pharmacy administrator successfully added!");
+				return true;
+			}
+			alert("This e-mail is already taken!");
+			return false;
         });
     }
 }

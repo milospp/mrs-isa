@@ -76,12 +76,11 @@ public class dbUserService extends UserServiceBase implements UserService {
                 try{
                     if(phAdmin.getPharmacy().getId() == pharmacyId) return phAdmin;
                 }catch(NullPointerException e){
-                    e.printStackTrace();
                     continue;
                 }
             }
         }
-
+        phAdmin = null;
         return phAdmin;
     }
 

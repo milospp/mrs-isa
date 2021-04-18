@@ -26,7 +26,12 @@ class PharmacyDataService {
             url: `${API_URL}/register/pharmacy`,
             data: newPharmacy
         }).then(response => {
-            if (response.data == false) alert("This pharmacy already exists!");
+			if (response.data) {
+				alert("Pharmacy successfully added!");
+				return true;
+			}
+			alert("This pharmacy already exists!");
+			return false;
         });
     }
     getPharmacyByIDAdmin(idAdminaApoteke) {

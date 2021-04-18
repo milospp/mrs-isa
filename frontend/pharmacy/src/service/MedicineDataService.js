@@ -48,6 +48,7 @@ class MedicineDataService {
       data: newMedicine
       }).then(response => {
         if (response.data == 1) alert("This medicine code is taken!");
+		if (response.data == 0) alert("Medicine has been successfully added!");
     });
   }
 }
