@@ -52,7 +52,11 @@ class MedicineDataService {
   }
 
   getReservation(code){
-    return axios.get(`${API_URL}/reservation/` + code);
+    return axios.get(`${API_URL}/resevation/` + code);
+  }
+
+  giveMedicineToPatient(code){
+    return axios.get(`${API_URL}/reservation/dispense/` + code);
   }
 }
 

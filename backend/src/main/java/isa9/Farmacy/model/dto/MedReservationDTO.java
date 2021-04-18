@@ -22,8 +22,7 @@ public class MedReservationDTO {
     private String code;
     private LocalDate reservationDate;
     private LocalDate lastDate;
-    private boolean taken;
-    private boolean canceled;
+    private int status; // 0 = pending; 1 = taken; 2 = canceled; 3 = expired;
 
     private MedInPharmaDTO medicineInPharmacy;
     private int quantity;
