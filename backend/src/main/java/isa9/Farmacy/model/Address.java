@@ -11,6 +11,7 @@ import java.util.Objects;
 @EqualsAndHashCode(exclude = "id")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 public class Address {
 

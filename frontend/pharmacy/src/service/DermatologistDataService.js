@@ -118,7 +118,14 @@ class DermatologistDataService {
 		  alert("This e-mail is already taken!");
 		  return false;
     });
-}
+  }
+  editPersonalData(dermatologist){
+    return axios({
+      method: 'post',
+      url: API_URL + "/api/users/edit/dermatologist",
+      data: dermatologist
+    });
+  }
 }
 
 export default new DermatologistDataService();

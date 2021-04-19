@@ -7,17 +7,12 @@ import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.concurrent.Flow;
 
 @RestController
 @CrossOrigin("*")
@@ -35,9 +30,10 @@ public class UserController {
     private final DermatologistToDermatologistDTO dermatologistToDermatologistDTO;
     private final PharmacistToPharmacistDTO pharmacistToPharmacistDTO;
     private final MedReservationToMedReservationDTO medReservationToMedReservationDTO;
+    private final UserToUserDTO userToUserDTO;
 
     @Autowired
-    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO) {
+    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO, UserToUserDTO userToUserDTO) {
         this.userService = userService;
         this.pharmacyService = pharmacyService;
         this.medReservationService = medReservationService;
@@ -48,6 +44,7 @@ public class UserController {
         this.dermatologistToDermatologistDTO = dermatologistToDermatologistDTO;
         this.pharmacistToPharmacistDTO = pharmacistToPharmacistDTO;
         this.medReservationToMedReservationDTO = medReservationToMedReservationDTO;
+        this.userToUserDTO = userToUserDTO;
     }
 
     @GetMapping("tmp-test")
@@ -84,13 +81,16 @@ public class UserController {
 
 //        UserDTO userDTO = new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress().toString(), user.getPhoneNumber(), user.getRole());
         UserDTO dto;
-        if (user.getRole() == UserRole.PATIENT){
-            dto = (UserDTO) patientToPatientDTO.convert((Patient) user);
-        } else if (user.getRole() == UserRole.PHARMACIST){
-            dto = (UserDTO) pharmacistToPharmacistDTO.convert((Pharmacist) user);
-        } else {
-            dto = new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), user.getRole(), user.getEmail());
-        }
+//        if (user.getRole() == UserRole.PATIENT){
+//            dto = (UserDTO) patientToPatientDTO.convert((Patient) user);
+//        } else if (user.getRole() == UserRole.PHARMACIST){
+//            dto = (UserDTO) pharmacistToPharmacistDTO.convert((Pharmacist) user);
+//            System.out.println(user.getEmail());
+//        } else {
+//            dto = new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), user.getRole(), user.getEmail());
+        dto = userToUserDTO.convert(user);
+        System.out.println(user.getEmail());
+//        }
         return new ResponseEntity<>(dto, HttpStatus.OK);
 
     }
@@ -561,6 +561,54 @@ public class UserController {
                 newDermatologistDto.getAddress(), newDermatologistDto.getPhoneNumber(), new HashSet<>());
         userService.save(newlyRegistered);
         System.out.println(newlyRegistered);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @PostMapping("edit/dermatologist")
+    public ResponseEntity<Boolean> editDermatologistData(@RequestBody DermatologistDTO dermatologistDTO){
+        Doctor doctor = userService.getDoctorById(dermatologistDTO.getId());
+        if (doctor.getRole() == UserRole.DERMATOLOGIST){
+            Dermatologist dermatologist = (Dermatologist) doctor;
+            dermatologist.setName(dermatologistDTO.getName());
+            dermatologist.setSurname(dermatologistDTO.getSurname());
+            if (dermatologist.getAddress() != dermatologistDTO.getAddress()){
+                Address newAdress = Address.builder()
+                        .id(null)
+                        .state(dermatologistDTO.getAddress().getState())
+                        .city(dermatologistDTO.getAddress().getCity())
+                        .street(dermatologistDTO.getAddress().getStreet())
+                        .number(dermatologistDTO.getAddress().getNumber())
+                        .build();
+                dermatologist.setAddress(newAdress);
+            }
+            //dermatologist.setAddress(dermatologistDTO.getAddress());  // not using this because it changes someone else's address also
+            dermatologist.setEmail(dermatologistDTO.getEmail());
+            dermatologist.setPhoneNumber(dermatologistDTO.getPhoneNumber());
+            userService.save(dermatologist);
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(false, HttpStatus.OK);
+    }
+
+    @PostMapping("edit/pharmacist")
+    public ResponseEntity<Boolean> editPharmacistData(@RequestBody PharmacistDTO pharmacistDTO){
+        Pharmacist pharmacist = (Pharmacist) userService.getDoctorById(pharmacistDTO.getId());
+        pharmacist.setName(pharmacistDTO.getName());
+        pharmacist.setSurname(pharmacistDTO.getSurname());
+        if (pharmacist.getAddress() != pharmacistDTO.getAddress()){
+            Address newAdress = Address.builder()
+                    .id(null)
+                    .state(pharmacistDTO.getAddress().getState())
+                    .city(pharmacistDTO.getAddress().getCity())
+                    .street(pharmacistDTO.getAddress().getStreet())
+                    .number(pharmacistDTO.getAddress().getNumber())
+                    .build();
+            pharmacist.setAddress(newAdress);
+        }
+        //pharmacist.setAddress(pharmacistDTO.getAddress()); // not using this because it changes someone else's address also
+        pharmacist.setEmail(pharmacistDTO.getEmail());
+        pharmacist.setPhoneNumber(pharmacistDTO.getPhoneNumber());
+        userService.save(pharmacist);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 

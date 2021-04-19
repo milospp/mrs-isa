@@ -117,6 +117,14 @@ class PharmacistDataService {
   getPharmacist(id){
     return axios.get(`${API_URL}/api/users/` + id);
   }
+
+  editPersonalData(pharmacist){
+    return axios({
+      method: 'post',
+      url: API_URL + "/api/users/edit/pharmacist",
+      data: pharmacist
+    });
+  }
 }
 
 export default new PharmacistDataService();
