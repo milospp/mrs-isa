@@ -49,12 +49,9 @@ class PharmacistDataService {
   editPersonalData(pharmacist){
     return axios({
       method: 'post',
-      url: API_URL + "/api/users/update/pharmacist",
+      url: API_URL + "/api/users/edit/pharmacist",
       data: pharmacist
     });
-    //.then(response => {
-    //   return response;
-    // });
   }
 }
 

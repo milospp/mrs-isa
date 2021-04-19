@@ -15,79 +15,86 @@
         </div>
       </div>
 
-<div class="modal fade" id="editDataModal" tabindex="-1" role="dialog" aria-labelledby="editDataModal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editDataModalTitle">Edit Personal Data</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
+<!-- MODAL -->
 
-          <div id="update-data">
-        <h1>Edit Personal Data</h1>
+    <div class="modal fade" id="editDataModal" tabindex="-1" role="dialog" aria-labelledby="editDataModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editDataModalTitle">Edit Personal Data</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            <form v-on:submit.prevent="editPersonalData()">
+                <div class="modal-body">
 
-        <form v-on:submit.prevent="editProduct">
-            <!-- <div class="form-group">
-                <label name="product_id">ID</label>
-                <input type="text" class="form-control" disabled v-model="doctor.id" id="id">
-            </div> -->
+                    <div id="update-data">
+                    <!-- <h1>Edit Personal Data</h1> -->
 
-            <div class="form-group">
-                <label name="product_name">First name</label>
-                <input type="text" class="form-control" v-model="doctor.name" id="product_name" required>
-            </div>
+                        <div class="form-group">
+                            <label name="product_name">First name</label>
+                            <input type="text" class="form-control" v-model="doctor.name" id="name" required>
+                        </div>
 
-            <div class="form-group">
-                <label name="product_price">Last name</label>
-                <input type="text" class="form-control" v-model="doctor.surname" id="product_price" required>
-            </div>
+                        <div class="form-group">
+                            <label name="product_price">Last name</label>
+                            <input type="text" class="form-control" v-model="doctor.surname" id="surname" required>
+                        </div>
 
-            <div class="form-group">
-                <label name="product_price">State</label>
-                <input type="text" class="form-control" v-model="doctor.address.state" id="product_price" required>
-            </div>
-            <div class="form-group">
-                <label name="product_price">City</label>
-                <input type="text" class="form-control" v-model="doctor.address.city" id="product_price" required>
-            </div>
-            <div class="form-group">
-                <label name="product_price">Street</label>
-                <input type="text" class="form-control" v-model="doctor.address.street" id="product_price" required>
-            </div>
-            <div class="form-group">
-                <label name="product_price">Number</label>
-                <input type="text" class="form-control" v-model="doctor.address.number" id="product_price" required>
-            </div>
+                        <div class="d-inline-flex row" id="street_and_number">
+                            <div class="form-group col">
+                                <label name="product_price">Street</label>
+                                <input type="text" class="form-control" v-model="doctor.address.street" id="street" required>
+                            </div>
+                            <div class="form-group col-5 ml-1">
+                                <label name="product_price">Number</label>
+                                <input type="text" class="form-control" v-model="doctor.address.number" id="number" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label name="product_price">City</label>
+                            <input type="text" class="form-control" v-model="doctor.address.city" id="city" required>
+                        </div>
 
-            
-        </form>
+                        <div class="form-group">
+                            <label name="product_price">State</label>
+                            <input type="text" class="form-control" v-model="doctor.address.state" id="state" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label name="product_price">Phone Number</label>
+                            <input type="text" class="form-control" v-model="doctor.phoneNumber" id="phoneNumber" required
+                            pattern="[0-9]*" title="Phone number must number" size="31">
+                        </div>
+
+                        <div class="form-group">
+                            <label name="product_price">Email</label>
+                            <input type="text" class="form-control" v-model="doctor.email" id="email" required
+                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+[.][a-z]{2,}$">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <div class="form-group">
+                            <button class="btn btn-primary" type="submit">Update</button>
+                    </div>
+                </div>
+            </form>
+        </div>      
     </div>
 
-  </div>
-      <div class="modal-footer">
-          <div class="form-group">
-                <button class="btn btn-primary">Update</button>
-            </div>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-</div>
-
-      
     </div>
-  </div>
 </div>
-
-      
 
 </template>
 
 <script>
-    import DataService from '@/service/DermatologistDataService.js';
-    import UtilService from '@/service/UtilService.js';
-import PharmacistDataService from '../../service/PharmacistDataService';
+import DataService from '@/service/DermatologistDataService.js';
+import UtilService from '@/service/UtilService.js';
+// import DermatologistDataService from '../../service/DermatologistDataService';
 
 export default {
     name: "DermatologistProfileInfo",
@@ -127,10 +134,10 @@ export default {
             //     return false;
             // }
 
-            PharmacistDataService.editPersonalData(doctor)
+            DataService.editPersonalData(this.doctor)
             .then((response) => {
                 if (response.data)
-                    this.doctor = response.data;
+                    alert(response.data);
             });
         },
     },

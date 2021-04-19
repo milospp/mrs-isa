@@ -42,7 +42,14 @@ class DermatologistDataService {
     }).then(response => {
         if (response.data == false) alert("This e-mail is taken!");
     });
-}
+  }
+  editPersonalData(dermatologist){
+    return axios({
+      method: 'post',
+      url: API_URL + "/api/users/edit/dermatologist",
+      data: dermatologist
+    });
+  }
 }
 
 export default new DermatologistDataService();
