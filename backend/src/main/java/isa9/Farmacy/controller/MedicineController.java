@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +68,6 @@ public class MedicineController {
 
         if (medReservation == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-
 
         MedReservationDTO dto = medReservationToMedReservationDTO.convert(medReservation);
 
@@ -129,5 +129,35 @@ public class MedicineController {
         }else{
             return new ResponseEntity<>(1, HttpStatus.OK); // 0 - sve uredu, 1 - sifra leka je zauzeta
         }
+    }
+
+    @GetMapping("/resevation/{code}")
+    public  ResponseEntity<MedReservationDTO> getReservationByCode(@PathVariable String code){
+        System.out.println(code);
+        MedReservation reservation = medReservationService.getByCode(code);
+
+        //medReservationService.checkForExpiredReservations();
+
+        if (reservation != null && reservation.getStatus() == MedReservationStatus.PENDING){
+            MedReservationDTO reservationDTO = medReservationToMedReservationDTO.convert(reservation);
+            return new ResponseEntity<>(reservationDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/reservation/dispense/{code}")
+    public  ResponseEntity<Boolean> dispenseReservationByCode(@PathVariable String code){
+        System.out.println(code);
+        MedReservation reservation = medReservationService.getByCode(code);
+
+        if (reservation != null && reservation.getStatus() == MedReservationStatus.PENDING){
+            reservation.setStatus(MedReservationStatus.TAKEN);
+
+            // TODO: hardcoded pharmacist who 'issued', this will be fixed when authorisation is added
+            reservation.setWhoDispenses((Pharmacist) reservation.getMedicineInPharmacy().getPharmacy().getStaff().iterator().next().getDoctor());
+
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
     }
 }

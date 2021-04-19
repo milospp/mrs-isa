@@ -1,6 +1,7 @@
 package isa9.Farmacy.service.impl.db;
 
 import isa9.Farmacy.model.MedReservation;
+import isa9.Farmacy.model.MedReservationStatus;
 import isa9.Farmacy.repository.MedReservationRepository;
 import isa9.Farmacy.repository.PharmacyRepository;
 import isa9.Farmacy.service.MedReservationService;
@@ -9,9 +10,11 @@ import isa9.Farmacy.service.impl.base.MedReservationServiceBase;
 import isa9.Farmacy.service.impl.base.PharmacyServiceBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -41,4 +44,21 @@ public class dbMedReservationService extends MedReservationServiceBase implement
         return this.medReservationRepository.save(entity);
     }
 
+    @Override
+    public MedReservation getByCode(String code) {
+        return medReservationRepository.findByCode(code);
+    }
+
+    @Override
+    @Scheduled(cron="0 0 0 * * ?") // runs every day at midnight
+    public void checkForExpiredReservations() {
+        int count = 0;
+        for (MedReservation mr : this.findAll()){
+            if (mr.getLastDate().isBefore(LocalDate.now().minusDays(1)) && mr.getStatus() == MedReservationStatus.PENDING){
+                mr.setStatus(MedReservationStatus.EXPIRED);
+                count++;
+            }
+        }
+        System.out.println("Number of expired reservations: " + count + " --- on date: " + LocalDate.now());
+    }
 }

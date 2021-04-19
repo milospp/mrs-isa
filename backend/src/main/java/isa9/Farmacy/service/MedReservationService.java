@@ -9,4 +9,8 @@ public interface MedReservationService extends GenericService<MedReservation> {
 
     Boolean isCancelable(MedReservation medReservation);
     MedReservation cancel(Long medReservationId);
+
+    MedReservation getByCode(String code);
+
+    void checkForExpiredReservations();
 }

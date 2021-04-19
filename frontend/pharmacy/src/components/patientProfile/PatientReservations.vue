@@ -10,8 +10,8 @@
         <th>Reservation Date</th>
         <th>Last Date</th>
         <th>Pharmacy</th>
-        <th>Taken</th>
-        <th></th>
+        <th>Status</th>
+        <!-- <th></th> -->
       </tr>
     </thead>
     <tbody>
@@ -22,16 +22,28 @@
         <td>{{UtilService.formatDate(r.reservationDate)}}</td>
         <td>{{UtilService.formatDate(r.lastDate)}}</td>
         <td>{{r.medicineInPharmacy.pharmacy.name}}</td>
-        <td>{{r.taken}}</td>
-        <td><input type="checkbox" name="taken" id="taken" v-bind:checked="r.taken"></td>
+        <!-- <td>{{UtilService.formatReservationStatus(r.status)}}</td> -->
+        <!-- <td><input type="checkbox" name="taken" id="taken" v-bind:checked="r.status"></td> -->
         <!-- <td><input type="checkbox" name="canceled" id="canceled" v-bind:checked="r.canceled"></td> -->
         
-        <td v-if="r.canceled">
+        <td v-if="r.status == 0">
+          <!-- <router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: s.id  }}">View</router-link> -->
+          <span class="badge badge-primary">PENDING</span>
+        </td>
+        <td v-if="r.status == 1">
+          <!-- <router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: s.id  }}">View</router-link> -->
+          <span class="badge badge-default">TAKEN</span>
+        </td>
+        <td v-if="r.status == 2">
           <!-- <router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: s.id  }}">View</router-link> -->
           <span class="badge badge-warning">CANCELED</span>
         </td>
+        <td v-if="r.status == 3">
+          <!-- <router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: s.id  }}">View</router-link> -->
+          <span class="badge badge-danger">EXPIRED</span>
+        </td>
         
-        <td v-if="!r.canceled">
+        <td v-if="r.status != 2">
           <!-- <router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: s.id  }}">View</router-link> -->
           <button v-bind:disabled="r.canceled" class="btn btn-danger" v-on:click="cancel(r)">Cancel</button>
         </td>

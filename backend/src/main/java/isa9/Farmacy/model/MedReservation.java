@@ -30,9 +30,7 @@ public class MedReservation {
     @Column
     private LocalDate lastDate;
     @Column
-    private boolean taken;
-    @Column
-    private boolean canceled;
+    private MedReservationStatus status;
 
     @ManyToOne
     private MedicineInPharmacy medicineInPharmacy;
@@ -40,6 +38,6 @@ public class MedReservation {
     private int quantity;
 
     @ManyToOne
-    private Pharmacist issued;
+    private Pharmacist whoDispenses;
 
 }

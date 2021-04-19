@@ -47,6 +47,17 @@ class UtilService {
     return moment(date).isBefore();
   }
 
+  lessThan24HoursLeft(date){
+    return moment(date) < moment().subtract(1, 'd');
+  }
+
+  formatReservationStatus(status){
+    if (status == 0) return "Pending";
+    else if (status == 1) return "Taken";
+    else if (status == 2) return "Canceled";
+    else return "Expired";
+  }
+
 }
 
 export default new UtilService();

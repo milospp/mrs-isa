@@ -32,16 +32,15 @@ public class MedReservationToMedReservationDTO implements Converter<MedReservati
         dto.setCode(medReservation.getCode());
         dto.setLastDate(medReservation.getLastDate());
         dto.setReservationDate(medReservation.getReservationDate());
-        dto.setTaken(medReservation.isTaken());
-        dto.setCanceled(medReservation.isCanceled());
+        dto.setStatus(medReservation.getStatus().ordinal());
 
 
         dto.setMedicineInPharmacy(medicineInPharmacyToMedInPharmaDTO.convert(medReservation.getMedicineInPharmacy()));
         dto.setQuantity(medReservation.getQuantity());
 
 
-        if (medReservation.getIssued() != null)
-            dto.setIssued(pharmacistToPharmacistDTO.convert(medReservation.getIssued()));
+        if (medReservation.getWhoDispenses() != null)
+            dto.setIssued(pharmacistToPharmacistDTO.convert(medReservation.getWhoDispenses()));
 
         return dto;
     }

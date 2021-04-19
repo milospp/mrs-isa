@@ -51,6 +51,14 @@ class MedicineDataService {
 		if (response.data == 0) alert("Medicine has been successfully added!");
     });
   }
+
+  getReservation(code){
+    return axios.get(`${API_URL}/resevation/` + code);
+  }
+
+  giveMedicineToPatient(code){
+    return axios.get(`${API_URL}/reservation/dispense/` + code);
+  }
 }
 
 export default new MedicineDataService();

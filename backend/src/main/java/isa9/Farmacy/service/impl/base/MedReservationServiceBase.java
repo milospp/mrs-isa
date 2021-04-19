@@ -34,8 +34,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
 
     @Override
     public Boolean isCancelable(MedReservation medReservation) {
-        if (medReservation.isCanceled()) return false;
-        if (medReservation.isTaken()) return false;
+        if (medReservation.getStatus() != MedReservationStatus.PENDING) return false;
 
         LocalDate lastDate = medReservation.getLastDate();
         LocalDate limitDate = lastDate.minusDays(1);
@@ -51,7 +50,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
         Boolean cancelable = isCancelable(medReservation);
         if (!cancelable) return medReservation;
 
-        medReservation.setCanceled(true);
+        medReservation.setStatus(MedReservationStatus.CANCELED);
         MedicineInPharmacy mip = medReservation.getMedicineInPharmacy();
         Pharmacy pharmacy = mip.getPharmacy();
         mip.setInStock(mip.getInStock() + medReservation.getQuantity());
@@ -121,8 +120,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
                 .patient(patient)
                 .lastDate(reservationFormDTO.getExpirityDate())
                 .reservationDate(LocalDate.now())
-                .taken(false)
-                .canceled(false)
+                .status(MedReservationStatus.PENDING)
                 .medicineInPharmacy(mip)
                 .quantity(reservationFormDTO.getQuantity())
                 .build();
