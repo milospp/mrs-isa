@@ -136,8 +136,9 @@ export default {
             DataService.editPersonalData(this.doctor)
             .then((response) => {
                 if (response.data)
-                    alert(response.data);
+                    alert("You have successfuly changed personal data!");
             });
+            $('#editDataModal').modal('hide');
         },
     },
     mounted() {

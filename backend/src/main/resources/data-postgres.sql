@@ -171,8 +171,11 @@ insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (16, CURR
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 5);
 insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (17, CURRENT_TIME, 1, CURRENT_TIME);
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 6);
+insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (16, CURRENT_TIME, 2, CURRENT_TIME);
+insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 7);
         -- doctor_working
 insert into doctor_working (doctor_id, working_id) values (15, 4);
 insert into doctor_working (doctor_id, working_id) values (16, 5);
 insert into doctor_working (doctor_id, working_id) values (17, 6);
+insert into doctor_working (doctor_id, working_id) values (16, 7);
 
