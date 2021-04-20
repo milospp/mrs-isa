@@ -18,7 +18,7 @@ class PatientDataService {
   }
 
   getPatient(id){
-    return axios.get(`${API_URL}/api/users/` + id);
+    return axios.get(`${API_URL}/api/users/patient/` + id);
   }
 
   getPatientAllergies(id){

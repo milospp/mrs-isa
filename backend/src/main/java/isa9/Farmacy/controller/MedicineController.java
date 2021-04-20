@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.Doc;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -153,8 +154,12 @@ public class MedicineController {
         if (reservation != null && reservation.getStatus() == MedReservationStatus.PENDING){
             reservation.setStatus(MedReservationStatus.TAKEN);
 
+            // TODO: Move everything into this method
+            medReservationService.dispenseMedicine(reservation);
+
             // TODO: hardcoded pharmacist who 'issued', this will be fixed when authorisation is added
-            reservation.setWhoDispenses((Pharmacist) reservation.getMedicineInPharmacy().getPharmacy().getStaff().iterator().next().getDoctor());
+            Pharmacist pharmacist = (Pharmacist) reservation.getMedicineInPharmacy().getPharmacy().getStaff().iterator().next().getDoctor();
+            reservation.setWhoDispenses(pharmacist);
 
             return new ResponseEntity<>(true, HttpStatus.OK);
         }

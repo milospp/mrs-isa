@@ -1,6 +1,6 @@
 <template>
 <div>
-  <h3>Subscription</h3>
+  <h3>Reservations</h3>
   <table class="table table-striped">
     <thead>
       <tr>
@@ -28,7 +28,8 @@
         
         <td v-if="r.status == 0">
           <!-- <router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: s.id  }}">View</router-link> -->
-          <span class="badge badge-primary">PENDING</span>
+          <span class="badge badge-primary">PENDING</span><br>
+          <button v-bind:disabled="r.canceled" class="btn btn-danger" v-on:click="cancel(r)">Cancel</button>
         </td>
         <td v-if="r.status == 1">
           <!-- <router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: s.id  }}">View</router-link> -->
@@ -43,10 +44,9 @@
           <span class="badge badge-danger">EXPIRED</span>
         </td>
         
-        <td v-if="r.status != 2">
-          <!-- <router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: s.id  }}">View</router-link> -->
-          <button v-bind:disabled="r.canceled" class="btn btn-danger" v-on:click="cancel(r)">Cancel</button>
-        </td>
+        <!-- <td v-if="r.status == 0">
+          <router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: s.id  }}">View</router-link>
+        </td> -->
       </tr>
     </tbody>
   </table>
@@ -81,6 +81,7 @@ export default {
         cancel(obj) {
           PatientDataService.cancelReservation(obj.id).then( response => {
             obj.canceled = true;
+            obj.status = 2;
             console.log("Success");
           });
           console.log(obj);

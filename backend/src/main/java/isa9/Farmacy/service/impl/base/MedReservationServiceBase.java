@@ -33,6 +33,21 @@ public abstract class MedReservationServiceBase implements MedReservationService
     }
 
     @Override
+    public MedReservation dispenseMedicine(MedReservation medReservation) {
+        int quantity = medReservation.getQuantity();
+        Medicine medicine = medReservation.getMedicineInPharmacy().getMedicine();
+        Patient patient = medReservation.getPatient();
+
+        int points = patient.getPoints();
+        points += quantity * medicine.getPoints();
+
+        patient.setPoints(points);
+        userService.save(patient);
+
+        return medReservation;
+    }
+
+    @Override
     public Boolean isCancelable(MedReservation medReservation) {
         if (medReservation.getStatus() != MedReservationStatus.PENDING) return false;
 

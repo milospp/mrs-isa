@@ -252,6 +252,7 @@ public class UserController {
         if (us.getClass() != Patient.class) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         Patient patient = (Patient) us;
         PatientDTO patientDTO = patientToPatientDTO.convert(patient);
+        System.out.println("patientDTO = " + patientDTO);
 //        PatientDTO patientDTO = new PatientDTO(patient.getId(), patient.getName(), patient.getSurname(), patient.getAddress(), patient.getPhoneNumber());
         return new ResponseEntity<>(patientDTO, HttpStatus.OK);
 
