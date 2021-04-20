@@ -114,4 +114,9 @@ public class dbUserService extends UserServiceBase implements UserService {
     public Doctor getDoctorById(Long id) {
         return this.doctorRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public Patient getPatientById(Long id) {
+        return this.patientRepository.findById(id).orElse(null);
+    }
 }

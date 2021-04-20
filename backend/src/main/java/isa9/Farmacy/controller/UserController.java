@@ -4,6 +4,7 @@ import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.*;
 import isa9.Farmacy.service.MedReservationService;
 import isa9.Farmacy.service.PharmacyService;
+import isa9.Farmacy.service.RatingService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,8 @@ public class UserController {
     private final UserService userService;
     private final PharmacyService pharmacyService;
     private final MedReservationService medReservationService;
-    
+    private final RatingService ratingService;
+
     private final PatientToPatientDTO patientToPatientDTO;
     private final MedicineToMedicineDTO medicineToMedicineDTO;
     private final PharmacyToPharmacyDTO pharmacyToPharmacyDTO;
@@ -30,13 +32,18 @@ public class UserController {
     private final DermatologistToDermatologistDTO dermatologistToDermatologistDTO;
     private final PharmacistToPharmacistDTO pharmacistToPharmacistDTO;
     private final MedReservationToMedReservationDTO medReservationToMedReservationDTO;
+    private final DoctorToDoctorDTO doctorToDoctorDTO;
     private final UserToUserDTO userToUserDTO;
+    private final RatingToRatingDTO ratingToRatingDTO;
+
+    private final UserDTOToUser userDTOToUser;
 
     @Autowired
-    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO, UserToUserDTO userToUserDTO) {
+    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, RatingService ratingService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO, DoctorToDoctorDTO doctorToDoctorDTO, UserToUserDTO userToUserDTO, RatingToRatingDTO ratingToRatingDTO, UserDTOToUser userDTOToUser) {
         this.userService = userService;
         this.pharmacyService = pharmacyService;
         this.medReservationService = medReservationService;
+        this.ratingService = ratingService;
         this.patientToPatientDTO = patientToPatientDTO;
         this.medicineToMedicineDTO = medicineToMedicineDTO;
         this.pharmacyToPharmacyDTO = pharmacyToPharmacyDTO;
@@ -44,22 +51,19 @@ public class UserController {
         this.dermatologistToDermatologistDTO = dermatologistToDermatologistDTO;
         this.pharmacistToPharmacistDTO = pharmacistToPharmacistDTO;
         this.medReservationToMedReservationDTO = medReservationToMedReservationDTO;
+        this.doctorToDoctorDTO = doctorToDoctorDTO;
         this.userToUserDTO = userToUserDTO;
+        this.ratingToRatingDTO = ratingToRatingDTO;
+        this.userDTOToUser = userDTOToUser;
     }
 
     @GetMapping("tmp-test")
     public ResponseEntity<Boolean> debug(){
-        Pharmacy pharmacy = pharmacyService.findOne(1L);
 
-        Dermatologist d1 = (Dermatologist) userService.findOne(2L);//new Dermatologist(2L, "Dr", "Mr", "drmr@mail.com", "111111", new Address("a","a","a","a"), "123456789");
-        //userService.save(d1);
-        System.out.println(d1.getName());
+        RatingDoctor rate = new RatingDoctor(null, userService.findOne(1L), 5, userService.getDoctorById(16L));
+        System.out.println("rate = " + rate);
+        ratingService.save(rate);
 
-        Pharmacist p1 = (Pharmacist) userService.findOne(3L);
-        System.out.println(p1.getName());
-
-        //pharmacy.hireDoctor(1L, d1, LocalTime.now(), LocalTime.now());
-        //pharmacyService.save(pharmacy);
         return new ResponseEntity<>(true, HttpStatus.OK);
 
     }
@@ -102,6 +106,25 @@ public class UserController {
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
 
+    }
+
+    @GetMapping("doctor/{id}/rating")
+    public ResponseEntity<DermatologistDTO> getMyDermatologistRating(@PathVariable Long id){
+        User user = userService.findOne(id);
+        double rating = ratingService.getDoctorAverage(id);
+
+        DermatologistDTO dto = dermatologistToDermatologistDTO.convert((Dermatologist) user);
+        dto.setRating(rating);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @PostMapping("doctor/{id}/rating")
+    public ResponseEntity<RatingDTO> rateDoctor(@PathVariable Long id, @RequestBody RatingDTO ratingDTO){
+        Rating rating = ratingService.rateDoctor(id, ratingDTO.getUser(), ratingDTO.getRating());
+
+        RatingDTO dto = ratingToRatingDTO.convert(rating);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @PostMapping("{id}/allergies")
