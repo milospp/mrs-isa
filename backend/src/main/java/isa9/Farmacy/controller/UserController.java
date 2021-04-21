@@ -310,7 +310,7 @@ public class UserController {
         long pharmacyId = newAdminDto.getPharmacyId();
         Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
         PharmacyAdmin newlyRegistered = new PharmacyAdmin(0L, newAdminDto.getName(), newAdminDto.getSurname(), newAdminDto.getEmail(),
-                newAdminDto.getPassword(), newAdminDto.getAddress(), newAdminDto.getPhoneNumber(), userRoleService.findOne(0L), pharmacy);
+                newAdminDto.getPassword(), newAdminDto.getAddress(), newAdminDto.getPhoneNumber(), userRoleService.findOne(2L), pharmacy);
         userService.save(newlyRegistered);
         System.out.println(newlyRegistered);
         return new ResponseEntity<>(true, HttpStatus.OK);

@@ -162,7 +162,7 @@ insert into doctor_working (doctor_id, working_id) values (11, 3);
 
 -- for filter dermatologist and pharmacist
         -- farm
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname) values (2, 'nesto15@nesto.com', true, 'Masa', 'password10', '0124567893', 2, 'Gavrilovic');
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname) values (2, 'nesto15@nesto.com', true, 'Masa', 'password10', '0124567893', 5, 'Gavrilovic');
 insert into doctor (id) values (15);
 insert into pharmacist (id) values (15);
         -- derm

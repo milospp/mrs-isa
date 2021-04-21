@@ -41,7 +41,7 @@ public abstract class User implements UserDetails {
     @Column
     private String phoneNumber;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private UserRole role;
 
     @Column
