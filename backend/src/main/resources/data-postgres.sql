@@ -112,10 +112,12 @@ insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_i
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 400, current_timestamp, 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 500, current_timestamp, 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 330, current_timestamp, 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 340, current_timestamp, 0);
 insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Diagnose', 'Exam infoo NOTHELD', 0, 2, 1);
 insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Diagnose', 'Exam infoo NOTHELD', 1, 3, 1);
 insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Diagnose', 'Exam infoo NOTHELD', 2, 4, 1);
 insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Diagnose', 'HEEELD', 0, 5, 2);
+insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Diagnose', 'HEEELD', 0, 6, 3);
 update appointment SET examination_id = 1 WHERE id = 2;
 update appointment SET examination_id = 2 WHERE id = 3;
 update appointment SET examination_id = 3 WHERE id = 4;

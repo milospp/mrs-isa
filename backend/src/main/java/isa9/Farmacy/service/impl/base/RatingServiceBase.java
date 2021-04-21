@@ -20,6 +20,15 @@ public abstract class RatingServiceBase implements RatingService {
     }
 
     @Override
+    public Rating getPatientDoctorRate(Long patientId, Long doctorId) {
+        Doctor doctor = userService.getDoctorById(doctorId);
+        Patient patient = userService.getPatientById(patientId);
+        if (doctor == null || patient == null) return null;
+
+        return getPatientDoctorRate(patient, doctor);
+    }
+
+    @Override
     public Rating rateDoctor(Long doctorId, Long userId, int rate) {
         Doctor doctor = userService.getDoctorById(doctorId);
         Patient patient = userService.getPatientById(userId);

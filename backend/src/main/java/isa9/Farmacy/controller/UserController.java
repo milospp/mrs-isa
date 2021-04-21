@@ -119,6 +119,14 @@ public class UserController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+    @GetMapping("doctor/{doctorId}/rating/user/{userId}")
+    public ResponseEntity<RatingDTO> getUserRatingValue(@PathVariable Long doctorId, @PathVariable Long userId){
+        Rating rating = ratingService.getPatientDoctorRate(userId, doctorId);
+
+        RatingDTO dto = ratingToRatingDTO.convert(rating);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
     @PostMapping("doctor/{id}/rating")
     public ResponseEntity<RatingDTO> rateDoctor(@PathVariable Long id, @RequestBody RatingDTO ratingDTO){
         Rating rating = ratingService.rateDoctor(id, ratingDTO.getUser(), ratingDTO.getRating());

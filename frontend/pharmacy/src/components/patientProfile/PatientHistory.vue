@@ -34,7 +34,7 @@
           </tr>
           <tr>
             <th>Doctor</th>
-            <td>{{selectedAppointment.doctor.name}} {{selectedAppointment.doctor.surname}} ({{selectedAppointment.doctor.rating}})</td>
+            <td>{{selectedAppointment.doctor.name}} {{selectedAppointment.doctor.surname}} ({{selectedAppointment.doctor.rating}} / 5)</td>
           </tr>
           <tr>
             <th>Start Time</th>
@@ -84,11 +84,12 @@
           </thead>
         </table>
         
-        <hr>
-        <h2>Rate doctor {{ratingValue}}</h2>
-        <RatingStars v-model="ratingValue" />
-        <button  class="btn btn-primary" v-bind:disabled="!isRatingValid" v-on:click="rateDoctor(selectedAppointment ,ratingValue)" >{{selectedAppointment.voted > 0? "Resubmit Vote": "Submit Vote"}}</button>
-
+        <div v-if="selectedAppointment.examination.status == 'HELD' && selectedAppointment.voted != null" class="rating-section">
+          <hr>
+          <h4>Rate Doctor: <strong>{{selectedAppointment.doctor.name}} {{selectedAppointment.doctor.surname}}</strong></h4>
+          <RatingStars v-model="ratingValue" />
+          <button  class="btn btn-primary" v-bind:disabled="!isRatingValid || selectedAppointment.voted==ratingValue" v-on:click="rateDoctor(selectedAppointment ,ratingValue)" >{{voteButtonText}}  ( {{ratingValue}} )</button>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -129,7 +130,7 @@
         <td v-bind:class="{ 'badge-info': a.type == 'COUNSELING', 'badge-primary': a.type == 'EXAMINATION' }" class="badge">{{a.type}}
           <br><span v-if="isCanceled(a)" class="badge badge-danger">CALCELED</span>
         </td>
-        <td>{{a.doctor.name}} {{a.doctor.surname}} ({{a.doctor.rating}})</td>
+        <td>{{a.doctor.name}} {{a.doctor.surname}} ({{a.doctor.rating}} / 5)</td>
         <td><router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: a.pharmacy.id  }}">{{a.pharmacy.name}}</router-link></td>
         <td>{{UtilService.formatDateTime(a.startTime)}}</td>
         <td>{{a.durationInMins}}min</td>
@@ -236,14 +237,28 @@ export default {
 
         showModal(appointment) {
           this.selectedAppointment = appointment;
+          this.ratingValue = 0;  
+        
+          PatientDataService.getUserRating(appointment.examination.patient, appointment.doctor).then(response => {
+            if (response.data) {
+              this.ratingValue = "" + response.data.rating;
+              appointment.voted = response.data.rating;
+            }
+          });
+
           $('#appointmentModal').modal();
+
+
+
         },
+        
 
         rateDoctor(appointment, rating) {
           if (rating < 1 || rating > 5) {
             alert("Wrong rate value");
             return
           }
+
           appointment.voted = rating;
 
           let rateObject = {
@@ -253,6 +268,7 @@ export default {
         
           PatientDataService.rateDoctor(appointment.doctor, rateObject).then(response => {
             if (response.data) {
+              this.loadPatientSubscriptions();
               alert("Successfully voted!");
             }
           });
@@ -274,6 +290,15 @@ export default {
       if (this.ratingValue < 1 || this.ratingValue > 5)
         return false;
       else return true;
+    },
+    voteButtonText() {
+      if (this.selectedAppointment.voted == this.ratingValue){
+        return "Already voted";
+      }
+      
+      if (this.selectedAppointment.voted > 0)
+        return "Resubmit Vote";
+      else "Submit Vote";
     }
   },
 

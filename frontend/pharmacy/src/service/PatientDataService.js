@@ -97,6 +97,10 @@ class PatientDataService {
     });
   }
 
+  getUserRating(patient, doctor) {
+    return axios.get(`${API_URL}/api/users/doctor/` + doctor.id + `/rating/user/` + patient.id);
+  }
+
 }
 
 

@@ -93,4 +93,5 @@ public class dbRatingService extends RatingServiceBase implements RatingService 
         }
         return rating;
     }
+    
 }
