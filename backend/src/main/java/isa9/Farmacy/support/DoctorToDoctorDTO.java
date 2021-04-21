@@ -25,6 +25,7 @@ public class DoctorToDoctorDTO implements Converter<Doctor, DoctorDTO> {
         dto.setAddress(doctor.getAddress());
         dto.setPhoneNumber(doctor.getPhoneNumber());
         dto.setEmail(doctor.getEmail());
+        dto.setRating(doctor.getRating());
         return dto;
     }
 

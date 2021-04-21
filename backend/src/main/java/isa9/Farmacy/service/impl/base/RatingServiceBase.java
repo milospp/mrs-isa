@@ -29,7 +29,10 @@ public abstract class RatingServiceBase implements RatingService {
 
         if (appointmentService.patientCanRateDoctor(patient,doctor)){
             rating.setRating(rate);
-            return save(rating);
+            Rating ret = save(rating);
+
+            userService.updateDoctorRating(doctor);
+            return ret;
         }
 
         return null;

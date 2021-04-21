@@ -89,6 +89,14 @@ class PatientDataService {
     return axios.put(`${API_URL}/api/users/reservations/` + id + `/cancel`);
   }
 
+  rateDoctor(doctor, rateObj) {
+    return axios({
+      method: 'post',
+      url: `${API_URL}/api/users/doctor/` + doctor.id + `/rating`,
+      data: rateObj
+    });
+  }
+
 }
 
 

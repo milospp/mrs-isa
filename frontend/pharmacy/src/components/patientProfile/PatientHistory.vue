@@ -34,7 +34,7 @@
           </tr>
           <tr>
             <th>Doctor</th>
-            <td>{{selectedAppointment.doctor.name}} {{selectedAppointment.doctor.surname}}</td>
+            <td>{{selectedAppointment.doctor.name}} {{selectedAppointment.doctor.surname}} ({{selectedAppointment.doctor.rating}})</td>
           </tr>
           <tr>
             <th>Start Time</th>
@@ -83,6 +83,11 @@
             </tr>
           </thead>
         </table>
+        
+        <hr>
+        <h2>Rate doctor {{ratingValue}}</h2>
+        <RatingStars v-model="ratingValue" />
+        <button  class="btn btn-primary" v-bind:disabled="!isRatingValid" v-on:click="rateDoctor(selectedAppointment ,ratingValue)" >{{selectedAppointment.voted > 0? "Resubmit Vote": "Submit Vote"}}</button>
 
       </div>
       <div class="modal-footer">
@@ -124,7 +129,7 @@
         <td v-bind:class="{ 'badge-info': a.type == 'COUNSELING', 'badge-primary': a.type == 'EXAMINATION' }" class="badge">{{a.type}}
           <br><span v-if="isCanceled(a)" class="badge badge-danger">CALCELED</span>
         </td>
-        <td>{{a.doctor.name}} {{a.doctor.surname}}</td>
+        <td>{{a.doctor.name}} {{a.doctor.surname}} ({{a.doctor.rating}})</td>
         <td><router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: a.pharmacy.id  }}">{{a.pharmacy.name}}</router-link></td>
         <td>{{UtilService.formatDateTime(a.startTime)}}</td>
         <td>{{a.durationInMins}}min</td>
@@ -186,20 +191,27 @@
 
 <script>
     import AppointmentDataService from '@/service/AppointmentDataService.js';
+    import PatientDataService from '@/service/PatientDataService.js';
     import UtilService from '@/service/UtilService.js';
+    import RatingStars from '@/components/FiveStars.vue';
     import $ from 'jquery';
 
 
 export default {
-    setup() {
-      return { UtilService }
-    },
+  setup() {
+    return { UtilService }
+  },
+
+  components: {
+    RatingStars,
+  },
 
 	data: function () {
 		return {
       historyFilter: "all",
       appointments: [],
       selectedAppointment: null,
+      ratingValue: null,
 		}
 	},
   methods: {
@@ -226,6 +238,25 @@ export default {
           this.selectedAppointment = appointment;
           $('#appointmentModal').modal();
         },
+
+        rateDoctor(appointment, rating) {
+          if (rating < 1 || rating > 5) {
+            alert("Wrong rate value");
+            return
+          }
+          appointment.voted = rating;
+
+          let rateObject = {
+            user: appointment.examination.patient.id,
+            rating: rating
+          }
+        
+          PatientDataService.rateDoctor(appointment.doctor, rateObject).then(response => {
+            if (response.data) {
+              alert("Successfully voted!");
+            }
+          });
+        }
   },
   computed: {
     filteredHistory(){
@@ -238,6 +269,11 @@ export default {
       filteredList = filteredList.filter(appointment => appointment.type === selected)
 
       return filteredList;
+    },
+    isRatingValid(){
+      if (this.ratingValue < 1 || this.ratingValue > 5)
+        return false;
+      else return true;
     }
   },
 
