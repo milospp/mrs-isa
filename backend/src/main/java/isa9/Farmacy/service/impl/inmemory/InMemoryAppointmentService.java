@@ -6,9 +6,11 @@ import isa9.Farmacy.service.ExaminationService;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.impl.base.AppointmentServiceBase;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
@@ -67,5 +69,10 @@ public class InMemoryAppointmentService extends AppointmentServiceBase implement
         entity.setId(id);
         this.appointments.put(id, entity);
         return entity;
+    }
+
+    @Override
+    public Boolean patientCanRateDoctor(Patient patient, Doctor doctor) {
+        throw new NotYetImplementedException();
     }
 }

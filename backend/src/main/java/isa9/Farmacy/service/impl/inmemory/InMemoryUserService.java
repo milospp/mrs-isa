@@ -4,6 +4,7 @@ import isa9.Farmacy.model.*;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.impl.base.UserServiceBase;
 import isa9.Farmacy.support.PaginationSortSearchDTO;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -160,6 +161,11 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
     @Override
     public Doctor getDoctorById(Long id) {
         return null;
+    }
+
+    @Override
+    public Patient getPatientById(Long id) {
+        throw new NotYetImplementedException();
     }
 
 }

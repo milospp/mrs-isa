@@ -18,6 +18,7 @@ import lombok.*;
 public class DermatologistDTO extends DoctorDTO {
 
     private List<Pharmacy> pharmacies;
+    private double rating;
 
 
 }

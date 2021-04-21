@@ -34,5 +34,7 @@ public interface UserService extends GenericService<User> {
     long getAllMyPatientsTotalCount(PaginationSortSearchDTO pssDTO);
 
     Doctor getDoctorById(Long id);
+    Patient getPatientById(Long id);
 
+    Doctor updateDoctorRating(Doctor doctor);
 }

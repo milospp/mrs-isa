@@ -31,4 +31,6 @@ public interface AppointmentService extends GenericService<Appointment>{
     List<Appointment> getPatientUpcomingAppointments(Long patientId);
 
     List<Appointment> getPastPatientAppointments(Long patientId);
+
+    Boolean patientCanRateDoctor(Patient patient, Doctor doctor);
 }
