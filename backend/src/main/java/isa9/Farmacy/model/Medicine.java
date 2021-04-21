@@ -49,11 +49,23 @@ public class Medicine {
     private DispencingMedicine perscription;
     @ManyToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
     private Set<Medicine> replacementMedication;
+    @Column (nullable = false, columnDefinition="Decimal(2,1) default '0.0'")
+    private double rating = 0.0;
 
     // TODO Medicine Stock
 
 
-
-
-
+    public Medicine(Long id, String code, String name, String structure, String manufacturer, String note, int points, String shape, String type, DispencingMedicine perscription, Set<Medicine> replacementMedication) {
+        this.id = id;
+        this.code = code;
+        this.name = name;
+        this.structure = structure;
+        this.manufacturer = manufacturer;
+        this.note = note;
+        this.points = points;
+        this.shape = shape;
+        this.type = type;
+        this.perscription = perscription;
+        this.replacementMedication = replacementMedication;
+    }
 }

@@ -72,15 +72,11 @@ public class dbRatingService extends RatingServiceBase implements RatingService 
         return this.ratingDoctorRepository.findAll();
     }
 
-    @Override
-    public double getDoctorAverage(Doctor doctor) {
-        return getDoctorAverage(doctor.getId());
-    }
 
     @Override
     public double getDoctorAverage(Long doctorId) {
         Double val = this.ratingDoctorRepository.getAverageDoctorRating(doctorId);
-        if (val == null) return -1;
+        if (val == null) return 0;
         return (double) val;
     }
 
@@ -93,5 +89,20 @@ public class dbRatingService extends RatingServiceBase implements RatingService 
         }
         return rating;
     }
-    
+
+    @Override
+    public double getMedicineAverage(Long medicineId) {
+        Double val = this.ratingMedicineRepository.getAverageMedicineRating(medicineId);
+        if (val == null) return 0;
+        return (double) val;    }
+
+    @Override
+    public Rating getPatientMedicineRate(Patient patient, Medicine medicine) {
+        Rating rating;
+        rating = ratingMedicineRepository.findFirstByUserAndMedicine(patient, medicine);
+        if (rating == null) {
+            rating = new RatingMedicine(null, patient, -1, medicine);
+        }
+        return rating;
+    }
 }

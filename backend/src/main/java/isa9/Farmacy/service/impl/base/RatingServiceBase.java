@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class RatingServiceBase implements RatingService {
     protected UserService userService;
     protected AppointmentService appointmentService;
+    protected MedicineService medicineService;
+    protected MedReservationService medReservationService;
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -18,6 +20,23 @@ public abstract class RatingServiceBase implements RatingService {
     public void setAppointmentService(AppointmentService appointmentService) {
         this.appointmentService = appointmentService;
     }
+
+    @Autowired
+    public void setMedicineService(MedicineService medicineService) {
+        this.medicineService = medicineService;
+    }
+
+    @Autowired
+    public void setMedReservationService(MedReservationService medReservationService) {
+        this.medReservationService = medReservationService;
+    }
+
+    @Override
+    public double getDoctorAverage(Doctor doctor) {
+        return getDoctorAverage(doctor.getId());
+    }
+
+
 
     @Override
     public Rating getPatientDoctorRate(Long patientId, Long doctorId) {
@@ -41,6 +60,39 @@ public abstract class RatingServiceBase implements RatingService {
             Rating ret = save(rating);
 
             userService.updateDoctorRating(doctor);
+            return ret;
+        }
+
+        return null;
+    }
+
+    @Override
+    public double getMedicineAverage(Medicine medicine) {
+        return getMedicineAverage(medicine.getId());
+    }
+
+    @Override
+    public Rating getPatientMedicineRate(Long patientId, Long medicineId) {
+        Medicine medicine = medicineService.findOne(medicineId);
+        Patient patient = userService.getPatientById(patientId);
+        if (medicine == null || patient == null) return null;
+
+        return getPatientMedicineRate(patient, medicine);
+    }
+
+    @Override
+    public Rating rateMedicine(Long medicineId, Long userId, int rate) {
+        Medicine medicine = medicineService.findOne(medicineId);
+        Patient patient = userService.getPatientById(userId);
+        if (medicine == null || patient == null) return null;
+
+        Rating rating = getPatientMedicineRate(patient, medicine);
+
+        if (medReservationService.patientConsumedMedicine(patient,medicine)){
+            rating.setRating(rate);
+            Rating ret = save(rating);
+
+            medicineService.updateMedicineRating(medicine);
             return ret;
         }
 

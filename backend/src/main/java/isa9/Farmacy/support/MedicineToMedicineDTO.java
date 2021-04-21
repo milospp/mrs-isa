@@ -30,6 +30,8 @@ public class MedicineToMedicineDTO implements Converter<Medicine, MedicineDTO> {
         dto.setShape(medicine.getShape());
         dto.setType(medicine.getType());
         dto.setPerscription(medicine.getPerscription());
+        dto.setRating(medicine.getRating());
+
 
         dto.setReplacementMedicationIds(
                 medicine.getReplacementMedication().stream()

@@ -2,21 +2,17 @@ package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.*;
-import isa9.Farmacy.service.MedReservationService;
-import isa9.Farmacy.service.MedicineService;
-import isa9.Farmacy.service.PharmacyService;
-import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.service.*;
 import isa9.Farmacy.support.MedReservationToMedReservationDTO;
 import isa9.Farmacy.support.MedicineInPharmacyToMedInPharmaDTO;
+import isa9.Farmacy.support.MedicineToMedicineDTO;
+import isa9.Farmacy.support.RatingToRatingDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.Doc;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,18 +25,24 @@ public class MedicineController {
     private final MedicineService medicineService;
     private final UserService userService;
     private final PharmacyService pharmacyService;
+    private final RatingService ratingService;
     private final MedReservationService medReservationService;
     private final MedReservationToMedReservationDTO medReservationToMedReservationDTO;
     private final MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO;
+    private final MedicineToMedicineDTO medicineToMedicineDTO;
+    private final RatingToRatingDTO ratingToRatingDTO;
 
     @Autowired
-    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, MedReservationToMedReservationDTO medReservationToMedReservationDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO) {
+    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, RatingService ratingService, MedReservationService medReservationService, MedReservationToMedReservationDTO medReservationToMedReservationDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedicineToMedicineDTO medicineToMedicineDTO, RatingToRatingDTO ratingToRatingDTO) {
         this.medicineService = medicineService;
         this.userService = userService;
         this.pharmacyService = pharmacyService;
+        this.ratingService = ratingService;
         this.medReservationService = medReservationService;
         this.medReservationToMedReservationDTO = medReservationToMedReservationDTO;
         this.medicineInPharmacyToMedInPharmaDTO = medicineInPharmacyToMedInPharmaDTO;
+        this.medicineToMedicineDTO = medicineToMedicineDTO;
+        this.ratingToRatingDTO = ratingToRatingDTO;
     }
 
     @GetMapping("tmp-test")
@@ -79,24 +81,24 @@ public class MedicineController {
     @GetMapping("")
     public ResponseEntity<List<MedicineDTO>> test(){
 
-        List<MedicineDTO> resultDTOS = new ArrayList<>();
-        for (Medicine medicine : this.medicineService.findAll()) {
-            resultDTOS.add(new MedicineDTO(
-                    medicine.getId(),
-                    medicine.getCode(),
-                    medicine.getName(),
-                    medicine.getStructure(),
-                    medicine.getManufacturer(),
-                    medicine.getNote(),
-                    medicine.getPoints(),
-                    medicine.getShape(),
-                    medicine.getType(),
-                    medicine.getPerscription(),
-                    medicine.getReplacementMedication().stream()
-                            .map(Medicine::getCode)
-                            .collect(Collectors.toList())
-            ));
-        }
+        List<MedicineDTO> resultDTOS = medicineToMedicineDTO.convert(this.medicineService.findAll());
+//        for (Medicine medicine : this.medicineService.findAll()) {
+//            resultDTOS.add(new MedicineDTO(
+//                    medicine.getId(),
+//                    medicine.getCode(),
+//                    medicine.getName(),
+//                    medicine.getStructure(),
+//                    medicine.getManufacturer(),
+//                    medicine.getNote(),
+//                    medicine.getPoints(),
+//                    medicine.getShape(),
+//                    medicine.getType(),
+//                    medicine.getPerscription(),
+//                    medicine.getReplacementMedication().stream()
+//                            .map(Medicine::getCode)
+//                            .collect(Collectors.toList())
+//            ));
+//        }
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
     }
@@ -152,17 +154,40 @@ public class MedicineController {
         MedReservation reservation = medReservationService.getByCode(code);
 
         if (reservation != null && reservation.getStatus() == MedReservationStatus.PENDING){
-            reservation.setStatus(MedReservationStatus.TAKEN);
-
             // TODO: Move everything into this method
             medReservationService.dispenseMedicine(reservation);
 
-            // TODO: hardcoded pharmacist who 'issued', this will be fixed when authorisation is added
-            Pharmacist pharmacist = (Pharmacist) reservation.getMedicineInPharmacy().getPharmacy().getStaff().iterator().next().getDoctor();
-            reservation.setWhoDispenses(pharmacist);
+
 
             return new ResponseEntity<>(true, HttpStatus.OK);
         }
         return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("{id}/rating")
+    public ResponseEntity<MedicineDTO> getMedicineRating(@PathVariable Long id){
+        Medicine medicine = medicineService.findOne(id);
+//        double rating = ratingService.getMedicineAverage(id);
+//
+        MedicineDTO dto = medicineToMedicineDTO.convert(medicine);
+//        dto.setRating(rating);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping("{medId}/rating/user/{userId}")
+    public ResponseEntity<RatingDTO> getUserRatingValue(@PathVariable Long medId, @PathVariable Long userId){
+        Rating rating = ratingService.getPatientMedicineRate(userId, medId);
+
+        RatingDTO dto = ratingToRatingDTO.convert(rating);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @PostMapping("{id}/rating")
+    public ResponseEntity<RatingDTO> rateMedicine(@PathVariable Long id, @RequestBody RatingDTO ratingDTO){
+        Rating rating = ratingService.rateMedicine(id, ratingDTO.getUser(), ratingDTO.getRating());
+
+        RatingDTO dto = ratingToRatingDTO.convert(rating);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 }
