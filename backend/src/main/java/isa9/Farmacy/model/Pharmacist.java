@@ -16,8 +16,8 @@ import lombok.*;
 @Entity
 public class Pharmacist extends Doctor{
 
-    public Pharmacist(Long id, String name, String surname, String email, String password, Address address, String phoneNumber) {
-        super(id, name, surname, email, password, address, phoneNumber, UserRole.PHARMACIST);
+    public Pharmacist(Long id, String name, String surname, String email, String password, Address address, String phoneNumber, UserRole role) {
+        super(id, name, surname, email, password, address, phoneNumber, role, new HashSet<>());
     }
 
 

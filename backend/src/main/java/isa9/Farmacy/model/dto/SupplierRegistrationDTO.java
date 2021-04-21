@@ -17,7 +17,7 @@ public class SupplierRegistrationDTO extends UserDTO{
     private Address address;
 
     public SupplierRegistrationDTO(Long id, String name, String surname, Address address,
-                                   String phoneNumber, UserRole role, String email, String password) {
+                                   String phoneNumber, RolesDTO role, String email, String password) {
         super(id, name, surname, address, phoneNumber, role, email);
         this.id = id;
         this.name = name;

@@ -2,6 +2,12 @@ package isa9.Farmacy.model;
 
 import javax.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.ArrayList;
 
 @Getter
 @Setter
@@ -9,12 +15,10 @@ import lombok.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Entity
 @Table(name = "users")
 @Inheritance(strategy=InheritanceType.JOINED)
-public abstract class User {
-
+public abstract class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,11 +41,38 @@ public abstract class User {
     @Column
     private String phoneNumber;
 
-    @Column
-    @Enumerated
+    @ManyToOne(cascade = CascadeType.ALL)
     private UserRole role;
 
-//    @Deprecated
+    @Column
+    private boolean enabled;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return new ArrayList<UserRole>(Arrays.asList(this.role));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    //    @Deprecated
 //    public User(Long id, String name, String surname, String email, String password, Address address, String phoneNumber) {
 //        this.address = address;
 //        this.phoneNumber = phoneNumber;

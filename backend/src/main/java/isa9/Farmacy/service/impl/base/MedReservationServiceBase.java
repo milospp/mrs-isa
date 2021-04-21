@@ -105,7 +105,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
         Pharmacy pharmacy = pharmacyService.findOne(reservationFormDTO.getPharmacyId());
         Medicine medicine = medicineService.findOne(reservationFormDTO.getMedicineId());
         User user = userService.findOne(reservationFormDTO.getPatientId());
-        if (!user.getRole().equals(UserRole.PATIENT)) return null;
+        if (!user.getRole().getName().equals("PATIENT")) return null;
         Patient patient = (Patient) user;
 
         if (isPatientAlergic(patient, medicine)) return null;

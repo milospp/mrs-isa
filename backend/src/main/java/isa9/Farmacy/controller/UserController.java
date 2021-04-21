@@ -4,6 +4,7 @@ import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.*;
 import isa9.Farmacy.service.MedReservationService;
 import isa9.Farmacy.service.PharmacyService;
+import isa9.Farmacy.service.UserRoleService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ public class UserController {
     private final UserService userService;
     private final PharmacyService pharmacyService;
     private final MedReservationService medReservationService;
+    private final UserRoleService userRoleService;
     
     private final PatientToPatientDTO patientToPatientDTO;
     private final MedicineToMedicineDTO medicineToMedicineDTO;
@@ -33,10 +35,11 @@ public class UserController {
     private final UserToUserDTO userToUserDTO;
 
     @Autowired
-    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO, UserToUserDTO userToUserDTO) {
+    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO, UserToUserDTO userToUserDTO, UserRoleService userRoleService) {
         this.userService = userService;
         this.pharmacyService = pharmacyService;
         this.medReservationService = medReservationService;
+        this.userRoleService = userRoleService;
         this.patientToPatientDTO = patientToPatientDTO;
         this.medicineToMedicineDTO = medicineToMedicineDTO;
         this.pharmacyToPharmacyDTO = pharmacyToPharmacyDTO;
@@ -68,7 +71,30 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<UserDTO> resultDTOS = new ArrayList<>();
         for (User user : this.userService.findAll()){
-            resultDTOS.add(new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), user.getRole(), user.getEmail()));
+            RolesDTO role = RolesDTO.SYS_ADMIN;
+            int roleId = user.getRole().getId().intValue();
+            switch(roleId){
+                case 1:
+                    break;
+                case 2:
+                    role = RolesDTO.PHARMACY_ADMIN;
+                    break;
+                case 3:
+                    role = RolesDTO.PATIENT;
+                    break;
+                case 4:
+                    role = RolesDTO.DERMATOLOGIST;
+                    break;
+                case 5:
+                    role = RolesDTO.PHARMACIST;
+                    break;
+                case 6:
+                    role = RolesDTO.SUPPLIER;
+                    break;
+                default:
+                    System.out.println("GRESKA ZEZNUO SAM DTO ULOGE");
+            }
+            resultDTOS.add(new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), role, user.getEmail()));
         }
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
@@ -191,9 +217,11 @@ public class UserController {
 
     @PostMapping("register")
     public ResponseEntity<UserDTO> registerUser(@RequestBody User user) {
+        user.setEnabled(false);
+        user.setRole(this.userRoleService.findOne(3L));
         userService.save(user);
         return new ResponseEntity<>(
-                new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), user.getRole(), user.getEmail()),
+                new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), RolesDTO.PATIENT, user.getEmail()),
                 HttpStatus.OK
         );
 
@@ -206,6 +234,8 @@ public class UserController {
         if (povratna > 0) return new ResponseEntity<>(povratna, HttpStatus.OK);
         User adminUser = userService.findOne(id);
         if (adminUser.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(1, HttpStatus.NOT_FOUND);
+        user.getRegisterData().setEnabled(true);
+        user.getRegisterData().setRole(this.userRoleService.findOne(5L));
         user.getRegisterData().setWorking(new HashSet<>());
         user.getRegisterData().getWorking().add(new Work(1L, user.getRegisterData(), ((PharmacyAdmin) adminUser).getPharmacy(), LocalTime.parse(user.getStartHour()), LocalTime.parse(user.getEndHour())));
         //user.setPharmacy();
@@ -252,9 +282,7 @@ public class UserController {
         if (us.getClass() != Patient.class) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         Patient patient = (Patient) us;
         PatientDTO patientDTO = patientToPatientDTO.convert(patient);
-//        PatientDTO patientDTO = new PatientDTO(patient.getId(), patient.getName(), patient.getSurname(), patient.getAddress(), patient.getPhoneNumber());
         return new ResponseEntity<>(patientDTO, HttpStatus.OK);
-
     }
 
     @PostMapping("register/patient")
@@ -263,14 +291,11 @@ public class UserController {
         if (!userService.isAvaibleEmail(patient.getEmail())) povratna += 2;
         if (povratna > 0) return new ResponseEntity<>(false, HttpStatus.OK);
         Patient newlyRegistered = new Patient(patient.getId(), patient.getName(), patient.getSurname()
-                , patient.getEmail(), patient.getPassword(),
-                patient.getAddress(), patient.getPhoneNumber());
+                , patient.getEmail(), patient.getPassword(), patient.getAddress(), patient.getPhoneNumber()
+                , userRoleService.findOne(3L), false);
         userService.save(newlyRegistered);
         System.out.println(newlyRegistered);
-        return new ResponseEntity<> (true,
-                HttpStatus.OK
-        );
-
+        return new ResponseEntity<> (true, HttpStatus.OK);
     }
 
     @PostMapping("{id}/update")
@@ -285,7 +310,7 @@ public class UserController {
         long pharmacyId = newAdminDto.getPharmacyId();
         Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
         PharmacyAdmin newlyRegistered = new PharmacyAdmin(0L, newAdminDto.getName(), newAdminDto.getSurname(), newAdminDto.getEmail(),
-                newAdminDto.getPassword(), newAdminDto.getAddress(), newAdminDto.getPhoneNumber(), UserRole.PHARMACY_ADMIN, pharmacy);
+                newAdminDto.getPassword(), newAdminDto.getAddress(), newAdminDto.getPhoneNumber(), userRoleService.findOne(0L), pharmacy);
         userService.save(newlyRegistered);
         System.out.println(newlyRegistered);
         return new ResponseEntity<>(true, HttpStatus.OK);
@@ -547,7 +572,7 @@ public class UserController {
         if(!userService.isAvaibleEmail(newSupplierDto.getEmail())) return new ResponseEntity<>(false, HttpStatus.OK);
         Supplier newlyRegistered = new Supplier(0L, newSupplierDto.getName(), newSupplierDto.getSurname(),
                 newSupplierDto.getEmail(), newSupplierDto.getPassword(), newSupplierDto.getAddress(),
-                newSupplierDto.getPhoneNumber());
+                newSupplierDto.getPhoneNumber(), this.userRoleService.findOne(6L));
         userService.save(newlyRegistered);
         System.out.println(newlyRegistered);
         return new ResponseEntity<>(true, HttpStatus.OK);
@@ -557,8 +582,8 @@ public class UserController {
     public ResponseEntity<Boolean> registerDermatologist(@RequestBody DermatologistRegDTO newDermatologistDto){
         if(!userService.isAvaibleEmail(newDermatologistDto.getEmail())) return new ResponseEntity<>(false, HttpStatus.OK);
         Dermatologist newlyRegistered = new Dermatologist(0L, newDermatologistDto.getName(), newDermatologistDto.getSurname(),
-                newDermatologistDto.getEmail(), newDermatologistDto.getPassword(),
-                newDermatologistDto.getAddress(), newDermatologistDto.getPhoneNumber(), new HashSet<>());
+                newDermatologistDto.getEmail(), newDermatologistDto.getPassword(), newDermatologistDto.getAddress(),
+                newDermatologistDto.getPhoneNumber(), this.userRoleService.findOne(4L));
         userService.save(newlyRegistered);
         System.out.println(newlyRegistered);
         return new ResponseEntity<>(true, HttpStatus.OK);
@@ -567,7 +592,7 @@ public class UserController {
     @PostMapping("edit/dermatologist")
     public ResponseEntity<Boolean> editDermatologistData(@RequestBody DermatologistDTO dermatologistDTO){
         Doctor doctor = userService.getDoctorById(dermatologistDTO.getId());
-        if (doctor.getRole() == UserRole.DERMATOLOGIST){
+        if (doctor.getRole().getName().equals("DERMATOLOGIST")){
             Dermatologist dermatologist = (Dermatologist) doctor;
             dermatologist.setName(dermatologistDTO.getName());
             dermatologist.setSurname(dermatologistDTO.getSurname());

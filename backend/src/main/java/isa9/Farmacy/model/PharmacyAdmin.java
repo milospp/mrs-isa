@@ -19,12 +19,8 @@ public class PharmacyAdmin extends User{
     private Pharmacy pharmacy;
 
     public PharmacyAdmin(Long id, String name, String surname, String email, String password, Address address, String phoneNumber, UserRole role, Pharmacy pharmacy) {
-        super(id, name, surname, email, password, address, phoneNumber, role);
+        super(id, name, surname, email, password, address, phoneNumber, role, true);
         this.pharmacy = pharmacy;
     }
 
-    public PharmacyAdmin(Long id, String name, String surname, String email, String password, Address address, String phoneNumber, Pharmacy pharmacy) {
-        super(id, name, surname, email, password, address, phoneNumber, UserRole.PHARMACY_ADMIN);
-        this.pharmacy = pharmacy;
-    }
 }

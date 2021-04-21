@@ -18,13 +18,7 @@ import javax.persistence.Entity;
 @Entity
 public class Dermatologist extends Doctor{
 
-    public Dermatologist(Long id, String name, String surname, String email, String password, Address address, String phoneNumber) {
-        super(id, name, surname, email, password, address, phoneNumber, UserRole.DERMATOLOGIST);
+    public Dermatologist(long l, String name, String surname, String email, String password, Address address, String phoneNumber, UserRole role) {
+        super(l, name, surname, email, password, address, phoneNumber, role, new HashSet<>());
     }
-
-    public Dermatologist(Long id, String name, String surname, String email, String password, Address address, String phoneNumber, Set<Work> working) {
-        super(id, name, surname, email, password, address, phoneNumber, UserRole.DERMATOLOGIST, working);
-    }
-
-
 }

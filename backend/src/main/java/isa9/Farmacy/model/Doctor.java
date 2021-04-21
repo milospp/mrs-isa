@@ -25,12 +25,12 @@ public abstract class Doctor extends User{
 
     public Doctor(Long id, String name, String surname, String email,
                    String password, Address address, String phoneNumber, UserRole role) {
-        super(id, name, surname, email, password, address, phoneNumber, role);
+        super(id, name, surname, email, password, address, phoneNumber, role, true);
         working = new HashSet<>();
     }
 
     public Doctor(Long id, String name, String surname, String email, String password, Address address, String phoneNumber, UserRole role, Set<Work> working) {
-        super(id, name, surname, email, password, address, phoneNumber, role);
+        super(id, name, surname, email, password, address, phoneNumber, role, true);
         this.working = working;
     }
 

@@ -18,18 +18,18 @@ public class PharmacyAdminDTO extends UserDTO{
     @Deprecated
     public PharmacyAdminDTO(Long id, String name, String surname, Address address,
                             String phoneNumber, Long pharmacyId) {
-        super(id, name, surname, address, phoneNumber, UserRole.PHARMACY_ADMIN, null);
+        super(id, name, surname, address, phoneNumber, RolesDTO.PHARMACY_ADMIN, null);
         this.pharmacyId = pharmacyId;
     }
 
 
-    public PharmacyAdminDTO(Long id, String name, String surname, Address address, String phoneNumber, UserRole role, String email, Long pharmacyId) {
-        super(id, name, surname, address, phoneNumber, role, email);
+    public PharmacyAdminDTO(Long id, String name, String surname, Address address, String phoneNumber, RolesDTO role, String email, Long pharmacyId) {
+        super(id, name, surname, address, phoneNumber, RolesDTO.PHARMACY_ADMIN, email);
         this.pharmacyId = pharmacyId;
     }
 
     public PharmacyAdminDTO(Long id, String name, String surname, Address address, String phoneNumber, String email, Long pharmacyId) {
-        super(id, name, surname, address, phoneNumber, UserRole.PHARMACY_ADMIN, email);
+        super(id, name, surname, address, phoneNumber, RolesDTO.PHARMACY_ADMIN, email);
         this.pharmacyId = pharmacyId;
     }
 }

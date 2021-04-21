@@ -71,7 +71,7 @@ public class dbUserService extends UserServiceBase implements UserService {
 
         List<User> allUsers = this.findAll();
         for(User u : allUsers){
-            if(u.getRole() == UserRole.PHARMACY_ADMIN){
+            if(u.getRole().getName().equals("PHARMACY_ADMIN")){
                 phAdmin = (PharmacyAdmin) u;
                 try{
                     if(phAdmin.getPharmacy().getId() == pharmacyId) return phAdmin;
