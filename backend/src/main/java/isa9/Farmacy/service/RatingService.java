@@ -39,4 +39,5 @@ public interface RatingService extends GenericService<Rating> {
     Rating getPatientPharmacyRate(Long patientId, Long pharmacyId);
     Rating ratePharmacy(Long pharmacyId, Long userId, int rating);
 
+    Boolean canUserRate(Long patientId, Long pharmacyId);
 }

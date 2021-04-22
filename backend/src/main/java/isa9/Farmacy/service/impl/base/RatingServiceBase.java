@@ -151,5 +151,17 @@ public abstract class RatingServiceBase implements RatingService {
         return null;
     }
 
+    @Override
+    public Boolean canUserRate(Long patientId, Long pharmacyId) {
+        Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
+        Patient patient = userService.getPatientById(patientId);
+        if (pharmacy == null || patient == null) return null;
 
+        Rating rating = getPatientPharmacyRate(patient, pharmacy);
+
+        if (medReservationService.patientConsumedMedInPharmacy(patient,pharmacy) || appointmentService.patientHadAppointmentInPharmacy(patient, pharmacy)){
+            return true;
+        }
+        return false;
+    }
 }

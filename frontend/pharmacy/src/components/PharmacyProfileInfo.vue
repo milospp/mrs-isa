@@ -1,4 +1,7 @@
 <template>
+<div>
+  <RatingModal modalId="rating-modal" v-model="rating" @rated="ratePharmacy"></RatingModal>
+
 
     <div v-if="pharmacy" class="row">
       <div class="col-md-4" align="left">
@@ -11,7 +14,10 @@
       <div class="col-md-6 text-left" align="center"></div>
       
       <div class="col-md-2">
-        <button class="btn btn-block btn-primary">Subscribe</button>
+      <button class="btn btn-block btn-primary">Subscribe</button>
+      <button v-bind:disabled="!pharmacy.canVote" type="button" class="btn btn-block btn-primary" v-on:click="ratingModal(pharmacy)" data-toggle="modal" data-target="#rating-modal">
+          {{getMyVote(pharmacy)>0 ? "Change Rate": "Rate"}}
+      </button>
       </div>
 
     </div>
@@ -245,6 +251,7 @@
       </div>
     </div>
   </div>
+</div>
 
 </template>
 
@@ -254,11 +261,13 @@
     import DermatologistDataService from '../service/DermatologistDataService';
     import UtilService from '../service/UtilService.js';
     import MedicineDataService from '../service/MedicineDataService.js';
+    import RatingModal from '@/components/RatingModal.vue';
     import Mapa from "../components/Maps.vue";
 
 export default {
   components: {
-    Mapa
+    RatingModal,
+    Mapa,
   },
     setup() {
       return { UtilService}
@@ -276,7 +285,15 @@ export default {
             max_kolicina: 1,
             pharmaSearch: "", dermaSearch: "",
             filterIme: "", filterPrez: "", filterBroj: "",
-            filterAdrD: "", filterAdrG: "", filterAdrU: "", filterAdrB: "", 
+            filterAdrD: "", filterAdrG: "", filterAdrU: "", filterAdrB: "",
+            rating: {
+              title: "",
+              body: "",
+              ratingValue: "0",
+              oldValue: null,
+              pharmacy: null,
+            },
+            userId: 1,
 		}
 	},
   methods: {
@@ -317,9 +334,11 @@ export default {
           PharmacyDataService.getPharmacy(this.id) // HARDCODED
               .then(response => {
                   self.pharmacy = response.data; 
-                  console.log(this.id);
+                  // console.log(this.id);
                   this.patients = response.data;
-                  console.log(response.data);
+                  self.pharmacy.canVote = false;
+                  // console.log(response.data);
+                  this.canUserRatePharmacy()
               });
       },
       pretragaFarm() {
@@ -396,11 +415,81 @@ export default {
 
 
 
-      }
+      },
+      ratingModal(p) {
+          this.rating.pharmacy = p;
+          this.rating.title = "Pharmacy Rating"
+          this.rating.body = p.name;
+
+          console.log()
+          PharmacyDataService.getUserRating(this.userId, p.id).then(response => {
+            if (response.data) {
+              this.rating.ratingValue = "" + response.data.rating;
+
+              console.log(response.data);
+              if (response.data.rating > 0)
+                this.rating.oldValue = this.rating.ratingValue;
+              else
+                this.rating.oldValue = null;
+              console.log( this.rating.oldValue);
+
+            }
+          });
+
+        },
+
+        getMyVote(p){
+          console.log(this.userId);
+          PharmacyDataService.getUserRating(this.userId, p.id).then(response => {
+            if (response.data) {
+              p.voted = response.data.rating
+            }
+          });
+          return p.voted;
+        },
+
+        canUserRatePharmacy() {
+          this.pharmacy.canVote = false;
+          PharmacyDataService.canUserRate(this.userId, this.pharmacy.id).then(response => {
+            if (response.data) {
+              console.log(response.data);
+              this.pharmacy.canVote = response.data;
+            }
+          });
+          return this.pharmacy;
+        },
+
+        ratePharmacy() {
+
+          let pharmacy = this.rating.pharmacy;
+          let rating = this.rating.ratingValue;
+
+          if (rating < 1 || rating > 5) {
+            alert("Wrong rate value");
+            return
+          }
+
+          let rateObject = {
+            user: this.userId,
+            rating: rating
+          }
+        
+          PharmacyDataService.ratePharmacy(pharmacy, rateObject).then(response => {
+            if (response.data) {
+              this.loadPharmacyData();
+              $("#rating-modal").modal('hide');
+              alert("Successfully voted!");
+            }
+          });
+        },
 
   },
   created() {
-      this.id = this.$route.params.id; 
+      this.id = this.$route.params.id;
+      
+      // TODO: Auth
+      this.userId = prompt("User id");
+
       PharmacistDataService.getAllPharmacistPharmacy(this.id)
         .then(response => {
           this.sviZaposleniFarmaceuti = response.data;});
@@ -420,6 +509,7 @@ export default {
       DermatologistDataService.getAllDermatologistsPharmacy(this.id)
         .then(response => {
           this.sviZaposleniDermatolozi = response.data;});
-    }
+          1
+  },
 }
 </script>

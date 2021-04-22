@@ -147,5 +147,12 @@ public class PharmacyController {
         RatingDTO dto = ratingToRatingDTO.convert(rating);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+
+    @GetMapping("{pharmacyId}/rating/user/{userId}/can-rate")
+    public ResponseEntity<Boolean> getCanUserRate(@PathVariable Long pharmacyId, @PathVariable Long userId){
+        Boolean result = ratingService.canUserRate(userId, pharmacyId);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }
 
