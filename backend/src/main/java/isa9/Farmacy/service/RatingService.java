@@ -14,6 +14,8 @@ public interface RatingService extends GenericService<Rating> {
     List<RatingPharmacy> findAllPharmacyR();
     List<RatingDoctor> findAllDoctorR();
 
+    Boolean isRateValid(int rating);
+
     double getDoctorAverage(Doctor doctor);
     double getDoctorAverage(Long doctorId);
 
@@ -29,4 +31,13 @@ public interface RatingService extends GenericService<Rating> {
     Rating getPatientMedicineRate(Long patientId, Long medicineId);
     Rating rateMedicine(Long medicineId, Long userId, int rating);
 
+
+    double getPharmacyAverage(Pharmacy pharmacy);
+    double getPharmacyAverage(Long pharmacyId);
+
+    Rating getPatientPharmacyRate(Patient patient, Pharmacy pharmacy);
+    Rating getPatientPharmacyRate(Long patientId, Long pharmacyId);
+    Rating ratePharmacy(Long pharmacyId, Long userId, int rating);
+
+    Boolean canUserRate(Long patientId, Long pharmacyId);
 }

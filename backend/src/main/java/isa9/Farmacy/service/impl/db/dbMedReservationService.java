@@ -68,4 +68,11 @@ public class dbMedReservationService extends MedReservationServiceBase implement
         if (medReservation == null) return false;
         else return true;
     }
+
+    @Override
+    public Boolean patientConsumedMedInPharmacy(Patient patient, Pharmacy pharmacy) {
+        MedReservation medReservation;
+        medReservation = medReservationRepository.findFirstByPatientAndMedicineInPharmacy_PharmacyAndStatus(patient, pharmacy, MedReservationStatus.TAKEN);
+        if (medReservation == null) return false;
+        else return true;    }
 }

@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
     Appointment findFirstByDoctorAndExamination_PatientAndExamination_Status(Doctor doctor, Patient patient, ExaminationStatus status);
+    Appointment findFirstByPharmacyAndExamination_PatientAndExamination_Status(Pharmacy pharmacy, Patient patient, ExaminationStatus status);
 }

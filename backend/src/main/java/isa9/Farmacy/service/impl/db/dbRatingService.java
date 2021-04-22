@@ -105,4 +105,21 @@ public class dbRatingService extends RatingServiceBase implements RatingService 
         }
         return rating;
     }
+
+    @Override
+    public double getPharmacyAverage(Long pharmacyId) {
+        Double val = this.ratingPharmacyRepository.getAveragePharmacyRating(pharmacyId);
+        if (val == null) return 0;
+        return (double) val;
+    }
+
+    @Override
+    public Rating getPatientPharmacyRate(Patient patient, Pharmacy pharmacy) {
+        Rating rating;
+        rating = ratingPharmacyRepository.findFirstByUserAndPharmacy(patient, pharmacy);
+        if (rating == null) {
+            rating = new RatingPharmacy(null, patient, -1, pharmacy);
+        }
+        return rating;
+    }
 }

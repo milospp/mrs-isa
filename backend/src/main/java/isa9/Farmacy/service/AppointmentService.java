@@ -3,6 +3,7 @@ package isa9.Farmacy.service;
 import isa9.Farmacy.model.Appointment;
 import isa9.Farmacy.model.Doctor;
 import isa9.Farmacy.model.Patient;
+import isa9.Farmacy.model.Pharmacy;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,4 +34,5 @@ public interface AppointmentService extends GenericService<Appointment>{
     List<Appointment> getPastPatientAppointments(Long patientId);
 
     Boolean patientCanRateDoctor(Patient patient, Doctor doctor);
+    Boolean patientHadAppointmentInPharmacy(Patient patient, Pharmacy pharmacy);
 }

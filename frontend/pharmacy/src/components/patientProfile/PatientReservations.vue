@@ -158,7 +158,8 @@ export default {
               alert("Successfully voted!");
             }
           });
-        }
+        },
+
 
 
     },

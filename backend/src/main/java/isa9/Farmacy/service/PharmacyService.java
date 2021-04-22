@@ -14,4 +14,5 @@ public interface PharmacyService extends GenericService<Pharmacy> {
 
     List<Work> findDoctorsWork(Doctor doctor);
 
+    Pharmacy updatePharmacyRating(Pharmacy pharmacy);
 }
