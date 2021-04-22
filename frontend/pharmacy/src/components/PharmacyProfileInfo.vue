@@ -7,7 +7,7 @@
       <div class="col-md-4" align="left">
         <h2>{{pharmacy.name}}</h2>
         <h5>Address: {{UtilService.AddressToString(pharmacy.address)}}</h5>
-        <p class="rating">Rating: TODO: 9.7/10 <br />
+        <p class="rating">Rating: {{pharmacy.rating}} / 5<br />
           Description: {{pharmacy.description}}</p>
       </div>
 

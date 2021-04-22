@@ -16,6 +16,8 @@
           <p class="card-text">
             {{p.description}}
           </p>
+          <p v-if="p.rating >= 1" class="rating">Rating: {{p.rating}} / 5</p>
+
           <hr>
           <h6>
             {{UtilService.AddressToString(p.address)}}e
