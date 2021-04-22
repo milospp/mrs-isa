@@ -59,6 +59,19 @@ class MedicineDataService {
   giveMedicineToPatient(code){
     return axios.get(`${API_URL}/reservation/dispense/` + code);
   }
+
+  rateMedicine(medicine, rateObj) {
+    return axios({
+      method: 'post',
+      url: `${API_URL}/` + medicine.id + `/rating`,
+      data: rateObj
+    });
+  }
+
+  getUserRating(patientId, medicineId) {
+    return axios.get(`${API_URL}/` + medicineId + `/rating/user/` + patientId);
+  }
+
 }
 
 export default new MedicineDataService();
