@@ -41,6 +41,8 @@ public class Pharmacy {
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Rating> ratings;
 
+    @Column (nullable = false, columnDefinition="Decimal(2,1) default '0.0'")
+    private double rating = 0.0;
 
 
     public Pharmacy(String name, Address address, String description, Long id) {
@@ -83,10 +85,6 @@ public class Pharmacy {
             this.staff.add(work);
         }
     }
-
-
-
-
 
 
 }

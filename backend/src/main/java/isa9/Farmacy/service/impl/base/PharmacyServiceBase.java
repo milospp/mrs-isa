@@ -5,9 +5,16 @@ import isa9.Farmacy.model.MedicineInPharmacy;
 import isa9.Farmacy.model.Pharmacy;
 import isa9.Farmacy.service.MedicineService;
 import isa9.Farmacy.service.PharmacyService;
+import isa9.Farmacy.service.RatingService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class PharmacyServiceBase implements PharmacyService {
+    protected RatingService ratingService;
+
+    @Autowired
+    public void setRatingService(RatingService ratingService) {
+        this.ratingService = ratingService;
+    }
 
     @Override
     public boolean pharmacyExists(Pharmacy p) {
@@ -37,4 +44,13 @@ public abstract class PharmacyServiceBase implements PharmacyService {
         //TODO: check if null!!
         return pharmacy.getMedicines().stream().filter(x -> x.getMedicine().getId().equals(medicine.getId())).findFirst().get();
     }
+
+    @Override
+    public Pharmacy updatePharmacyRating(Pharmacy pharmacy) {
+        double rating = ratingService.getPharmacyAverage(pharmacy);
+        pharmacy.setRating(rating);
+        return save(pharmacy);
+    }
+
+
 }

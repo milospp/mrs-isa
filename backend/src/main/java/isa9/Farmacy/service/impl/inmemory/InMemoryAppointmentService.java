@@ -75,4 +75,9 @@ public class InMemoryAppointmentService extends AppointmentServiceBase implement
     public Boolean patientCanRateDoctor(Patient patient, Doctor doctor) {
         throw new NotYetImplementedException();
     }
+
+    @Override
+    public Boolean patientHadAppointmentInPharmacy(Patient patient, Pharmacy pharmacy) {
+        throw new NotYetImplementedException();
+    }
 }

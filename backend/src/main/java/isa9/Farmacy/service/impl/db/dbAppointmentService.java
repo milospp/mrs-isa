@@ -51,4 +51,12 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
         if (appointment == null) return false;
         else return true;
     }
+
+    @Override
+    public Boolean patientHadAppointmentInPharmacy(Patient patient, Pharmacy pharmacy) {
+        Appointment appointment;
+        appointment = appointmentRepository.findFirstByPharmacyAndExamination_PatientAndExamination_Status(pharmacy,patient,ExaminationStatus.HELD);
+        if (appointment == null) return false;
+        else return true;
+    }
 }

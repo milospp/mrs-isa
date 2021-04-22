@@ -22,6 +22,7 @@ public class PharmacyToPharmacyDTO implements Converter<Pharmacy, PharmacyDTO> {
         dto.setName(pharmacy.getName());
         dto.setAddress(pharmacy.getAddress());
         dto.setDescription(pharmacy.getDescription());
+        dto.setRating(pharmacy.getRating());
 
         return dto;
     }

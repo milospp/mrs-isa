@@ -10,6 +10,7 @@ public abstract class RatingServiceBase implements RatingService {
     protected AppointmentService appointmentService;
     protected MedicineService medicineService;
     protected MedReservationService medReservationService;
+    protected PharmacyService pharmacyService;
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -29,6 +30,19 @@ public abstract class RatingServiceBase implements RatingService {
     @Autowired
     public void setMedReservationService(MedReservationService medReservationService) {
         this.medReservationService = medReservationService;
+    }
+
+    @Autowired
+    public void setPharmacyService(PharmacyService pharmacyService) {
+        this.pharmacyService = pharmacyService;
+    }
+
+
+    @Override
+    public Boolean isRateValid(int rating) {
+        if (rating < 1) return false;
+        if (rating > 5) return false;
+        return true;
     }
 
     @Override
@@ -51,6 +65,7 @@ public abstract class RatingServiceBase implements RatingService {
     public Rating rateDoctor(Long doctorId, Long userId, int rate) {
         Doctor doctor = userService.getDoctorById(doctorId);
         Patient patient = userService.getPatientById(userId);
+        if (!isRateValid(rate)) return null;
         if (doctor == null || patient == null) return null;
 
         Rating rating = getPatientDoctorRate(patient, doctor);
@@ -84,6 +99,7 @@ public abstract class RatingServiceBase implements RatingService {
     public Rating rateMedicine(Long medicineId, Long userId, int rate) {
         Medicine medicine = medicineService.findOne(medicineId);
         Patient patient = userService.getPatientById(userId);
+        if (!isRateValid(rate)) return null;
         if (medicine == null || patient == null) return null;
 
         Rating rating = getPatientMedicineRate(patient, medicine);
@@ -98,4 +114,42 @@ public abstract class RatingServiceBase implements RatingService {
 
         return null;
     }
+
+
+    // Pharmacy rate
+    @Override
+    public double getPharmacyAverage(Pharmacy pharmacy) {
+        return getPharmacyAverage(pharmacy.getId());
+    }
+
+    @Override
+    public Rating getPatientPharmacyRate(Long patientId, Long pharmacyId) {
+        Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
+        Patient patient = userService.getPatientById(patientId);
+        if (pharmacy == null || patient == null) return null;
+
+        return getPatientPharmacyRate(patient, pharmacy);
+    }
+
+    @Override
+    public Rating ratePharmacy(Long pharmacyId, Long userId, int rate) {
+        Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
+        Patient patient = userService.getPatientById(userId);
+        if (!isRateValid(rate)) return null;
+        if (pharmacy == null || patient == null) return null;
+
+        Rating rating = getPatientPharmacyRate(patient, pharmacy);
+
+        if (medReservationService.patientConsumedMedInPharmacy(patient,pharmacy) || appointmentService.patientHadAppointmentInPharmacy(patient, pharmacy)){
+            rating.setRating(rate);
+            Rating ret = save(rating);
+
+            pharmacyService.updatePharmacyRating(pharmacy);
+            return ret;
+        }
+
+        return null;
+    }
+
+
 }
