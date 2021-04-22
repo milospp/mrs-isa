@@ -2,6 +2,7 @@ package isa9.Farmacy.service;
 
 import isa9.Farmacy.model.MedReservation;
 import isa9.Farmacy.model.Medicine;
+import isa9.Farmacy.model.Patient;
 import isa9.Farmacy.model.Pharmacy;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
 
@@ -14,6 +15,7 @@ public interface MedReservationService extends GenericService<MedReservation> {
     MedReservation getByCode(String code);
     MedReservation dispenseMedicine(MedReservation medReservation);
 
+    Boolean patientConsumedMedicine(Patient patient, Medicine medicine);
 
     void checkForExpiredReservations();
 }

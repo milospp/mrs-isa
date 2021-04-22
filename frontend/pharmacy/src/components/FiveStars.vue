@@ -1,15 +1,15 @@
 <template>
     <div class="rate">
-        <input type="radio" id="star5" name="rate" value="5" @input="changePageTitle" v-model="modelValue" />
-        <label for="star5" title="text">5 stars</label>
-        <input type="radio" id="star4" name="rate" value="4" @input="changePageTitle" v-model="modelValue" />
-        <label for="star4" title="text">4 stars</label>
-        <input type="radio" id="star3" name="rate" value="3" @input="changePageTitle" v-model="modelValue" />
-        <label for="star3" title="text">3 stars</label>
-        <input type="radio" id="star2" name="rate" value="2" @input="changePageTitle" v-model="modelValue" />
-        <label for="star2" title="text">2 stars</label>
-        <input type="radio" id="star1" name="rate" value="1" @input="changePageTitle" v-model="modelValue" />
-        <label for="star1" title="text">1 star</label>
+        <input type="radio" :id="inputId+'star5'" name="rate" value="5" @input="changePageTitle" v-model="modelValue" />
+        <label :for="inputId+'star5'" title="text">5 stars</label>
+        <input type="radio" :id="inputId+'star4'" name="rate" value="4" @input="changePageTitle" v-model="modelValue" />
+        <label :for="inputId+'star4'" title="text">4 stars</label>
+        <input type="radio" :id="inputId+'star3'" name="rate" value="3" @input="changePageTitle" v-model="modelValue" />
+        <label :for="inputId+'star3'" title="text">3 stars</label>
+        <input type="radio" :id="inputId+'star2'" name="rate" value="2" @input="changePageTitle" v-model="modelValue" />
+        <label :for="inputId+'star2'" title="text">2 stars</label>
+        <input type="radio" :id="inputId+'star1'" name="rate" value="1" @input="changePageTitle" v-model="modelValue" />
+        <label :for="inputId+'star1'" title="text">1 star</label>
     </div>
 </template>
 
@@ -17,14 +17,23 @@
 export default {
 
  props: {
-    modelValue: String // previously was `value: String`
+    modelValue: String, // previously was `value: String`
+    inputId: {
+        type: String,
+        default: "",
+    }
   },
   emits: ['update:modelValue'],
   methods: {
     changePageTitle(title) {
       this.$emit('update:modelValue', title.target.value) // previously was `this.$emit('input', title)`
     }
-  }
+  },
+  data () {
+    return {
+      id: null
+    }
+  }, 
 
 }
 </script>

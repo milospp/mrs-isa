@@ -58,6 +58,13 @@ class UtilService {
     else return "Expired";
   }
 
+  formatRatingBracket(rating) {
+    if (rating < 1 || rating > 5) return "";
+    let rounded = Math.round(rating*10)/10;
+
+    return " ( " + rounded + " / 5 )";
+  }
+
 }
 
 export default new UtilService();

@@ -21,4 +21,12 @@ public interface RatingService extends GenericService<Rating> {
     Rating getPatientDoctorRate(Long patientId, Long doctorId);
     Rating rateDoctor(Long doctorId, Long userId, int rating);
 
+
+    double getMedicineAverage(Medicine medicine);
+    double getMedicineAverage(Long medicineId);
+
+    Rating getPatientMedicineRate(Patient patient, Medicine medicine);
+    Rating getPatientMedicineRate(Long patientId, Long medicineId);
+    Rating rateMedicine(Long medicineId, Long userId, int rating);
+
 }

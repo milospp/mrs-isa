@@ -87,8 +87,8 @@
         <div v-if="selectedAppointment.examination.status == 'HELD' && selectedAppointment.voted != null" class="rating-section">
           <hr>
           <h4>Rate Doctor: <strong>{{selectedAppointment.doctor.name}} {{selectedAppointment.doctor.surname}}</strong></h4>
-          <RatingStars v-model="ratingValue" />
-          <button  class="btn btn-primary" v-bind:disabled="!isRatingValid || selectedAppointment.voted==ratingValue" v-on:click="rateDoctor(selectedAppointment ,ratingValue)" >{{voteButtonText}}  ( {{ratingValue}} )</button>
+          <RatingStars v-model="ratingValue" inputId="p-h-"/>
+          <button  class="btn btn-primary" v-bind:disabled="!isRatingValid || selectedAppointment.voted==ratingValue" v-on:click="rateDoctor(selectedAppointment ,ratingValue)" >{{voteButtonText}} {{ratingBracketValue}}</button>
         </div>
       </div>
       <div class="modal-footer">
@@ -237,7 +237,7 @@ export default {
 
         showModal(appointment) {
           this.selectedAppointment = appointment;
-          this.ratingValue = 0;  
+          this.ratingValue = "0";  
         
           PatientDataService.getUserRating(appointment.examination.patient, appointment.doctor).then(response => {
             if (response.data) {
@@ -292,14 +292,21 @@ export default {
       else return true;
     },
     voteButtonText() {
+      if (this.selectedAppointment.voted <= 0)
+        return "Submit Vote";
+
       if (this.selectedAppointment.voted == this.ratingValue){
         return "Already voted";
       }
       
-      if (this.selectedAppointment.voted > 0)
-        return "Resubmit Vote";
-      else "Submit Vote";
-    }
+      return "Resubmit Vote";
+
+    },
+
+        ratingBracketValue(){
+            if (this.ratingValue>0) return " ( "+ this.ratingValue +" )";
+            return "";
+        }
   },
 
   mounted() {

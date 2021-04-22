@@ -1,5 +1,7 @@
 <template>
 <div>
+  <RatingModal modalId="rating-modal" v-model="rating" @rated="rateMedicine"></RatingModal>
+
   <h3>Reservations</h3>
   <table class="table table-striped">
     <thead>
@@ -17,7 +19,7 @@
     <tbody>
       <tr v-for="r in reservations" v-bind:key="r.id" v-bind:style="{ background: r.canceled ? '#aaa' : ''}">
         <td>{{r.code}}</td>
-        <td>{{r.medicineInPharmacy.medicine.name}}</td>
+        <td>{{r.medicineInPharmacy.medicine.name}} {{UtilService.formatRatingBracket(r.medicineInPharmacy.medicine.rating)}}</td>
         <td>{{r.quantity}}</td>
         <td>{{UtilService.formatDate(r.reservationDate)}}</td>
         <td>{{UtilService.formatDate(r.lastDate)}}</td>
@@ -33,6 +35,9 @@
         </td>
         <td v-if="r.status == 1">
           <!-- <router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: s.id  }}">View</router-link> -->
+          <button type="button" class="btn btn-primary" v-on:click="ratingModal(r)" data-toggle="modal" data-target="#rating-modal">
+            {{getMyVote(r)>0 ? "Change Rate": "Rate"}}
+          </button>
           <span class="badge badge-default">TAKEN</span>
         </td>
         <td v-if="r.status == 2">
@@ -56,15 +61,28 @@
 <script>
     import PatientDataService from '@/service/PatientDataService.js';
     import UtilService from '@/service/UtilService.js';
+    import RatingModal from '@/components/RatingModal.vue';
+    import MedicineDataService from '@/service/MedicineDataService.js';
 
 export default {
     setup() {
       return { UtilService }
     },
 
+  components: {
+    RatingModal,
+  },
+
 	data: function () {
 		return {
       reservations: {},
+      rating: {
+        title: "",
+        body: "",
+        ratingValue: "0",
+        oldValue: null,
+        medicine: null,
+      }
 		}
 	},
   methods: {
@@ -78,6 +96,28 @@ export default {
                 });
         },
 
+        ratingModal(r) {
+          this.rating.medicine = r.medicineInPharmacy.medicine;
+          this.rating.title = "Medicine Rating"
+          this.rating.body = "[" +r.medicineInPharmacy.medicine.code+ "] " + r.medicineInPharmacy.medicine.name + " - (" + r.medicineInPharmacy.medicine.manufacturer + ")";
+          console.log (this.rating.body);
+
+          MedicineDataService.getUserRating(this.id, r.medicineInPharmacy.medicine.id).then(response => {
+            if (response.data) {
+              this.rating.ratingValue = "" + response.data.rating;
+
+              console.log(response.data);
+              if (response.data.rating > 0)
+                this.rating.oldValue = this.rating.ratingValue;
+              else
+                this.rating.oldValue = null;
+              console.log( this.rating.oldValue);
+
+            }
+          });
+
+        },
+
         cancel(obj) {
           PatientDataService.cancelReservation(obj.id).then( response => {
             obj.canceled = true;
@@ -86,6 +126,39 @@ export default {
           });
           console.log(obj);
         },
+
+        getMyVote(r){
+          MedicineDataService.getUserRating(this.id, r.medicineInPharmacy.medicine.id).then(response => {
+            if (response.data) {
+              r.voted = response.data.rating
+            }
+          });
+          return r.voted;
+        },
+
+        rateMedicine() {
+
+          let medicine = this.rating.medicine;
+          let rating = this.rating.ratingValue;
+
+          if (rating < 1 || rating > 5) {
+            alert("Wrong rate value");
+            return
+          }
+
+          let rateObject = {
+            user: this.id,
+            rating: rating
+          }
+        
+          MedicineDataService.rateMedicine(medicine, rateObject).then(response => {
+            if (response.data) {
+              this.loadPatientReservations();
+              $("#rating-modal").modal('hide');
+              alert("Successfully voted!");
+            }
+          });
+        }
 
 
     },

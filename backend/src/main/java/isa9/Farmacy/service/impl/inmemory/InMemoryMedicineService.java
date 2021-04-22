@@ -16,9 +16,9 @@ public class InMemoryMedicineService extends MedicineServiceBase implements Medi
 
     InMemoryMedicineService() {
         Medicine med1 = new Medicine(1L, "AZP2", "Phiiizer", "Some good thinkgs",
-                "MAANAF", "Do not drive", 2, "Pills", "AntiDepresive", DispencingMedicine.WITH_RECEIPT, null);
+                "MAANAF", "Do not drive", 2, "Pills", "AntiDepresive", DispencingMedicine.WITH_RECEIPT, null, 0.0);
         Medicine med2= new Medicine(2L, "GSP2", "Phiiizer", "Some good thinkgs",
-                "MAANAF", "Do not drive", 2, "Pills", "AntiDepresive", DispencingMedicine.WITH_RECEIPT, new HashSet<Medicine>(Arrays.asList(med1)));
+                "MAANAF", "Do not drive", 2, "Pills", "AntiDepresive", DispencingMedicine.WITH_RECEIPT, new HashSet<Medicine>(Arrays.asList(med1)), 0.0);
         medicines.put(med1.getCode(), med1);
         medicines.put(med2.getCode(), med2);
     }
