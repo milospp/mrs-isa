@@ -340,10 +340,17 @@ export default {
           this.sviZaposleniDermatolozi = response.data;});
     },
     methods : {
-      podesi(farm_der) { this.otpustiRadnika = farm_der; alert("podesili");},
+      podesi(farm_der) { this.otpustiRadnika = farm_der; },
       otpusti(jesteFarmaceut) {
-        if (jesteFarmaceut) {alert("Dosli tu");}
-
+        if (jesteFarmaceut) {
+          PharmacistDataService.firePharmacist(this.id, this.otpustiRadnika)        
+          .then(response => {
+            if (response.data == 0) { alert("You successfully fired a pharmacist"); return true;} 
+            else if (response.data == -1) { alert("Something goes wrong"); return false;}
+            alert("Doctor has some review and you can't fire him or her!");
+            return false;});
+        }
+        else {}
       },
       filter(filtDermatologa) {
         var suma = this.filterIme.length + this.filterPrez.length + this.filterBroj 

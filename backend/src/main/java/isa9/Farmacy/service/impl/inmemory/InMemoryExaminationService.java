@@ -2,6 +2,7 @@ package isa9.Farmacy.service.impl.inmemory;
 
 import isa9.Farmacy.model.Appointment;
 import isa9.Farmacy.model.Examination;
+import isa9.Farmacy.model.ExaminationStatus;
 import isa9.Farmacy.service.AppointmentService;
 import isa9.Farmacy.service.ExaminationService;
 import isa9.Farmacy.service.impl.base.AppointmentServiceBase;
@@ -43,4 +44,12 @@ public class InMemoryExaminationService extends ExaminationServiceBase implement
     }
 
 
+    @Override
+    public List<Examination> getPharmacistFutureExaminations(Long idfarmaceuta) {
+        List<Examination> svi = findAll();
+        List<Examination> povratnaVrednost = new ArrayList<>();
+        for (Examination e : svi) if (e.getAppointment().getDoctor().getId().equals(idfarmaceuta)) {
+            if (e.getStatus().equals(ExaminationStatus.NOT_HELD)) povratnaVrednost.add(e);}
+        return povratnaVrednost;
+    }
 }

@@ -10,7 +10,7 @@ class PharmacistDataService {
       url: API_URL + "/api/users/register/pharmacist/" + idAdmina,
       data: promenljiva
     }).then(response => {
-      if (response.data == 0) { alert("you successfully hired a pharmacist"); return true;} 
+      if (response.data == 0) { alert("You successfully hired a pharmacist"); return true;} 
       alert("Email is not unique!");
       return false;
     });
@@ -27,6 +27,22 @@ class PharmacistDataService {
       console.log("Error");
       console.log(error.config);
     });
+  }
+
+  firePharmacist(adminId, farmaceut) {
+    return axios({
+      method: 'post',
+      url: API_URL + "/api/users/pharmacist/fire/" + adminId,
+      data: farmaceut
+    }).catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+        } else if (error.request) {
+          console.log(error.request);
+        }
+        console.log("Error");
+        console.log(error.config);
+      });
   }
   
   searchPharmacistAdmin(idAdminaApoteke, search) {

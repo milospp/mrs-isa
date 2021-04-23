@@ -2,10 +2,7 @@ package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.*;
-import isa9.Farmacy.service.MedReservationService;
-import isa9.Farmacy.service.PharmacyService;
-import isa9.Farmacy.service.RatingService;
-import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.service.*;
 import isa9.Farmacy.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +21,7 @@ public class UserController {
     private final PharmacyService pharmacyService;
     private final MedReservationService medReservationService;
     private final RatingService ratingService;
+    private final ExaminationService examinationService;
 
     private final PatientToPatientDTO patientToPatientDTO;
     private final MedicineToMedicineDTO medicineToMedicineDTO;
@@ -39,7 +37,7 @@ public class UserController {
     private final UserDTOToUser userDTOToUser;
 
     @Autowired
-    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, RatingService ratingService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO, DoctorToDoctorDTO doctorToDoctorDTO, UserToUserDTO userToUserDTO, RatingToRatingDTO ratingToRatingDTO, UserDTOToUser userDTOToUser) {
+    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, RatingService ratingService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO, DoctorToDoctorDTO doctorToDoctorDTO, UserToUserDTO userToUserDTO, RatingToRatingDTO ratingToRatingDTO, UserDTOToUser userDTOToUser, ExaminationService examinationService) {
         this.userService = userService;
         this.pharmacyService = pharmacyService;
         this.medReservationService = medReservationService;
@@ -55,6 +53,7 @@ public class UserController {
         this.userToUserDTO = userToUserDTO;
         this.ratingToRatingDTO = ratingToRatingDTO;
         this.userDTOToUser = userDTOToUser;
+        this.examinationService = examinationService;
     }
 
     @GetMapping("tmp-test")
@@ -245,7 +244,7 @@ public class UserController {
         w.setEndHour(LocalTime.parse(user.getEndHour()));
         user.getRegisterData().getWorking().add(w);
         // tehnicki suvisna provera ali dok ne sredimo registraciju
-        User createdUser = userService.save(user.getRegisterData());
+        userService.save(user.getRegisterData());
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
@@ -412,6 +411,28 @@ public class UserController {
                 povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @PostMapping("/pharmacist/fire/{idAdmina}")
+    public ResponseEntity<Integer> firePharmacist(@PathVariable Long idAdmina, @RequestBody PharmacistDTO zaBrisanje) {
+        List<User> svi = userService.findAll();
+        int okej = 1;
+        if (userService.findOne(idAdmina).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(-1, HttpStatus.OK);
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(idAdmina);
+        for (User u : svi) if (u.getClass() == Pharmacist.class) {
+            Pharmacist farmaceut = (Pharmacist) u;
+            List<Examination> sviPregledi = this.examinationService.getPharmacistFutureExaminations(farmaceut.getId());
+            if (farmaceut.getName().equals(zaBrisanje.getName()) && farmaceut.getSurname().equals(zaBrisanje.getSurname())
+                && !farmaceut.getWorking().isEmpty()
+                && farmaceut.getWorking().iterator().next().getPharmacy().getId().equals(admin.getPharmacy().getId()))
+                    if (sviPregledi.isEmpty()) {
+                        farmaceut.setWorking(new HashSet<>());
+                        okej = 0;
+                        userService.save(farmaceut);
+                        break;
+                    }
+        }
+        return new ResponseEntity<>(okej, HttpStatus.OK);
     }
 
     @GetMapping("/pharmacists/pharmacy/{id}/{search}")
