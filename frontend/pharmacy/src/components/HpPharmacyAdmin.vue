@@ -15,7 +15,7 @@
                     <input type="submit" class="btn btn-primary" value="Add pharmacist"></form> </td>
             <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
             <td align="left"> <form v-on:submit.prevent="">
-                    <input type="submit" class="btn btn-primary" value="Add dermatologist"></form> </td>
+                    <input type="submit" class="btn btn-primary" value="Hire a dermatologist"></form> </td>
             <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
             <td align="left"> <form v-on:submit.prevent="">
                     <input type="submit" class="btn btn-primary" value="Add medicine"></form> </td>
@@ -90,6 +90,7 @@
                   <th>Last name</th>
                   <th>Address</th>
                   <th>Phone number</th>
+                  <th>&emsp;</th>
                 </thead>
                 <tbody>
                     <tr :key="f.username" v-for="f in this.sviZaposleniFarmaceuti">
@@ -97,6 +98,7 @@
                       <td>{{f.surname}}</td>
                       <td>{{f.address["state"]}}, {{f.address["city"]}}, {{f.address["street"]}}, {{f.address["number"]}}</td>
                       <td>{{f.phoneNumber}}</td>
+                      <td><form v-on:click.prevent="podesi(f)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#potvrda">Fire</button></form></td>
                   </tr>
                 </tbody>
               </table>
@@ -263,6 +265,24 @@
     </div>
   </div>
 
+   <!-- potvrda -->
+  <div class="modal fade" id="potvrda" tabindex="-1" role="dialog" aria-labelledby="Potvrda" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="Potvrdica">Are you sure you want to fire this person?</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+         <div class="modal-footer">
+          <button type="button" class="btn btn-primary" v-on:click.prevent="otpusti(true)" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <script>
@@ -288,6 +308,7 @@ export default {
             dermaSearch: "", pharmaSearch: "",
             filterIme: "", filterPrez: "", filterBroj: "",
             filterAdrD: "", filterAdrG: "", filterAdrU: "", filterAdrB: "", 
+            otpustiRadnika: null,
         };
     },
     created() {
@@ -319,6 +340,11 @@ export default {
           this.sviZaposleniDermatolozi = response.data;});
     },
     methods : {
+      podesi(farm_der) { this.otpustiRadnika = farm_der; alert("podesili");},
+      otpusti(jesteFarmaceut) {
+        if (jesteFarmaceut) {alert("Dosli tu");}
+
+      },
       filter(filtDermatologa) {
         var suma = this.filterIme.length + this.filterPrez.length + this.filterBroj 
           + this.filterAdrD.length + this.filterAdrG.length + this.filterAdrU.length + this.filterAdrB.length;

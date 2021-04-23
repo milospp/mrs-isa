@@ -238,11 +238,14 @@ public class UserController {
         User adminUser = userService.findOne(id);
         if (adminUser.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(1, HttpStatus.NOT_FOUND);
         user.getRegisterData().setWorking(new HashSet<>());
-        user.getRegisterData().getWorking().add(new Work(1L, user.getRegisterData(), ((PharmacyAdmin) adminUser).getPharmacy(), LocalTime.parse(user.getStartHour()), LocalTime.parse(user.getEndHour())));
-        //user.setPharmacy();
+        Work w = new Work();
+        w.setDoctor(user.getRegisterData());
+        w.setPharmacy(((PharmacyAdmin) adminUser).getPharmacy());
+        w.setStartHour(LocalTime.parse(user.getStartHour()));
+        w.setEndHour(LocalTime.parse(user.getEndHour()));
+        user.getRegisterData().getWorking().add(w);
         // tehnicki suvisna provera ali dok ne sredimo registraciju
         User createdUser = userService.save(user.getRegisterData());
-        System.out.println(createdUser);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 

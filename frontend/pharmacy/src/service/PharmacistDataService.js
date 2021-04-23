@@ -10,12 +10,11 @@ class PharmacistDataService {
       url: API_URL + "/api/users/register/pharmacist/" + idAdmina,
       data: promenljiva
     }).then(response => {
-      if (response.data == 0) return true; 
+      if (response.data == 0) { alert("you successfully hired a pharmacist"); return true;} 
       alert("Email is not unique!");
       return false;
     });
   }
-
   
   getAllPharmacistAdmin(idAdminaApoteke) {
     return axios.get(API_URL + "/api/users/pharmacists/admin/" + idAdminaApoteke)
@@ -29,7 +28,6 @@ class PharmacistDataService {
       console.log(error.config);
     });
   }
-
   
   searchPharmacistAdmin(idAdminaApoteke, search) {
     return axios.get(API_URL + "/api/users/pharmacists/admin/" + idAdminaApoteke + "/" + search)
