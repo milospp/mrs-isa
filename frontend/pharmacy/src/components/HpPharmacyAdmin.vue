@@ -182,7 +182,7 @@
         <div class="modal-body" align="left">Name: <input type="text" v-model="pharmacyName" placeholder=pharmacyName/></div>
         <div class="modal-body" align="left">Description: <input type="text" v-model="pharmacyDesc" placeholder=pharmacyDesc/></div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" v-on:click.prevent="proveraApoteka()">Save changes</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="proveraApoteka()">Save changes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -208,7 +208,7 @@
         <div class="modal-body" align="left">Price: <input type="text" v-model="price" placeholder=quantity/></div>
         <div class="modal-body" align="left">Quantity: <input type="text" v-model="quantity" placeholder=quantity/></div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" v-on:click.prevent="provera()">Save changes</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="provera()">Save changes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -233,7 +233,7 @@
         <div class="modal-body" align="left">Street: <input type="text" v-model="filterAdrU"/></div>
         <div class="modal-body" align="left">Number: <input type="text" v-model="filterAdrB"/></div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" v-on:click.prevent="filter(true)">Seaarch</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="filter(true)">Seaarch</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -258,7 +258,7 @@
         <div class="modal-body" align="left">Street: <input type="text" v-model="filterAdrU"/></div>
         <div class="modal-body" align="left">Number: <input type="text" v-model="filterAdrB"/></div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" v-on:click.prevent="filter(false)">Seaarch</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="filter(false)">Seaarch</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -361,7 +361,7 @@ export default {
         }
 
         if (filtDermatologa) {            // za dermatologe
-          DermatologistDataService.filterDermatologistAdmin(this.id, this.filterIme, this.filterPrez, this.filterBroj, 
+          DermatologistDataService.filterDermatologistAdmin(this.id, this.dermaSearch, this.filterIme, this.filterPrez, this.filterBroj, 
             this.filterAdrD, this.filterAdrG, this.filterAdrU, this.filterAdrB,)
             .then(response => {
               this.sviZaposleniDermatolozi = response.data;});

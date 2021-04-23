@@ -58,9 +58,8 @@ class PharmacistDataService {
     });
   }
 
-  filterPharmacistAdmin(idAdminaApoteke, search ,filterIme, filterPrez, filterBroj, 
+  filterPharmacistAdmin(idAdminaApoteke, search, filterIme, filterPrez, filterBroj, 
       filterAdrD, filterAdrG, filterAdrU, filterAdrB) {
-        alert(search + "  " + filterPrez);
     if (search.length == 0) search = "-";
     if (filterIme.length == 0) filterIme = "-";
     if (filterPrez.length == 0) filterPrez = "-";
@@ -112,7 +111,7 @@ class PharmacistDataService {
     });
   }
 
-  filterPharmacistPharmacy(idAdminaApoteke, search, filterIme, filterPrez, filterBroj, 
+  filterPharmacistPharmacy(idApoteke, search, filterIme, filterPrez, filterBroj, 
     filterAdrD, filterAdrG, filterAdrU, filterAdrB) {
   if (search.length == 0) search = "-";
   if (filterIme.length == 0) filterIme = "-";
@@ -126,7 +125,7 @@ class PharmacistDataService {
     "filterAdrD": filterAdrD, "filterAdrG": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
   return axios({
     method: 'post',
-    url: API_URL + "/api/users/pharmacists/pharmacy/" + idAdminaApoteke,
+    url: API_URL + "/api/users/pharmacists/pharmacy/" + idApoteke,
     data: objekat
   }).catch(function (error) {
     if (error.response) {
