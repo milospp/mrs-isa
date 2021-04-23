@@ -450,22 +450,22 @@ public class UserController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
-    @GetMapping("/pharmacists/pharmacy/{id}/{ime}/{prez}/{br}/{adrD}/{adrG}/{adrU}/{adrB}")
-    public ResponseEntity<List<PharmacistDTO>> filterPharmacistsPharmacy(@PathVariable Long id,
-            @PathVariable String ime, @PathVariable String prez, @PathVariable String br, @PathVariable String adrD,
-            @PathVariable String adrG, @PathVariable String adrU, @PathVariable String adrB) {
+    @PostMapping("/pharmacists/pharmacy/{id}")
+    public ResponseEntity<List<PharmacistDTO>> filterPharmacistsPharmacy(@PathVariable Long id, @RequestBody SearchHelp podaci) {
         List<User> svi = userService.findAll();
         List<PharmacistDTO> povratna = new ArrayList<>();
         for (User u : svi) if (u.getClass() == Pharmacist.class) {
             Pharmacist farmaceut = (Pharmacist) u;
             if (!farmaceut.getWorking().isEmpty() && farmaceut.getWorking().iterator().next().getPharmacy().getId().equals(id))
-                if (farmaceut.getName().toLowerCase().contains(ime.toLowerCase())||
-                        farmaceut.getSurname().toLowerCase().contains(prez.toLowerCase()) ||
-                        farmaceut.getAddress().getState().toLowerCase().contains(adrD.toLowerCase()) ||
-                        farmaceut.getAddress().getCity().toLowerCase().contains(adrG.toLowerCase()) ||
-                        farmaceut.getAddress().getStreet().toLowerCase().contains(adrU.toLowerCase()) ||
-                        farmaceut.getAddress().getNumber().toLowerCase().contains(adrB.toLowerCase()) ||
-                        farmaceut.getPhoneNumber().toLowerCase().contains(br.toLowerCase())) {
+                if (farmaceut.getName().toLowerCase().contains(podaci.getFilterIme().toLowerCase())||
+                        farmaceut.getSurname().toLowerCase().contains(podaci.getFilterPrez().toLowerCase()) ||
+                        farmaceut.getAddress().getState().toLowerCase().contains(podaci.getFilterAdrD().toLowerCase()) ||
+                        farmaceut.getAddress().getCity().toLowerCase().contains(podaci.getFilterAdrG().toLowerCase()) ||
+                        farmaceut.getAddress().getStreet().toLowerCase().contains(podaci.getFilterAdrU().toLowerCase()) ||
+                        farmaceut.getAddress().getNumber().toLowerCase().contains(podaci.getFilterAdrB().toLowerCase()) ||
+                        farmaceut.getPhoneNumber().contains(podaci.getFilterBroj()) ||
+                        farmaceut.getName().toLowerCase().contains(podaci.getSearch().toLowerCase())||
+                        farmaceut.getSurname().toLowerCase().contains(podaci.getSearch().toLowerCase())) {
                     povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
                 }
         }

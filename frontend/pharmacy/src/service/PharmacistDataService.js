@@ -58,18 +58,24 @@ class PharmacistDataService {
     });
   }
 
-  filterPharmacistAdmin(idAdminaApoteke, filterIme, filterPrez, filterBroj, 
+  filterPharmacistAdmin(idAdminaApoteke, search ,filterIme, filterPrez, filterBroj, 
       filterAdrD, filterAdrG, filterAdrU, filterAdrB) {
-    if (filterIme.length == 0) filterIme = "nema";
-    if (filterPrez.length == 0) filterPrez = "nema";
-    if (filterBroj.length == 0) filterBroj = "nema";
-    if (filterAdrD.length == 0) filterAdrD = "nema";
-    if (filterAdrG.length == 0) filterAdrG = "nema";
-    if (filterAdrU.length == 0) filterAdrU = "nema";
-    if (filterAdrB.length == 0) filterAdrB = "nema";
-    return axios.get(API_URL + "/api/users/pharmacists/admin/" + idAdminaApoteke + "/" + filterIme + "/" + filterPrez
-        + "/" + filterBroj + "/" + filterAdrD + "/" + filterAdrG + "/" + filterAdrU + "/" + filterAdrB)
-    .catch(function (error) {
+        alert(search + "  " + filterPrez);
+    if (search.length == 0) search = "-";
+    if (filterIme.length == 0) filterIme = "-";
+    if (filterPrez.length == 0) filterPrez = "-";
+    if (filterBroj.length == 0) filterBroj = "-";
+    if (filterAdrD.length == 0) filterAdrD = "-";
+    if (filterAdrG.length == 0) filterAdrG = "-";
+    if (filterAdrU.length == 0) filterAdrU = "-";
+    if (filterAdrB.length == 0) filterAdrB = "-";
+    var objekat = {"search" : search, "filterIme": filterIme, "filterPrez": filterIme, "filterBroj": filterBroj,
+      "filterAdrD": filterAdrD, "filterAdrD": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
+    return axios({
+      method: 'post',
+      url: API_URL + "/api/users/pharmacists/admin/" + idAdminaApoteke,
+      data: objekat
+    }).catch(function (error) {
       if (error.response) {
         console.log(error.response.data);
       } else if (error.request) {
@@ -106,27 +112,32 @@ class PharmacistDataService {
     });
   }
 
-  filterPharmacistPharmacy(idApoteke, filterIme, filterPrez, filterBroj, 
+  filterPharmacistPharmacy(idAdminaApoteke, search, filterIme, filterPrez, filterBroj, 
     filterAdrD, filterAdrG, filterAdrU, filterAdrB) {
-    if (filterIme.length == 0) filterIme = "nema";
-    if (filterPrez.length == 0) filterPrez = "nema";
-    if (filterBroj.length == 0) filterBroj = "nema";
-    if (filterAdrD.length == 0) filterAdrD = "nema";
-    if (filterAdrG.length == 0) filterAdrG = "nema";
-    if (filterAdrU.length == 0) filterAdrU = "nema";
-    if (filterAdrB.length == 0) filterAdrB = "nema";
-    return axios.get(API_URL + "/api/users/pharmacists/pharmacy/" + idApoteke + "/" + filterIme + "/" + filterPrez
-        + "/" + filterBroj + "/" + filterAdrD + "/" + filterAdrG + "/" + filterAdrU + "/" + filterAdrB)
-    .catch(function (error) {
-      if (error.response) {
-        console.log(error.response.data);
-      } else if (error.request) {
-        console.log(error.request);
-      }
-      console.log("Error");
-      console.log(error.config);
-    });
-  }
+  if (search.length == 0) search = "-";
+  if (filterIme.length == 0) filterIme = "-";
+  if (filterPrez.length == 0) filterPrez = "-";
+  if (filterBroj.length == 0) filterBroj = "-";
+  if (filterAdrD.length == 0) filterAdrD = "-";
+  if (filterAdrG.length == 0) filterAdrG = "-";
+  if (filterAdrU.length == 0) filterAdrU = "-";
+  if (filterAdrB.length == 0) filterAdrB = "-";
+  var objekat = {"search" : search, "filterIme": filterIme, "filterPrez": filterIme, "filterBroj": filterBroj,
+    "filterAdrD": filterAdrD, "filterAdrG": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
+  return axios({
+    method: 'post',
+    url: API_URL + "/api/users/pharmacists/pharmacy/" + idAdminaApoteke,
+    data: objekat
+  }).catch(function (error) {
+    if (error.response) {
+      console.log(error.response.data);
+    } else if (error.request) {
+      console.log(error.request);
+    }
+    console.log("Error");
+    console.log(error.config);
+  });
+}
 
   getPharmacist(id){
     return axios.get(`${API_URL}/api/users/` + id);

@@ -367,7 +367,7 @@ export default {
               this.sviZaposleniDermatolozi = response.data;});
         }
         else {                            // za farmaceute
-          PharmacistDataService.filterPharmacistAdmin(this.id, this.filterIme, this.filterPrez, this.filterBroj, 
+          PharmacistDataService.filterPharmacistAdmin(this.id, this.pharmaSearch, this.filterIme, this.filterPrez, this.filterBroj, 
             this.filterAdrD, this.filterAdrG, this.filterAdrU, this.filterAdrB,)
             .then(response => {
               this.sviZaposleniFarmaceuti = response.data;});
