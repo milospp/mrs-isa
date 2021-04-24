@@ -14,8 +14,8 @@
             <td align="left"> <form v-on:submit.prevent="DodajFarmaceuta()">
                     <input type="submit" class="btn btn-primary" value="Add pharmacist"></form> </td>
             <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
-            <td align="left"> <form v-on:submit.prevent="">
-                    <input type="submit" class="btn btn-primary" value="Hire a dermatologist"></form> </td>
+            <td align="left"> <form v-on:submit.prevent="ZaposliDermatologa()">
+                    <input type="submit" class="btn btn-primary" value="Hire a dermatologist"></form></td>
             <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
             <td align="left"> <form v-on:submit.prevent="">
                     <input type="submit" class="btn btn-primary" value="Add medicine"></form> </td>
@@ -93,7 +93,7 @@
                   <th>&emsp;</th>
                 </thead>
                 <tbody>
-                    <tr :key="f.username" v-for="f in this.sviZaposleniFarmaceuti">
+                    <tr :key="f.name" v-for="f in this.sviZaposleniFarmaceuti">
                       <td>{{f.name}}</td>
                       <td>{{f.surname}}</td>
                       <td>{{f.address["state"]}}, {{f.address["city"]}}, {{f.address["street"]}}, {{f.address["number"]}}</td>
@@ -130,7 +130,7 @@
                   <th>Phone number</th>
                 </thead>
                 <tbody>
-                    <tr :key="d.username" v-for="d in this.sviZaposleniDermatolozi">
+                    <tr :key="d.name" v-for="d in this.sviZaposleniDermatolozi">
                       <td>{{d.name}}</td>
                       <td>{{d.surname}}</td>
                       <td>{{d.address["state"]}}, {{d.address["city"]}}, {{d.address["street"]}}, {{d.address["number"]}}</td>
@@ -394,6 +394,9 @@ export default {
       },
       DodajFarmaceuta() {
         window.location.href = "/addPharmacist/" + this.id;
+      },
+      ZaposliDermatologa() {
+         window.location.href = "/hireDermatologist/" + this.id;
       },
       proveraApoteka() {
         if (this.pharmacyName.length == 0 || this.pharmacyDesc.length == 0) {

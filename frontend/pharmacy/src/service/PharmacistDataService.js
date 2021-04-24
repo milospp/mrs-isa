@@ -69,10 +69,10 @@ class PharmacistDataService {
     if (filterAdrU.length == 0) filterAdrU = "-";
     if (filterAdrB.length == 0) filterAdrB = "-";
     var objekat = {"search" : search, "filterIme": filterIme, "filterPrez": filterIme, "filterBroj": filterBroj,
-      "filterAdrD": filterAdrD, "filterAdrD": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
+      "filterAdrD": filterAdrD, "filterAdrG": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
     return axios({
       method: 'post',
-      url: API_URL + "/api/users/pharmacists/admin/" + idAdminaApoteke,
+      url: API_URL + "/api/users/pharm/filter/admin/" + idAdminaApoteke,
       data: objekat
     }).catch(function (error) {
       if (error.response) {
@@ -122,10 +122,10 @@ class PharmacistDataService {
   if (filterAdrU.length == 0) filterAdrU = "-";
   if (filterAdrB.length == 0) filterAdrB = "-";
   var objekat = {"search" : search, "filterIme": filterIme, "filterPrez": filterIme, "filterBroj": filterBroj,
-    "filterAdrD": filterAdrD, "filterAdrG": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
+    "filterAdrD": d.address["state"], "filterAdrG": d.address["city"], "filterAdrU": d.address["street"], "filterAdrB": d.address["number"]};
   return axios({
     method: 'post',
-    url: API_URL + "/api/users/pharmacists/pharmacy/" + idApoteke,
+    url: API_URL + "/api/users/pharm/filter/pharmacy/" + idApoteke,
     data: objekat
   }).catch(function (error) {
     if (error.response) {
