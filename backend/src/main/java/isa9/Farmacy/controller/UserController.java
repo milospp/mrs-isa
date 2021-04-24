@@ -32,6 +32,7 @@ public class UserController {
     private final DermatologistToDermatologistDTO dermatologistToDermatologistDTO;
     private final PharmacistToPharmacistDTO pharmacistToPharmacistDTO;
     private final MedReservationToMedReservationDTO medReservationToMedReservationDTO;
+    private final AppointmentToAppointmentDTO appointmentToAppointmentDTO;
     private final DoctorToDoctorDTO doctorToDoctorDTO;
     private final UserToUserDTO userToUserDTO;
     private final RatingToRatingDTO ratingToRatingDTO;
@@ -39,7 +40,7 @@ public class UserController {
     private final UserDTOToUser userDTOToUser;
 
     @Autowired
-    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, RatingService ratingService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO, DoctorToDoctorDTO doctorToDoctorDTO, UserToUserDTO userToUserDTO, RatingToRatingDTO ratingToRatingDTO, UserDTOToUser userDTOToUser) {
+    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, RatingService ratingService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO, AppointmentToAppointmentDTO appointmentToAppointmentDTO, DoctorToDoctorDTO doctorToDoctorDTO, UserToUserDTO userToUserDTO, RatingToRatingDTO ratingToRatingDTO, UserDTOToUser userDTOToUser) {
         this.userService = userService;
         this.pharmacyService = pharmacyService;
         this.medReservationService = medReservationService;
@@ -51,6 +52,7 @@ public class UserController {
         this.dermatologistToDermatologistDTO = dermatologistToDermatologistDTO;
         this.pharmacistToPharmacistDTO = pharmacistToPharmacistDTO;
         this.medReservationToMedReservationDTO = medReservationToMedReservationDTO;
+        this.appointmentToAppointmentDTO = appointmentToAppointmentDTO;
         this.doctorToDoctorDTO = doctorToDoctorDTO;
         this.userToUserDTO = userToUserDTO;
         this.ratingToRatingDTO = ratingToRatingDTO;
@@ -260,7 +262,26 @@ public class UserController {
 
         long totalCount = userService.getAllMyPatientsTotalCount(pssDTO);
 
-        return new ResponseEntity<>(new PatientsPagesDTO(totalCount, convertedList), HttpStatus.OK);
+        List<Appointment> lastAppointments = new ArrayList<>();
+        for (Patient p : list){
+            if (p.getMyExaminations().isEmpty()){System.out.println("prazan pacijent " + p.getName());}
+            else{
+                System.out.println("nije prazan pacijent " + p.getName());
+                Examination last = p.getMyExaminations().stream().iterator().next();
+                for (Examination e : p.getMyExaminations()){
+                    if (e.getAppointment().getDoctor().getId().equals(Long.valueOf(pssDTO.getSearchParams().get("doctorId")))){
+                        if (last.getAppointment().getStartTime().isAfter(e.getAppointment().getStartTime())){
+                            last = e;
+                        }
+                    }
+                }
+                lastAppointments.add(last.getAppointment());
+            }
+        }
+
+        List<AppointmentDTO> convertedAppointments = appointmentToAppointmentDTO.convert(lastAppointments);
+
+        return new ResponseEntity<>(new PatientsPagesDTO(totalCount, convertedList, convertedAppointments), HttpStatus.OK);
     }
 
     @GetMapping("all-patients")

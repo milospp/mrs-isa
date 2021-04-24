@@ -125,9 +125,11 @@ update appointment SET examination_id = 4 WHERE id = 5;
 update appointment SET examination_id = 5 WHERE id = 6;
 
 
--- insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 1);
--- insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 2);
--- insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 3);
+insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 2);
+insert into patient_my_examinations (patient_id, my_examinations_id) values (2, 1);
+insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 3);
+insert into patient_my_examinations (patient_id, my_examinations_id) values (2, 4);
+insert into patient_my_examinations (patient_id, my_examinations_id) values (3, 5);
 
 
 -- --Therapy
