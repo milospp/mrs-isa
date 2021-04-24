@@ -98,7 +98,7 @@
                       <td>{{f.surname}}</td>
                       <td>{{f.address["state"]}}, {{f.address["city"]}}, {{f.address["street"]}}, {{f.address["number"]}}</td>
                       <td>{{f.phoneNumber}}</td>
-                      <td><form v-on:click.prevent="podesi(f)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#potvrda">Fire</button></form></td>
+                      <td><form v-on:click.prevent="podesi(f, true)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#potvrda">Fire</button></form></td>
                   </tr>
                 </tbody>
               </table>
@@ -128,6 +128,7 @@
                   <th>Last name</th>
                   <th>Address</th>
                   <th>Phone number</th>
+                  <th>&emsp;</th>
                 </thead>
                 <tbody>
                     <tr :key="d.name" v-for="d in this.sviZaposleniDermatolozi">
@@ -135,6 +136,7 @@
                       <td>{{d.surname}}</td>
                       <td>{{d.address["state"]}}, {{d.address["city"]}}, {{d.address["street"]}}, {{d.address["number"]}}</td>
                       <td>{{d.phoneNumber}}</td>
+                      <td><form v-on:click.prevent="podesi(d, false)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#potvrda">Fire</button></form></td>
                   </tr>
                 </tbody>
               </table>
@@ -276,7 +278,7 @@
           </button>
         </div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" v-on:click.prevent="otpusti(true)" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-primary" v-on:click.prevent="otpusti()" data-dismiss="modal">Yes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -308,7 +310,7 @@ export default {
             dermaSearch: "", pharmaSearch: "",
             filterIme: "", filterPrez: "", filterBroj: "",
             filterAdrD: "", filterAdrG: "", filterAdrU: "", filterAdrB: "", 
-            otpustiRadnika: null,
+            otpustiRadnika: null, jesteFarmaceut: false, 
         };
     },
     created() {
@@ -340,17 +342,26 @@ export default {
           this.sviZaposleniDermatolozi = response.data;});
     },
     methods : {
-      podesi(farm_der) { this.otpustiRadnika = farm_der; },
-      otpusti(jesteFarmaceut) {
-        if (jesteFarmaceut) {
+      podesi(farm_der, jesteFar) { this.otpustiRadnika = farm_der; this.jesteFarmaceut = jesteFar;},
+      otpusti() {
+        if (this.jesteFarmaceut) {
           PharmacistDataService.firePharmacist(this.id, this.otpustiRadnika)        
           .then(response => {
             if (response.data == 0) { alert("You successfully fired a pharmacist"); return true;} 
             else if (response.data == -1) { alert("Something goes wrong"); return false;}
+            else if (response.data == 2) { alert("Refresh the page, you already fire this person"); return false;}
             alert("Doctor has some review and you can't fire him or her!");
             return false;});
         }
-        else {}
+        else {
+        DermatologistDataService.fireDermatologist(this.id, this.otpustiRadnika)        
+          .then(response => {
+            if (response.data == 0) { alert("You successfully fired a pharmacist"); return true;} 
+            else if (response.data == -1) { alert("Something goes wrong"); return false;}
+            else if (response.data == 2) { alert("Refresh the page, you already fire this person"); return false;}
+            alert("Doctor has some review and you can't fire him or her!");
+            return false;});
+        }
       },
       filter(filtDermatologa) {
         var suma = this.filterIme.length + this.filterPrez.length + this.filterBroj 
