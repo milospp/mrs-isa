@@ -93,7 +93,7 @@
                   <th>Phone number</th>
                 </thead>
                 <tbody>
-                    <tr :key="f.username" v-for="f in this.sviZaposleniFarmaceuti">
+                    <tr :key="f.name" v-for="f in this.sviZaposleniFarmaceuti">
                       <td>{{f.name}}</td>
                       <td>{{f.surname}}</td>
                       <td>{{UtilService.AddressToString(f.address)}}</td>
@@ -129,7 +129,7 @@
                   <th>Phone number</th>
                 </thead>
                 <tbody>
-                    <tr :key="d.username" v-for="d in this.sviZaposleniDermatolozi">
+                    <tr :key="d.name" v-for="d in this.sviZaposleniDermatolozi">
                       <td>{{d.name}}</td>
                       <td>{{d.surname}}</td>
                       <td>{{UtilService.AddressToString(d.address)}}</td>

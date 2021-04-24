@@ -17,6 +17,36 @@ class DermatologistDataService {
   });
   }
 
+  getDermAdminHire(idAdminaApoteke) {
+    return axios.get(API_URL + "/api/users/derm/hire/admin/" + idAdminaApoteke)
+    .catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("Error");
+      console.log(error.config);
+  });
+  }
+
+  hireDermatologist(adminId, dermatolog, startTime, endTime) {
+    var objekat = {"registerData": dermatolog, "startHour": startTime, "endHour": endTime}
+    return axios({
+      method: 'post',
+      url: API_URL + "/api/users/dematologist/hire/" + adminId,
+      data: objekat
+    }).catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+        } else if (error.request) {
+          console.log(error.request);
+        }
+        console.log("Error");
+        console.log(error.config);
+      });
+  }
+
   searchDermatologistAdmin(idAdminaApoteke, search) {
     return axios.get(API_URL + "/api/users/dermatologists/admin/" + idAdminaApoteke + "/" + search)
     .catch(function (error) {
@@ -41,10 +71,10 @@ class DermatologistDataService {
   if (filterAdrU.length == 0) filterAdrU = "-";
   if (filterAdrB.length == 0) filterAdrB = "-";
   var objekat = {"search" : search, "filterIme": filterIme, "filterPrez": filterIme, "filterBroj": filterBroj,
-    "filterAdrD": filterAdrD, "filterAdrD": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
+    "filterAdrD": filterAdrD, "filterAdrG": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
   return axios({
     method: 'post',
-    url: API_URL + "/api/users/dermatologists/admin/" + idAdminaApoteke,
+    url: API_URL + "/api/users/derm/filter/admin/" + idAdminaApoteke,
     data: objekat
   }).catch(function (error) {
       if (error.response) {
@@ -68,10 +98,10 @@ class DermatologistDataService {
   if (filterAdrU.length == 0) filterAdrU = "-";
   if (filterAdrB.length == 0) filterAdrB = "-";
   var objekat = {"search" : search, "filterIme": filterIme, "filterPrez": filterIme, "filterBroj": filterBroj,
-    "filterAdrD": filterAdrD, "filterAdrD": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
+    "filterAdrD": filterAdrD, "filterAdrG": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
   return axios({
     method: 'post',
-    url: API_URL + "/api/users/dermatologists/pharmacy/" + idApoteke,
+    url: API_URL + "/api/users/derm/filter/pharmacy/" + idApoteke,
     data: objekat
   }).catch(function (error) {
     if (error.response) {
