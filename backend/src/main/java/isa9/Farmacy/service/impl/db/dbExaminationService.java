@@ -47,10 +47,6 @@ public class dbExaminationService extends ExaminationServiceBase implements Exam
 
     @Override
     public List<Examination> getPharmacistFutureExaminations(Long idfarmaceuta) {
-        List<Examination> svi = findAll();
-        List<Examination> povratnaVrednost = new ArrayList<>();
-        for (Examination e : svi) if (e.getAppointment().getDoctor().getId().equals(idfarmaceuta)) {
-            if (e.getStatus().equals(ExaminationStatus.NOT_HELD)) povratnaVrednost.add(e);}
-        return povratnaVrednost;
+        return super.getPharmacistFutureExaminations(idfarmaceuta);
     }
 }
