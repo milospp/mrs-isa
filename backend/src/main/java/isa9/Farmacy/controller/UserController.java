@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -237,6 +238,7 @@ public class UserController {
         user.getRegisterData().setEnabled(true);
         user.getRegisterData().setRole(this.userRoleService.findOne(5L));
         user.getRegisterData().setWorking(new HashSet<>());
+        user.getRegisterData().setLastPasswordResetDate(null);
         user.getRegisterData().getWorking().add(new Work(1L, user.getRegisterData(), ((PharmacyAdmin) adminUser).getPharmacy(), LocalTime.parse(user.getStartHour()), LocalTime.parse(user.getEndHour())));
         //user.setPharmacy();
         // tehnicki suvisna provera ali dok ne sredimo registraciju
@@ -292,7 +294,7 @@ public class UserController {
         if (povratna > 0) return new ResponseEntity<>(false, HttpStatus.OK);
         Patient newlyRegistered = new Patient(patient.getId(), patient.getName(), patient.getSurname()
                 , patient.getEmail(), patient.getPassword(), patient.getAddress(), patient.getPhoneNumber()
-                , userRoleService.findOne(3L), false);
+                , userRoleService.findOne(3L), false, null);
         userService.save(newlyRegistered);
         System.out.println(newlyRegistered);
         return new ResponseEntity<> (true, HttpStatus.OK);
@@ -572,7 +574,7 @@ public class UserController {
         if(!userService.isAvaibleEmail(newSupplierDto.getEmail())) return new ResponseEntity<>(false, HttpStatus.OK);
         Supplier newlyRegistered = new Supplier(0L, newSupplierDto.getName(), newSupplierDto.getSurname(),
                 newSupplierDto.getEmail(), newSupplierDto.getPassword(), newSupplierDto.getAddress(),
-                newSupplierDto.getPhoneNumber(), this.userRoleService.findOne(6L));
+                newSupplierDto.getPhoneNumber(), this.userRoleService.findOne(6L), null);
         userService.save(newlyRegistered);
         System.out.println(newlyRegistered);
         return new ResponseEntity<>(true, HttpStatus.OK);
@@ -583,7 +585,7 @@ public class UserController {
         if(!userService.isAvaibleEmail(newDermatologistDto.getEmail())) return new ResponseEntity<>(false, HttpStatus.OK);
         Dermatologist newlyRegistered = new Dermatologist(0L, newDermatologistDto.getName(), newDermatologistDto.getSurname(),
                 newDermatologistDto.getEmail(), newDermatologistDto.getPassword(), newDermatologistDto.getAddress(),
-                newDermatologistDto.getPhoneNumber(), this.userRoleService.findOne(4L));
+                newDermatologistDto.getPhoneNumber(), this.userRoleService.findOne(4L), null);
         userService.save(newlyRegistered);
         System.out.println(newlyRegistered);
         return new ResponseEntity<>(true, HttpStatus.OK);

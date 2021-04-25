@@ -61,6 +61,22 @@
 			<version>1.18.20</version>
 			<scope>provided</scope>
 		</dependency>
+		
+		
+		
+		
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+		</dependency>
+		
+		
+		
 
 		<!-- POSTGRES -->
 		<dependency>

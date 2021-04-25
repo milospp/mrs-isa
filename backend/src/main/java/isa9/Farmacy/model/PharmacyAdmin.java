@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import lombok.*;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 @ToString
@@ -19,7 +21,7 @@ public class PharmacyAdmin extends User{
     private Pharmacy pharmacy;
 
     public PharmacyAdmin(Long id, String name, String surname, String email, String password, Address address, String phoneNumber, UserRole role, Pharmacy pharmacy) {
-        super(id, name, surname, email, password, address, phoneNumber, role, true);
+        super(id, name, surname, email, password, address, phoneNumber, role, true, new Timestamp(System.currentTimeMillis()));
         this.pharmacy = pharmacy;
     }
 

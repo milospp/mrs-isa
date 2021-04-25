@@ -1,6 +1,7 @@
 package isa9.Farmacy.model;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.*;
 import lombok.*;
 
@@ -31,8 +32,9 @@ public class Patient extends User {
 
 
     public Patient(Long id, String name, String surname, String email,
-                   String password, Address address, String phoneNumber, UserRole role, boolean enabled) {
-        super(id, name, surname, email, password, address, phoneNumber, role, enabled);
+                   String password, Address address, String phoneNumber,
+                   UserRole role, boolean enabled, Timestamp t) {
+        super(id, name, surname, email, password, address, phoneNumber, role, enabled, t);
         this.points = 0;
         this.penalties = new HashSet<>();
         this.subscriptions = new HashSet<>();
@@ -46,7 +48,7 @@ public class Patient extends User {
     public Patient(Long id, String name, String surname, String email,
                    String password, Address address, String phoneNumber, int points,
                    Set<Penality> penalties, List<Examination> myExaminations) {
-        super(id, name, surname, email, password, address, phoneNumber, null, true);
+        super(id, name, surname, email, password, address, phoneNumber, null, true, null);
         this.points = points;
         this.penalties = penalties;
         this.subscriptions = new HashSet<>();
@@ -61,7 +63,7 @@ public class Patient extends User {
                    String password, Address address, String phoneNumber, int points,
                    Set<Penality> penalties, Set<Pharmacy> subscriptions , Set<Examination> myExaminations,
                    Set<Medicine> allergies) {
-        super(id, name, surname, email, password, address, phoneNumber, null, true);
+        super(id, name, surname, email, password, address, phoneNumber, null, true, null);
         this.points = points;
         this.penalties = penalties;
         this.subscriptions = subscriptions;

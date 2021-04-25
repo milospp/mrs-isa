@@ -5,6 +5,8 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.ArrayList;
@@ -46,6 +48,9 @@ public abstract class User implements UserDetails {
 
     @Column
     private boolean enabled;
+
+    @Column(name = "last_password_reset_date")
+    private Timestamp lastPasswordResetDate;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
