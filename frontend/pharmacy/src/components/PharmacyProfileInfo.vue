@@ -93,7 +93,7 @@
                   <th>Phone number</th>
                 </thead>
                 <tbody>
-                    <tr :key="f.username" v-for="f in this.sviZaposleniFarmaceuti">
+                    <tr :key="f.name" v-for="f in this.sviZaposleniFarmaceuti">
                       <td>{{f.name}}</td>
                       <td>{{f.surname}}</td>
                       <td>{{UtilService.AddressToString(f.address)}}</td>
@@ -129,7 +129,7 @@
                   <th>Phone number</th>
                 </thead>
                 <tbody>
-                    <tr :key="d.username" v-for="d in this.sviZaposleniDermatolozi">
+                    <tr :key="d.name" v-for="d in this.sviZaposleniDermatolozi">
                       <td>{{d.name}}</td>
                       <td>{{d.surname}}</td>
                       <td>{{UtilService.AddressToString(d.address)}}</td>
@@ -195,7 +195,7 @@
         <div class="modal-body" align="left">Quantity: <input type="text" v-model="kolicina"/> (max = {{lek_za_prikaz?.inStock}})</div>
         <div class="modal-body" align="left">Expiry date: <input type="date" v-model="datum"/></div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" v-on:click.prevent="provera(lek_za_prikaz)">Reserve</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="provera(lek_za_prikaz)">Reserve</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -220,7 +220,7 @@
         <div class="modal-body" align="left">Street: <input type="text" v-model="filterAdrU"/></div>
         <div class="modal-body" align="left">Number: <input type="text" v-model="filterAdrB"/></div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" v-on:click.prevent="filter(true)">Seaarch</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="filter(true)">Seaarch</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -245,7 +245,7 @@
         <div class="modal-body" align="left">Street: <input type="text" v-model="filterAdrU"/></div>
         <div class="modal-body" align="left">Number: <input type="text" v-model="filterAdrB"/></div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" v-on:click.prevent="filter(false)">Seaarch</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="filter(false)">Seaarch</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -306,13 +306,13 @@ export default {
       }
 
       if (filtDermatologa) {            // za dermatologe
-        DermatologistDataService.filterDermatologistPharmacy(this.id, this.filterIme, this.filterPrez, this.filterBroj, 
+        DermatologistDataService.filterDermatologistPharmacy(this.id, this.dermaSearch, this.filterIme, this.filterPrez, this.filterBroj, 
           this.filterAdrD, this.filterAdrG, this.filterAdrU, this.filterAdrB,)
           .then(response => {
             this.sviZaposleniDermatolozi = response.data;});
       }
       else {                            // za farmaceute
-        PharmacistDataService.filterPharmacistPharmacy(this.id, this.filterIme, this.filterPrez, this.filterBroj, 
+        PharmacistDataService.filterPharmacistPharmacy(this.id, this.pharmaSearch, this.filterIme, this.filterPrez, this.filterBroj, 
             this.filterAdrD, this.filterAdrG, this.filterAdrU, this.filterAdrB,)
             .then(response => {
               this.sviZaposleniFarmaceuti = response.data;});

@@ -2,16 +2,14 @@ package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.*;
-import isa9.Farmacy.service.MedReservationService;
-import isa9.Farmacy.service.PharmacyService;
-import isa9.Farmacy.service.RatingService;
-import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.service.*;
 import isa9.Farmacy.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.PostRemove;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -24,6 +22,7 @@ public class UserController {
     private final PharmacyService pharmacyService;
     private final MedReservationService medReservationService;
     private final RatingService ratingService;
+    private final ExaminationService examinationService;
 
     private final PatientToPatientDTO patientToPatientDTO;
     private final MedicineToMedicineDTO medicineToMedicineDTO;
@@ -57,6 +56,7 @@ public class UserController {
         this.userToUserDTO = userToUserDTO;
         this.ratingToRatingDTO = ratingToRatingDTO;
         this.userDTOToUser = userDTOToUser;
+        this.examinationService = examinationService;
     }
 
     @GetMapping("tmp-test")
@@ -240,11 +240,14 @@ public class UserController {
         User adminUser = userService.findOne(id);
         if (adminUser.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(1, HttpStatus.NOT_FOUND);
         user.getRegisterData().setWorking(new HashSet<>());
-        user.getRegisterData().getWorking().add(new Work(1L, user.getRegisterData(), ((PharmacyAdmin) adminUser).getPharmacy(), LocalTime.parse(user.getStartHour()), LocalTime.parse(user.getEndHour())));
-        //user.setPharmacy();
+        Work w = new Work();
+        w.setDoctor(user.getRegisterData());
+        w.setPharmacy(((PharmacyAdmin) adminUser).getPharmacy());
+        w.setStartHour(LocalTime.parse(user.getStartHour()));
+        w.setEndHour(LocalTime.parse(user.getEndHour()));
+        user.getRegisterData().getWorking().add(w);
         // tehnicki suvisna provera ali dok ne sredimo registraciju
-        User createdUser = userService.save(user.getRegisterData());
-        System.out.println(createdUser);
+        userService.save(user.getRegisterData());
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
@@ -394,10 +397,8 @@ public class UserController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
-    @GetMapping("/pharmacists/admin/{id}/{ime}/{prez}/{br}/{adrD}/{adrG}/{adrU}/{adrB}")
-    public ResponseEntity<List<PharmacistDTO>> searchPharmacistsAdmin(@PathVariable Long id,
-             @PathVariable String ime, @PathVariable String prez, @PathVariable String br, @PathVariable String adrD,
-             @PathVariable String adrG, @PathVariable String adrU, @PathVariable String adrB) {
+    @PostMapping("/pharm/filter/admin/{id}")
+    public ResponseEntity<List<PharmacistDTO>> filterPharmacistsAdmin(@PathVariable Long id, @RequestBody SearchHelp podaci) {
         List<User> svi = userService.findAll();
         if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
         // tehnicki suvisna provera ali dok ne sredimo registraciju
@@ -407,13 +408,15 @@ public class UserController {
             Pharmacist farmaceut = (Pharmacist) u;
             if (!farmaceut.getWorking().isEmpty() && farmaceut.getWorking().iterator().next().getPharmacy().getId()
                     .equals(admin.getPharmacy().getId()))
-                if (farmaceut.getName().toLowerCase().contains(ime.toLowerCase())||
-                        farmaceut.getSurname().toLowerCase().contains(prez.toLowerCase()) ||
-                        farmaceut.getAddress().getState().toLowerCase().contains(adrD.toLowerCase()) ||
-                        farmaceut.getAddress().getCity().toLowerCase().contains(adrG.toLowerCase()) ||
-                        farmaceut.getAddress().getStreet().toLowerCase().contains(adrU.toLowerCase()) ||
-                        farmaceut.getAddress().getNumber().toLowerCase().contains(adrB.toLowerCase()) ||
-                        farmaceut.getPhoneNumber().toLowerCase().contains(br.toLowerCase())) {
+                if (farmaceut.getName().toLowerCase().contains(podaci.getSearch().toLowerCase())||
+                        farmaceut.getSurname().toLowerCase().contains(podaci.getSearch().toLowerCase()) ||
+                        farmaceut.getName().toLowerCase().contains(podaci.getFilterIme().toLowerCase())||
+                        farmaceut.getSurname().toLowerCase().contains(podaci.getFilterPrez().toLowerCase()) ||
+                        farmaceut.getAddress().getState().toLowerCase().contains(podaci.getFilterAdrD().toLowerCase()) ||
+                        farmaceut.getAddress().getCity().toLowerCase().contains(podaci.getFilterAdrG().toLowerCase()) ||
+                        farmaceut.getAddress().getStreet().toLowerCase().contains(podaci.getFilterAdrU().toLowerCase()) ||
+                        farmaceut.getAddress().getNumber().toLowerCase().contains(podaci.getFilterAdrB().toLowerCase()) ||
+                        farmaceut.getPhoneNumber().toLowerCase().contains(podaci.getFilterBroj().toLowerCase())) {
                     povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
                 }
         }
@@ -432,6 +435,30 @@ public class UserController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
+    @PostMapping("/pharmacist/fire/{idAdmina}")
+    public ResponseEntity<Integer> firePharmacist(@PathVariable Long idAdmina, @RequestBody PharmacistDTO zaBrisanje) {
+        List<User> svi = userService.findAll();
+        int okej = 1;
+        if (userService.findOne(idAdmina).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(-1, HttpStatus.OK);
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(idAdmina);
+        for (User u : svi) if (u.getClass() == Pharmacist.class) {
+            Pharmacist farmaceut = (Pharmacist) u;
+            List<Examination> sviPregledi = this.examinationService.getPharmacistFutureExaminations(farmaceut.getId());
+            if (farmaceut.getName().equals(zaBrisanje.getName()) && farmaceut.getSurname().equals(zaBrisanje.getSurname())) {
+                okej = 2;
+                if (!farmaceut.getWorking().isEmpty()
+                        && farmaceut.getWorking().iterator().next().getPharmacy().getId().equals(admin.getPharmacy().getId()))
+                    if (sviPregledi.isEmpty()) {
+                        farmaceut.setWorking(new HashSet<>());
+                        okej = 0;
+                        userService.save(farmaceut);
+                        break;
+                    }
+            }
+        }
+        return new ResponseEntity<>(okej, HttpStatus.OK);
+    }
+
     @GetMapping("/pharmacists/pharmacy/{id}/{search}")
     public ResponseEntity<List<PharmacistDTO>> searchPharmacistsPharmacy(@PathVariable Long id, @PathVariable String search) {
         List<User> svi = userService.findAll();
@@ -447,22 +474,22 @@ public class UserController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
-    @GetMapping("/pharmacists/pharmacy/{id}/{ime}/{prez}/{br}/{adrD}/{adrG}/{adrU}/{adrB}")
-    public ResponseEntity<List<PharmacistDTO>> filterPharmacistsPharmacy(@PathVariable Long id,
-            @PathVariable String ime, @PathVariable String prez, @PathVariable String br, @PathVariable String adrD,
-            @PathVariable String adrG, @PathVariable String adrU, @PathVariable String adrB) {
+    @PostMapping("/pharm/filter/pharmacy/{id}")
+    public ResponseEntity<List<PharmacistDTO>> filterPharmacistsPharmacy(@PathVariable Long id, @RequestBody SearchHelp podaci) {
         List<User> svi = userService.findAll();
         List<PharmacistDTO> povratna = new ArrayList<>();
         for (User u : svi) if (u.getClass() == Pharmacist.class) {
             Pharmacist farmaceut = (Pharmacist) u;
             if (!farmaceut.getWorking().isEmpty() && farmaceut.getWorking().iterator().next().getPharmacy().getId().equals(id))
-                if (farmaceut.getName().toLowerCase().contains(ime.toLowerCase())||
-                        farmaceut.getSurname().toLowerCase().contains(prez.toLowerCase()) ||
-                        farmaceut.getAddress().getState().toLowerCase().contains(adrD.toLowerCase()) ||
-                        farmaceut.getAddress().getCity().toLowerCase().contains(adrG.toLowerCase()) ||
-                        farmaceut.getAddress().getStreet().toLowerCase().contains(adrU.toLowerCase()) ||
-                        farmaceut.getAddress().getNumber().toLowerCase().contains(adrB.toLowerCase()) ||
-                        farmaceut.getPhoneNumber().toLowerCase().contains(br.toLowerCase())) {
+                if (farmaceut.getName().toLowerCase().contains(podaci.getFilterIme().toLowerCase())||
+                        farmaceut.getSurname().toLowerCase().contains(podaci.getFilterPrez().toLowerCase()) ||
+                        farmaceut.getAddress().getState().toLowerCase().contains(podaci.getFilterAdrD().toLowerCase()) ||
+                        farmaceut.getAddress().getCity().toLowerCase().contains(podaci.getFilterAdrG().toLowerCase()) ||
+                        farmaceut.getAddress().getStreet().toLowerCase().contains(podaci.getFilterAdrU().toLowerCase()) ||
+                        farmaceut.getAddress().getNumber().toLowerCase().contains(podaci.getFilterAdrB().toLowerCase()) ||
+                        farmaceut.getPhoneNumber().contains(podaci.getFilterBroj()) ||
+                        farmaceut.getName().toLowerCase().contains(podaci.getSearch().toLowerCase())||
+                        farmaceut.getSurname().toLowerCase().contains(podaci.getSearch().toLowerCase())) {
                     povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
                 }
         }
@@ -487,6 +514,48 @@ public class UserController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
+    @GetMapping("/derm/hire/admin/{id}")
+    public ResponseEntity<List<DermatologistDTO>> getHireDermatologistsAdmin(@PathVariable Long id) {
+        List<User> svi = userService.findAll();
+        if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
+        // tehnicki suvisna provera ali dok ne sredimo registraciju
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
+        List<DermatologistDTO> povratna = new ArrayList<>();
+        for (User u : svi) if (u.getClass() == Dermatologist.class) {
+            boolean radi = false;
+            Dermatologist dermatolog = (Dermatologist) u;
+            for (Work work : dermatolog.getWorking())
+                if (work.getPharmacy().getId().equals(admin.getPharmacy().getId())) { radi = true; break;}
+            if (!radi) povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog));
+        }
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @PostMapping("/dermatologist/fire/{idAdmina}")
+    public ResponseEntity<Integer> fireDermatologist(@PathVariable Long idAdmina, @RequestBody DermatologistDTO zaBrisanje) {
+        List<User> svi = userService.findAll();
+        int okej = 1;
+        if (userService.findOne(idAdmina).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(-1, HttpStatus.OK);
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(idAdmina);
+        for (User u : svi) if (u.getClass() == Dermatologist.class) {
+            Dermatologist dermatolog = (Dermatologist) u;
+            List<Examination> sviPregledi = this.examinationService.getPharmacistFutureExaminations(dermatolog.getId());
+            if (dermatolog.getName().equals(zaBrisanje.getName()) && dermatolog.getSurname().equals(zaBrisanje.getSurname())
+                    && !dermatolog.getWorking().isEmpty())
+                if (sviPregledi.isEmpty()) {
+                    Work odabrani = null;
+                    for (Work w : dermatolog.getWorking()) { if (w.getPharmacy().getId().equals(admin.getPharmacy().getId()))
+                        { odabrani = w; break; }}
+                    if (odabrani == null) new ResponseEntity<>(okej, HttpStatus.OK);
+                    dermatolog.getWorking().remove(odabrani);
+                    okej = 0;
+                    userService.save(dermatolog);
+                    break;
+                }
+        }
+        return new ResponseEntity<>(okej, HttpStatus.OK);
+    }
+
     @GetMapping("/dermatologists/admin/{id}/{search}")
     public ResponseEntity<List<DermatologistDTO>> searchDermatologistsAdmin(@PathVariable Long id, @PathVariable String search) {
         List<User> svi = userService.findAll();
@@ -508,10 +577,8 @@ public class UserController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
-    @GetMapping("/dermatologists/admin/{id}/{ime}/{prez}/{br}/{adrD}/{adrG}/{adrU}/{adrB}")
-    public ResponseEntity<List<DermatologistDTO>> filterDermatologistsAdmin(@PathVariable Long id,
-            @PathVariable String ime, @PathVariable String prez, @PathVariable String br, @PathVariable String adrD,
-            @PathVariable String adrG, @PathVariable String adrU, @PathVariable String adrB) {
+    @PostMapping("/derm/filter/admin/{id}")
+    public ResponseEntity<List<DermatologistDTO>> filterDermatologistsAdmin(@PathVariable Long id, @RequestBody SearchHelp podaci) {
         List<User> svi = userService.findAll();
         if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
         // tehnicki suvisna provera ali dok ne sredimo registraciju
@@ -521,13 +588,15 @@ public class UserController {
             Dermatologist dermatolog = (Dermatologist) u;
             for (Work work : dermatolog.getWorking()) {
                 if (work.getPharmacy().getId().equals(admin.getPharmacy().getId())) {
-                      if (dermatolog.getName().toLowerCase().contains(ime.toLowerCase())||
-                            dermatolog.getSurname().toLowerCase().contains(prez.toLowerCase()) ||
-                            dermatolog.getAddress().getState().toLowerCase().contains(adrD.toLowerCase()) ||
-                            dermatolog.getAddress().getCity().toLowerCase().contains(adrG.toLowerCase()) ||
-                            dermatolog.getAddress().getStreet().toLowerCase().contains(adrU.toLowerCase()) ||
-                            dermatolog.getAddress().getNumber().toLowerCase().contains(adrB.toLowerCase()) ||
-                            dermatolog.getPhoneNumber().toLowerCase().contains(br.toLowerCase())) {
+                      if (dermatolog.getName().toLowerCase().contains(podaci.getSearch().toLowerCase())||
+                            dermatolog.getSurname().toLowerCase().contains(podaci.getSearch().toLowerCase()) ||
+                            dermatolog.getName().toLowerCase().contains(podaci.getFilterIme().toLowerCase())||
+                            dermatolog.getSurname().toLowerCase().contains(podaci.getFilterPrez().toLowerCase()) ||
+                            dermatolog.getAddress().getState().toLowerCase().contains(podaci.getFilterAdrD().toLowerCase()) ||
+                            dermatolog.getAddress().getCity().toLowerCase().contains(podaci.getFilterAdrG().toLowerCase()) ||
+                            dermatolog.getAddress().getStreet().toLowerCase().contains(podaci.getFilterAdrU().toLowerCase()) ||
+                            dermatolog.getAddress().getNumber().toLowerCase().contains(podaci.getFilterAdrB().toLowerCase()) ||
+                            dermatolog.getPhoneNumber().toLowerCase().contains(podaci.getFilterBroj().toLowerCase())) {
                         povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog));
                     }
                     break;
@@ -536,23 +605,64 @@ public class UserController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
-    @GetMapping("/dermatologists/pharmacy/{id}/{ime}/{prez}/{br}/{adrD}/{adrG}/{adrU}/{adrB}")
-    public ResponseEntity<List<DermatologistDTO>> filterDermatologistsPharmacy(@PathVariable Long id,
-            @PathVariable String ime, @PathVariable String prez, @PathVariable String br, @PathVariable String adrD,
-            @PathVariable String adrG, @PathVariable String adrU, @PathVariable String adrB) {
+    @PostMapping("/dematologist/hire/{id}")
+    public ResponseEntity<Integer> hireDermatologist(@PathVariable Long id, @RequestBody DermaDTOHelp podaci) {
+        List<User> svi = userService.findAll();
+        int povratna = -1;
+        if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(povratna, HttpStatus.OK);
+        // tehnicki suvisna provera ali dok ne sredimo registraciju
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
+        Dermatologist izabrani = null;
+        for (User u : svi) if (u.getClass() == Dermatologist.class) {
+            Dermatologist dermatolog = (Dermatologist) u;
+            if (dermatolog.getName().contains(podaci.getRegisterData().getName()) &&
+                    dermatolog.getSurname().contains(podaci.getRegisterData().getSurname()) &&
+                    dermatolog.getAddress().getState().contains(podaci.getRegisterData().getAddress().getState()) &&
+                    dermatolog.getAddress().getCity().contains(podaci.getRegisterData().getAddress().getCity()) &&
+                    dermatolog.getAddress().getStreet().contains(podaci.getRegisterData().getAddress().getStreet()) &&
+                    dermatolog.getAddress().getNumber().contains(podaci.getRegisterData().getAddress().getNumber()) &&
+                    dermatolog.getPhoneNumber().toLowerCase().contains(podaci.getRegisterData().getPhoneNumber())) {
+                izabrani = dermatolog;
+                break;
+            }
+        }
+        if (izabrani == null) new ResponseEntity<>(povratna, HttpStatus.OK);
+        povratna = 1;
+        LocalTime start = LocalTime.parse(podaci.getStartHour());
+        LocalTime end = LocalTime.parse(podaci.getEndHour());
+        for (Work w : izabrani.getWorking()) {
+            if (w.getStartHour().isBefore(start) && w.getEndHour().isBefore(start)) { povratna = 0; continue;}
+            else if (w.getStartHour().isAfter(start) && w.getEndHour().isAfter(start)) { povratna = 0;  continue;}
+            povratna = 1;
+        }
+        if (povratna == 1) return new ResponseEntity<>(povratna, HttpStatus.OK);   // ne valja vreme
+        Work posao = new Work();
+        posao.setPharmacy(admin.getPharmacy());
+        posao.setDoctor(izabrani);
+        posao.setEndHour(end);
+        posao.setStartHour(start);
+        izabrani.getWorking().add(posao);
+        userService.save(izabrani);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @PostMapping("/derm/filter/pharmacy/{id}")
+    public ResponseEntity<List<DermatologistDTO>> filterDermatologistsPharmacy(@PathVariable Long id, @RequestBody SearchHelp podaci) {
         List<User> svi = userService.findAll();
         List<DermatologistDTO> povratna = new ArrayList<>();
         for (User u : svi) if (u.getClass() == Dermatologist.class) {
             Dermatologist dermatolog = (Dermatologist) u;
             for (Work work : dermatolog.getWorking())
                 if (work.getPharmacy().getId().equals(id)) {
-                    if (dermatolog.getName().toLowerCase().contains(ime.toLowerCase())||
-                            dermatolog.getSurname().toLowerCase().contains(prez.toLowerCase()) ||
-                            dermatolog.getAddress().getState().toLowerCase().contains(adrD.toLowerCase()) ||
-                            dermatolog.getAddress().getCity().toLowerCase().contains(adrG.toLowerCase()) ||
-                            dermatolog.getAddress().getStreet().toLowerCase().contains(adrU.toLowerCase()) ||
-                            dermatolog.getAddress().getNumber().toLowerCase().contains(adrB.toLowerCase()) ||
-                            dermatolog.getPhoneNumber().toLowerCase().contains(br.toLowerCase())) {
+                    if (dermatolog.getName().toLowerCase().contains(podaci.getSearch().toLowerCase())||
+                            dermatolog.getSurname().toLowerCase().contains(podaci.getSearch().toLowerCase()) ||
+                            dermatolog.getName().toLowerCase().contains(podaci.getFilterIme().toLowerCase())||
+                            dermatolog.getSurname().toLowerCase().contains(podaci.getFilterPrez().toLowerCase()) ||
+                            dermatolog.getAddress().getState().toLowerCase().contains(podaci.getFilterAdrD().toLowerCase()) ||
+                            dermatolog.getAddress().getCity().toLowerCase().contains(podaci.getFilterAdrG().toLowerCase()) ||
+                            dermatolog.getAddress().getStreet().toLowerCase().contains(podaci.getFilterAdrU().toLowerCase()) ||
+                            dermatolog.getAddress().getNumber().toLowerCase().contains(podaci.getFilterAdrB().toLowerCase()) ||
+                            dermatolog.getPhoneNumber().toLowerCase().contains(podaci.getFilterBroj().toLowerCase())) {
                         povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog));
                     }
                     break;

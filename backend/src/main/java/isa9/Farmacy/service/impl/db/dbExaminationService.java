@@ -2,6 +2,7 @@ package isa9.Farmacy.service.impl.db;
 
 import isa9.Farmacy.model.Appointment;
 import isa9.Farmacy.model.Examination;
+import isa9.Farmacy.model.ExaminationStatus;
 import isa9.Farmacy.repository.AppointmentRepository;
 import isa9.Farmacy.repository.ExaminationRepository;
 import isa9.Farmacy.service.AppointmentService;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -43,4 +45,8 @@ public class dbExaminationService extends ExaminationServiceBase implements Exam
     }
 
 
+    @Override
+    public List<Examination> getPharmacistFutureExaminations(Long idfarmaceuta) {
+        return super.getPharmacistFutureExaminations(idfarmaceuta);
+    }
 }
