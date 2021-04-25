@@ -2,10 +2,6 @@
     <NavBar role="pharmacist"/>
     <div class="row">
         <div class="col-md-12">
-
-            <div>
-            <h2>TODO AUTH!! More info</h2>
-            </div>
             <div id="menu3" class="tab-pane fade">
             </div>
         </div>
