@@ -68,8 +68,20 @@
                     </tbody>
                 </table>
 
-                <div class="d-flex justify-content-center">
+                <div class="d-flex row">
+                  <div class="col-sm">
+                  <label for="pageSizeSelect" class="mt-2 mr-2">Show per page:</label>
+                  <select id="pageSizeSelect" v-model="refreshData.pageSize" class="form-select mr-5" aria-label="Default select example" @change="onChange($event)">
+                    <option selected value="2">2</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                  </select>
+                  </div>
+                  <div class="col-xl">
                   <pagination v-model="refreshData.pageNo" :records="totalPatients" :per-page="refreshData.pageSize" @paginate="refreshPatients($event)"/>
+                  </div>
                 </div>
                 
 
@@ -270,7 +282,7 @@ export default {
     },
     methods: {
         refreshPatients(e) {
-          console.log(this.refreshData.pageNo);
+          console.log("page size: ",this.refreshData.pageSize);
           if (!this.refreshData.pageNo) this.refreshData.pageNo = 1;
           console.log(this.refreshData.pageNo);
             PatientDataService.retrieveAllPatients(this.refreshData) // HARDCODED
@@ -313,6 +325,9 @@ export default {
 
                     this.appointments = response.data;
                 });
+        },
+        onChange(e){
+          this.refreshPatients(e);
         },
 
         isCanceled(obj) {
@@ -368,6 +383,9 @@ export default {
     }
     .active {
         color: #42b983;
+    }
+    select{
+      height: 38px;
     }
     /*th {
         position: sticky;
