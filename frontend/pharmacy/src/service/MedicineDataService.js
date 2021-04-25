@@ -20,6 +20,23 @@ class MedicineDataService {
         console.log(error.config);
     });
   }
+
+  editMedicinePharmacyAdmin(idAdminaApoteke, lek) {
+    return axios({
+      method: 'post',
+      url: API_URL + "/edit/pharmacyAdmin/" + idAdminaApoteke,
+      data: lek
+    }).catch(function (error) {
+        if (error.response) {
+            console.log(error.response.data);
+        } else if (error.request) {
+            console.log(error.request);
+        }
+        console.log("Error");
+        console.log(error.config);
+    });
+  }
+
   getMedicineForPharmacy(idApoteke) {
     return axios.get(API_URL + "/pharmacy/" + idApoteke)
     .catch(function (error) {

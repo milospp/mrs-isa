@@ -201,14 +201,17 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body" align="left">Name: <input type="text" v-model="name" placeholder=name/></div>
-        <div class="modal-body" align="left">Structure: <input type="text" v-model="structure" placeholder=structure/></div>
+        <div class="modal-body" align="left">Name: {{this.name}}</div>
+        <div class="modal-body" align="left">Structure: {{this.structure}}</div>
+        <div class="modal-body" align="left">Rating: {{this.rating}}</div>
+        <div class="modal-body" align="left">Points: {{this.points}}</div>
         <div class="modal-body" align="left">Manufacturer: <input type="text" v-model="manufacturer" placeholder=manufacturer/></div>
         <div class="modal-body" align="left">Note: <input type="text" v-model="note" placeholder=note/></div>
-        <div class="modal-body" align="left">Points: <input type="text" v-model="points" placeholder=points/></div>
         <div class="modal-body" align="left">Type: <input type="text" v-model="type" placeholder=type/></div>
-        <div class="modal-body" align="left">Price: <input type="text" v-model="price" placeholder=quantity/></div>
+        <div class="modal-body" align="left">Price: <input type="text" v-model="price" placeholder=price/></div>
         <div class="modal-body" align="left">Quantity: <input type="text" v-model="quantity" placeholder=quantity/></div>
+        <div class="modal-body" align="left">perscription: <input type="text" v-model="perscription" placeholder=perscription/></div>
+        <div class="modal-body" align="left">Shape: <input type="text" v-model="shape" placeholder=shape/></div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="provera()">Save changes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -272,7 +275,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="Potvrdica">Are you sure you want to fire this person?</h5>
+          <h5 class="modal-title" id="Potvrdica">Are you sure you want to fire {{this.otpustiRadnika?.name}} + {{this.otpustiRadnika?.surname}}?</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -304,9 +307,9 @@ export default {
             sviZaposleniDermatolozi : [],
             pharmacy: null,
             pharmacyName: null, pharmacyDesc: null,
-            lekovi: [],
-            name: null, structure: null, manufacturer: null, price: null,
-            note: null, points: null, type: null, quantity: null,
+            lekovi: [], originalLeka: null,
+            name: null, structure: null, manufacturer: null, price: null, rating: null,
+            note: null, points: null, type: null, quantity: null, shape: null, perscription: null,
             dermaSearch: "", pharmaSearch: "",
             filterIme: "", filterPrez: "", filterBroj: "",
             filterAdrD: "", filterAdrG: "", filterAdrU: "", filterAdrB: "", 
@@ -356,7 +359,7 @@ export default {
         else {
         DermatologistDataService.fireDermatologist(this.id, this.otpustiRadnika)        
           .then(response => {
-            if (response.data == 0) { alert("You successfully fired a pharmacist"); return true;} 
+            if (response.data == 0) { alert("You successfully fired a dermatologist"); return true;} 
             else if (response.data == -1) { alert("Something goes wrong"); return false;}
             else if (response.data == 2) { alert("Refresh the page, you already fire this person"); return false;}
             alert("Doctor has some review and you can't fire him or her!");
@@ -420,30 +423,46 @@ export default {
           .then(response => {alert("You successfaly changed pharmacy info.");});
       },
       funkcija(l) {
+        this.originalLeka = l;
         this.name = l.medicine.name;
+        this.perscription = l.medicine.perscription;  //novi
         this.structure =  l.medicine.structure;
         this.manufacturer = l.medicine.manufacturer;
         this.note = l.medicine.note;
+        this.rating = l.medicine.rating;  // novo
         this.points = l.medicine.points;
+        this.shape = l.medicine.shape;  // novo
         this.type = l.medicine.type;
         this.price = l.currentPrice;
         this.quantity = l.inStock;
       },
       provera() {
         var provera = 0;
-        provera += this.provera_prazan(this.name, "You must enter name.");
-        provera += this.provera_prazan(this.structure, "You must enter structure.");
         provera += this.provera_prazan(this.manufacturer, "You must enter manufacturer.");
         provera += this.provera_prazan(this.note, "You must enter note.");
-        provera += this.provera_prazan(this.points, "You must enter points.");
         provera += this.provera_prazan(this.type, "You must enter type.");
-        provera += this.provera_prazan(this.quantity, "You must enter quantity.");
+        provera += this.provera_prazan(String(this.quantity), "You must enter quantity.");
         provera += this.provera_prazan(String(this.price), "You must enter price.");
+        provera += this.provera_prazan(this.shape, "You must enter shape.");
+        provera += this.provera_prazan(this.perscription, "You must enter perscription.");
         provera += this.proveri_broj(String(this.quantity), "Quantity must be number.");
         provera += this.proveri_broj(String(this.points), "Points must be number.");
         provera += this.proveri_cenu();
+        provera += this.proveri_cenu();
         if (provera != 0) return false;
-        alert("Everything is okay");
+
+        this.originalLeka.medicine.manufacturer = this.manufacturer;
+        this.originalLeka.medicine.note = this.note;
+        this.originalLeka.medicine.type = this.type;
+        this.originalLeka.inStock = this.quantity;
+        this.originalLeka.currentPrice = this.price;
+        this.originalLeka.medicine.shape = this.shape;
+        this.originalLeka.medicine.perscription = this.perscription;
+        MedicineDataService.editMedicinePharmacyAdmin(this.id, this.originalLeka)
+          .then(response => {
+              if (response.data == 1) { alert("You successfully edited medicine"); return true;} 
+              alert("Something goes wrong");
+              return false;});
         return true;
       },
       proveri_broj(unos, poruka) {
@@ -456,7 +475,7 @@ export default {
         return 0;
       },
       proveri_cenu() {
-        var lista = this.price.split('.')
+        var lista = String(this.price).split('.')
         if (lista.length > 2) {
           alert("Price must be in form 5.2");
           return 1;
