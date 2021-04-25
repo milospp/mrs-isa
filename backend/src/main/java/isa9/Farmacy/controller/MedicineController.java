@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -112,6 +113,38 @@ public class MedicineController {
         List<MedInPharmaDTO> povratna = medicineInPharmacyToMedInPharmaDTO.convert(sviLekovi);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
+
+    @PostMapping("/edit/pharmacyAdmin/{id}")
+    public ResponseEntity<Integer> editMedicinePharmacyAdmin(@PathVariable Long id, @RequestBody MedInPharmaDTO lek) {
+        User user = userService.findOne(id);
+        int povratna = -1;
+        if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
+        Set<MedicineInPharmacy> sviLekovi = ((PharmacyAdmin) user).getPharmacy().getMedicines();
+        povratna = 0;
+        for (MedicineInPharmacy med : sviLekovi) {
+            if (med.getMedicine().getName().equals(lek.getMedicine().getName()) &&
+                    med.getMedicine().getStructure().equals(lek.getMedicine().getStructure())) {
+                med.getMedicine().setNote(lek.getMedicine().getNote());
+                med.setInStock(lek.getInStock());
+                med.getMedicine().setPerscription(lek.getMedicine().getPerscription());
+                med.getMedicine().setManufacturer(lek.getMedicine().getManufacturer());
+                med.getMedicine().setShape(lek.getMedicine().getShape());
+                med.getMedicine().setType(lek.getMedicine().getType());
+                MedPrice novacena = new MedPrice();
+                novacena.setPrice(lek.getCurrentPrice());
+                novacena.setStartDate(LocalDateTime.now());
+                novacena.setMedicineInPharmacy(med);
+                med.setCurrentPrice(novacena);
+                medicineService.save(med.getMedicine());
+                povratna = 1;
+                pharmacyService.save(((PharmacyAdmin) user).getPharmacy());
+                break;
+            }
+        }
+
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
     @GetMapping("/pharmacy/{id}")
     public ResponseEntity<List<MedInPharmaDTO>> getAllMedicinePharmacy(@PathVariable Long id) {
         Pharmacy apoteka = pharmacyService.findOne(id);
