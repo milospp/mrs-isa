@@ -34,7 +34,7 @@ class UtilService {
 
   formatDateTime(date) {
     
-    return moment(date).format('DD/MM/YYYY hh:mm');
+    return moment(date).format('DD/MM/YYYY HH:mm');
   }
 
   getFirstInNextMounth(date){
@@ -63,6 +63,12 @@ class UtilService {
     let rounded = Math.round(rating*10)/10;
 
     return " ( " + rounded + " / 5 )";
+  }
+
+  isTimeForAppointment(appointmentDate, durationInMins) {
+    if (moment() > moment(appointmentDate).subtract(5,'m') && moment() < moment(appointmentDate).add(durationInMins,'m'))
+      return true;
+    else return false;
   }
 
 }
