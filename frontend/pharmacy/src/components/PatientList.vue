@@ -60,7 +60,7 @@
                                 <button class="btn btn-secondary" v-on:click="showModal(p)">Examination history</button>
                             </td>
                             <td> <!-- -->
-                                <button v-if="UtilService.isTimeForAppointment(p.lastDate.startTime, p.lastDate.durationInMins)" class="btn btn-primary" v-on:click="alert('zapocet pregled')">Start 
+                                <button v-if="UtilService.isTimeForAppointment(p.lastDate.startTime, p.lastDate.durationInMins) && p.lastDate.examination.status == 'PENDING'" class="btn btn-primary" v-on:click="startAppointment(p.lastDate)">Start 
                                   <span v-if="refreshData.searchParams.doctorId == 11">Examination</span>
                                 <span v-else>Counseling</span></button>
                             </td>
@@ -359,6 +359,10 @@ export default {
           this.refreshData.sortBy = sort;
           this.refreshData.pageNo = 1;
           this.refreshPatients();
+        },
+
+        startAppointment(lastAppointment){
+          this.$router.push('/appointment/'+lastAppointment.id);
         }
       },
 

@@ -3,7 +3,7 @@
     <NavBar role="dermatologist"/>
     <div class="container">
         <h1 class="gray" v-if="appointment.type == 'EXAMINATION'">Examination</h1>
-        <h1 class="gray" v-else>Examination</h1>
+        <h1 class="gray" v-else>Counseling</h1>
         <h3 class="gray">Patient: {{appointment.examination.patient.name}} {{appointment.examination.patient.surname}}</h3>
         <!-- <h3 class="gray">Dermatologist: {{appointment.doctor.name}} {{appointment.doctor.surname}}</h3> -->
         <p class="gray">Appointment: {{UtilService.formatDateTime(appointment.startTime)}}</p>
@@ -32,6 +32,7 @@
         </div>
 
         <div v-else-if="appointment.examination.status == 'HELD'">
+            <p class="badge badge-success">HELD</p>
             <div class="form-group">
                 <label for="info">Anamnesis (conversation with patient)</label>
                 <textarea :disabled="true" v-model="appointment.examination.examinationInfo" class="form-control" id="info" rows="5" placeholder="Info..."></textarea>
