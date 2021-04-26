@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -130,6 +131,7 @@ public class MedicineController {
                 med.getMedicine().setManufacturer(lek.getMedicine().getManufacturer());
                 med.getMedicine().setShape(lek.getMedicine().getShape());
                 med.getMedicine().setType(lek.getMedicine().getType());
+                med.getMedicine().setPoints(lek.getMedicine().getPoints());
                 MedPrice novacena = new MedPrice();
                 novacena.setPrice(lek.getCurrentPrice());
                 novacena.setStartDate(LocalDateTime.now());
@@ -189,8 +191,17 @@ public class MedicineController {
         novi.setRating(0);
         novi.setPerscription(lek.getMedicine().getPerscription());
         novi.setNote(lek.getMedicine().getNote());
-//        novi.setReplacementMedication();
         medicineService.save(novi);
+
+        // za zamenske lekove
+        Set<Medicine> zamenski = new HashSet<>();
+        for (String kod : lek.getMedicine().getReplacementMedicationIds()) {
+            for (Medicine m : medicineService.findAll()) {
+                if (m.getCode().equals(kod)) {
+                    zamenski.add(m);
+                    break;
+                }}}
+        novi.setReplacementMedication(zamenski);
 
         // lek u apoteci
         MedicineInPharmacy noviUApoteci = new MedicineInPharmacy();

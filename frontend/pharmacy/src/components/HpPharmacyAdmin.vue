@@ -327,8 +327,12 @@
         <div class="modal-body" align="left">Points: <input type="text" v-model="points"/></div>
         <div class="modal-body" align="left">Price: <input type="text" v-model="price"/></div>
         <div class="modal-body" align="left">Quantity: <input type="text" v-model="quantity"/></div>
-        <div class="modal-body" align="left">With receipt (yes/no): <input type="text" v-model="perscription" placeholder=perscription/> </div>
+        <div class="modal-body" align="left">With receipt (yes/no): <input type="text" v-model="perscription"/> </div>
         <div class="modal-body" align="left">Shape: <input type="text" v-model="shape"/></div>
+        <div class="modal-body" align="left">Replacement medicines: 
+          <select id="zamenski" style="width: 50%;" v-model="zamenskiLekovi" required="required" multiple>
+              <option v-for="m in this.sviLekovi" v-bind:value=m.id>{{m.name}}</option>
+          </select></div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="dodajLek()">Save medicine</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -363,6 +367,7 @@ export default {
             filterIme: "", filterPrez: "", filterBroj: "",
             filterAdrD: "", filterAdrG: "", filterAdrU: "", filterAdrB: "", 
             otpustiRadnika: null, jesteFarmaceut: false, 
+            sviLekovi: [], zamenskiLekovi: [], 
         };
     },
     created() {
@@ -382,6 +387,10 @@ export default {
       MedicineDataService.getMedicineForPharmacyAdmin(this.id)
       .then(response => {
           this.lekovi = response.data;
+      });
+      MedicineDataService.getAllMedicines()
+      .then(response => {
+          this.sviLekovi = response.data;
       });
     },
     mounted() {
@@ -475,7 +484,8 @@ export default {
         this.originalLeka = l;
         if (!samoLek) {
           this.name = l.medicine.name;
-          this.perscription = l.medicine.perscription;  //novi
+          if (l.medicine.perscription == "WITH_RECEIPT") this.perscription = "yes";  //novi
+          else this.perscription = "no";  //novi
           this.structure =  l.medicine.structure;
           this.manufacturer = l.medicine.manufacturer;
           this.note = l.medicine.note;
@@ -590,10 +600,18 @@ export default {
         provera += this.proveri_cenu();
         provera += this.provera_da_ne(); if (provera != 0) return false;
         if (provera != 0) return false;
+
+        var listaKodova = [];
+        var brojac = 0;
+        for (var ind of this.zamenskiLekovi) {
+          listaKodova[brojac] =this.sviLekovi[ind - 1]?.code;
+          brojac++;
+        }
+
         var noviLek = {"medicine": {
           "code": this.code, "name": this.name, "structure": this.structure, "manufacturer": this.manufacturer,
-          "note": this.note, "type": this.type, "shape": this.shape, "perscription": this.perscription
-          }, 
+          "note": this.note, "type": this.type, "shape": this.shape, "perscription": this.perscription,
+          "replacementMedicationIds": listaKodova, "points": this.points}, 
           "currentPrice": this.price, "inStock": this.quantity};
         MedicineDataService.addMedicinePharmacyAdmin(this.id, noviLek)
           .then(response => {
