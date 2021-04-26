@@ -34,7 +34,7 @@ class UtilService {
 
   formatDateTime(date) {
     
-    return moment(date).format('DD/MM/YYYY hh:mm');
+    return moment(date).format('DD/MM/YYYY HH:mm');
   }
 
   getFirstInNextMounth(date){

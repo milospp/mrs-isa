@@ -2,22 +2,48 @@
 <div>
     <NavBar role="dermatologist"/>
     <div class="container">
-        <h1 class="gray" v-if="appointment.id == 1">Examination</h1>
+        <h1 class="gray" v-if="appointment.type == 'EXAMINATION'">Examination</h1>
+        <h1 class="gray" v-else>Examination</h1>
         <h3 class="gray">Patient: {{appointment.examination.patient.name}} {{appointment.examination.patient.surname}}</h3>
-        <h3 class="gray">Dermatologist: {{appointment.examination.doctor.name}} {{appointment.examination.doctor.surname}}</h3>
-        <p class="gray">Appointment: {{appointment.startTime}}</p>
+        <!-- <h3 class="gray">Dermatologist: {{appointment.doctor.name}} {{appointment.doctor.surname}}</h3> -->
+        <p class="gray">Appointment: {{UtilService.formatDateTime(appointment.startTime)}}</p>
         <p class="gray">Duration: {{appointment.durationInMins}} min</p>
-        <p class="gray">Pharmacy: {{appointment.pharmacy}}</p>
-        <div class="form-group">
-            <label for="info">Information about examination</label>
-            <textarea class="form-control rounded-0" id="info" rows="10" placeholder="Info..."></textarea>
+        <p class="gray">Pharmacy: {{appointment.pharmacy.name}}</p>
+
+
+        <div v-if="appointment.examination.status == 'PENDING'">
+            <div class="form-group">
+                <label for="info">Anamnesis (conversation with patient)</label>
+                <textarea v-model="appointment.examination.examinationInfo" class="form-control" id="info" rows="5" placeholder="Info..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="diagnose">Diagnose</label>
+                <input v-model="appointment.examination.diagnose" class="form-control" placeholder="Diagnose" id="diagnose">
+            </div>
+            <div class="form-group">
+                <button class="form-control btn btn-primary" id="finish" @click="finishAppointment()">Finish</button>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="diagnose">Diagnose</label>
-            <input class="form-control rounded-0" placeholder="Diagnose" id="diagnose">
+
+        <div v-else-if="appointment.examination.status == 'HELD'">
+            <div class="form-group">
+                <label for="info">Anamnesis (conversation with patient)</label>
+                <textarea :disabled="true" v-model="appointment.examination.examinationInfo" class="form-control" id="info" rows="5" placeholder="Info..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="diagnose">Diagnose</label>
+                <input :disabled="true" v-model="appointment.examination.diagnose" class="form-control" placeholder="Diagnose" id="diagnose">
+            </div>
+            <div class="form-group">
+                <button :disabled="true" class="form-control btn btn-primary" id="finish" @click="finishAppointment()">Finish</button>
+            </div>
         </div>
-        <div class="form-group">
-            <button class="form-control btn btn-primary" id="finish">Finish</button>
+
+        <div v-else-if="appointment.examination.status == 'NOT_HELD'">
+            <p class="badge badge-warning">PATIENT DID NOT SHOW UP</p>
+        </div>
+        <div v-else-if="appointment.examination.status == 'CANCELED'">
+            <p class="badge badge-danger">CANCELED</p>
         </div>
     </div>
 </div>
@@ -39,12 +65,17 @@
 
 <script>
 import NavBar from '@/components/NavBar.vue'
+import AppointmentDataService from '@/service/AppointmentDataService.js'
+import UtilService from '../service/UtilService.js';
 
 // @ is an alias to /src
 export default {
     name: 'Appointment',
     components: {
     NavBar,
+    },
+    setup() {
+      return {UtilService}
     },
     data() {
         return {
@@ -53,55 +84,78 @@ export default {
                 id: 1,
                 examination: {
                     patient: {
-                        name: 'Pera',
-                        surname: 'Djura',
+                        name: '',
+                        surname: '',
+                        status: '',
                     },
-                    doctor: {
-                        name: 'Doktor',
-                        surname: 'Doktorkovic',
-                    }
+                    diagnose: '',
+                    examinationInfo: '',
                 },
-                startTime: '123546578',
-                pharmacy: 'Apoteeeeeka',
-                durationInMins: 30,
-            },
+                startTime: '',
+                pharmacy: '',
+                durationInMins: 0,
+                doctor: {
+                        name: '',
+                        surname: '',
+                    },
+            }
         };
     },
     methods: {
-        confirmLeave() {
-            return window.confirm('Do you really want to leave? you have unsaved changes!')
+        getAppointmentData(){
+            AppointmentDataService.getAppointmentInfo(this.appId)
+            .then(response => {
+                    this.appointment = response.data;
+                    console.log(response.data);
+                });
         },
-
-        confirmStayInDirtyForm() {
-            return this.form_dirty && !this.confirmLeave()
-        },
-
-        beforeWindowUnload(e) {
-            if (this.confirmStayInDirtyForm()) {
-            // Cancel the event
-            e.preventDefault();
-            // Chrome requires returnValue to be set
-            e.returnValue = '';
-            }   
-        },
-    },
-    beforeRouteLeave (to, from, next) {
-        // If the form is dirty and the user did not confirm leave,
-        // prevent losing unsaved changes by canceling navigation
-        if (this.confirmStayInDirtyForm()){
-            next(false)
-        } else {
-            // Navigate to next view
-            next()
+        finishAppointment(){
+            this.appointment.examination.status = 'HELD';
+            // alert(this.appointment.examination.examinationInfo);
+            AppointmentDataService.postAppointmentInfo(this.appointment)
+            .then(response => {
+                    if (response.data){
+                        alert("Info saved.");
+                    }
+                });
         }
+        // confirmLeave() {
+        //     return window.confirm('Do you really want to leave? you have unsaved changes!')
+        // },
+
+        // confirmStayInDirtyForm() {
+        //     return this.form_dirty && !this.confirmLeave()
+        // },
+
+        // beforeWindowUnload(e) {
+        //     if (this.confirmStayInDirtyForm()) {
+        //     // Cancel the event
+        //     e.preventDefault();
+        //     // Chrome requires returnValue to be set
+        //     e.returnValue = '';
+        //     }   
+        // },
     },
+    // beforeRouteLeave (to, from, next) {
+    //     // If the form is dirty and the user did not confirm leave,
+    //     // prevent losing unsaved changes by canceling navigation
+    //     if (this.confirmStayInDirtyForm()){
+    //         next(false)
+    //     } else {
+    //         // Navigate to next view
+    //         next()
+    //     }
+    // },
     created() {
-    window.addEventListener('beforeunload', this.beforeWindowUnload)
+    // window.addEventListener('beforeunload', this.beforeWindowUnload);
+        this.appId = this.$route.params.id;
+        // this.id = 3;
+        this.getAppointmentData();
     },
 
-    beforeDestroy() {
-    window.removeEventListener('beforeunload', this.beforeWindowUnload)
-    },
+    // beforeUnmount() {
+    // window.removeEventListener('beforeunload', this.beforeWindowUnload)
+    // },
 
 }
 </script>

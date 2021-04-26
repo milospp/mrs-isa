@@ -138,7 +138,7 @@ const routes = [
     component: AddMedicine
   },
   {
-    path: '/dermatologist/appointment/:id',
+    path: '/appointment/:id',
     name: 'Appointment',
     component: Appointment    // view je komponenta
   }
