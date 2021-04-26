@@ -122,8 +122,8 @@ public class MedicineController {
         Set<MedicineInPharmacy> sviLekovi = ((PharmacyAdmin) user).getPharmacy().getMedicines();
         povratna = 0;
         for (MedicineInPharmacy med : sviLekovi) {
-            if (med.getMedicine().getName().equals(lek.getMedicine().getName()) &&
-                    med.getMedicine().getStructure().equals(lek.getMedicine().getStructure())) {
+            if (med.getMedicine().getCode().equals(lek.getMedicine().getCode())) {
+                med.getMedicine().setName(lek.getMedicine().getName());
                 med.getMedicine().setNote(lek.getMedicine().getNote());
                 med.setInStock(lek.getInStock());
                 med.getMedicine().setPerscription(lek.getMedicine().getPerscription());
@@ -141,7 +141,27 @@ public class MedicineController {
                 break;
             }
         }
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
 
+    @GetMapping("/delete/pharmacyAdmin/{id}/{code}")
+    public ResponseEntity<Integer> deleteMedicinePharmacyAdmin(@PathVariable Long id, @PathVariable String code) {
+        User user = userService.findOne(id);
+        int povratna = -1;
+        if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
+        Set<MedicineInPharmacy> sviLekovi = ((PharmacyAdmin) user).getPharmacy().getMedicines();
+        povratna = 0;
+        MedicineInPharmacy odabrani = null;
+        for (MedicineInPharmacy med : sviLekovi) {
+            if (med.getMedicine().getCode().equals(code)) {
+                odabrani = med;
+                break;
+            }
+        }
+        if (odabrani == null) return new ResponseEntity<>(povratna, HttpStatus.OK);
+        povratna = 1;
+        sviLekovi.remove(odabrani);
+        pharmacyService.save(((PharmacyAdmin) user).getPharmacy());
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 

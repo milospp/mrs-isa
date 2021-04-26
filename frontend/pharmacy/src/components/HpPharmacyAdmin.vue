@@ -51,6 +51,7 @@
                   <th>Price</th>
                   <th>Quantity</th>
                   <th></th>
+                  <th></th>
                 </thead>
                 <tbody>
                     <tr :key="l" v-for="l in this.lekovi">
@@ -59,7 +60,8 @@
                       <td>{{l.medicine.type}}</td>
                       <th>{{l.currentPrice}}</th>
                       <td>{{l.inStock}}</td>
-                      <td><form v-on:click.prevent="funkcija(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">View</button></form></td>
+                      <td><form v-on:click.prevent="funkcija(l, false)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">View</button></form></td>
+                      <td><form v-on:click.prevent="funkcija(l, true)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#brisanje">Delete</button></form></td>
                   </tr>
                 </tbody>
               </table>
@@ -201,10 +203,8 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body" align="left">Name: {{this.name}}</div>
-        <div class="modal-body" align="left">Structure: {{this.structure}}</div>
-        <div class="modal-body" align="left">Rating: {{this.rating}}</div>
-        <div class="modal-body" align="left">Points: {{this.points}}</div>
+        <div class="modal-body" align="left">Code: {{this.originalLeka?.medicine.code}}</div>
+        <div class="modal-body" align="left">Name: <input type="text" v-model="name" placeholder=name/></div>
         <div class="modal-body" align="left">Manufacturer: <input type="text" v-model="manufacturer" placeholder=manufacturer/></div>
         <div class="modal-body" align="left">Note: <input type="text" v-model="note" placeholder=note/></div>
         <div class="modal-body" align="left">Type: <input type="text" v-model="type" placeholder=type/></div>
@@ -212,6 +212,9 @@
         <div class="modal-body" align="left">Quantity: <input type="text" v-model="quantity" placeholder=quantity/></div>
         <div class="modal-body" align="left">perscription: <input type="text" v-model="perscription" placeholder=perscription/></div>
         <div class="modal-body" align="left">Shape: <input type="text" v-model="shape" placeholder=shape/></div>
+        <div class="modal-body" align="left">Structure: {{this.structure}}</div>
+        <div class="modal-body" align="left">Rating: {{this.rating}}</div>
+        <div class="modal-body" align="left">Points: {{this.points}}</div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="provera()">Save changes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -275,13 +278,31 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="Potvrdica">Are you sure you want to fire {{this.otpustiRadnika?.name}} + {{this.otpustiRadnika?.surname}}?</h5>
+          <h5 class="modal-title" id="Potvrdica">Are you sure you want to fire {{this.otpustiRadnika?.name}} {{this.otpustiRadnika?.surname}}?</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
          <div class="modal-footer">
           <button type="button" class="btn btn-primary" v-on:click.prevent="otpusti()" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+     <!-- brisanje -->
+  <div class="modal fade" id="brisanje" tabindex="-1" role="dialog" aria-labelledby="Brisanje" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="Bris">Are you sure you want to delete medicine {{this.originalLeka?.medicine.name}}?</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+         <div class="modal-footer">
+          <button type="button" class="btn btn-primary" v-on:click.prevent="izbrisiLek()" data-dismiss="modal">Yes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -422,35 +443,37 @@ export default {
         PharmacyDataService.setPharmacy(this.pharmacy)
           .then(response => {alert("You successfaly changed pharmacy info.");});
       },
-      funkcija(l) {
+      funkcija(l, samoLek) {
         this.originalLeka = l;
-        this.name = l.medicine.name;
-        this.perscription = l.medicine.perscription;  //novi
-        this.structure =  l.medicine.structure;
-        this.manufacturer = l.medicine.manufacturer;
-        this.note = l.medicine.note;
-        this.rating = l.medicine.rating;  // novo
-        this.points = l.medicine.points;
-        this.shape = l.medicine.shape;  // novo
-        this.type = l.medicine.type;
-        this.price = l.currentPrice;
-        this.quantity = l.inStock;
+        if (!samoLek) {
+          this.name = l.medicine.name;
+          this.perscription = l.medicine.perscription;  //novi
+          this.structure =  l.medicine.structure;
+          this.manufacturer = l.medicine.manufacturer;
+          this.note = l.medicine.note;
+          this.rating = l.medicine.rating;  // novo
+          this.points = l.medicine.points;
+          this.shape = l.medicine.shape;  // novo
+          this.type = l.medicine.type;
+          this.price = l.currentPrice;
+          this.quantity = l.inStock;
+        }
       },
       provera() {
         var provera = 0;
-        provera += this.provera_prazan(this.manufacturer, "You must enter manufacturer.");
-        provera += this.provera_prazan(this.note, "You must enter note.");
-        provera += this.provera_prazan(this.type, "You must enter type.");
-        provera += this.provera_prazan(String(this.quantity), "You must enter quantity.");
-        provera += this.provera_prazan(String(this.price), "You must enter price.");
-        provera += this.provera_prazan(this.shape, "You must enter shape.");
-        provera += this.provera_prazan(this.perscription, "You must enter perscription.");
+        provera += this.provera_prazan(this.name, "You must enter the name.");
+        provera += this.provera_prazan(this.manufacturer, "You must enter the manufacturer.");
+        provera += this.provera_prazan(this.note, "You must enter the note.");
+        provera += this.provera_prazan(this.type, "You must enter the type.");
+        provera += this.provera_prazan(String(this.quantity), "You must enter the quantity.");
+        provera += this.provera_prazan(String(this.price), "You must enter the price.");
+        provera += this.provera_prazan(this.shape, "You must enter the shape.");
+        provera += this.provera_prazan(this.perscription, "You must enter the perscription.");
         provera += this.proveri_broj(String(this.quantity), "Quantity must be number.");
-        provera += this.proveri_broj(String(this.points), "Points must be number.");
-        provera += this.proveri_cenu();
         provera += this.proveri_cenu();
         if (provera != 0) return false;
 
+        this.originalLeka.medicine.name = this.name;
         this.originalLeka.medicine.manufacturer = this.manufacturer;
         this.originalLeka.medicine.note = this.note;
         this.originalLeka.medicine.type = this.type;
@@ -496,7 +519,15 @@ export default {
           return 1;
         }
         return 0;
-      }
+      },
+      izbrisiLek() {
+        MedicineDataService.deleteMedicinePharmacyAdmin(this.id, this.originalLeka.medicine.code)
+          .then(response => {
+              if (response.data == 1) { alert("You successfully deleted medicine"); return true;} 
+              if (response.data == 0) { alert("Refresh page, you already delete this medicine"); return false;} 
+              alert("Something goes wrong");
+              return false;});
+      },
     }
 }
 </script>
