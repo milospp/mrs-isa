@@ -37,6 +37,19 @@ class MedicineDataService {
     });
   }
 
+  deleteMedicinePharmacyAdmin(idAdminaApoteke, kodLeka) {
+    return axios.get(API_URL + "/delete/pharmacyAdmin/" + idAdminaApoteke + "/" + kodLeka)
+      .catch(function (error) {
+        if (error.response) {
+            console.log(error.response.data);
+        } else if (error.request) {
+            console.log(error.request);
+        }
+        console.log("Error");
+        console.log(error.config);
+    });
+  }
+
   getMedicineForPharmacy(idApoteke) {
     return axios.get(API_URL + "/pharmacy/" + idApoteke)
     .catch(function (error) {
