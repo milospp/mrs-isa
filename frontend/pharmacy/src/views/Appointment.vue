@@ -13,12 +13,18 @@
 
         <div v-if="appointment.examination.status == 'PENDING'">
             <div class="form-group">
+                <div class="custom-control custom-checkbox">
+                    <input v-model="patientAppeared" type="checkbox" class="custom-control-input" id="customCheck1">
+                    <label class="custom-control-label" for="customCheck1">Patient showed up</label>
+                </div>
+            </div>
+            <div class="form-group">
                 <label for="info">Anamnesis (conversation with patient)</label>
-                <textarea v-model="appointment.examination.examinationInfo" class="form-control" id="info" rows="5" placeholder="Info..."></textarea>
+                <textarea :disabled="!patientAppeared" v-model="appointment.examination.examinationInfo" class="form-control" id="info" rows="5" placeholder="Info..."></textarea>
             </div>
             <div class="form-group">
                 <label for="diagnose">Diagnose</label>
-                <input v-model="appointment.examination.diagnose" class="form-control" placeholder="Diagnose" id="diagnose">
+                <input :disabled="!patientAppeared" v-model="appointment.examination.diagnose" class="form-control" placeholder="Diagnose" id="diagnose">
             </div>
             <div class="form-group">
                 <button class="form-control btn btn-primary" id="finish" @click="finishAppointment()">Finish</button>
@@ -98,7 +104,8 @@ export default {
                         name: '',
                         surname: '',
                     },
-            }
+            },
+            patientAppeared: null,
         };
     },
     methods: {
@@ -110,7 +117,17 @@ export default {
                 });
         },
         finishAppointment(){
-            this.appointment.examination.status = 'HELD';
+            if (this.appointment.examination.status == 'PENDING'){
+                if (this.patientAppeared != null){
+                    if (this.patientAppeared == true)
+                        this.appointment.examination.status = 'HELD';
+                    else{
+                        this.appointment.examination.status = 'NOT_HELD';
+                        this.appointment.examination.examinationInfo = null;
+                        this.appointment.examination.diagnose = null;
+                    }
+                }
+            }
             // alert(this.appointment.examination.examinationInfo);
             AppointmentDataService.postAppointmentInfo(this.appointment)
             .then(response => {
