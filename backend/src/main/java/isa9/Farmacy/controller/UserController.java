@@ -10,6 +10,8 @@ import isa9.Farmacy.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -25,6 +27,7 @@ public class UserController {
     private final PharmacyService pharmacyService;
     private final MedReservationService medReservationService;
     private final UserRoleService userRoleService;
+    private final PasswordEncoder passwordEncoder;
     
     private final PatientToPatientDTO patientToPatientDTO;
     private final MedicineToMedicineDTO medicineToMedicineDTO;
@@ -36,7 +39,7 @@ public class UserController {
     private final UserToUserDTO userToUserDTO;
 
     @Autowired
-    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO, UserToUserDTO userToUserDTO, UserRoleService userRoleService) {
+    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO, UserToUserDTO userToUserDTO, UserRoleService userRoleService, PasswordEncoder pe) {
         this.userService = userService;
         this.pharmacyService = pharmacyService;
         this.medReservationService = medReservationService;
@@ -49,6 +52,7 @@ public class UserController {
         this.pharmacistToPharmacistDTO = pharmacistToPharmacistDTO;
         this.medReservationToMedReservationDTO = medReservationToMedReservationDTO;
         this.userToUserDTO = userToUserDTO;
+        this.passwordEncoder = pe;
     }
 
     @GetMapping("tmp-test")
@@ -229,6 +233,7 @@ public class UserController {
     }
 
     @PostMapping("/register/pharmacist/{id}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<Integer> createPharmacist(@PathVariable Long id, @RequestBody WorkerHelp user) {
         int povratna = 0;
         if (!userService.isAvaibleEmail(user.getRegisterData().getEmail())) povratna += 2;
@@ -238,7 +243,9 @@ public class UserController {
         user.getRegisterData().setEnabled(true);
         user.getRegisterData().setRole(this.userRoleService.findOne(5L));
         user.getRegisterData().setWorking(new HashSet<>());
+        user.getRegisterData().setPassword(passwordEncoder.encode(user.getRegisterData().getPassword()));
         user.getRegisterData().setLastPasswordResetDate(null);
+
         user.getRegisterData().getWorking().add(new Work(1L, user.getRegisterData(), ((PharmacyAdmin) adminUser).getPharmacy(), LocalTime.parse(user.getStartHour()), LocalTime.parse(user.getEndHour())));
         //user.setPharmacy();
         // tehnicki suvisna provera ali dok ne sredimo registraciju
@@ -293,7 +300,7 @@ public class UserController {
         if (!userService.isAvaibleEmail(patient.getEmail())) povratna += 2;
         if (povratna > 0) return new ResponseEntity<>(false, HttpStatus.OK);
         Patient newlyRegistered = new Patient(patient.getId(), patient.getName(), patient.getSurname()
-                , patient.getEmail(), patient.getPassword(), patient.getAddress(), patient.getPhoneNumber()
+                , patient.getEmail(), passwordEncoder.encode(patient.getPassword()), patient.getAddress(), patient.getPhoneNumber()
                 , userRoleService.findOne(3L), false, null);
         userService.save(newlyRegistered);
         System.out.println(newlyRegistered);
@@ -307,12 +314,13 @@ public class UserController {
     }
 
     @PostMapping("register/pharmacyAdmin")
+    @PreAuthorize("hasAuthority('SYS_ADMIN')")
     public ResponseEntity<Boolean> registerPharmacyAdmin(@RequestBody PharmacyAdminRegDTO newAdminDto){
         if(!userService.isAvaibleEmail(newAdminDto.getEmail())) return new ResponseEntity<>(false, HttpStatus.OK);
         long pharmacyId = newAdminDto.getPharmacyId();
         Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
         PharmacyAdmin newlyRegistered = new PharmacyAdmin(0L, newAdminDto.getName(), newAdminDto.getSurname(), newAdminDto.getEmail(),
-                newAdminDto.getPassword(), newAdminDto.getAddress(), newAdminDto.getPhoneNumber(), userRoleService.findOne(2L), pharmacy);
+                passwordEncoder.encode(newAdminDto.getPassword()), newAdminDto.getAddress(), newAdminDto.getPhoneNumber(), userRoleService.findOne(2L), pharmacy);
         userService.save(newlyRegistered);
         System.out.println(newlyRegistered);
         return new ResponseEntity<>(true, HttpStatus.OK);
@@ -570,10 +578,11 @@ public class UserController {
     }
 
     @PostMapping("register/supplier")
+    @PreAuthorize("hasAuthority('SYS_ADMIN')")
     public ResponseEntity<Boolean> registerSupplier(@RequestBody SupplierRegistrationDTO newSupplierDto){
         if(!userService.isAvaibleEmail(newSupplierDto.getEmail())) return new ResponseEntity<>(false, HttpStatus.OK);
         Supplier newlyRegistered = new Supplier(0L, newSupplierDto.getName(), newSupplierDto.getSurname(),
-                newSupplierDto.getEmail(), newSupplierDto.getPassword(), newSupplierDto.getAddress(),
+                newSupplierDto.getEmail(), passwordEncoder.encode(newSupplierDto.getPassword()), newSupplierDto.getAddress(),
                 newSupplierDto.getPhoneNumber(), this.userRoleService.findOne(6L), null);
         userService.save(newlyRegistered);
         System.out.println(newlyRegistered);
@@ -581,10 +590,11 @@ public class UserController {
     }
 
     @PostMapping("register/dermatologist")
+    @PreAuthorize("hasAuthority('SYS_ADMIN')")
     public ResponseEntity<Boolean> registerDermatologist(@RequestBody DermatologistRegDTO newDermatologistDto){
         if(!userService.isAvaibleEmail(newDermatologistDto.getEmail())) return new ResponseEntity<>(false, HttpStatus.OK);
         Dermatologist newlyRegistered = new Dermatologist(0L, newDermatologistDto.getName(), newDermatologistDto.getSurname(),
-                newDermatologistDto.getEmail(), newDermatologistDto.getPassword(), newDermatologistDto.getAddress(),
+                newDermatologistDto.getEmail(), passwordEncoder.encode(newDermatologistDto.getPassword()), newDermatologistDto.getAddress(),
                 newDermatologistDto.getPhoneNumber(), this.userRoleService.findOne(4L), null);
         userService.save(newlyRegistered);
         System.out.println(newlyRegistered);

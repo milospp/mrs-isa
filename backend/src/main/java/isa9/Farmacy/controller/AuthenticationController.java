@@ -48,6 +48,7 @@ public class AuthenticationController {
         UsernamePasswordAuthenticationToken u = new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
                 authenticationRequest.getPassword());
 
+
         //
         Authentication authentication = authenticationManager.authenticate(u);
 

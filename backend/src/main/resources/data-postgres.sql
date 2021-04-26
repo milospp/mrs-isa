@@ -27,7 +27,7 @@ insert into address (city, number, state, street) values ('Beograd', '90', 'Serb
 insert into address (city, number, state, street) values ('Beograd', '47', 'Serbia', 'Mačvanska');
 insert into address (city, number, state, street) values ('Beograd', '30', 'Serbia', 'Terazije');
 insert into address (city, number, state, street) values ('Beograd', '29', 'Serbia', 'Avalska');
-insert into address (city, number, state, street) values ('Beograd', '41', 'Serbia', 'Milutina Milankoviča');
+insert into address (city, number, state, street) values ('Beograd', '41', 'Serbia', 'Milutina Milankovića');
 insert into address (city, number, state, street) values ('Novi Sad', '128', 'Serbia', 'Bulevar oslobođenja');
 insert into address (city, number, state, street) values ('Novi Sad', '43', 'Serbia', 'Bulevar oslobođenja');
 insert into address (city, number, state, street) values ('Novi Sad', '8', 'Serbia', 'Trg slobode');
@@ -42,6 +42,7 @@ insert into user_roles (name) values ('DERMATOLOGIST');
 insert into user_roles (name) values ('PHARMACIST');
 insert into user_roles (name) values ('SUPPLIER');
 
+--IMPORTANT: when inserting new sample users, use https://www.bcryptcalculator.com/encode to correctly generate a password for database
 
 --patients
 insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (10, 'oprincominero@maildrop.cc', true, 'Petar', 'peca', '0645597841', 3, 'Petrović', LOCALTIMESTAMP);
@@ -188,3 +189,6 @@ insert into doctor_working (doctor_id, working_id) values (16, 5);
 insert into doctor_working (doctor_id, working_id) values (17, 6);
 insert into doctor_working (doctor_id, working_id) values (16, 7);
 
+--system administrator - password : sef
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (30, 'sissadmin@maildrop.cc', true, 'Mladen', '$2a$10$oJ1iLjwac72nZ8/sRNs1W.Er/tQuW8FxY80hveTjyDK8/7W0bOpAK', '0618878232', 1, 'Tasić', LOCALTIMESTAMP);
+insert into sys_admin (id) values (18);
