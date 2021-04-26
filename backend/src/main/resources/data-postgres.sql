@@ -107,22 +107,22 @@ insert into pharmacy_medicines (pharmacy_id, medicines_id) values (1,2);
 
 --appointments
 -- id 1
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 200, current_timestamp + INTERVAL '3day', 0);
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 200, current_timestamp + INTERVAL '3day', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 300, current_timestamp, 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 400, current_timestamp, 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 500, current_timestamp, 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 330, current_timestamp, 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 340, current_timestamp, 0);
-insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Diagnose', 'Exam infoo NOTHELD', 0, 2, 2);
-insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Diagnose', 'Exam infoo NOTHELD', 1, 3, 1);
-insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Diagnose', 'Exam infoo NOTHELD', 2, 4, 1);
-insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Diagnose', 'HEEELD', 0, 5, 2);
-insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Diagnose', 'HEEELD', 0, 6, 3);
-update appointment SET examination_id = 1 WHERE id = 2;
-update appointment SET examination_id = 2 WHERE id = 3;
-update appointment SET examination_id = 3 WHERE id = 4;
-update appointment SET examination_id = 4 WHERE id = 5;
-update appointment SET examination_id = 5 WHERE id = 6;
+insert into examination (status, appointment_id, patient_id) values (0, 1, 2);
+insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Migrena', 'Pacijent oseca glavobolju', 1, 2, 1);
+insert into examination (status, appointment_id, patient_id) values (2, 3, 1);
+insert into examination (status, appointment_id, patient_id) values (0, 4, 2);
+insert into examination (status, appointment_id, patient_id) values (3, 5, 3);
+update appointment SET examination_id = 1 WHERE id = 1;
+update appointment SET examination_id = 2 WHERE id = 2;
+update appointment SET examination_id = 3 WHERE id = 3;
+update appointment SET examination_id = 4 WHERE id = 4;
+update appointment SET examination_id = 5 WHERE id = 5;
 
 
 insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 2);

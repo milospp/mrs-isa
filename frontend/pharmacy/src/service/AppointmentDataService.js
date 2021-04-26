@@ -33,6 +33,18 @@ class MedicineDataService {
     return axios.post(`${API_URL}/` + id + `/cancel`);
   }
 
+  getAppointmentInfo(id){
+    return axios.get(`${API_URL}/` + id);
+  }
+
+  postAppointmentInfo(appointment){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/` + appointment.id + `/done`,
+      data: appointment
+    });
+  }
+
 }
 
 export default new MedicineDataService();
