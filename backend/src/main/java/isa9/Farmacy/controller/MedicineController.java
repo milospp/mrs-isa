@@ -165,6 +165,49 @@ public class MedicineController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
+    @PostMapping("/add/pharmacyAdmin/{id}")
+    public ResponseEntity<Integer> addMedicinePharmacyAdmin(@PathVariable Long id, @RequestBody MedInPharmaDTO lek) {
+        User user = userService.findOne(id);
+        int povratna = -1;
+        if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
+        Pharmacy apoteka = ((PharmacyAdmin) user).getPharmacy();
+        List<Medicine> sviLekovi = medicineService.findAll();
+        povratna = 0;
+        for (Medicine med : sviLekovi)
+            if (med.getCode().equals(lek.getMedicine().getCode())) new ResponseEntity<>(povratna, HttpStatus.OK);
+        povratna = 1;
+
+        // novi lek
+        Medicine novi = new Medicine();
+        novi.setCode(lek.getMedicine().getCode());
+        novi.setName(lek.getMedicine().getName());
+        novi.setStructure(lek.getMedicine().getStructure());
+        novi.setType(lek.getMedicine().getType());
+        novi.setShape(lek.getMedicine().getShape());
+        novi.setManufacturer(lek.getMedicine().getName());
+        novi.setPoints(lek.getMedicine().getPoints());
+        novi.setRating(0);
+        novi.setPerscription(lek.getMedicine().getPerscription());
+        novi.setNote(lek.getMedicine().getNote());
+//        novi.setReplacementMedication();
+        medicineService.save(novi);
+
+        // lek u apoteci
+        MedicineInPharmacy noviUApoteci = new MedicineInPharmacy();
+        noviUApoteci.setMedicine(novi);
+        noviUApoteci.setPharmacy(apoteka);
+        //cena leka
+        MedPrice novacena = new MedPrice();
+        novacena.setPrice(lek.getCurrentPrice());
+        novacena.setStartDate(LocalDateTime.now());
+        novacena.setMedicineInPharmacy(noviUApoteci);
+        noviUApoteci.setCurrentPrice(novacena);
+        noviUApoteci.setInStock(lek.getInStock());
+        apoteka.getMedicines().add(noviUApoteci);
+        pharmacyService.save(apoteka);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
     @GetMapping("/pharmacy/{id}")
     public ResponseEntity<List<MedInPharmaDTO>> getAllMedicinePharmacy(@PathVariable Long id) {
         Pharmacy apoteka = pharmacyService.findOne(id);
