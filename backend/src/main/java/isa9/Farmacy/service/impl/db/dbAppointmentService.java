@@ -43,4 +43,20 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
         return this.appointmentRepository.save(entity);
     }
 
+
+    @Override
+    public Boolean patientCanRateDoctor(Patient patient, Doctor doctor) {
+        Appointment appointment;
+        appointment = appointmentRepository.findFirstByDoctorAndExamination_PatientAndExamination_Status(doctor,patient,ExaminationStatus.HELD);
+        if (appointment == null) return false;
+        else return true;
+    }
+
+    @Override
+    public Boolean patientHadAppointmentInPharmacy(Patient patient, Pharmacy pharmacy) {
+        Appointment appointment;
+        appointment = appointmentRepository.findFirstByPharmacyAndExamination_PatientAndExamination_Status(pharmacy,patient,ExaminationStatus.HELD);
+        if (appointment == null) return false;
+        else return true;
+    }
 }

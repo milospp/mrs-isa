@@ -18,7 +18,7 @@ class PatientDataService {
   }
 
   getPatient(id){
-    return axios.get(`${API_URL}/api/users/` + id);
+    return axios.get(`${API_URL}/api/users/patient/` + id);
   }
 
   getPatientAllergies(id){
@@ -87,6 +87,18 @@ class PatientDataService {
 
   cancelReservation(id) {
     return axios.put(`${API_URL}/api/users/reservations/` + id + `/cancel`);
+  }
+
+  rateDoctor(doctor, rateObj) {
+    return axios({
+      method: 'post',
+      url: `${API_URL}/api/users/doctor/` + doctor.id + `/rating`,
+      data: rateObj
+    });
+  }
+
+  getUserRating(patient, doctor) {
+    return axios.get(`${API_URL}/api/users/doctor/` + doctor.id + `/rating/user/` + patient.id);
   }
 
 }

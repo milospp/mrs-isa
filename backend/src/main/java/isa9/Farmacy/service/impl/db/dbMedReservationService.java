@@ -1,7 +1,6 @@
 package isa9.Farmacy.service.impl.db;
 
-import isa9.Farmacy.model.MedReservation;
-import isa9.Farmacy.model.MedReservationStatus;
+import isa9.Farmacy.model.*;
 import isa9.Farmacy.repository.MedReservationRepository;
 import isa9.Farmacy.repository.PharmacyRepository;
 import isa9.Farmacy.service.MedReservationService;
@@ -61,4 +60,19 @@ public class dbMedReservationService extends MedReservationServiceBase implement
         }
         System.out.println("Number of expired reservations: " + count + " --- on date: " + LocalDate.now());
     }
+
+    @Override
+    public Boolean patientConsumedMedicine(Patient patient, Medicine medicine) {
+        MedReservation medReservation;
+        medReservation = medReservationRepository.findFirstByPatientAndMedicineInPharmacy_MedicineAndStatus(patient, medicine, MedReservationStatus.TAKEN);
+        if (medReservation == null) return false;
+        else return true;
+    }
+
+    @Override
+    public Boolean patientConsumedMedInPharmacy(Patient patient, Pharmacy pharmacy) {
+        MedReservation medReservation;
+        medReservation = medReservationRepository.findFirstByPatientAndMedicineInPharmacy_PharmacyAndStatus(patient, pharmacy, MedReservationStatus.TAKEN);
+        if (medReservation == null) return false;
+        else return true;    }
 }

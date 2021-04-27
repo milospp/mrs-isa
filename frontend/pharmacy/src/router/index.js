@@ -7,6 +7,7 @@ import Register from '@/views/Register.vue'
 import Patients from '@/views/Patients.vue'
 import AddPharmacist from '@/views/AddPharmacist.vue'
 import HomePagePharmacyAdmin from '@/views/HomePagePharmacyAdmin.vue'
+import HireDermatologist from '@/views/HireDermatologist.vue'
 import AddPharmacy from '@/views/AddPharmacy.vue'
 import AddPharmacyAdmin from '@/views/AddPharmacyAdmin.vue'
 import PharmacistHomePage from '@/views/PharmacistHomePage.vue'
@@ -22,6 +23,8 @@ import AddSupplier from '@/views/AddSupplier.vue'
 import AddDermatologist from '@/views/AddDermatologist.vue'
 import AddMedicine from '@/views/AddMedicine.vue'
 import Login from '@/views/Login.vue'
+import Appointment from '@/views/Appointment.vue'
+
 
 const routes = [
   {
@@ -60,6 +63,11 @@ const routes = [
     path: '/addPharmacist/:id',
     name: 'AddPharmacist',
     component: AddPharmacist    // view je komponenta
+  },
+  {
+    path: '/hireDermatologist/:id',
+    name: 'HireDermatologist',
+    component: HireDermatologist    // view je komponenta
   },
   {
     path: '/homePagePharmacyAdmin/:id',
@@ -141,6 +149,11 @@ const routes = [
     path: '/addMedicine',
     name: 'AddMedicine',
     component: AddMedicine
+  },
+  {
+    path: '/appointment/:id',
+    name: 'Appointment',
+    component: Appointment    // view je komponenta
   }
 
 

@@ -46,24 +46,42 @@
                         <th id="address">Address</th>
                         <th>Phone number</th>
                         <th></th>
+                        <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr :key="p.username" v-for="p in patients" v-on:dblclick="patientInfo(Object.values(p))" class="clickable" data-index="{{p.id}}">
+                        <tr :key="p.id" v-for="p in patients" v-on:dblclick="patientInfo(Object.values(p))" class="clickable" data-index="{{p.id}}">
                             <td scope="row">{{p.name}}</td>
                             <td>{{p.surname}}</td>
                             <!-- <td>{{UtilService.formatDateTime(p.lastAppointmentDate)}}</td> -->
                             <td>{{UtilService.AddressToString(p.address)}}</td>
                             <td>{{p.phoneNumber}}</td>
                             <td>
-                                <button class="btn btn-primary" v-on:click="showModal(p)">Examination history</button>
+                                <button class="btn btn-secondary" v-on:click="showModal(p)">Examination history</button>
+                            </td>
+                            <td> <!-- -->
+                                <button v-if="UtilService.isTimeForAppointment(p.lastDate.startTime, p.lastDate.durationInMins) && p.lastDate.examination.status == 'PENDING'" class="btn btn-primary" v-on:click="startAppointment(p.lastDate)">Start 
+                                  <span v-if="refreshData.searchParams.doctorId == 11">Examination</span>
+                                <span v-else>Counseling</span></button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
 
-                <div class="d-flex justify-content-center">
+                <div class="d-flex row">
+                  <div class="col-sm">
+                  <label for="pageSizeSelect" class="mt-2 mr-2">Show per page:</label>
+                  <select id="pageSizeSelect" v-model="refreshData.pageSize" class="form-select mr-5" aria-label="Default select example" @change="onChange($event)">
+                    <option selected value="2">2</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                  </select>
+                  </div>
+                  <div class="col-xl">
                   <pagination v-model="refreshData.pageNo" :records="totalPatients" :per-page="refreshData.pageSize" @paginate="refreshPatients($event)"/>
+                  </div>
                 </div>
                 
 
@@ -134,7 +152,7 @@
                         <!-- <th>Medicine name</th> -->
                         <th>Days</th>
                       </tr>
-                      <tr v-for="t in selectedAppointment.examination.therapy">
+                      <tr v-for="t in selectedAppointment.examination.therapy" :key="t.medicine.code">
                         <td>{{t.medicine.code}}</td>
                         <!-- <td>m.name</td> -->
                         <td>{{t.days}}</td>
@@ -239,6 +257,7 @@ export default {
         return {
             patients: [],
             message: null,
+            lastAppointmentDates: [],
 
             selectedPatient: null,
             historyFilter: "all",
@@ -251,26 +270,34 @@ export default {
               pageSize: 2,
               sortBy: 'id',
               searchParams: {
-                doctorId: 2,
+                doctorId: 11,
                 name: "",
                 surname: ""
               },
               ascending: true
-            }
+            },
+            //appointmentDate: "2021-04-23 16:03:00",
 
         };
     },
     methods: {
         refreshPatients(e) {
-          console.log(this.refreshData.pageNo);
+          console.log("page size: ",this.refreshData.pageSize);
           if (!this.refreshData.pageNo) this.refreshData.pageNo = 1;
           console.log(this.refreshData.pageNo);
             PatientDataService.retrieveAllPatients(this.refreshData) // HARDCODED
                 .then(response => {
                     this.patients = response.data.patients;
+                    this.lastAppointments = response.data.lastAppointmentsByDoctor;
                     this.totalPatients = response.data.count;
+                    this.addDatesToPatients();
                     console.log(response.data);
                 });
+        },
+        addDatesToPatients(){
+          for (let i = 0; i < this.patients.length; i++){
+            this.patients[i].lastDate = this.lastAppointments[i];
+          }
         },
         patientInfo(patient) {
             alert(patient);
@@ -298,6 +325,9 @@ export default {
 
                     this.appointments = response.data;
                 });
+        },
+        onChange(e){
+          this.refreshPatients(e);
         },
 
         isCanceled(obj) {
@@ -329,6 +359,10 @@ export default {
           this.refreshData.sortBy = sort;
           this.refreshData.pageNo = 1;
           this.refreshPatients();
+        },
+
+        startAppointment(lastAppointment){
+          this.$router.push('/appointment/'+lastAppointment.id);
         }
       },
 
@@ -353,6 +387,9 @@ export default {
     }
     .active {
         color: #42b983;
+    }
+    select{
+      height: 38px;
     }
     /*th {
         position: sticky;

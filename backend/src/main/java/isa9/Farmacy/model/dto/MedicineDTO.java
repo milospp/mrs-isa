@@ -6,6 +6,8 @@ import isa9.Farmacy.model.Medicine;
 import java.util.List;
 import lombok.*;
 
+import javax.persistence.Column;
+
 @Getter
 @Setter
 @ToString
@@ -26,6 +28,7 @@ public class MedicineDTO {
     private String type;
     private DispencingMedicine perscription;
     private List<String> replacementMedicationIds;
+    private double rating;
 
 
 }

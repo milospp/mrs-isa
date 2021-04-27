@@ -1,12 +1,15 @@
 package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.*;
-import isa9.Farmacy.model.dto.DermatologistDTO;
+import isa9.Farmacy.model.dto.MedicineDTO;
 import isa9.Farmacy.model.dto.PharmacyDTO;
+import isa9.Farmacy.model.dto.RatingDTO;
 import isa9.Farmacy.model.dto.WorkDTO;
 import isa9.Farmacy.service.PharmacyService;
+import isa9.Farmacy.service.RatingService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.support.PharmacyToPharmacyDTO;
+import isa9.Farmacy.support.RatingToRatingDTO;
 import isa9.Farmacy.support.WorkToWorkDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,37 +28,38 @@ import java.util.List;
 public class PharmacyController {
 
     private final PharmacyService pharmacyService;
+    private final RatingService ratingService;
     private final UserService userService;
     private final WorkToWorkDTO workToWorkDTO;
+    private final RatingToRatingDTO ratingToRatingDTO;
+    private final PharmacyToPharmacyDTO pharmacyToPharmacyDTO;
 
     @Autowired
-    public PharmacyController(PharmacyService pharmacyService, UserService userService, WorkToWorkDTO workToWorkDTO){
+    public PharmacyController(PharmacyService pharmacyService, RatingService ratingService, UserService userService, WorkToWorkDTO workToWorkDTO, RatingToRatingDTO ratingToRatingDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO){
         this.pharmacyService = pharmacyService;
+        this.ratingService = ratingService;
         this.userService = userService;
         this.workToWorkDTO = workToWorkDTO;
+        this.ratingToRatingDTO = ratingToRatingDTO;
+        this.pharmacyToPharmacyDTO = pharmacyToPharmacyDTO;
     }
 
 
     @GetMapping("")
     public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
-
-        List<PharmacyDTO> resultDTOS = new ArrayList<>();
-        for (Pharmacy p : this.pharmacyService.findAll()){
-            resultDTOS.add(new PharmacyDTO(p.getId(), p.getName(), p.getDescription(), p.getAddress()));
-        }
-
+        List<PharmacyDTO> resultDTOS = pharmacyToPharmacyDTO.convert(this.pharmacyService.findAll());
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
-
     }
 
     /*Returns all pharmacies that don't have a pharmacy administrator assigned to them*/
     @GetMapping("available")
     public ResponseEntity<List<PharmacyDTO>> getAvailablePharmacies(){
         List<PharmacyDTO> resultDTOS = new ArrayList<>();
+
         for (Pharmacy p : this.pharmacyService.findAll()){
             PharmacyAdmin phAdmin = userService.findPharmacyAdmin(p.getId());
             if(phAdmin == null) {
-                resultDTOS.add(new PharmacyDTO(p.getId(), p.getName(), p.getDescription(), p.getAddress()));
+                resultDTOS.add(pharmacyToPharmacyDTO.convert(p));
             }
         }
 
@@ -68,8 +72,7 @@ public class PharmacyController {
 
         if (pharmacy == null) return new ResponseEntity(HttpStatus.NOT_FOUND);
 
-        PharmacyDTO dto = new PharmacyDTO(pharmacy.getId(), pharmacy.getName(),
-                pharmacy.getDescription(), pharmacy.getAddress());
+        PharmacyDTO dto = pharmacyToPharmacyDTO.convert(pharmacy);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
@@ -125,6 +128,38 @@ public class PharmacyController {
             apoteka2.setDescription(apoteka.getDescription());
         }
         return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @GetMapping("{id}/rating")
+    public ResponseEntity<PharmacyDTO> getMedicineRating(@PathVariable Long id){
+        Pharmacy pharmacy = pharmacyService.findOne(id);
+        PharmacyDTO dto = pharmacyToPharmacyDTO.convert(pharmacy);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+
+    @GetMapping("{pharmacyId}/rating/user/{userId}")
+    public ResponseEntity<RatingDTO> getUserRatingValue(@PathVariable Long pharmacyId, @PathVariable Long userId){
+        Rating rating = ratingService.getPatientPharmacyRate(userId, pharmacyId);
+
+        RatingDTO dto = ratingToRatingDTO.convert(rating);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @PostMapping("{id}/rating")
+    public ResponseEntity<RatingDTO> ratePharmacy(@PathVariable Long id, @RequestBody RatingDTO ratingDTO){
+        Rating rating = ratingService.ratePharmacy(id, ratingDTO.getUser(), ratingDTO.getRating());
+
+        RatingDTO dto = ratingToRatingDTO.convert(rating);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping("{pharmacyId}/rating/user/{userId}/can-rate")
+    public ResponseEntity<Boolean> getCanUserRate(@PathVariable Long pharmacyId, @PathVariable Long userId){
+        Boolean result = ratingService.canUserRate(userId, pharmacyId);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
 

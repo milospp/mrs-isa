@@ -2,21 +2,20 @@ package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.*;
-import isa9.Farmacy.service.MedReservationService;
-import isa9.Farmacy.service.MedicineService;
-import isa9.Farmacy.service.PharmacyService;
-import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.service.*;
 import isa9.Farmacy.support.MedReservationToMedReservationDTO;
 import isa9.Farmacy.support.MedicineInPharmacyToMedInPharmaDTO;
+import isa9.Farmacy.support.MedicineToMedicineDTO;
+import isa9.Farmacy.support.RatingToRatingDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,18 +28,24 @@ public class MedicineController {
     private final MedicineService medicineService;
     private final UserService userService;
     private final PharmacyService pharmacyService;
+    private final RatingService ratingService;
     private final MedReservationService medReservationService;
     private final MedReservationToMedReservationDTO medReservationToMedReservationDTO;
     private final MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO;
+    private final MedicineToMedicineDTO medicineToMedicineDTO;
+    private final RatingToRatingDTO ratingToRatingDTO;
 
     @Autowired
-    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, MedReservationToMedReservationDTO medReservationToMedReservationDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO) {
+    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, RatingService ratingService, MedReservationService medReservationService, MedReservationToMedReservationDTO medReservationToMedReservationDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedicineToMedicineDTO medicineToMedicineDTO, RatingToRatingDTO ratingToRatingDTO) {
         this.medicineService = medicineService;
         this.userService = userService;
         this.pharmacyService = pharmacyService;
+        this.ratingService = ratingService;
         this.medReservationService = medReservationService;
         this.medReservationToMedReservationDTO = medReservationToMedReservationDTO;
         this.medicineInPharmacyToMedInPharmaDTO = medicineInPharmacyToMedInPharmaDTO;
+        this.medicineToMedicineDTO = medicineToMedicineDTO;
+        this.ratingToRatingDTO = ratingToRatingDTO;
     }
 
     @GetMapping("tmp-test")
@@ -79,24 +84,24 @@ public class MedicineController {
     @GetMapping("")
     public ResponseEntity<List<MedicineDTO>> test(){
 
-        List<MedicineDTO> resultDTOS = new ArrayList<>();
-        for (Medicine medicine : this.medicineService.findAll()) {
-            resultDTOS.add(new MedicineDTO(
-                    medicine.getId(),
-                    medicine.getCode(),
-                    medicine.getName(),
-                    medicine.getStructure(),
-                    medicine.getManufacturer(),
-                    medicine.getNote(),
-                    medicine.getPoints(),
-                    medicine.getShape(),
-                    medicine.getType(),
-                    medicine.getPerscription(),
-                    medicine.getReplacementMedication().stream()
-                            .map(Medicine::getCode)
-                            .collect(Collectors.toList())
-            ));
-        }
+        List<MedicineDTO> resultDTOS = medicineToMedicineDTO.convert(this.medicineService.findAll());
+//        for (Medicine medicine : this.medicineService.findAll()) {
+//            resultDTOS.add(new MedicineDTO(
+//                    medicine.getId(),
+//                    medicine.getCode(),
+//                    medicine.getName(),
+//                    medicine.getStructure(),
+//                    medicine.getManufacturer(),
+//                    medicine.getNote(),
+//                    medicine.getPoints(),
+//                    medicine.getShape(),
+//                    medicine.getType(),
+//                    medicine.getPerscription(),
+//                    medicine.getReplacementMedication().stream()
+//                            .map(Medicine::getCode)
+//                            .collect(Collectors.toList())
+//            ));
+//        }
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
     }
@@ -110,6 +115,111 @@ public class MedicineController {
         List<MedInPharmaDTO> povratna = medicineInPharmacyToMedInPharmaDTO.convert(sviLekovi);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
+
+    @PostMapping("/edit/pharmacyAdmin/{id}")
+    public ResponseEntity<Integer> editMedicinePharmacyAdmin(@PathVariable Long id, @RequestBody MedInPharmaDTO lek) {
+        User user = userService.findOne(id);
+        int povratna = -1;
+        if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
+        Set<MedicineInPharmacy> sviLekovi = ((PharmacyAdmin) user).getPharmacy().getMedicines();
+        povratna = 0;
+        for (MedicineInPharmacy med : sviLekovi) {
+            if (med.getMedicine().getCode().equals(lek.getMedicine().getCode())) {
+                med.getMedicine().setName(lek.getMedicine().getName());
+                med.getMedicine().setNote(lek.getMedicine().getNote());
+                med.setInStock(lek.getInStock());
+                med.getMedicine().setPerscription(lek.getMedicine().getPerscription());
+                med.getMedicine().setManufacturer(lek.getMedicine().getManufacturer());
+                med.getMedicine().setShape(lek.getMedicine().getShape());
+                med.getMedicine().setType(lek.getMedicine().getType());
+                med.getMedicine().setPoints(lek.getMedicine().getPoints());
+                MedPrice novacena = new MedPrice();
+                novacena.setPrice(lek.getCurrentPrice());
+                novacena.setStartDate(LocalDateTime.now());
+                novacena.setMedicineInPharmacy(med);
+                med.setCurrentPrice(novacena);
+                medicineService.save(med.getMedicine());
+                povratna = 1;
+                pharmacyService.save(((PharmacyAdmin) user).getPharmacy());
+                break;
+            }
+        }
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @GetMapping("/delete/pharmacyAdmin/{id}/{code}")
+    public ResponseEntity<Integer> deleteMedicinePharmacyAdmin(@PathVariable Long id, @PathVariable String code) {
+        User user = userService.findOne(id);
+        int povratna = -1;
+        if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
+        Set<MedicineInPharmacy> sviLekovi = ((PharmacyAdmin) user).getPharmacy().getMedicines();
+        povratna = 0;
+        MedicineInPharmacy odabrani = null;
+        for (MedicineInPharmacy med : sviLekovi) {
+            if (med.getMedicine().getCode().equals(code)) {
+                odabrani = med;
+                break;
+            }
+        }
+        if (odabrani == null) return new ResponseEntity<>(povratna, HttpStatus.OK);
+        povratna = 1;
+        sviLekovi.remove(odabrani);
+        pharmacyService.save(((PharmacyAdmin) user).getPharmacy());
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @PostMapping("/add/pharmacyAdmin/{id}")
+    public ResponseEntity<Integer> addMedicinePharmacyAdmin(@PathVariable Long id, @RequestBody MedInPharmaDTO lek) {
+        User user = userService.findOne(id);
+        int povratna = -1;
+        if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
+        Pharmacy apoteka = ((PharmacyAdmin) user).getPharmacy();
+        List<Medicine> sviLekovi = medicineService.findAll();
+        povratna = 0;
+        for (Medicine med : sviLekovi)
+            if (med.getCode().equals(lek.getMedicine().getCode())) new ResponseEntity<>(povratna, HttpStatus.OK);
+        povratna = 1;
+
+        // novi lek
+        Medicine novi = new Medicine();
+        novi.setCode(lek.getMedicine().getCode());
+        novi.setName(lek.getMedicine().getName());
+        novi.setStructure(lek.getMedicine().getStructure());
+        novi.setType(lek.getMedicine().getType());
+        novi.setShape(lek.getMedicine().getShape());
+        novi.setManufacturer(lek.getMedicine().getName());
+        novi.setPoints(lek.getMedicine().getPoints());
+        novi.setRating(0);
+        novi.setPerscription(lek.getMedicine().getPerscription());
+        novi.setNote(lek.getMedicine().getNote());
+        medicineService.save(novi);
+
+        // za zamenske lekove
+        Set<Medicine> zamenski = new HashSet<>();
+        for (String kod : lek.getMedicine().getReplacementMedicationIds()) {
+            for (Medicine m : medicineService.findAll()) {
+                if (m.getCode().equals(kod)) {
+                    zamenski.add(m);
+                    break;
+                }}}
+        novi.setReplacementMedication(zamenski);
+
+        // lek u apoteci
+        MedicineInPharmacy noviUApoteci = new MedicineInPharmacy();
+        noviUApoteci.setMedicine(novi);
+        noviUApoteci.setPharmacy(apoteka);
+        //cena leka
+        MedPrice novacena = new MedPrice();
+        novacena.setPrice(lek.getCurrentPrice());
+        novacena.setStartDate(LocalDateTime.now());
+        novacena.setMedicineInPharmacy(noviUApoteci);
+        noviUApoteci.setCurrentPrice(novacena);
+        noviUApoteci.setInStock(lek.getInStock());
+        apoteka.getMedicines().add(noviUApoteci);
+        pharmacyService.save(apoteka);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
     @GetMapping("/pharmacy/{id}")
     public ResponseEntity<List<MedInPharmaDTO>> getAllMedicinePharmacy(@PathVariable Long id) {
         Pharmacy apoteka = pharmacyService.findOne(id);
@@ -153,13 +263,40 @@ public class MedicineController {
         MedReservation reservation = medReservationService.getByCode(code);
 
         if (reservation != null && reservation.getStatus() == MedReservationStatus.PENDING){
-            reservation.setStatus(MedReservationStatus.TAKEN);
+            // TODO: Move everything into this method
+            medReservationService.dispenseMedicine(reservation);
 
-            // TODO: hardcoded pharmacist who 'issued', this will be fixed when authorisation is added
-            reservation.setWhoDispenses((Pharmacist) reservation.getMedicineInPharmacy().getPharmacy().getStaff().iterator().next().getDoctor());
+
 
             return new ResponseEntity<>(true, HttpStatus.OK);
         }
         return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("{id}/rating")
+    public ResponseEntity<MedicineDTO> getMedicineRating(@PathVariable Long id){
+        Medicine medicine = medicineService.findOne(id);
+//        double rating = ratingService.getMedicineAverage(id);
+//
+        MedicineDTO dto = medicineToMedicineDTO.convert(medicine);
+//        dto.setRating(rating);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping("{medId}/rating/user/{userId}")
+    public ResponseEntity<RatingDTO> getUserRatingValue(@PathVariable Long medId, @PathVariable Long userId){
+        Rating rating = ratingService.getPatientMedicineRate(userId, medId);
+
+        RatingDTO dto = ratingToRatingDTO.convert(rating);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @PostMapping("{id}/rating")
+    public ResponseEntity<RatingDTO> rateMedicine(@PathVariable Long id, @RequestBody RatingDTO ratingDTO){
+        Rating rating = ratingService.rateMedicine(id, ratingDTO.getUser(), ratingDTO.getRating());
+
+        RatingDTO dto = ratingToRatingDTO.convert(rating);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 }

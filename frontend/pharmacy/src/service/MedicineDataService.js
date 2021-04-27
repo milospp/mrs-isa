@@ -20,6 +20,52 @@ class MedicineDataService {
         console.log(error.config);
     });
   }
+
+  editMedicinePharmacyAdmin(idAdminaApoteke, lek) {
+    return axios({
+      method: 'post',
+      url: API_URL + "/edit/pharmacyAdmin/" + idAdminaApoteke,
+      data: lek
+    }).catch(function (error) {
+        if (error.response) {
+            console.log(error.response.data);
+        } else if (error.request) {
+            console.log(error.request);
+        }
+        console.log("Error");
+        console.log(error.config);
+    });
+  }
+
+  deleteMedicinePharmacyAdmin(idAdminaApoteke, kodLeka) {
+    return axios.get(API_URL + "/delete/pharmacyAdmin/" + idAdminaApoteke + "/" + kodLeka)
+      .catch(function (error) {
+        if (error.response) {
+            console.log(error.response.data);
+        } else if (error.request) {
+            console.log(error.request);
+        }
+        console.log("Error");
+        console.log(error.config);
+    });
+  }
+
+  addMedicinePharmacyAdmin(idAdminaApoteke, lek) {
+    return axios({
+      method: 'post',
+      url: API_URL + "/add/pharmacyAdmin/" + idAdminaApoteke,
+      data: lek
+    }).catch(function (error) {
+        if (error.response) {
+            console.log(error.response.data);
+        } else if (error.request) {
+            console.log(error.request);
+        }
+        console.log("Error");
+        console.log(error.config);
+    });
+  }
+
   getMedicineForPharmacy(idApoteke) {
     return axios.get(API_URL + "/pharmacy/" + idApoteke)
     .catch(function (error) {
@@ -59,6 +105,19 @@ class MedicineDataService {
   giveMedicineToPatient(code){
     return axios.get(`${API_URL}/reservation/dispense/` + code);
   }
+
+  rateMedicine(medicine, rateObj) {
+    return axios({
+      method: 'post',
+      url: `${API_URL}/` + medicine.id + `/rating`,
+      data: rateObj
+    });
+  }
+
+  getUserRating(patientId, medicineId) {
+    return axios.get(`${API_URL}/` + medicineId + `/rating/user/` + patientId);
+  }
+
 }
 
 export default new MedicineDataService();

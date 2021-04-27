@@ -119,7 +119,9 @@ public class dbUserService extends UserServiceBase implements UserService, UserD
             paging = PageRequest.of(pssDTO.getPageNo() - 1, pssDTO.getPageSize(), Sort.by(pssDTO.getSortBy()).descending());
         }
 
-        Page<Patient> pagedResult = patientRepository.findByNameIgnoreCaseContainingAndSurnameIgnoreCaseContaining(pssDTO.getSearchParams().get("name"),
+        Page<Patient> pagedResult = patientRepository.findPatientsByDoctorIdAndSearch(
+                Long.valueOf(pssDTO.getSearchParams().get("doctorId")),
+                pssDTO.getSearchParams().get("name"),
                 pssDTO.getSearchParams().get("surname"), paging);//findAll(paging);
 
         if(pagedResult.hasContent()) {
@@ -131,12 +133,17 @@ public class dbUserService extends UserServiceBase implements UserService, UserD
 
     @Override
     public long getAllMyPatientsTotalCount(PaginationSortSearchDTO pssDTO) {
-        return patientRepository.countByNameIgnoreCaseContainingAndSurnameIgnoreCaseContaining(pssDTO.getSearchParams().get("name"),
+        return patientRepository.countFoundPatientsByDoctorIdAndSearch(Long.valueOf(pssDTO.getSearchParams().get("doctorId")), pssDTO.getSearchParams().get("name"),
                 pssDTO.getSearchParams().get("surname"));
     }
 
     @Override
     public Doctor getDoctorById(Long id) {
         return this.doctorRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Patient getPatientById(Long id) {
+        return this.patientRepository.findById(id).orElse(null);
     }
 }

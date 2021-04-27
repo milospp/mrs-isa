@@ -69,6 +69,36 @@ public class AppointmentController {
 
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<AppointmentDTO> getAnAppointment(@PathVariable Long id) {
+        Appointment appointment = appointmentService.findOne(id);
+        if (appointment == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        AppointmentDTO dto = appointmentToAppointmentDTO.convert(appointment);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+
+    }
+
+    @PostMapping("{id}/done")
+    public ResponseEntity<Boolean> finishAnAppointment(@RequestBody AppointmentDTO appointmentDTO, @PathVariable Long id) {
+        Appointment appointment = appointmentService.findOne(id);
+        System.out.println(appointmentDTO);
+        if (appointment == null) return new ResponseEntity<>(false, HttpStatus.OK);
+
+        if (appointmentDTO == null) {
+            System.out.println("Empty dto sent");
+            return new ResponseEntity<>(false, HttpStatus.OK);
+        }
+
+        appointment.getExamination().setExaminationInfo(appointmentDTO.getExamination().getExaminationInfo());
+        appointment.getExamination().setDiagnose(appointmentDTO.getExamination().getDiagnose());
+        appointment.getExamination().setStatus(appointmentDTO.getExamination().getStatus());
+
+        appointmentService.save(appointment);
+
+        return new ResponseEntity<>(true, HttpStatus.OK);
+
+    }
+
     @PostMapping("{id}/book")
     public ResponseEntity<AppointmentDTO> bookAnAppointment(@RequestBody PatientDTO patientDTO, @PathVariable Long id) {
         if (patientDTO == null){

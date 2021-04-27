@@ -3,10 +3,7 @@ package isa9.Farmacy.service.impl.base;
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.MedInPharmaDTO;
 import isa9.Farmacy.model.dto.PatientDTO;
-import isa9.Farmacy.service.MedReservationService;
-import isa9.Farmacy.service.MedicineService;
-import isa9.Farmacy.service.PharmacyService;
-import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
@@ -17,6 +14,12 @@ public abstract class UserServiceBase implements UserService {
     protected MedicineService medicineService;
     protected MedReservationService medReservationService;
     protected PharmacyService pharmacyService;
+    protected RatingService ratingService;
+
+    @Autowired
+    public void setRatingService(RatingService ratingService) {
+        this.ratingService = ratingService;
+    }
 
     @Autowired
     public void setPharmacyService(PharmacyService pharmacyService) {
@@ -143,4 +146,10 @@ public abstract class UserServiceBase implements UserService {
 
     }
 
+    @Override
+    public Doctor updateDoctorRating(Doctor doctor) {
+        double rating = ratingService.getDoctorAverage(doctor);
+        doctor.setRating(rating);
+        return (Doctor) save(doctor);
+    }
 }

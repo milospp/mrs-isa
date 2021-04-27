@@ -10,33 +10,18 @@ import lombok.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 
 @Entity
-public class Rating {
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
+public abstract class Rating {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     private User user;
-    @ManyToOne
-    private Pharmacy pharmacy;
-    @ManyToOne
-    private Medicine medicine;
     @Column
     private int rating;
-
-
-
-    public Rating(User user, Pharmacy pharmacy, Medicine medicine, int rating) {
-        super();
-        this.user = user;
-        this.pharmacy = pharmacy;
-        this.medicine = medicine;
-        this.rating = rating;
-    }
-
-
 
 
 }

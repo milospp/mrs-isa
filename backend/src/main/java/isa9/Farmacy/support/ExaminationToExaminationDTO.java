@@ -40,6 +40,7 @@ public class ExaminationToExaminationDTO implements Converter<Examination, Exami
         dto.setDiagnose(examination.getDiagnose());
 
         dto.setTherapy(examination.getTherapy());
+        dto.setType(examination.getAppointment().getType());
         
         return dto;
     }

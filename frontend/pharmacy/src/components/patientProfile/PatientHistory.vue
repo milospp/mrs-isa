@@ -34,7 +34,7 @@
           </tr>
           <tr>
             <th>Doctor</th>
-            <td>{{selectedAppointment.doctor.name}} {{selectedAppointment.doctor.surname}}</td>
+            <td>{{selectedAppointment.doctor.name}} {{selectedAppointment.doctor.surname}} ({{selectedAppointment.doctor.rating}} / 5)</td>
           </tr>
           <tr>
             <th>Start Time</th>
@@ -83,7 +83,13 @@
             </tr>
           </thead>
         </table>
-
+        
+        <div v-if="selectedAppointment.examination.status == 'HELD' && selectedAppointment.voted != null" class="rating-section">
+          <hr>
+          <h4>Rate Doctor: <strong>{{selectedAppointment.doctor.name}} {{selectedAppointment.doctor.surname}}</strong></h4>
+          <RatingStars v-model="ratingValue" inputId="p-h-"/>
+          <button  class="btn btn-primary" v-bind:disabled="!isRatingValid || selectedAppointment.voted==ratingValue" v-on:click="rateDoctor(selectedAppointment ,ratingValue)" >{{voteButtonText}} {{ratingBracketValue}}</button>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -124,7 +130,7 @@
         <td v-bind:class="{ 'badge-info': a.type == 'COUNSELING', 'badge-primary': a.type == 'EXAMINATION' }" class="badge">{{a.type}}
           <br><span v-if="isCanceled(a)" class="badge badge-danger">CALCELED</span>
         </td>
-        <td>{{a.doctor.name}} {{a.doctor.surname}}</td>
+        <td>{{a.doctor.name}} {{a.doctor.surname}} ({{a.doctor.rating}} / 5)</td>
         <td><router-link class="btn btn-primary" :to="{ name: 'PharmacyPage', params: { id: a.pharmacy.id  }}">{{a.pharmacy.name}}</router-link></td>
         <td>{{UtilService.formatDateTime(a.startTime)}}</td>
         <td>{{a.durationInMins}}min</td>
@@ -186,20 +192,27 @@
 
 <script>
     import AppointmentDataService from '@/service/AppointmentDataService.js';
+    import PatientDataService from '@/service/PatientDataService.js';
     import UtilService from '@/service/UtilService.js';
+    import RatingStars from '@/components/FiveStars.vue';
     import $ from 'jquery';
 
 
 export default {
-    setup() {
-      return { UtilService }
-    },
+  setup() {
+    return { UtilService }
+  },
+
+  components: {
+    RatingStars,
+  },
 
 	data: function () {
 		return {
       historyFilter: "all",
       appointments: [],
       selectedAppointment: null,
+      ratingValue: null,
 		}
 	},
   methods: {
@@ -224,8 +237,42 @@ export default {
 
         showModal(appointment) {
           this.selectedAppointment = appointment;
+          this.ratingValue = "0";  
+        
+          PatientDataService.getUserRating(appointment.examination.patient, appointment.doctor).then(response => {
+            if (response.data) {
+              this.ratingValue = "" + response.data.rating;
+              appointment.voted = response.data.rating;
+            }
+          });
+
           $('#appointmentModal').modal();
+
+
+
         },
+        
+
+        rateDoctor(appointment, rating) {
+          if (rating < 1 || rating > 5) {
+            alert("Wrong rate value");
+            return
+          }
+
+          appointment.voted = rating;
+
+          let rateObject = {
+            user: appointment.examination.patient.id,
+            rating: rating
+          }
+        
+          PatientDataService.rateDoctor(appointment.doctor, rateObject).then(response => {
+            if (response.data) {
+              this.loadPatientSubscriptions();
+              alert("Successfully voted!");
+            }
+          });
+        }
   },
   computed: {
     filteredHistory(){
@@ -238,7 +285,28 @@ export default {
       filteredList = filteredList.filter(appointment => appointment.type === selected)
 
       return filteredList;
-    }
+    },
+    isRatingValid(){
+      if (this.ratingValue < 1 || this.ratingValue > 5)
+        return false;
+      else return true;
+    },
+    voteButtonText() {
+      if (this.selectedAppointment.voted <= 0)
+        return "Submit Vote";
+
+      if (this.selectedAppointment.voted == this.ratingValue){
+        return "Already voted";
+      }
+      
+      return "Resubmit Vote";
+
+    },
+
+        ratingBracketValue(){
+            if (this.ratingValue>0) return " ( "+ this.ratingValue +" )";
+            return "";
+        }
   },
 
   mounted() {

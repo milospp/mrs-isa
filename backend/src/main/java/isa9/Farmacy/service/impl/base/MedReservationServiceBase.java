@@ -33,6 +33,34 @@ public abstract class MedReservationServiceBase implements MedReservationService
     }
 
     @Override
+    public MedReservation dispenseMedicine(MedReservation medReservation) {
+        medReservation.setStatus(MedReservationStatus.TAKEN);
+
+        // TODO: hardcoded pharmacist who 'issued', this will be fixed when authorisation is added
+
+        Pharmacist pharmacist = new Pharmacist(); // = (Pharmacist) reservation.getMedicineInPharmacy().getPharmacy().getStaff().iterator().next().getDoctor();
+        for (Work work : medReservation.getMedicineInPharmacy().getPharmacy().getStaff()){
+            if (work.getDoctor().getRole() == UserRole.PHARMACIST){
+                pharmacist = (Pharmacist) work.getDoctor();
+                break;
+            }
+        }
+        medReservation.setWhoDispenses(pharmacist);
+
+        int quantity = medReservation.getQuantity();
+        Medicine medicine = medReservation.getMedicineInPharmacy().getMedicine();
+        Patient patient = medReservation.getPatient();
+
+        int points = patient.getPoints();
+        points += quantity * medicine.getPoints();
+
+        patient.setPoints(points);
+        userService.save(patient);
+
+        return save(medReservation);
+    }
+
+    @Override
     public Boolean isCancelable(MedReservation medReservation) {
         if (medReservation.getStatus() != MedReservationStatus.PENDING) return false;
 

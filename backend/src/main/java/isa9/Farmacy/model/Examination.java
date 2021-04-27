@@ -23,7 +23,7 @@ public class Examination {
     private Long id;
     @ManyToOne
     private Patient patient;
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @EqualsAndHashCode.Include
     private Appointment appointment;
     @Enumerated
