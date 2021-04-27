@@ -23,6 +23,7 @@ import AddSupplier from '@/views/AddSupplier.vue'
 import AddDermatologist from '@/views/AddDermatologist.vue'
 import AddMedicine from '@/views/AddMedicine.vue'
 import Login from '@/views/Login.vue'
+import LogoutView from '@/views/LogoutView.vue'
 import Appointment from '@/views/Appointment.vue'
 
 
@@ -149,6 +150,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/logout',
+    name: 'Logout',
+    component: LogoutView
   },
   {
     path: '/addMedicine',
