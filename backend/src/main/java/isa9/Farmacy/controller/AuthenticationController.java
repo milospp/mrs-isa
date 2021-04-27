@@ -55,6 +55,7 @@ public class AuthenticationController {
         //
         Authentication authentication = authenticationManager.authenticate(u);
 
+
         // Ubaci korisnika u trenutni security kontekst
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

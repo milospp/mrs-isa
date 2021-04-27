@@ -32,8 +32,6 @@
 <script>
     import PharmacyDataService from '../service/PharmacyDataService.js';
     
-    console.log("Salji broj salji salji broj");
-    
     export default {
         name: 'AddPharmacyForm',
         data(){
@@ -43,9 +41,9 @@
                 name : "Apotekica",
                 address : {
                   street : "Ulica",
-                  number : "br",
-                  city : "grad",
-                  state : "drzava"
+                  number : "2",
+                  city : "Grad",
+                  state : "Drzava"
                 },
                 description : "Nema leka bez recepta",
             }
@@ -56,11 +54,7 @@
         
         methods: {
             proveraForme(e){
-                let povratna = true;
-                let sviRedovi = document.getElementsByTagName("tr");
-                for (let red of sviRedovi) {                
-                    if (red.cells.length == 3) red.removeChild(red.cells[2]);
-                }
+                
 
                 
 
@@ -75,14 +69,8 @@
                   console.log("error.config");
                   console.log(error.config);
                 });
-            },
-
-            ispisPoruke(red, poruka) {
-                if (red.cells.length > 2) return;
-                let novaKolona = red.insertCell(2);
-                novaKolona.innerHTML = poruka;
-                novaKolona.style.color = "red";
             }
+            
             
         }
         
