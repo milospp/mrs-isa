@@ -75,7 +75,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/pharmacies").permitAll()
 				.antMatchers("/api/medicines").permitAll()
 				.antMatchers("/api/auth/getLoggedIn").permitAll()
-
+				.antMatchers("/api/users/dermatologists/pharmacy/**").permitAll()
+				.antMatchers("/api/users/pharmacists/pharmacy/**/**").permitAll()
+				.antMatchers("/api/users/pharm/filter/pharmacy/**").permitAll()
+				.antMatchers("/api/users/derm/filter/pharmacy/**").permitAll()
+				.antMatchers("/api/medicines/pharmacy/**").permitAll()
+				.antMatchers("/api/pharmacies/**").permitAll()
 				
 				// za svaki drugi zahtev korisnik mora biti autentifikovan
 				.anyRequest().authenticated().and()
@@ -95,9 +100,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// TokenAuthenticationFilter ce ignorisati sve ispod navedene putanje
 		web.ignoring().antMatchers(HttpMethod.POST, "/api/auth/**",
                                                                "/api/users/register/patient",
-																"api/auth/getLoggedIn/**");  // <-- svi korisnici mogu da udju na ove stranice
-		web.ignoring().antMatchers(HttpMethod.GET, "/", "/webjars/**", "/*.html", "/favicon.ico", "/**/*.html",
-				"/**/*.css", "/**/*.js");
+																"api/auth/getLoggedIn/**",
+															"/api/users/dermatologists/pharmacy/**",
+															"/api/users/pharmacists/pharmacy/**/**",
+															"/api/users/pharm/filter/pharmacy/**",
+				"/api/users/derm/filter/pharmacy/**", "/api/medicines/pharmacy/**", "/api/pharmacies/**");  // <-- svi korisnici mogu da udju na ove stranice
+		web.ignoring().antMatchers(HttpMethod.GET, "/", "/webjars/**", "/*.html", "/favicon.ico", "/**/*.html","/**/*.css", "/**/*.js");
 	}
 
 }

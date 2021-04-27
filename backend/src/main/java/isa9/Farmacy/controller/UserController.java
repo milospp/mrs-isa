@@ -418,6 +418,7 @@ public class UserController {
     }
 
     @GetMapping("/pharmacists/admin/{id}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
      public ResponseEntity<List<PharmacistDTO>> getAllPharmacistsAdmin(@PathVariable Long id) {
         List<User> svi = userService.findAll();
         if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
@@ -434,6 +435,7 @@ public class UserController {
     }
 
     @GetMapping("/pharmacists/admin/{id}/{search}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<List<PharmacistDTO>> searchPharmacistsAdmin(@PathVariable Long id, @PathVariable String search) {
         List<User> svi = userService.findAll();
         if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
@@ -453,6 +455,7 @@ public class UserController {
     }
 
     @PostMapping("/pharm/filter/admin/{id}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<List<PharmacistDTO>> filterPharmacistsAdmin(@PathVariable Long id, @RequestBody SearchHelp podaci) {
         List<User> svi = userService.findAll();
         if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
@@ -491,6 +494,7 @@ public class UserController {
     }
 
     @PostMapping("/pharmacist/fire/{idAdmina}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<Integer> firePharmacist(@PathVariable Long idAdmina, @RequestBody PharmacistDTO zaBrisanje) {
         List<User> svi = userService.findAll();
         int okej = 1;
@@ -552,6 +556,7 @@ public class UserController {
     }
 
     @GetMapping("/dermatologists/admin/{id}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<List<DermatologistDTO>> getAllDermatologistsAdmin(@PathVariable Long id) {
         List<User> svi = userService.findAll();
         if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
@@ -570,6 +575,7 @@ public class UserController {
     }
 
     @GetMapping("/derm/hire/admin/{id}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<List<DermatologistDTO>> getHireDermatologistsAdmin(@PathVariable Long id) {
         List<User> svi = userService.findAll();
         if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
@@ -587,6 +593,7 @@ public class UserController {
     }
 
     @PostMapping("/dermatologist/fire/{idAdmina}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<Integer> fireDermatologist(@PathVariable Long idAdmina, @RequestBody DermatologistDTO zaBrisanje) {
         List<User> svi = userService.findAll();
         int okej = 1;
@@ -612,6 +619,7 @@ public class UserController {
     }
 
     @GetMapping("/dermatologists/admin/{id}/{search}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<List<DermatologistDTO>> searchDermatologistsAdmin(@PathVariable Long id, @PathVariable String search) {
         List<User> svi = userService.findAll();
         if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
@@ -633,6 +641,7 @@ public class UserController {
     }
 
     @PostMapping("/derm/filter/admin/{id}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<List<DermatologistDTO>> filterDermatologistsAdmin(@PathVariable Long id, @RequestBody SearchHelp podaci) {
         List<User> svi = userService.findAll();
         if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
@@ -661,6 +670,7 @@ public class UserController {
     }
 
     @PostMapping("/dematologist/hire/{id}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<Integer> hireDermatologist(@PathVariable Long id, @RequestBody DermaDTOHelp podaci) {
         List<User> svi = userService.findAll();
         int povratna = -1;
