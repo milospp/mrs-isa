@@ -313,6 +313,7 @@ public class UserController {
 
     //@RequestMapping(value="/patients", produces="application/json", consumes="application/json")
     @PostMapping("/patients")
+    //@PreAuthorize("hasAuthority('DERMATOLOGIST')")
     public ResponseEntity<PatientsPagesDTO> getAllPatients(@RequestBody PaginationSortSearchDTO pssDTO) {
 
         System.out.println(pssDTO.getPageNo() + pssDTO.getPageSize() + pssDTO.getSortBy()

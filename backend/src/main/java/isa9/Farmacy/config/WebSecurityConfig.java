@@ -81,6 +81,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/users/derm/filter/pharmacy/**").permitAll()
 				.antMatchers("/api/medicines/pharmacy/**").permitAll()
 				.antMatchers("/api/pharmacies/**").permitAll()
+				.antMatchers("/api/users/patients").permitAll()
+
 				
 				// za svaki drugi zahtev korisnik mora biti autentifikovan
 				.anyRequest().authenticated().and()
@@ -104,7 +106,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 															"/api/users/dermatologists/pharmacy/**",
 															"/api/users/pharmacists/pharmacy/**/**",
 															"/api/users/pharm/filter/pharmacy/**",
-				"/api/users/derm/filter/pharmacy/**", "/api/medicines/pharmacy/**", "/api/pharmacies/**");  // <-- svi korisnici mogu da udju na ove stranice
+				"/api/users/derm/filter/pharmacy/**", "/api/medicines/pharmacy/**", "/api/pharmacies/**",
+				"/api/users/patients");  // <-- svi korisnici mogu da udju na ove stranice
 		web.ignoring().antMatchers(HttpMethod.GET, "/", "/webjars/**", "/*.html", "/favicon.ico", "/**/*.html","/**/*.css", "/**/*.js");
 	}
 

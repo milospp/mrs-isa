@@ -3,7 +3,7 @@
     <div v-if="doctor" class="row">
       <div class="col-md-12">
         <h2>{{doctor.name}} {{doctor.surname}}</h2>
-        <p class="rating">Rating: <span>TODO: 9.7/10</span></p>
+        <!-- <p class="rating">Rating: <span>5</span></p> -->
 
         <p>Address: {{UtilService.AddressToString(doctor.address)}}</p>
         <p>Phone: {{doctor.phoneNumber}}</p>
