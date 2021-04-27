@@ -19,17 +19,17 @@ public class PharmacistDTO extends DoctorDTO {
 
     @Deprecated
     public PharmacistDTO(Long id, String name, String surname, Address address, String phoneNumber, Pharmacy pharmacy) {
-        super(id, name, surname, address, phoneNumber, UserRole.PHARMACIST, null);
+        super(id, name, surname, address, phoneNumber, RolesDTO.PHARMACIST, null);
         this.pharmacy = pharmacy;
     }
 
-    public PharmacistDTO(Long id, String name, String surname, Address address, String phoneNumber, UserRole role, String email, Pharmacy pharmacy) {
+    public PharmacistDTO(Long id, String name, String surname, Address address, String phoneNumber, RolesDTO role, String email, Pharmacy pharmacy) {
         super(id, name, surname, address, phoneNumber, role, email);
         this.pharmacy = pharmacy;
     }
 
     public PharmacistDTO(Long id, String name, String surname, Address address, String phoneNumber, String email, Pharmacy pharmacy) {
-        super(id, name, surname, address, phoneNumber, UserRole.PHARMACIST, email);
+        super(id, name, surname, address, phoneNumber, RolesDTO.PHARMACIST, email);
         this.pharmacy = pharmacy;
     }
 }

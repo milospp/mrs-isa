@@ -10,5 +10,4 @@ import 'vue-choice'
 
 window.$ = window.jQuery = require('jquery');
 
-
 createApp(App).use(store).use(router).mount('#app')

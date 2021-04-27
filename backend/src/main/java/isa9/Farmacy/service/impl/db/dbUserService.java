@@ -7,6 +7,8 @@ import isa9.Farmacy.repository.UserRepository;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.impl.base.UserServiceBase;
 import isa9.Farmacy.support.PaginationSortSearchDTO;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -15,6 +17,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
@@ -28,11 +35,12 @@ import java.util.List;
 @Component
 @Primary
 @Service
-public class dbUserService extends UserServiceBase implements UserService {
+public class dbUserService extends UserServiceBase implements UserService, UserDetailsService {
 
     private UserRepository userRepository;
     private PatientRepository patientRepository;
     private DoctorRepository doctorRepository;
+
 
     @Autowired
     public dbUserService(UserRepository userRepository, PatientRepository p, DoctorRepository d) {
@@ -66,12 +74,29 @@ public class dbUserService extends UserServiceBase implements UserService {
     }
 
     @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = null;
+
+        List<User> allUsers = this.findAll();
+
+        for(User u : allUsers){
+            if(email.equals(u.getEmail())) user = u;
+        }
+
+        if (user == null) {
+            throw new UsernameNotFoundException(String.format("No user found with e-mail '%s'.", email));
+        } else {
+            return user;
+        }
+    }
+
+    @Override
     public PharmacyAdmin findPharmacyAdmin(Long pharmacyId) {
         PharmacyAdmin phAdmin = null;
 
         List<User> allUsers = this.findAll();
         for(User u : allUsers){
-            if(u.getRole() == UserRole.PHARMACY_ADMIN){
+            if(u.getRole().getName().equals("PHARMACY_ADMIN")){
                 phAdmin = (PharmacyAdmin) u;
                 try{
                     if(phAdmin.getPharmacy().getId() == pharmacyId) return phAdmin;

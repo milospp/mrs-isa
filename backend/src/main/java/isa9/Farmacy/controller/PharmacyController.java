@@ -14,6 +14,9 @@ import isa9.Farmacy.support.WorkToWorkDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -46,7 +49,6 @@ public class PharmacyController {
     public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
         List<PharmacyDTO> resultDTOS = pharmacyToPharmacyDTO.convert(this.pharmacyService.findAll());
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
-
     }
 
     /*Returns all pharmacies that don't have a pharmacy administrator assigned to them*/
@@ -74,8 +76,13 @@ public class PharmacyController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+
     @PostMapping("register/pharmacy")
+    @PreAuthorize("hasAuthority('SYS_ADMIN')")
     public ResponseEntity<Boolean> registerPharmacy(@RequestBody PharmacyDTO pDTO) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+
         Pharmacy newlyRegistered = new Pharmacy(pDTO.getName(), pDTO.getAddress(),
                 pDTO.getDescription(), pDTO.getId());
         if(pharmacyService.pharmacyExists(newlyRegistered)) return new ResponseEntity<>(false, HttpStatus.OK);

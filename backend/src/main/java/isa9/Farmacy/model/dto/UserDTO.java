@@ -16,9 +16,9 @@ public class UserDTO {
     private Long id;
     private String name;
     private String surname;
-    private Address address; // pretvori se u string?
+    private Address address;
     private String phoneNumber;
-    private UserRole role;
+    private RolesDTO role;
     private String email;
 
 
@@ -32,7 +32,7 @@ public class UserDTO {
     }
 
     @Deprecated
-    public UserDTO(Long id, String name, String surname, Address address, String phoneNumber, UserRole role) {
+    public UserDTO(Long id, String name, String surname, Address address, String phoneNumber, RolesDTO role) {
         this.id = id;
         this.name = name;
         this.surname = surname;

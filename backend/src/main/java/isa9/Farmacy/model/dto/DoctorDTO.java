@@ -12,9 +12,13 @@ import lombok.*;
 
 public class DoctorDTO extends UserDTO {
 
+
+    public DoctorDTO(Long id, String name, String surname, Address address, String phoneNumber, RolesDTO role, String email) {
+
     private double rating;
 
     public DoctorDTO(Long id, String name, String surname, Address address, String phoneNumber, UserRole role, String email) {
+
         super(id, name, surname, address, phoneNumber, role, email);
     }
 }

@@ -38,7 +38,7 @@ public abstract class UserServiceBase implements UserService {
 
     @Override
     public Set<Medicine> getPatientAllergies(User patient) {
-        if (patient.getRole() != UserRole.PATIENT) return new HashSet<>();
+        if (!patient.getRole().getName().equals("PATIENT")) return new HashSet<>();
 
         return ((Patient) patient).getAllergies();
 
@@ -46,14 +46,14 @@ public abstract class UserServiceBase implements UserService {
 
     @Override
     public Set<Pharmacy> getPatientSubscriptions(User patient) {
-        if (patient.getRole() != UserRole.PATIENT) return new HashSet<>();
+        if (!patient.getRole().getName().equals("PATIENT")) return new HashSet<>();
 
         return ((Patient) patient).getSubscriptions();
     }
 
     @Override
     public void PatientUnsubscribe(User user, Pharmacy pharmacy) {
-        if (user.getRole() != UserRole.PATIENT) return;
+        if (!user.getRole().getName().equals("PATIENT")) return;
 
         Patient patient = (Patient) user;
         Set<Pharmacy> subscriptions = ((Patient) patient).getSubscriptions();
@@ -66,7 +66,7 @@ public abstract class UserServiceBase implements UserService {
 
     @Override
     public int countActivePenalties(User user) {
-        if (user.getRole() != UserRole.PATIENT) return 0;
+        if (!user.getRole().getName().equals("PATIENT")) return 0;
         Patient patient = (Patient) user;
 
         int penalties = 0;
@@ -81,7 +81,7 @@ public abstract class UserServiceBase implements UserService {
 
     @Override
     public Set<Penality> getPenalties(User user) {
-        if (user.getRole() != UserRole.PATIENT) return new HashSet<>();
+        if (!user.getRole().getName().equals("PATIENT")) return new HashSet<>();
 
         return ((Patient) user).getPenalties();
     }
@@ -111,7 +111,7 @@ public abstract class UserServiceBase implements UserService {
     public Set<Medicine> getPatientAllergies(Long patientId) {
         User user = findOne(patientId);
 
-        if (user.getRole() != UserRole.PATIENT) return new HashSet<>();
+        if (!user.getRole().getName().equals("PATIENT")) return new HashSet<>();
 
         return ((Patient) user).getAllergies();
     }
@@ -139,7 +139,7 @@ public abstract class UserServiceBase implements UserService {
     @Override
     public Set<MedReservation> getPatientReservations(Long patientId) {
         User user = findOne(patientId);
-        if (user.getRole() != UserRole.PATIENT) return new HashSet<>();
+        if (!user.getRole().getName().equals("PATIENT")) return new HashSet<>();
         Patient patient = (Patient) user;
 
         return patient.getReservations();

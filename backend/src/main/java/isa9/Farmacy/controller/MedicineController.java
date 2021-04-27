@@ -10,6 +10,7 @@ import isa9.Farmacy.support.RatingToRatingDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -227,6 +228,7 @@ public class MedicineController {
     }
 
     @PostMapping("/newMedicine")
+    @PreAuthorize("hasAuthority('SYS_ADMIN')")
     public ResponseEntity<Integer> addMedicine(@RequestBody MedicineDTO medicineDTO){
         List<Long> replacementMedsIds = medicineDTO.getReplacementMedicationIds().stream().map(Long::parseLong).collect(Collectors.toList());
         Medicine newMedicine = new Medicine(0L, medicineDTO.getCode(), medicineDTO.getName(), medicineDTO.getStructure(),
