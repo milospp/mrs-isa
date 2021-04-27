@@ -9,7 +9,7 @@
     <div class="container pt-5">
         <PharmacistProfileInfo/>
     </div>
-    <PharmacyWorkingCard doctorId="15"/> <!-- HARDCODED -->
+    <PharmacyWorkingCard :doctorId="userId"/> <!-- HARDCODED -->
 </template>
 
 <style>
@@ -27,6 +27,7 @@
 import NavBar from '@/components/NavBar.vue'
 import PharmacistProfileInfo from '@/components/doctorProfile/PharmacistProfileInfo.vue'
 import PharmacyWorkingCard from '@/components/doctorProfile/PharmacyWorkingCardPharm.vue'
+import AuthService from '../service/AuthService.js'
 
 // @ is an alias to /src
 export default {
@@ -41,6 +42,21 @@ export default {
         return {
             message: null
         };
+    },
+
+    beforeMount() {
+        let user = AuthService.getCurrentUser();
+        if (user == null) {
+            AuthService.logout();
+            this.$router.replace("/login");
+            return;
+        }
+
+        if (user.role != "PHARMACY_ADMIN"){
+            this.$router.replace("/");
+        }
+
+        this.userId = user.id;
     }
 }
 </script>

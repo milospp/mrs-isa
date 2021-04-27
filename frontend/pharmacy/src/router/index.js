@@ -71,7 +71,7 @@ const routes = [
     component: HireDermatologist    // view je komponenta
   },
   {
-    path: '/homePagePharmacyAdmin/:id',
+    path: '/homePagePharmacyAdmin',
     name: 'HomePagePharmacyAdmin',
     component: HomePagePharmacyAdmin    // view je komponenta
   },
