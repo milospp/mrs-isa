@@ -42,8 +42,10 @@
 <script>
     import AppointmentDataService from '@/service/AppointmentDataService.js';
     import UtilService from '@/service/UtilService.js';
+    import AuthService from '@/service/AuthService.js';
 
 export default {
+  props: ['userId'],
     setup() {
       return { UtilService }
     },
@@ -96,7 +98,9 @@ export default {
         this.loadPatientSubscriptions();
     },
 	created() {
-		  this.id = this.$route.params.id; 
+
+		  this.id = this.userId; 
+
 	},
 }
 </script>

@@ -63,8 +63,11 @@
     import UtilService from '@/service/UtilService.js';
     import RatingModal from '@/components/RatingModal.vue';
     import MedicineDataService from '@/service/MedicineDataService.js';
+    import AuthService from '@/service/AuthService.js';
 
 export default {
+  props: ['userId'],
+
     setup() {
       return { UtilService }
     },
@@ -167,7 +170,7 @@ export default {
         this.loadPatientReservations();
     },
 	created() {
-		  this.id = this.$route.params.id; 
+		  this.id = this.userId; 
 	},
 }
 </script>

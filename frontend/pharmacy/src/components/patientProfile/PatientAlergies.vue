@@ -67,11 +67,15 @@
     import PatientDataService from '@/service/PatientDataService.js';
     import MedicineDataService from '@/service/MedicineDataService.js';
     import UtilService from '@/service/UtilService.js';
+    import AuthService from '@/service/AuthService.js';
+
     import $ from 'jquery';
     import Multiselect from 'vue-multiselect'
 
 
 export default {
+  props: ['userId'],
+  
     setup() {
       return { UtilService }
     },
@@ -129,7 +133,8 @@ export default {
         
     },
 	created() {
-		  this.id = this.$route.params.id; 
+
+		  this.id = this.userId; 
 	},
 }
 </script>
