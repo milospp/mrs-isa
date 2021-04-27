@@ -45,7 +45,7 @@ public class InMemoryExaminationService extends ExaminationServiceBase implement
 
 
     @Override
-    public List<Examination> getPharmacistFutureExaminations(Long idfarmaceuta) {
-        return super.getPharmacistFutureExaminations(idfarmaceuta);
+    public List<Examination> getFutureExaminations(Long idfarmaceuta) {
+        return super.getFutureExaminations(idfarmaceuta);
     }
 }

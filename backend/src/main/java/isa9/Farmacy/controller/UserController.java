@@ -516,7 +516,7 @@ public class UserController {
         PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(idAdmina);
         for (User u : svi) if (u.getClass() == Pharmacist.class) {
             Pharmacist farmaceut = (Pharmacist) u;
-            List<Examination> sviPregledi = this.examinationService.getPharmacistFutureExaminations(farmaceut.getId());
+            List<Examination> sviPregledi = this.examinationService.getFutureExaminations(farmaceut.getId());
             if (farmaceut.getName().equals(zaBrisanje.getName()) && farmaceut.getSurname().equals(zaBrisanje.getSurname())) {
                 okej = 2;
                 if (!farmaceut.getWorking().isEmpty()
@@ -607,24 +607,36 @@ public class UserController {
     @PostMapping("/dermatologist/fire/{idAdmina}")
     public ResponseEntity<Integer> fireDermatologist(@PathVariable Long idAdmina, @RequestBody DermatologistDTO zaBrisanje) {
         List<User> svi = userService.findAll();
-        int okej = 1;
-        if (userService.findOne(idAdmina).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(-1, HttpStatus.OK);
+        int okej = -1;
+        if (userService.findOne(idAdmina).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(okej, HttpStatus.OK);
+        okej = 2;
         PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(idAdmina);
         for (User u : svi) if (u.getClass() == Dermatologist.class) {
             Dermatologist dermatolog = (Dermatologist) u;
-            List<Examination> sviPregledi = this.examinationService.getPharmacistFutureExaminations(dermatolog.getId());
-            if (dermatolog.getName().equals(zaBrisanje.getName()) && dermatolog.getSurname().equals(zaBrisanje.getSurname())
-                    && !dermatolog.getWorking().isEmpty())
-                if (sviPregledi.isEmpty()) {
-                    Work odabrani = null;
-                    for (Work w : dermatolog.getWorking()) { if (w.getPharmacy().getId().equals(admin.getPharmacy().getId()))
-                        { odabrani = w; break; }}
-                    if (odabrani == null) new ResponseEntity<>(okej, HttpStatus.OK);
-                    dermatolog.getWorking().remove(odabrani);
-                    okej = 0;
-                    userService.save(dermatolog);
-                    break;
+            if (dermatolog.getName().equals(zaBrisanje.getName()) && dermatolog.getSurname().equals(zaBrisanje.getSurname())) {
+                if (!dermatolog.getWorking().isEmpty()) {
+                    List<Examination> sviPregledi = this.examinationService.getFutureExaminations(dermatolog.getId());
+                    for (Examination e : sviPregledi)
+                        if (e.getAppointment().getPharmacy().getId().equals(admin.getPharmacy().getId())) {
+                            okej = 1;
+                            break;
+                        }
+                    if (sviPregledi.isEmpty() || okej != 1) {  // nema pregleda ili radi u aporeci i nema pregleda
+                        Work odabrani = null;
+                        for (Work w : dermatolog.getWorking()) {
+                            if (w.getPharmacy().getId().equals(admin.getPharmacy().getId())) {
+                                odabrani = w;
+                                okej = 0;
+                                break;
+                            }
+                        }
+                        if (odabrani == null) return new ResponseEntity<>(okej, HttpStatus.OK);     // otpusten vec
+                        dermatolog.getWorking().remove(odabrani);
+                        userService.save(dermatolog);
+                        break;
+                    }
                 }
+            }
         }
         return new ResponseEntity<>(okej, HttpStatus.OK);
     }
@@ -661,7 +673,7 @@ public class UserController {
             Dermatologist dermatolog = (Dermatologist) u;
             for (Work work : dermatolog.getWorking()) {
                 if (work.getPharmacy().getId().equals(admin.getPharmacy().getId())) {
-                      if (dermatolog.getName().toLowerCase().contains(podaci.getSearch().toLowerCase())||
+                    if (dermatolog.getName().toLowerCase().contains(podaci.getSearch().toLowerCase())||
                             dermatolog.getSurname().toLowerCase().contains(podaci.getSearch().toLowerCase()) ||
                             dermatolog.getName().toLowerCase().contains(podaci.getFilterIme().toLowerCase())||
                             dermatolog.getSurname().toLowerCase().contains(podaci.getFilterPrez().toLowerCase()) ||
@@ -699,16 +711,18 @@ public class UserController {
                 break;
             }
         }
-        if (izabrani == null) new ResponseEntity<>(povratna, HttpStatus.OK);
+        if (izabrani == null) return new ResponseEntity<>(povratna, HttpStatus.OK);
         povratna = 1;
         LocalTime start = LocalTime.parse(podaci.getStartHour());
         LocalTime end = LocalTime.parse(podaci.getEndHour());
+        if (izabrani.getWorking().isEmpty()) povratna = 0;
         for (Work w : izabrani.getWorking()) {
+            if (w.getPharmacy().getId().equals(admin.getPharmacy().getId())) { povratna = -2; continue;}
             if (w.getStartHour().isBefore(start) && w.getEndHour().isBefore(start)) { povratna = 0; continue;}
             else if (w.getStartHour().isAfter(start) && w.getEndHour().isAfter(start)) { povratna = 0;  continue;}
             povratna = 1;
         }
-        if (povratna == 1) return new ResponseEntity<>(povratna, HttpStatus.OK);   // ne valja vreme
+        if (povratna != 0) return new ResponseEntity<>(povratna, HttpStatus.OK);   // ne valja vreme
         Work posao = new Work();
         posao.setPharmacy(admin.getPharmacy());
         posao.setDoctor(izabrani);
@@ -746,7 +760,7 @@ public class UserController {
 
 
     @GetMapping("/dermatologists/pharmacy/{id}/{search}")
-    public ResponseEntity<List<DermatologistDTO>> getAllDermatologistsPharmacy(@PathVariable Long id, @PathVariable String search) {
+    public ResponseEntity<List<DermatologistDTO>> searchDermatologistsPharmacy(@PathVariable Long id, @PathVariable String search) {
         List<User> svi = userService.findAll();
         List<DermatologistDTO> povratna = new ArrayList<>();
         for (User u : svi) if (u.getClass() == Dermatologist.class) {

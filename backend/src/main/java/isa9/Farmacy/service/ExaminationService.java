@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ExaminationService extends GenericService<Examination>{
 
-    List<Examination> getPharmacistFutureExaminations(Long idfarmaceuta);
+    List<Examination> getFutureExaminations(Long idfarmaceuta);
 
 }

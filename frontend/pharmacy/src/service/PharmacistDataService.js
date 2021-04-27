@@ -68,7 +68,7 @@ class PharmacistDataService {
     if (filterAdrG.length == 0) filterAdrG = "-";
     if (filterAdrU.length == 0) filterAdrU = "-";
     if (filterAdrB.length == 0) filterAdrB = "-";
-    var objekat = {"search" : search, "filterIme": filterIme, "filterPrez": filterIme, "filterBroj": filterBroj,
+    var objekat = {"search" : search, "filterIme": filterIme, "filterPrez": filterPrez, "filterBroj": filterBroj,
       "filterAdrD": filterAdrD, "filterAdrG": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
     return axios({
       method: 'post',
@@ -121,8 +121,8 @@ class PharmacistDataService {
   if (filterAdrG.length == 0) filterAdrG = "-";
   if (filterAdrU.length == 0) filterAdrU = "-";
   if (filterAdrB.length == 0) filterAdrB = "-";
-  var objekat = {"search" : search, "filterIme": filterIme, "filterPrez": filterIme, "filterBroj": filterBroj,
-    "filterAdrD": d.address["state"], "filterAdrG": d.address["city"], "filterAdrU": d.address["street"], "filterAdrB": d.address["number"]};
+  var objekat = {"search" : search, "filterIme": filterIme, "filterPrez": filterPrez, "filterBroj": filterBroj,
+  "filterAdrD": filterAdrD, "filterAdrG": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
   return axios({
     method: 'post',
     url: API_URL + "/api/users/pharm/filter/pharmacy/" + idApoteke,

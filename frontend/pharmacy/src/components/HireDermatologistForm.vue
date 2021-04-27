@@ -77,8 +77,9 @@ export default {
             if (!this.provera_vremena()) return false;
             DermatologistDataService.hireDermatologist(this.id, this.zaposliRadnika, this.startHour, this.endHour)
                 .then(response => {
-                if (response.data == 0) { alert("You successfully hired a dermatologist"); return true;} 
-                else if (response.data == -1) { alert("Something goes wrong"); return false;}
+                if (response.data == 0) { alert("You successfully hired a dermatologist."); return true;} 
+                else if (response.data == -1) { alert("Something goes wrong."); return false;}
+                else if (response.data == -2) { alert("This dermatologist is already hired in your pharmacy."); return false;}
                 alert("Doctor has job in that time in another pharmacy!");
                 return false;});
         },

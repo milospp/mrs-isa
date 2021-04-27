@@ -70,7 +70,7 @@ class DermatologistDataService {
   if (filterAdrG.length == 0) filterAdrG = "-";
   if (filterAdrU.length == 0) filterAdrU = "-";
   if (filterAdrB.length == 0) filterAdrB = "-";
-  var objekat = {"search" : search, "filterIme": filterIme, "filterPrez": filterIme, "filterBroj": filterBroj,
+  var objekat = {"search" : search, "filterIme": filterIme, "filterPrez": filterPrez, "filterBroj": filterBroj,
     "filterAdrD": filterAdrD, "filterAdrG": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
   return axios({
     method: 'post',
@@ -97,7 +97,7 @@ class DermatologistDataService {
   if (filterAdrG.length == 0) filterAdrG = "-";
   if (filterAdrU.length == 0) filterAdrU = "-";
   if (filterAdrB.length == 0) filterAdrB = "-";
-  var objekat = {"search" : search, "filterIme": filterIme, "filterPrez": filterIme, "filterBroj": filterBroj,
+  var objekat = {"search" : search, "filterIme": filterIme, "filterPrez": filterPrez, "filterBroj": filterBroj,
     "filterAdrD": filterAdrD, "filterAdrG": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
   return axios({
     method: 'post',

@@ -11,7 +11,7 @@ import java.util.List;
 public abstract class ExaminationServiceBase implements ExaminationService {
 
     @Override
-    public List<Examination> getPharmacistFutureExaminations(Long idfarmaceuta) {
+    public List<Examination> getFutureExaminations(Long idfarmaceuta) {
         List<Examination> svi = findAll();
         List<Examination> povratnaVrednost = new ArrayList<>();
         for (Examination e : svi) if (e.getAppointment().getDoctor().getId().equals(idfarmaceuta)) {
