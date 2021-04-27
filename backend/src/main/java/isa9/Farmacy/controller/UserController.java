@@ -297,16 +297,21 @@ public class UserController {
         user.getRegisterData().setWorking(new HashSet<>());
         user.getRegisterData().setPassword(passwordEncoder.encode(user.getRegisterData().getPassword()));
         user.getRegisterData().setLastPasswordResetDate(null);
+        user.getRegisterData().setWorking(new HashSet<>());
+        Work posao = new Work();
+        posao.setPharmacy(((PharmacyAdmin) adminUser).getPharmacy());
+        posao.setStartHour( LocalTime.parse(user.getStartHour()));
+        posao.setEndHour(LocalTime.parse(user.getEndHour()));
+        posao.setDoctor(user.getRegisterData());
+        user.getRegisterData().getWorking().add(posao);
 
-        user.getRegisterData().getWorking().add(new Work(1L, user.getRegisterData(), ((PharmacyAdmin) adminUser).getPharmacy(), LocalTime.parse(user.getStartHour()), LocalTime.parse(user.getEndHour())));
-        //user.setPharmacy();
         Work w = new Work();
         w.setDoctor(user.getRegisterData());
         w.setPharmacy(((PharmacyAdmin) adminUser).getPharmacy());
         w.setStartHour(LocalTime.parse(user.getStartHour()));
         w.setEndHour(LocalTime.parse(user.getEndHour()));
         user.getRegisterData().getWorking().add(w);
-        // tehnicki suvisna provera ali dok ne sredimo registraciju
+
         userService.save(user.getRegisterData());
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
