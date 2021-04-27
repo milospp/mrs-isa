@@ -66,7 +66,11 @@ public class MedicineController {
     @PostMapping("{medId}/pharmacy/{pharmacyId}/reserve")
     public ResponseEntity<MedReservationDTO> reserveMedicine(@PathVariable Long medId, @PathVariable Long pharmacyId, @RequestBody MedReservationFormDTO form){
         // TODO: Get patient from session
-        form.setPatientId(1L);
+        User user = userService.getLoggedInUser();
+
+        if (!form.getPatientId().equals(user.getId())){
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
 
         form.setMedicineId(medId);
         form.setPharmacyId(pharmacyId);
@@ -108,6 +112,7 @@ public class MedicineController {
 
 
     @GetMapping("/pharmacyAdmin/{id}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<List<MedInPharmaDTO>> getAllMedicinePharmacyAdmin(@PathVariable Long id) {
         User user = userService.findOne(id);
         if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -117,6 +122,7 @@ public class MedicineController {
     }
 
     @PostMapping("/edit/pharmacyAdmin/{id}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<Integer> editMedicinePharmacyAdmin(@PathVariable Long id, @RequestBody MedInPharmaDTO lek) {
         User user = userService.findOne(id);
         int povratna = -1;
@@ -148,6 +154,7 @@ public class MedicineController {
     }
 
     @GetMapping("/delete/pharmacyAdmin/{id}/{code}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<Integer> deleteMedicinePharmacyAdmin(@PathVariable Long id, @PathVariable String code) {
         User user = userService.findOne(id);
         int povratna = -1;
@@ -169,6 +176,7 @@ public class MedicineController {
     }
 
     @PostMapping("/add/pharmacyAdmin/{id}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<Integer> addMedicinePharmacyAdmin(@PathVariable Long id, @RequestBody MedInPharmaDTO lek) {
         User user = userService.findOne(id);
         int povratna = -1;

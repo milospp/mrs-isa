@@ -53,6 +53,7 @@ public class PharmacyController {
 
     /*Returns all pharmacies that don't have a pharmacy administrator assigned to them*/
     @GetMapping("available")
+    @PreAuthorize("hasAuthority('SYS_ADMIN')")
     public ResponseEntity<List<PharmacyDTO>> getAvailablePharmacies(){
         List<PharmacyDTO> resultDTOS = new ArrayList<>();
 

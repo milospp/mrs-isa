@@ -1,5 +1,5 @@
 <template>
-  <NavBar role="none"/>
+  <NavBar/>
   <h1 class="title" align="center">Login</h1>
   <LoginForm/>
 </template>

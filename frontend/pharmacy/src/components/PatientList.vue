@@ -59,10 +59,11 @@
                             <td>
                                 <button class="btn btn-secondary" v-on:click="showModal(p)">Examination history</button>
                             </td>
-                            <td> <!-- -->
-                                <button v-if="UtilService.isTimeForAppointment(p.lastDate.startTime, p.lastDate.durationInMins) && p.lastDate.examination.status == 'PENDING'" class="btn btn-primary" v-on:click="startAppointment(p.lastDate)">Start 
-                                  <span v-if="refreshData.searchParams.doctorId == 11">Examination</span>
-                                <span v-else>Counseling</span></button>
+                            <td> <!-- UtilService.isTimeForAppointment(p.lastDate.startTime, p.lastDate.durationInMins) && -->
+                                <button v-if="p.lastDate.examination.status == 'PENDING'" class="btn btn-primary" v-on:click="startAppointment(p.lastDate)">Start 
+                                  <span >Examination</span>
+                                <!-- <span v-else>Counseling</span> v-if="this.role == 'DERMATOLOGIST'"-->
+                                </button>
                             </td>
                         </tr>
                     </tbody>
@@ -244,6 +245,7 @@ import UtilService from '../service/UtilService.js';
 import AppointmentDataService from '@/service/AppointmentDataService.js';
 import $ from 'jquery';
 import Pagination from 'v-pagination-3';
+import AuthService from '../service/AuthService.js';
 
 export default {
     name: 'PatientList',
@@ -255,6 +257,7 @@ export default {
     },
     data() {
         return {
+          role: "",
             patients: [],
             message: null,
             lastAppointmentDates: [],
@@ -282,6 +285,7 @@ export default {
     },
     methods: {
         refreshPatients(e) {
+          this.refreshData.doctorId = AuthService.getCurrentUser().id;
           console.log("page size: ",this.refreshData.pageSize);
           if (!this.refreshData.pageNo) this.refreshData.pageNo = 1;
           console.log(this.refreshData.pageNo);
@@ -368,10 +372,15 @@ export default {
 
       mounted() {
           this.refreshPatients();
+          this.refreshData.doctorId = AuthService.getCurrentUser().id;
+        this.role = AuthService.getCurrentUser().role;
       },
 
       created() {
         this.refreshPatients();
+        this.refreshData.doctorId = AuthService.getCurrentUser().id;
+        console.log(this.refreshData.doctorId);
+        this.role = AuthService.getCurrentUser().role;
       }
 }
 </script>

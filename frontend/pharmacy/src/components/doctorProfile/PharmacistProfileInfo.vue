@@ -3,7 +3,7 @@
     <div v-if="doctor" class="row">
       <div class="col-md-12">
         <h2>{{doctor.name}} {{doctor.surname}}</h2>
-        <p class="rating">Rating: <span>TODO: 9.7/10</span></p>
+        <!-- <p class="rating">Rating: <span>5</span></p> -->
 
         <p>Address: {{UtilService.AddressToString(doctor.address)}}</p>
         <p>Phone: {{doctor.phoneNumber}}</p>
@@ -94,6 +94,8 @@
 <script>
 import DataService from '@/service/PharmacistDataService.js';
 import UtilService from '@/service/UtilService.js';
+import AuthService from '@/service/AuthService.js';
+
 // import PharmacistDataService from '../../service/PharmacistDataService';
 
 export default {
@@ -145,7 +147,7 @@ export default {
         this.loadDoctorData();
     },
 	created() {
-		  this.id = this.$route.params.id;
+		  this.id = AuthService.getCurrentUser().id;
 	}
 }
 </script>

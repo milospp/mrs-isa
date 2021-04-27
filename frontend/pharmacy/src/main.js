@@ -6,8 +6,11 @@ import 'jquery';
 import $ from 'jquery';
 import 'bootstrap'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'vue-choice'
+import 'vue-choice';
+import axios from 'axios';
 
 window.$ = window.jQuery = require('jquery');
 
-createApp(App).use(store).use(router).mount('#app')
+const app = createApp(App);
+app.use(store).use(router).mount('#app');
+app.config.globalProperties.$axios = axios;

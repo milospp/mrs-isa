@@ -1,5 +1,5 @@
 <template>
-  <NavBar role="none"/>
+  <NavBar/>
   <h1 class="title">Home</h1>
   <div class="container">
     <Pharmacies limit="8"/>

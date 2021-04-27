@@ -23,6 +23,7 @@ import AddSupplier from '@/views/AddSupplier.vue'
 import AddDermatologist from '@/views/AddDermatologist.vue'
 import AddMedicine from '@/views/AddMedicine.vue'
 import Login from '@/views/Login.vue'
+import LogoutView from '@/views/LogoutView.vue'
 import Appointment from '@/views/Appointment.vue'
 
 
@@ -46,7 +47,7 @@ const routes = [
     path: '/medicines',
     name: 'Medicines',
     component: Medicines,
-    props: route => ({ role: route.query.q })
+    //props: route => ({ role: route.query.q })
   },
   {
     path: '/register',
@@ -57,7 +58,7 @@ const routes = [
     path: '/patients',
     name: 'Patients',
     component: Patients,
-    props: route => ({ role: route.query.q })
+    //props: route => ({ role: route.query.q })
   },
   {
     path: '/addPharmacist/:id',
@@ -70,7 +71,7 @@ const routes = [
     component: HireDermatologist    // view je komponenta
   },
   {
-    path: '/homePagePharmacyAdmin/:id',
+    path: '/homePagePharmacyAdmin',
     name: 'HomePagePharmacyAdmin',
     component: HomePagePharmacyAdmin    // view je komponenta
   },
@@ -98,25 +99,30 @@ const routes = [
     path: '/vacation-request',
     name: 'VacationRequest',
     component: VacationRequest,
-    props: route => ({ role: route.query.q })
+    //props: route => ({ role: route.query.q })
   },
   {
     path: '/pharmacyPage/:id',
     name: 'PharmacyPage',
     component: PharmacyPage    // view je komponenta
   },
+  // {
+  //   path: '/profile/:id',
+  //   name: 'profile',
+  //   component: PatientProfile    // view je komponenta
+  // },
   {
-    path: '/profile/:id',
+    path: '/profile',
     name: 'profile',
     component: PatientProfile    // view je komponenta
   },
   {
-    path: '/pharmacist/profile/:id',
+    path: '/pharmacist/profile',
     name: 'PharmacistProfile',
     component: PharmacistProfile    // view je komponenta
   },
   {
-    path: '/dermatologist/profile/:id',
+    path: '/dermatologist/profile',
     name: 'DermatologistProfile',
     component: DermatologistProfile    // view je komponenta
   },
@@ -144,6 +150,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/logout',
+    name: 'Logout',
+    component: LogoutView
   },
   {
     path: '/addMedicine',

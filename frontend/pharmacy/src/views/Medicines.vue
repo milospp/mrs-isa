@@ -1,5 +1,5 @@
 <template>
-  <NavBar v-bind:role="role"/>
+  <NavBar/>
   <div class="container">
     <h1>Medicines</h1> 
     <MedicinesList/>
@@ -13,7 +13,7 @@ import MedicinesList from '@/components/MedicinesList.vue'
 
 export default {
   name: 'Medicines',
-  props: ['role'],
+  //props: ['role'],
   components: {
     NavBar,
     MedicinesList

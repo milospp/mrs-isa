@@ -349,6 +349,7 @@ import PharmacistDataService from '../service/PharmacistDataService.js';
 import PharmacyDataService from '../service/PharmacyDataService.js';
 import MedicineDataService from '../service/MedicineDataService.js';
 import Mapa from "../components/Maps.vue";
+import AuthService from "../service/AuthService.js";
 export default {
     name: 'HpPharmacyAdmin',
     components: {
@@ -371,7 +372,7 @@ export default {
         };
     },
     created() {
-	    this.id = this.$route.params.id;
+      this.id = AuthService.getCurrentUser().id;
       PharmacyDataService.getPharmacyByIDAdmin(this.id)
         .then(response => {
           this.pharmacy = response.data;

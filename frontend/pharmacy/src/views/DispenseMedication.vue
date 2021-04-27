@@ -1,6 +1,6 @@
 <template>
 <div>
-    <NavBar role="pharmacist"/>
+    <NavBar/>
     <h1 class="title">Dispense Medication</h1>
     <div class="d-flex justify-content-center">
       <form v-on:submit.prevent="getReservation()"> <!--v-on:submit.prevent="getReservation()"-->

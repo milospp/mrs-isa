@@ -1,5 +1,5 @@
 <template>
-    <NavBar role="dermatologist"/>
+    <NavBar/>
     <div class="row">
         <div class="col-md-12">
             <div id="menu3" class="tab-pane fade">
