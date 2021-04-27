@@ -259,6 +259,7 @@
     import PharmacyDataService from '../service/PharmacyDataService.js';
     import PharmacistDataService from '../service/PharmacistDataService.js';
     import DermatologistDataService from '../service/DermatologistDataService';
+    import AuthService from '../service/AuthService.js';
     import UtilService from '../service/UtilService.js';
     import MedicineDataService from '../service/MedicineDataService.js';
     import RatingModal from '@/components/RatingModal.vue';
@@ -395,7 +396,7 @@ export default {
         let reserve_form = {
           medicineId: reserve_data.medicine.id,
           pharmacyId: this.pharmacy.id,
-          patientId: null, // TODO: PATIENT FORM SESSION
+          patientId: this.userId, // TODO: PATIENT FORM SESSION
           quantity: this.kolicina,
           expirityDate: this.datum
         };
@@ -486,14 +487,15 @@ export default {
   },
   created() {
       this.id = this.$route.params.id;
-      
-      // TODO: Auth
-      this.userId = prompt("User id");
 
+
+      this.userId = AuthService.getLoggedIdOrLogout();
+      if (this.userId == null) return;
+      
       PharmacistDataService.getAllPharmacistPharmacy(this.id)
         .then(response => {
           this.sviZaposleniFarmaceuti = response.data;
-        });
+        });2
       DermatologistDataService.getAllDermatologistsPharmacy(this.id)
         .then(response => {
           this.sviZaposleniDermatolozi = response.data;});
@@ -510,7 +512,6 @@ export default {
       DermatologistDataService.getAllDermatologistsPharmacy(this.id)
         .then(response => {
           this.sviZaposleniDermatolozi = response.data;});
-          1
   },
 }
 </script>

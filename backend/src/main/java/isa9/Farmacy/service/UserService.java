@@ -39,4 +39,6 @@ public interface UserService extends GenericService<User> {
     Patient getPatientById(Long id);
 
     Doctor updateDoctorRating(Doctor doctor);
+
+    User getLoggedInUser();
 }

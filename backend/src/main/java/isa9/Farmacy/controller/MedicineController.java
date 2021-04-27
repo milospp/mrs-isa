@@ -66,7 +66,11 @@ public class MedicineController {
     @PostMapping("{medId}/pharmacy/{pharmacyId}/reserve")
     public ResponseEntity<MedReservationDTO> reserveMedicine(@PathVariable Long medId, @PathVariable Long pharmacyId, @RequestBody MedReservationFormDTO form){
         // TODO: Get patient from session
-        form.setPatientId(1L);
+        User user = userService.getLoggedInUser();
+
+        if (!form.getPatientId().equals(user.getId())){
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
 
         form.setMedicineId(medId);
         form.setPharmacyId(pharmacyId);

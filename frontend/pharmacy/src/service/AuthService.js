@@ -45,6 +45,18 @@ class AuthService {
 	getUserRole() {
 		// TODO: implement
 	}
+
+	getLoggedIdOrLogout() {
+		let user = this.getCurrentUser();
+		if (user == null) {
+		  this.logout();
+		  window.location.href = "/login";
+		  return null;
+		}
+  
+  
+		return user.id;
+	}
 }
 
 

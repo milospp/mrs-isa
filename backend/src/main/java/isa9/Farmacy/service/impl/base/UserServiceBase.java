@@ -3,8 +3,14 @@ package isa9.Farmacy.service.impl.base;
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.MedInPharmaDTO;
 import isa9.Farmacy.model.dto.PatientDTO;
+import isa9.Farmacy.model.dto.UserDTO;
 import isa9.Farmacy.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -151,5 +157,15 @@ public abstract class UserServiceBase implements UserService {
         double rating = ratingService.getDoctorAverage(doctor);
         doctor.setRating(rating);
         return (Doctor) save(doctor);
+    }
+
+    @Override
+    public User getLoggedInUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof AnonymousAuthenticationToken)
+            return null;
+
+        User user = (User) authentication.getPrincipal();
+        return user;
     }
 }
