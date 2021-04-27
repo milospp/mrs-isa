@@ -13,10 +13,13 @@ class AuthService {
 			if (response.data.accessToken) {
 			  localStorage.setItem('userToken', JSON.stringify(response.data));
 			  axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
-			  this.setCurrentUser();
-			  alert("Login successful!");
-			  window.location.href = "/";
-			  return response.data;
+			  console.log(axios.defaults.headers.common['Authorization']);
+			  this.setCurrentUser(response.data.accessToken).then(response => {
+				window.location.href = "/";
+			  });
+				window.location.href = "/";
+
+			  	return response.data;
 			};
 			//response.data.redirect = "/login";
 			return response.data;
@@ -30,8 +33,16 @@ class AuthService {
 		localStorage.removeItem('currentUser');
 	}
 	
-	setCurrentUser(){
-		return axios.get(`${API_URL}/api/auth/getLoggedIn`).then(response => {
+	setCurrentUser(token){
+		axios.defaults.headers.common['Authorization'] = "Bearer " + token;
+
+		let config = {}
+		if (token != undefined) {
+			config.headers = {Authorization: "Bearer " + token, A: "Bearer " + token};
+		}
+		console.log(config);
+
+		return axios.get(`${API_URL}/api/auth/getLoggedIn`, config).then(response => {
 			localStorage.setItem('currentUser', JSON.stringify(response.data));
 			return response.data;
 		})

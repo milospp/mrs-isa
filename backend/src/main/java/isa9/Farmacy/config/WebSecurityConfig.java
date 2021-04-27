@@ -106,7 +106,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 															"/api/users/dermatologists/pharmacy/**",
 															"/api/users/pharmacists/pharmacy/**/**",
 															"/api/users/pharm/filter/pharmacy/**",
-				"/api/users/derm/filter/pharmacy/**", "/api/medicines/pharmacy/**", "/api/pharmacies/**",
+				"/api/users/derm/filter/pharmacy/**", "/api/medicines/pharmacy/**",
 				"/api/users/patients");  // <-- svi korisnici mogu da udju na ove stranice
 		web.ignoring().antMatchers(HttpMethod.GET, "/", "/webjars/**", "/*.html", "/favicon.ico", "/**/*.html","/**/*.css", "/**/*.js");
 	}

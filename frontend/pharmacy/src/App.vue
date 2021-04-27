@@ -1,13 +1,21 @@
 <template>
 
-  <router-view/>
+  <router-view :key="componentKey"/>
 </template>
 
 <script>
 import axios from "axios";
-export default {
+import AuthService from '@/service/AuthService.js';
 
-    beforeMount() {
+
+export default {
+    data() {
+      return {
+        componentKey: 0,
+      };
+    },
+    methods: {
+      registerAxios() {
         let tokenObj = JSON.parse(localStorage.getItem('userToken'));
         if (tokenObj == null || tokenObj == undefined) return;
 
@@ -34,6 +42,27 @@ export default {
           }
           return Promise.reject(error);
         })
+        
+
+      },
+      forceRerender() {
+        this.componentKey += 1;
+      }
+    },
+
+    beforeMount() {
+      this.registerAxios();
+      AuthService.setCurrentUser()
+      .then(response => {
+        this.forceRerender();
+      })
+      .catch(error => {
+        if (error.response.status == 404){
+          AuthService.logout();
+          this.forceRerender();
+          //window.location.href = "/";
+        }
+      });
 
     },
 
