@@ -102,16 +102,16 @@ export default {
             availablePharmacies: [],
             message: null,
             registerData: {
-                name : "",
-                surname : "",
-                email : "",
-                password : "",
-                phoneNumber : "",
+                name : "Farmasi",
+                surname : "FAdmin",
+                email : "fadmin@maildrop.cc",
+                password : "password",
+                phoneNumber : "001112332",
                 address : {
-                    state: "",
-                    city: "",
-                    street: "",
-                    number: "",
+                    state: "State",
+                    city: "City",
+                    street: "Street",
+                    number: "33",
                 },
                 pharmacyId : ""
             }

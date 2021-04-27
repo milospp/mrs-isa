@@ -76,7 +76,7 @@
             <tr>
                 <td align="right">Prescription:</td>
                 <td>
-                    <select id="shape" style="width: 100%;" v-model="registerData.perscription" required="required">
+                    <select id="perscription" style="width: 100%;" v-model="registerData.perscription" required="required">
                         <option value="0">With receipt</option>
                         <option value="1">Without receipt</option>
                     </select>
@@ -85,8 +85,8 @@
             <tr>
                 <td align="right">Select replacement medicines:</td>
                 <td>
-                    <select id="shape" style="width: 100%;" v-model="registerData.replacementMedicationIds" 
-                    required="required" multiple>
+                    <select id="replacementMedicationIds" style="width: 100%;" v-model="registerData.replacementMedicationIds" 
+                     multiple>
                         <option v-for="medicine in this.allMedicines" v-bind:value=medicine.id>{{medicine.name}}</option>
                     </select>
                 </td>
@@ -108,15 +108,16 @@ export default {
             allMedicines: [],
             message: null,
             registerData: {
-                code : "",
-                name : "",
-                structure : "",
-                manufacturer : "",
-                note : "",
-                points : "",
-                shape : "",
-                type : "",
-                perscription : "",
+                code : "CD132",
+                name : "Lek Lek",
+                structure : "Samo igla",
+                manufacturer : "ppp",
+                note : "Nemoj voziti",
+                points : "3",
+                form: 0,
+                shape : "saline",
+                type : "Tip",
+                perscription : 1,
                 replacementMedicationIds : []
             }
         };

@@ -92,16 +92,16 @@ export default {
         return {
             message: null,
             registerData: {
-                name : "",
-                surname : "",
-                email : "",
-                password : "",
-                phoneNumber : "",
+                name : "Dostavljac",
+                surname : "Dost",
+                email : "dos@maildrop.cc",
+                password : "password",
+                phoneNumber : "0123123123",
                 address : {
-                    state: "",
-                    city: "",
-                    street: "",
-                    number: "",
+                    state: "State",
+                    city: "City",
+                    street: "Street",
+                    number: "123",
                 }
             }
         };

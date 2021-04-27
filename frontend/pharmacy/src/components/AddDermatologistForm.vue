@@ -92,16 +92,16 @@ export default {
         return {
             message: null,
             registerData: {
-                name : "",
-                surname : "",
-                email : "",
-                password : "",
-                phoneNumber : "",
+                name : "Dermatologist",
+                surname : "Derm",
+                email : "derm@maildrop.cc",
+                password : "password",
+                phoneNumber : "000123232",
                 address : {
-                    state: "",
-                    city: "",
-                    street: "",
-                    number: "",
+                    state: "Str",
+                    city: "Cit",
+                    street: "Str",
+                    number: "44",
                 }
             }
         };

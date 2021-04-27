@@ -54,11 +54,7 @@
         
         methods: {
             proveraForme(e){
-                
-
-                
-
-                if (!povratna) return;
+                //if (!povratna) return;
                 PharmacyDataService.SendPharmacy(this.registerData)
                 .catch(function (error) {
                   if (error.response) {
