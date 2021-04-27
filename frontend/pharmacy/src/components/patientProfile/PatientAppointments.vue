@@ -85,6 +85,8 @@ export default {
         },
 
         isCancelable(obj) {
+          console.log(obj);
+          console.log("EEEEEE");
           if (UtilService.isPastDate(UtilService.addDate(obj.startTime, 'd', -1))){
             return true;
           }

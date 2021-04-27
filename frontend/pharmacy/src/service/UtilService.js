@@ -22,19 +22,27 @@ class UtilService {
   }
 
   addDate(date, val, type){
-    if (!(date instanceof moment)) date = moment(date);
+    if (!(date instanceof moment)){ 
+      date = date[0] + "-" + date[1] + "-" + date[2];
+
+      date = moment(date);
+
+    }
 
     return date.add(val, type).format();
 
   }
 
   formatDate(date) {
+    console.log("FORMAAA DAATEEE");
+    date = date[0] + "-" + date[1] + "-" + date[2];
     if (date instanceof moment) return date.format('DD/MM/YYYY');
     return moment(date).format('DD/MM/YYYY');
   }
 
   formatDateTime(date) {
-    
+    date = date[0] + "-" + date[1] + "-" + date[2] + " "  + date[3] + ":"  + date[2];
+
     return moment(date).format('DD/MM/YYYY HH:mm');
   }
 
