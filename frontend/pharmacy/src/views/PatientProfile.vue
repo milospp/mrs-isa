@@ -4,7 +4,7 @@
 
 
     <div class="container pt-5">
-      <PatientProfileInfo/>
+      <PatientProfileInfo :userId="userId"/>
 
 
 
@@ -26,26 +26,26 @@
           
             <div class="tab-content">
               <div id="tab-alergies" class="tab-pane in fade active">
-                <PatientAlergies/>
+                <PatientAlergies :userId="userId"/>
               </div>
               <div id="tab-reservations" class="tab-pane in fade">
-                <PatientReservations/>
+                <PatientReservations :userId="userId"/>
               </div>
 
               <div id="menu1" class="tab-pane in fade">
-                <PatientSubscription/>
+                <PatientSubscription :userId="userId"/>
 
               </div>
               <div id="menu2" class="tab-pane in fade">
 
-                <PatientPenalities/>        
+                <PatientPenalities :userId="userId"/>        
               </div>
               <div id="appointments" class="tab-pane fade">
-                <PatientAppointments/>
+                <PatientAppointments :userId="userId"/>
               </div>
               
               <div id="history" class="tab-pane fade">
-                <PatientHistory/>
+                <PatientHistory :userId="userId"/>
               </div>
             </div>
           </div>
@@ -73,6 +73,7 @@ import PatientPenalities from '../components/patientProfile/PatientPenalities.vu
 import PatientAppointments from '../components/patientProfile/PatientAppointments.vue'
 import PatientHistory from '../components/patientProfile/PatientHistory.vue'
 import PatientReservations from '../components/patientProfile/PatientReservations.vue'
+import AuthService from '../service/AuthService.js'
 
 // @ is an alias to /src
 export default {
@@ -86,6 +87,21 @@ export default {
     PatientAppointments,
     PatientHistory,
     PatientReservations,
+  },
+
+  beforeMount() {
+      let user = AuthService.getCurrentUser();
+      if (user == null) {
+        AuthService.logout();
+        this.$router.replace("/login");
+        return;
+      }
+
+      if (user.role != "PATIENT"){
+          this.$router.replace("/");
+      }
+
+      this.userId = user.id;
   }
 }
 </script>

@@ -105,8 +105,13 @@ const routes = [
     name: 'PharmacyPage',
     component: PharmacyPage    // view je komponenta
   },
+  // {
+  //   path: '/profile/:id',
+  //   name: 'profile',
+  //   component: PatientProfile    // view je komponenta
+  // },
   {
-    path: '/profile/:id',
+    path: '/profile',
     name: 'profile',
     component: PatientProfile    // view je komponenta
   },
