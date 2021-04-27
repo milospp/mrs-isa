@@ -80,6 +80,7 @@ public class UserController {
             int roleId = user.getRole().getId().intValue();
             switch(roleId){
                 case 1:
+                    role = RolesDTO.SYS_ADMIN;
                     break;
                 case 2:
                     role = RolesDTO.PHARMACY_ADMIN;
@@ -123,6 +124,27 @@ public class UserController {
         System.out.println(user.getEmail());
 //        }
         return new ResponseEntity<>(dto, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/getLoggedIn/{email}")
+    public ResponseEntity<UserDTO> getLoggedInUser(@PathVariable String email){
+        ArrayList<User> allUsers = (ArrayList<User>) userService.findAll();
+        User loggedIn = null;
+
+        for(User u : allUsers){
+            if(u.getEmail().equals(email)){
+                loggedIn = u;
+                break;
+            }
+        }
+
+        if(loggedIn != null){
+            UserDTO dto = userToUserDTO.convert(loggedIn);
+            return new ResponseEntity<>(dto, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
 
     }
 

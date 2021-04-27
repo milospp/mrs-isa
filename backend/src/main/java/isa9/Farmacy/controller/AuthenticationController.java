@@ -1,25 +1,25 @@
 package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.User;
+import isa9.Farmacy.model.dto.UserDTO;
 import isa9.Farmacy.model.dto.UserTokenState;
 import isa9.Farmacy.security.auth.JwtAuthenticationRequest;
 import isa9.Farmacy.service.impl.db.dbUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import isa9.Farmacy.security.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping(value = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -65,9 +65,13 @@ public class AuthenticationController {
     }
 
 
+
+
     // U slucaju isteka vazenja JWT tokena, endpoint koji se poziva da se token osvezi
     @PostMapping(value = "/refresh")
     public ResponseEntity<UserTokenState> refreshAuthenticationToken(HttpServletRequest request) {
+
+        System.out.println("Uvek fresh");
 
         String token = tokenUtils.getToken(request);
         String username = this.tokenUtils.getUsernameFromToken(token);

@@ -78,9 +78,6 @@ public class PharmacyController {
     @PreAuthorize("hasAuthority('SYS_ADMIN')")
     public ResponseEntity<Boolean> registerPharmacy(@RequestBody PharmacyDTO pDTO) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("SYS_ADMIN"))) {
-            return new ResponseEntity<> (false, HttpStatus.FORBIDDEN);
-        }
 
 
         Pharmacy newlyRegistered = new Pharmacy(pDTO.getName(), pDTO.getAddress(),

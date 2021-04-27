@@ -21,6 +21,7 @@ import DermAppointments from '../views/DermAppointments.vue'
 import AddSupplier from '@/views/AddSupplier.vue'
 import AddDermatologist from '@/views/AddDermatologist.vue'
 import AddMedicine from '@/views/AddMedicine.vue'
+import Login from '@/views/Login.vue'
 
 const routes = [
   {
@@ -130,6 +131,11 @@ const routes = [
     path: '/addDermatologist',
     name: 'AddDermatologist',
     component: AddDermatologist
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
   },
   {
     path: '/addMedicine',
