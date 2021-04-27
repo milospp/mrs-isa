@@ -27,9 +27,9 @@
 
 					<router-link :to="{ name: 'PharmacistHomePage'}" class="nav-item nav-link">Working Calendar</router-link>
 					<router-link :to="{ name: 'Medicines'}" class="nav-item nav-link">Medicines</router-link>
-					<router-link to="/patients" class="nav-item nav-link">My Patients</router-link>
+					<router-link :to="{ name: 'Patients'}" class="nav-item nav-link">My Patients</router-link>
 					<router-link :to="{ name: 'DispenseMedication'}" class="nav-item nav-link">Dispense Medication</router-link>
-					<router-link to="/vacation-request" class="nav-item nav-link">Vacation Request</router-link>
+					<router-link :to="{ name: 'VacationRequest' }" class="nav-item nav-link">Vacation Request</router-link>
 					
 				</div>
 				<div v-else-if="user.role === 'DERMATOLOGIST'" class="navbar-nav mr-auto mt-2 mt-lg-0">
@@ -38,8 +38,26 @@
 
 					<router-link :to="{ name: 'DermatologistHomePage'}" class="nav-item nav-link">Working Calendar</router-link>
 					<router-link :to="{ name: 'Medicines'}" class="nav-item nav-link">Medicines</router-link>
-					<router-link to="/patients" class="nav-item nav-link">My Patients</router-link>
-					<router-link to="/vacation-request" class="nav-item nav-link">Vacation Request</router-link>
+					<router-link :to="{ name: 'Patients'}" class="nav-item nav-link">My Patients</router-link>
+					<router-link :to="{ name: 'VacationRequest' }" class="nav-item nav-link">Vacation Request</router-link>
+					
+				</div>
+				<div v-else-if="user.role === 'SYS_ADMIN'" class="navbar-nav mr-auto mt-2 mt-lg-0">
+
+					<a class="navbar-brand" href="/">Navbar</a>
+					<!--
+						/addPharmacy
+/addSupplier
+/addDermatologist
+/addMedicine
+/addPharmacyAdmin
+
+					-->
+					<router-link :to="{ name: 'AddPharmacy'}" class="nav-item nav-link">Add Pharmacy</router-link>
+					<router-link :to="{ name: 'AddSupplier'}" class="nav-item nav-link">Add Supplier</router-link>
+					<router-link :to="{ name: 'AddDermatologist' }" class="nav-item nav-link">Add Dermatologist</router-link>
+					<router-link :to="{ name: 'AddMedicine' }" class="nav-item nav-link">Add Medicine</router-link>
+					<router-link :to="{ name: 'AddPharmacyAdmin' }" class="nav-item nav-link">Add Pharmacy Admin</router-link>
 					
 				</div>
 
@@ -49,11 +67,11 @@
 					<router-link to="/register" class="nav-link">Register</router-link>
 				</div>
 			  	<div v-else-if="user.role === 'PHARMACIST'" class="navbar-nav my-2 my-lg-0">
-					<router-link to="/pharmacist/profile/15" class="nav-link">Profile</router-link>
+					<router-link to="/pharmacist/profile" class="nav-link">Profile</router-link>
 					<router-link to="/logout" class="nav-link">Logout</router-link>
 				</div>
 				<div v-else-if="user.role === 'DERMATOLOGIST'" class="navbar-nav my-2 my-lg-0">
-					<router-link to="/dermatologist/profile/16" class="nav-link">Profile</router-link>
+					<router-link to="/dermatologist/profile" class="nav-link">Profile</router-link>
 					<router-link to="/logout" class="nav-link">Logout</router-link>
 				</div>
 				<div v-else class="navbar-nav my-2 my-lg-0">
@@ -79,9 +97,9 @@ export default {
     }
   },
   created(){
-	  this.user = JSON.parse(AuthService.getCurrentUser());
+	  this.user = AuthService.getCurrentUser();
 	  console.log(this.user);
-	  //console.log(this.user.role);
+	  console.log(this.user.role);
   }
 }
 </script>

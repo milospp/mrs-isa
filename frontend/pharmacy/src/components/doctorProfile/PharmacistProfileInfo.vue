@@ -94,6 +94,8 @@
 <script>
 import DataService from '@/service/PharmacistDataService.js';
 import UtilService from '@/service/UtilService.js';
+import AuthService from '@/service/AuthService.js';
+
 // import PharmacistDataService from '../../service/PharmacistDataService';
 
 export default {
@@ -145,7 +147,7 @@ export default {
         this.loadDoctorData();
     },
 	created() {
-		  this.id = this.$route.params.id;
+		  this.id = AuthService.getCurrentUser().id;
 	}
 }
 </script>
