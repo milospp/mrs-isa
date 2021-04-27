@@ -363,9 +363,8 @@ export default {
         provera += this.proveri_broj(this.kolicina, "Quantity must be number.");
         provera += this.proveri_kolicinu(this.kolicina);
         if (provera != 0) return false;
-        alert("Everything is okay");
 
-        return this.reserveMedicine(reserve_data);
+        return this.reserveMedicine(reserve_data)
       },
       proveri_broj(unos, poruka) {
         if (this.kolicina == null) {
@@ -409,10 +408,15 @@ export default {
           MedicineDataService.getMedicineForPharmacy(this.id)
             .then(response => {
                 this.lekovi = response.data;
-            });
+            })
+
+
           $('#podaci').modal('hide'); 
 
-        });
+        }).catch(error => {
+          // TODO: DODATI OSTALE PROVERE!!!!
+          alert("Pacijent je alergičan");
+            });
 
 
 
