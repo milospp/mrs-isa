@@ -492,7 +492,8 @@ export default {
 
       PharmacistDataService.getAllPharmacistPharmacy(this.id)
         .then(response => {
-          this.sviZaposleniFarmaceuti = response.data;});
+          this.sviZaposleniFarmaceuti = response.data;
+        });
       DermatologistDataService.getAllDermatologistsPharmacy(this.id)
         .then(response => {
           this.sviZaposleniDermatolozi = response.data;});

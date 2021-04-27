@@ -9,16 +9,7 @@ class MedicineDataService {
   }
 
   getMedicineForPharmacyAdmin(idAdminaApoteke) {
-    return axios.get(API_URL + "/pharmacyAdmin/" + idAdminaApoteke)
-    .catch(function (error) {
-        if (error.response) {
-            console.log(error.response.data);
-        } else if (error.request) {
-            console.log(error.request);
-        }
-        console.log("Error");
-        console.log(error.config);
-    });
+    return axios.get(API_URL + "/pharmacyAdmin/" + idAdminaApoteke);
   }
 
   editMedicinePharmacyAdmin(idAdminaApoteke, lek) {
@@ -55,28 +46,11 @@ class MedicineDataService {
       method: 'post',
       url: API_URL + "/add/pharmacyAdmin/" + idAdminaApoteke,
       data: lek
-    }).catch(function (error) {
-        if (error.response) {
-            console.log(error.response.data);
-        } else if (error.request) {
-            console.log(error.request);
-        }
-        console.log("Error");
-        console.log(error.config);
     });
   }
 
   getMedicineForPharmacy(idApoteke) {
-    return axios.get(API_URL + "/pharmacy/" + idApoteke)
-    .catch(function (error) {
-        if (error.response) {
-            console.log(error.response.data);
-        } else if (error.request) {
-            console.log(error.request);
-        }
-        console.log("Error");
-        console.log(error.config);
-    });
+    return axios.get(API_URL + "/pharmacy/" + idApoteke);
   }
 
   reserveMedicine(reserveData){

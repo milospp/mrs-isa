@@ -5,29 +5,11 @@ const API_URL = "http://localhost:8080";
 
 class DermatologistDataService {
   getAllDermatologistAdmin(idAdminaApoteke) {
-    return axios.get(API_URL + "/api/users/dermatologists/admin/" + idAdminaApoteke)
-    .catch(function (error) {
-      if (error.response) {
-        console.log(error.response.data);
-      } else if (error.request) {
-        console.log(error.request);
-      }
-      console.log("Error");
-      console.log(error.config);
-  });
+    return axios.get(API_URL + "/api/users/dermatologists/admin/" + idAdminaApoteke);
   }
 
   getDermAdminHire(idAdminaApoteke) {
-    return axios.get(API_URL + "/api/users/derm/hire/admin/" + idAdminaApoteke)
-    .catch(function (error) {
-      if (error.response) {
-        console.log(error.response.data);
-      } else if (error.request) {
-        console.log(error.request);
-      }
-      console.log("Error");
-      console.log(error.config);
-  });
+    return axios.get(API_URL + "/api/users/derm/hire/admin/" + idAdminaApoteke);
   }
 
   hireDermatologist(adminId, dermatolog, startTime, endTime) {
@@ -36,15 +18,7 @@ class DermatologistDataService {
       method: 'post',
       url: API_URL + "/api/users/dematologist/hire/" + adminId,
       data: objekat
-    }).catch(function (error) {
-        if (error.response) {
-          console.log(error.response.data);
-        } else if (error.request) {
-          console.log(error.request);
-        }
-        console.log("Error");
-        console.log(error.config);
-      });
+    });
   }
 
   searchDermatologistAdmin(idAdminaApoteke, search) {
@@ -116,16 +90,7 @@ class DermatologistDataService {
     }
   
   getAllDermatologistsPharmacy(idApoteke) {
-    return axios.get(API_URL + "/api/users/dermatologists/pharmacy/" + idApoteke)
-    .catch(function (error) {
-      if (error.response) {
-        console.log(error.response.data);
-      } else if (error.request) {
-        console.log(error.request);
-      }
-      console.log("Error");
-      console.log(error.config);
-  });
+    return axios.get(API_URL + "/api/users/dermatologists/pharmacy/" + idApoteke);
   }
 
   fireDermatologist(adminId, dematolog) {

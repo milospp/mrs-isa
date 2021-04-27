@@ -15,7 +15,7 @@ class AuthService {
 			  axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
 			  this.setCurrentUser();
 			  alert("Login successful!");
-			  //window.location.href = "/";
+			  window.location.href = "/";
 			  return response.data;
 			};
 			//response.data.redirect = "/login";

@@ -1,6 +1,7 @@
 import axios from "axios";
 
 
+
 const API_URL = "http://localhost:8080";
 
 class PharmacistDataService {
@@ -17,16 +18,7 @@ class PharmacistDataService {
   }
   
   getAllPharmacistAdmin(idAdminaApoteke) {
-    return axios.get(API_URL + "/api/users/pharmacists/admin/" + idAdminaApoteke)
-    .catch(function (error) {
-      if (error.response) {
-        console.log(error.response.data);
-      } else if (error.request) {
-        console.log(error.request);
-      }
-      console.log("Error");
-      console.log(error.config);
-    });
+    return axios.get(API_URL + "/api/users/pharmacists/admin/" + idAdminaApoteke);2
   }
 
   firePharmacist(adminId, farmaceut) {
@@ -34,15 +26,7 @@ class PharmacistDataService {
       method: 'post',
       url: API_URL + "/api/users/pharmacist/fire/" + adminId,
       data: farmaceut
-    }).catch(function (error) {
-        if (error.response) {
-          console.log(error.response.data);
-        } else if (error.request) {
-          console.log(error.request);
-        }
-        console.log("Error");
-        console.log(error.config);
-      });
+    });
   }
   
   searchPharmacistAdmin(idAdminaApoteke, search) {
@@ -86,16 +70,16 @@ class PharmacistDataService {
   }
   
   getAllPharmacistPharmacy(idApoteke) {
-    return axios.get(API_URL + "/api/users/pharmacists/pharmacy/" + idApoteke)
-    .catch(function (error) {
-      if (error.response) {
-        console.log(error.response.data);
-      } else if (error.request) {
-        console.log(error.request);
-      }
-      console.log("Error");
-      console.log(error.config);
-    });
+    return axios.get(API_URL + "/api/users/pharmacists/pharmacy/" + idApoteke);
+    // .catch(function (error) {
+    //   if (error.response) {
+    //     console.log(error.response.data);
+    //   } else if (error.request) {
+    //     console.log(error.request);
+    //   }
+    //   console.log("Error");
+    //   console.log(error.config);
+    // });
   }
   
   searchPharmacistPharmacy(idApoteke, search) {
