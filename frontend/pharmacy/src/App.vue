@@ -12,7 +12,6 @@ export default {
         if (tokenObj == null || tokenObj == undefined) return;
 
         let token = tokenObj.accessToken
-        alert(token);
         axios.interceptors.request.use(function(config) {
             if(token) {
                 config.headers.Authorization = `Bearer ${token}`;
@@ -24,7 +23,6 @@ export default {
                 router.push('/logout');
             }
             console.log("IDI NA LOGIN radi");
-            alert("greska?");
             return Promise.reject(error);
         });
 
@@ -40,21 +38,9 @@ export default {
     },
 
     mounted() {
-     /*   let self = this;
-        let token;
-
-        let tokenObj = JSON.parse(localStorage.getItem('userToken'));
-        if (tokenObj == null || tokenObj == undefined) {
-          token = ""; 
-        } else {
-          token = tokenObj.accessToken;
-        }
-
+        let self = this;
 
         axios.interceptors.response.use((config) => {
-            if(token) {
-                config.headers.Authorization = `Bearer ${token}`;
-            }
             return config;        
           }, (error) => {
           if (error.response.status == 401) {
@@ -63,7 +49,7 @@ export default {
             console.log("send me to login APP");
           }
           return Promise.reject(error);
-        })*/2
+        })
     }
 
     

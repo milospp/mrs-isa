@@ -38,8 +38,12 @@ class AuthService {
 	}
 
 	getCurrentUser(){
-		let user = localStorage.getItem('currentUser');
+		let user = JSON.parse(localStorage.getItem('currentUser'));
 		return user;
+	}
+
+	getUserRole() {
+		// TODO: implement
 	}
 }
 
