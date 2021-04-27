@@ -13,8 +13,9 @@ class AuthService {
 			if (response.data.accessToken) {
 			  localStorage.setItem('userToken', JSON.stringify(response.data));
 			  axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
+			  this.setCurrentUser();
 			  alert("Login successful!");
-			  window.location.href = "/";
+			  //window.location.href = "/";
 			  return response.data;
 			};
 			//response.data.redirect = "/login";
@@ -29,11 +30,16 @@ class AuthService {
 		localStorage.removeItem('currentUser');
 	}
 	
-	setCurrentUser(email){
-		return axios.get(`${API_URL}/api/users/getLoggedIn/` + email).then(response => {
+	setCurrentUser(){
+		return axios.get(`${API_URL}/api/auth/getLoggedIn`).then(response => {
 			localStorage.setItem('currentUser', JSON.stringify(response.data));
 			return response.data;
 		})
+	}
+
+	getCurrentUser(){
+		let user = localStorage.getItem('currentUser');
+		return user;
 	}
 }
 

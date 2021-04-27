@@ -3,6 +3,18 @@
   <router-view/>
 </template>
 
+<script>
+import axios from "axios";
+export default {
+
+    beforeMount() {
+        let token = JSON.parse(localStorage.getItem('userToken'));
+        axios.defaults.headers.common['Authorization'] = "Bearer " + token.accessToken;
+    }
+}
+
+</script>
+
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

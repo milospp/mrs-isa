@@ -43,8 +43,7 @@ export default {
     methods: {     
         checkForm(e) {
             AuthService.login(this.loginData);
-			
-			AuthService.setCurrentUser(this.loginData.username);
+			// AuthService.setCurrentUser();
 			
 			
         }

@@ -5,10 +5,12 @@ import isa9.Farmacy.model.dto.UserDTO;
 import isa9.Farmacy.model.dto.UserTokenState;
 import isa9.Farmacy.security.auth.JwtAuthenticationRequest;
 import isa9.Farmacy.service.impl.db.dbUserService;
+import isa9.Farmacy.support.UserToUserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,7 +21,6 @@ import isa9.Farmacy.security.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 
 @RestController
 @RequestMapping(value = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -30,12 +31,14 @@ public class AuthenticationController {
     private AuthenticationManager authenticationManager;
 
     private dbUserService userService;
+    private final UserToUserDTO userToUserDTO;
 
     @Autowired
-    public AuthenticationController(TokenUtils t, AuthenticationManager aM, dbUserService us){
+    public AuthenticationController(TokenUtils t, AuthenticationManager aM, dbUserService us, UserToUserDTO userToUserDTO){
         this.tokenUtils = t;
         this.authenticationManager = aM;
         this.userService = us;
+        this.userToUserDTO = userToUserDTO;
     }
 
 
@@ -87,6 +90,28 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().body(userTokenState);
         }
     }
+
+    @GetMapping("/getLoggedIn")
+    public ResponseEntity<UserDTO> getLoggedInUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof AnonymousAuthenticationToken)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        User user = (User) authentication.getPrincipal();
+        System.out.println(user.getEmail());
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        UserDTO dto = userToUserDTO.convert(user);
+
+        return new ResponseEntity<>(dto,  HttpStatus.OK);
+
+
+
+
+
+    }
+
 /*
     @RequestMapping(value = "/change-password", method = RequestMethod.POST)
     @PreAuthorize("hasRole('USER')")
