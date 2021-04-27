@@ -116,12 +116,12 @@ const routes = [
     component: PatientProfile    // view je komponenta
   },
   {
-    path: '/pharmacist/profile/:id',
+    path: '/pharmacist/profile',
     name: 'PharmacistProfile',
     component: PharmacistProfile    // view je komponenta
   },
   {
-    path: '/dermatologist/profile/:id',
+    path: '/dermatologist/profile',
     name: 'DermatologistProfile',
     component: DermatologistProfile    // view je komponenta
   },

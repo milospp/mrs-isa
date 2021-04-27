@@ -91,7 +91,7 @@ insert into pharmacy (description, name, address_id) values ('Nema leka bez rece
 insert into pharmacy (description, name, address_id) values ('Nedeljom ne radimo', 'Laurus', 33);
 
 -- pharmacy admin -password = sifrica
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (24, 'coa@maildrop.cc', true, 'Aleksandar', '$2a$10$sDsMO0wxdpmslyr46szU4ObThxUPjhtGaN4VWn3uRks075H3.oZ52', '0635584712', 2, 'Vasić', LOCALTIMESTAMP);
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (24, 'coa@maildrop.cc', true, 'Aleksandar', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0635584712', 2, 'Vasić', LOCALTIMESTAMP);
 insert into pharmacy_admin (id, pharmacy_id) values (14, 1);
 
 --works

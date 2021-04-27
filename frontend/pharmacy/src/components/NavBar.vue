@@ -98,6 +98,10 @@ export default {
   },
   created(){
 	  this.user = AuthService.getCurrentUser();
+	  if (this.user)
+	  	console.log(this.user.role);
+	//   console.log(this.user);
+	//   
   }
 }
 </script>

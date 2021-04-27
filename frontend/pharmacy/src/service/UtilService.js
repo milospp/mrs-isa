@@ -8,7 +8,8 @@ class UtilService {
   }
 
   FormatTime(time) {
-    return time.split(":")[0] + ":" + time.split(":")[1];
+    time = time + '';
+    return time.split(",")[0] + ":" + time.split(",")[1];
   }
 
   test() {
@@ -66,8 +67,12 @@ class UtilService {
   }
 
   isTimeForAppointment(appointmentDate, durationInMins) {
-    if (moment() > moment(appointmentDate).subtract(5,'m') && moment() < moment(appointmentDate).add(durationInMins,'m'))
-      return true;
+    appointmentDate = appointmentDate + '';
+    durationInMins = durationInMins + '';
+    console.log(appointmentDate);
+      console.log(durationInMins);
+    if (moment() > moment(appointmentDate).subtract(5,'m') && moment() < moment(appointmentDate).add(durationInMins,'m')){
+      return true;}
     else return false;
   }
 
