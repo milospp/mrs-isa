@@ -49,33 +49,33 @@ insert into users (address_id, email, enabled, name, password, phone_number, rol
 insert into patient (points, id) values (10, 1);
 insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (5, 'maya@maildrop.cc', true, 'Maja', '$2a$10$puaZa6SuasjiagmJJi6Dtecz7cxA3HuXJUzcqlana.SO.U22uXOJq', '0617794512', 3, 'Marković', LOCALTIMESTAMP);
 insert into patient (points, id) values (1, 2);
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (7, 'zija123@maildrop.cc', true, 'Živorad', 'teka', '0629745132', 3, 'Pantić', LOCALTIMESTAMP);
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (7, 'zija123@maildrop.cc', true, 'Živorad', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0629745132', 3, 'Pantić', LOCALTIMESTAMP); -- TODO: odavde na dole je sifra svima 'password', osim sa coa i sis admina
 insert into patient (points, id) values (12, 3);
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (13, 'zki@maildrop.cc', true, 'Zoran', 'zoca', '0649985123', 3, 'Radovanović', LOCALTIMESTAMP);
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (13, 'zki@maildrop.cc', true, 'Zoran', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0649985123', 3, 'Radovanović', LOCALTIMESTAMP);
 insert into patient (points, id) values (10, 4);
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (19, 'natasha@maildrop.cc', true, 'Nataša', 'nata', '0635668741', 3, 'Bajunović', LOCALTIMESTAMP);
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (19, 'natasha@maildrop.cc', true, 'Nataša', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0635668741', 3, 'Bajunović', LOCALTIMESTAMP);
 insert into patient (points, id) values (1, 5);
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (4, 'violet@maildrop.cc', true, 'Violeta', 'vixi', '0629541238', 3, 'Milutinović', LOCALTIMESTAMP);
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (4, 'violet@maildrop.cc', true, 'Violeta', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0629541238', 3, 'Milutinović', LOCALTIMESTAMP);
 insert into patient (points, id) values (12, 6);
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (20, 'gidra@maildrop.cc', true, 'Dragan', 'magi', '0619745231', 3, 'Petrović', LOCALTIMESTAMP);
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (20, 'gidra@maildrop.cc', true, 'Dragan', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0619745231', 3, 'Petrović', LOCALTIMESTAMP);
 insert into patient (points, id) values (0, 7);
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (15, 'vesna123@maildrop.cc', true, 'Vesna', 'veka', '0615217941', 3, 'Tomašević', LOCALTIMESTAMP);
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (15, 'vesna123@maildrop.cc', true, 'Vesna', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0615217941', 3, 'Tomašević', LOCALTIMESTAMP);
 insert into patient (points, id) values (3, 8);
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (2, 'abcdefgh@maildrop.cc', true, 'Mirko', 'miki', '0619874511', 3, 'Ivanić', LOCALTIMESTAMP);
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (2, 'abcdefgh@maildrop.cc', true, 'Mirko', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0619874511', 3, 'Ivanić', LOCALTIMESTAMP);
 insert into patient (points, id) values (5, 9);
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (6, 'extramail@maildrop.cc', true, 'Žarko', 'zax', '0649874771', 3, 'Nikolić', LOCALTIMESTAMP);
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (6, 'extramail@maildrop.cc', true, 'Žarko', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0649874771', 3, 'Nikolić', LOCALTIMESTAMP);
 insert into patient (points, id) values (0, 10);
 
 --dermatologists
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (11, 'gordop@maildrop.cc', true, 'Gordan', 'password', '0635521478', 4, 'Popović', LOCALTIMESTAMP);
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (11, 'gordop@maildrop.cc', true, 'Gordan', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0635521478', 4, 'Popović', LOCALTIMESTAMP);
 insert into doctor (id) values (11);
 insert into dermatologist (id) values (11);
 
 --pharmacists
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (21, 'drmili@maildrop.cc', true, 'Milisav', 'password', '0612223855', 5, 'Nikolić', LOCALTIMESTAMP);
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (21, 'drmili@maildrop.cc', true, 'Milisav', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0612223855', 5, 'Nikolić', LOCALTIMESTAMP);
 insert into doctor (id) values (12);
 insert into pharmacist (id) values (12);
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (22, 'nadamm28@maildrop.cc', true, 'Nada', 'slojevito', '0638895221', 5, 'Macura', LOCALTIMESTAMP);
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (22, 'nadamm28@maildrop.cc', true, 'Nada', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0638895221', 5, 'Macura', LOCALTIMESTAMP);
 insert into doctor (id) values (13);
 insert into dermatologist (id) values (13);
 

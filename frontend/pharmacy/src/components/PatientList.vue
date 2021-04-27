@@ -244,6 +244,7 @@ import UtilService from '../service/UtilService.js';
 import AppointmentDataService from '@/service/AppointmentDataService.js';
 import $ from 'jquery';
 import Pagination from 'v-pagination-3';
+import AuthService from '../service/AuthService.js';
 
 export default {
     name: 'PatientList',
@@ -270,7 +271,7 @@ export default {
               pageSize: 2,
               sortBy: 'id',
               searchParams: {
-                doctorId: 11,
+                doctorId: AuthService.getCurrentUser().id,
                 name: "",
                 surname: ""
               },

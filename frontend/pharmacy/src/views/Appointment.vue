@@ -1,6 +1,6 @@
 <template>
 <div>
-    <NavBar role="dermatologist"/>
+    <NavBar/>
     <div class="container">
         <h1 class="gray" v-if="appointment.type == 'EXAMINATION'">Examination</h1>
         <h1 class="gray" v-else>Counseling</h1>
