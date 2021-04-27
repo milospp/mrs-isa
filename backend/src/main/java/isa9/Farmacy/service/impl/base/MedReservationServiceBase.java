@@ -40,7 +40,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
 
         Pharmacist pharmacist = new Pharmacist(); // = (Pharmacist) reservation.getMedicineInPharmacy().getPharmacy().getStaff().iterator().next().getDoctor();
         for (Work work : medReservation.getMedicineInPharmacy().getPharmacy().getStaff()){
-            if (work.getDoctor().getRole() == UserRole.PHARMACIST){
+            if (work.getDoctor().getRole().getName().equals("PHARMACIST")){
                 pharmacist = (Pharmacist) work.getDoctor();
                 break;
             }
