@@ -14,10 +14,10 @@ class AuthService {
 			  localStorage.setItem('userToken', JSON.stringify(response.data));
 			  axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
 			  alert("Login successful!");
-			  response.data.redirect = "/";
+			  window.location.href = "/";
 			  return response.data;
 			};
-			response.data.redirect = "/login";
+			//response.data.redirect = "/login";
 			return response.data;
 		})
 		

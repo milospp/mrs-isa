@@ -44,10 +44,10 @@ insert into user_roles (name) values ('SUPPLIER');
 
 --IMPORTANT: when inserting new sample users, use https://www.bcryptcalculator.com/encode to correctly generate a password for database
 
---patients
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (10, 'oprincominero@maildrop.cc', true, 'Petar', 'peca', '0645597841', 3, 'Petrović', LOCALTIMESTAMP);
+--patients -- password: password
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (10, 'oprincominero@maildrop.cc', true, 'Petar', '$2a$10$puaZa6SuasjiagmJJi6Dtecz7cxA3HuXJUzcqlana.SO.U22uXOJq', '0645597841', 3, 'Petrović', LOCALTIMESTAMP);
 insert into patient (points, id) values (10, 1);
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (5, 'maya@maildrop.cc', true, 'Maja', 'sifra', '0617794512', 3, 'Marković', LOCALTIMESTAMP);
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (5, 'maya@maildrop.cc', true, 'Maja', '$2a$10$puaZa6SuasjiagmJJi6Dtecz7cxA3HuXJUzcqlana.SO.U22uXOJq', '0617794512', 3, 'Marković', LOCALTIMESTAMP);
 insert into patient (points, id) values (1, 2);
 insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (7, 'zija123@maildrop.cc', true, 'Živorad', 'teka', '0629745132', 3, 'Pantić', LOCALTIMESTAMP);
 insert into patient (points, id) values (12, 3);
