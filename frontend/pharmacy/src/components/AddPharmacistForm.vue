@@ -107,21 +107,21 @@ export default {
     data() {
         return {
             registerData: {
-                name : "",
-                surname : "",
-                email : "",
-                username : "",
-                password : "",
+                name : "Farnaceyt",
+                surname : "Farm",
+                email : "farm@maildrop.cc",
+                username : "farm",
+                password : "password",
                 address : {
-                    state: "",
-                    city: "",
-                    street: "",
-                    number: "",
+                    state: "Stat",
+                    city: "City",
+                    street: "Street",
+                    number: "123",
                 },
-                phoneNumber : "",
+                phoneNumber : "111222333",
             },
-            startHour: "",
-            endHour: "",
+            startHour: "10:00",
+            endHour: "12:00",
         };
     },
     created() {

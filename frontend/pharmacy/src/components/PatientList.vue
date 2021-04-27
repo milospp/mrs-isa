@@ -52,6 +52,7 @@
                     <tbody>
                         <tr :key="p.id" v-for="p in patients" v-on:dblclick="patientInfo(Object.values(p))" class="clickable" data-index="{{p.id}}">
                             <td scope="row">{{p.name}}</td>
+                            
                             <td>{{p.surname}}</td>
                             <!-- <td>{{UtilService.formatDateTime(p.lastAppointmentDate)}}</td> -->
                             <td>{{UtilService.AddressToString(p.address)}}</td>
@@ -371,16 +372,19 @@ export default {
       },
 
       mounted() {
-          this.refreshPatients();
+          this.refreshData.searchParams.doctorId = AuthService.getCurrentUser().id;
           this.refreshData.doctorId = AuthService.getCurrentUser().id;
-        this.role = AuthService.getCurrentUser().role;
+          this.role = AuthService.getCurrentUser().role;
+          this.refreshPatients();
+
       },
 
       created() {
-        this.refreshPatients();
         this.refreshData.doctorId = AuthService.getCurrentUser().id;
         console.log(this.refreshData.doctorId);
         this.role = AuthService.getCurrentUser().role;
+        this.refreshPatients();
+
       }
 }
 </script>

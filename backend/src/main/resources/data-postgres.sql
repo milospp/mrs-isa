@@ -45,13 +45,13 @@ insert into user_roles (name) values ('SUPPLIER');
 --IMPORTANT: when inserting new sample users, use https://www.bcryptcalculator.com/encode to correctly generate a password for database
 
 --patients -- password: password
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (10, 'oprincominero@maildrop.cc', true, 'Petar', '$2a$10$puaZa6SuasjiagmJJi6Dtecz7cxA3HuXJUzcqlana.SO.U22uXOJq', '0645597841', 3, 'Petrović', LOCALTIMESTAMP);
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (10, 'p1@maildrop.cc', true, 'Petar', '$2a$10$puaZa6SuasjiagmJJi6Dtecz7cxA3HuXJUzcqlana.SO.U22uXOJq', '0645597841', 3, 'Petrović', LOCALTIMESTAMP);
 insert into patient (points, id) values (10, 1);
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (5, 'maya@maildrop.cc', true, 'Maja', '$2a$10$puaZa6SuasjiagmJJi6Dtecz7cxA3HuXJUzcqlana.SO.U22uXOJq', '0617794512', 3, 'Marković', LOCALTIMESTAMP);
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (5, 'p2@maildrop.cc', true, 'Maja', '$2a$10$puaZa6SuasjiagmJJi6Dtecz7cxA3HuXJUzcqlana.SO.U22uXOJq', '0617794512', 3, 'Marković', LOCALTIMESTAMP);
 insert into patient (points, id) values (1, 2);
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (7, 'zija123@maildrop.cc', true, 'Živorad', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0629745132', 3, 'Pantić', LOCALTIMESTAMP); -- TODO: odavde na dole je sifra svima 'password', osim sa coa i sis admina
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (7, 'p3@maildrop.cc', true, 'Živorad', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0629745132', 3, 'Pantić', LOCALTIMESTAMP); -- TODO: odavde na dole je sifra svima 'password', osim sa coa i sis admina
 insert into patient (points, id) values (12, 3);
-insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (13, 'zki@maildrop.cc', true, 'Zoran', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0649985123', 3, 'Radovanović', LOCALTIMESTAMP);
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (13, 'p4@maildrop.cc', true, 'Zoran', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0649985123', 3, 'Radovanović', LOCALTIMESTAMP);
 insert into patient (points, id) values (10, 4);
 insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (19, 'natasha@maildrop.cc', true, 'Nataša', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0635668741', 3, 'Bajunović', LOCALTIMESTAMP);
 insert into patient (points, id) values (1, 5);
