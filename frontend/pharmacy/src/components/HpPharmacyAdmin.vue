@@ -185,7 +185,7 @@
         <div class="modal-body" align="left">Name: <input type="text" v-model="pharmacyName" placeholder=pharmacyName/></div>
         <div class="modal-body" align="left">Description: <input type="text" v-model="pharmacyDesc" placeholder=pharmacyDesc/></div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="proveraApoteka()">Save changes</button>
+          <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#odavestenje" data-dismiss="modal" v-on:click.prevent="proveraApoteka()">Save changes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -215,7 +215,7 @@
         <div class="modal-body" align="left">Shape: <input type="text" v-model="shape" placeholder=shape/></div>
         <div class="modal-body" align="left">Rating: {{this.rating}}</div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="provera()">Save changes</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#odavestenje" v-on:click.prevent="provera()">Save changes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -283,7 +283,7 @@
           </button>
         </div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" v-on:click.prevent="otpusti()" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#odavestenje" v-on:click.prevent="otpusti()" data-dismiss="modal">Yes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -301,7 +301,7 @@
           </button>
         </div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" v-on:click.prevent="izbrisiLek()" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#odavestenje" v-on:click.prevent="izbrisiLek()" data-dismiss="modal">Yes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -334,8 +334,26 @@
               <option v-for="m in this.sviLekovi" v-bind:value=m.id>{{m.name}}</option>
           </select></div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="dodajLek()">Save medicine</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal"  data-toggle="modal" data-target="#odavestenje" v-on:click.prevent="dodajLek()">Save medicine</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- obavestenje -->
+  <div class="modal fade" id="odavestenje" tabindex="-1" role="dialog" aria-labelledby="poruka" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="poruka">Message</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" align="left"><label>{{this.poruka}}</label></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="inicijalizujPoruku('Wait... Your require is in processing', false)">OK</button>
         </div>
       </div>
     </div>
@@ -350,6 +368,7 @@ import PharmacyDataService from '../service/PharmacyDataService.js';
 import MedicineDataService from '../service/MedicineDataService.js';
 import Mapa from "../components/Maps.vue";
 import AuthService from "../service/AuthService.js";
+
 export default {
     name: 'HpPharmacyAdmin',
     components: {
@@ -368,7 +387,7 @@ export default {
             filterIme: "", filterPrez: "", filterBroj: "",
             filterAdrD: "", filterAdrG: "", filterAdrU: "", filterAdrB: "", 
             otpustiRadnika: null, jesteFarmaceut: false, 
-            sviLekovi: [], zamenskiLekovi: [], 
+            sviLekovi: [], zamenskiLekovi: [], poruka: "Wait... Your require is in processing", 
         };
     },
     created() {
@@ -402,26 +421,66 @@ export default {
       DermatologistDataService.getAllDermatologistAdmin(this.id)
         .then(response => {
           this.sviZaposleniDermatolozi = response.data;});
+      MedicineDataService.getMedicineForPharmacyAdmin(this.id)
+      .then(response => {
+          this.lekovi = response.data;
+      });
     },
     methods : {
+      osveziFarmaceute() {
+        PharmacistDataService.getAllPharmacistAdmin(this.id)
+          .then(response => { this.sviZaposleniFarmaceuti = response.data;});
+      },
+      osveziDermatologe() {
+        DermatologistDataService.getAllDermatologistAdmin(this.id)
+          .then(response => { this.sviZaposleniDermatolozi = response.data;});
+      },
+      osveziLekove() {
+        MedicineDataService.getMedicineForPharmacyAdmin(this.id)
+        .then(response => { this.lekovi = response.data;});        
+      }, 
+      inicijalizujPoruku(pk, prikaz) { 
+        this.poruka = pk;
+        if (prikaz) $("odavestenje").show();
+        },
       podesi(farm_der, jesteFar) { this.otpustiRadnika = farm_der; this.jesteFarmaceut = jesteFar;},
       otpusti() {
         if (this.jesteFarmaceut) {
           PharmacistDataService.firePharmacist(this.id, this.otpustiRadnika)        
           .then(response => {
-            if (response.data == 0) { alert("You successfully fired a pharmacist"); return true;} 
-            else if (response.data == -1) { alert("Something goes wrong"); return false;}
-            else if (response.data == 2) { alert("Refresh the page, you already fire this person"); return false;}
-            alert("Doctor has some review and you can't fire him or her!");
+            if (response.data == 0) { 
+              this.inicijalizujPoruku("You successfully fired a pharmacist", true); 
+              this.osveziFarmaceute(); 
+              return true;
+            } 
+            else if (response.data == -1) { 
+              this.inicijalizujPoruku("Something goes wrong", true); 
+              return false;
+            }
+            else if (response.data == 2) { 
+              this.inicijalizujPoruku("Refresh the page, you already fire this person", true); 
+              return false;
+            }
+            this.inicijalizujPoruku("Doctor has some review and you can't fire him or her!", true);
             return false;});
         }
         else {
         DermatologistDataService.fireDermatologist(this.id, this.otpustiRadnika)        
           .then(response => {
-            if (response.data == 0) { alert("You successfully fired a dermatologist"); return true;} 
-            else if (response.data == -1) { alert("Something goes wrong"); return false;}
-            else if (response.data == 2) { alert("Refresh the page, you already fire this person"); return false;}
-            alert("Doctor has some review and you can't fire him or her!");
+            if (response.data == 0) { 
+              this.inicijalizujPoruku("You successfully fired a dermatologist", true); 
+              this.osveziDermatologe(); 
+              return true;
+            } 
+            else if (response.data == -1) { 
+              this.inicijalizujPoruku("Something goes wrong", true); 
+              return false;
+            }
+            else if (response.data == 2) { 
+              this.inicijalizujPoruku("Refresh the page, you already fire this person", true); 
+              return false;
+            }
+            this.inicijalizujPoruku("Doctor has some review and you can't fire him or her!", true);
             return false;});
         }
       },
@@ -429,7 +488,7 @@ export default {
         var suma = this.filterIme.length + this.filterPrez.length + this.filterBroj 
           + this.filterAdrD.length + this.filterAdrG.length + this.filterAdrU.length + this.filterAdrB.length;
         if (suma == 0) {
-          alert("You must enter some parameter for filter");
+          this.inicijalizujPoruku("You must enter some parameter for filter", true);
           return;
         }
 
@@ -449,7 +508,7 @@ export default {
       },
       pretragaDerm() {
         if (this.dermaSearch.length == 0) {
-          alert("Input someting for searching");
+          this.inicijalizujPoruku("Input someting for searching", true);
           return;
         }
         DermatologistDataService.searchDermatologistAdmin(this.id, this.dermaSearch)
@@ -458,7 +517,7 @@ export default {
       },
       pretragaFarm() {
         if (this.pharmaSearch.length == 0) {
-          alert("Input someting for searching");
+          this.inicijalizujPoruku("Input someting for searching", true);
           return;
         }
         PharmacistDataService.searchPharmacistAdmin(this.id, this.pharmaSearch)
@@ -467,19 +526,21 @@ export default {
       },
       DodajFarmaceuta() {
         window.location.href = "/addPharmacist/" + this.id;
+        this.osveziFarmaceute();
       },
       ZaposliDermatologa() {
          window.location.href = "/hireDermatologist/" + this.id;
+         this.osveziFarmaceute();
       },
       proveraApoteka() {
         if (this.pharmacyName.length == 0 || this.pharmacyDesc.length == 0) {
-          alert("Name and description can't be empty.")
+          this.inicijalizujPoruku("Name and description can't be empty.", true)
           return false;
         }
         this.pharmacy.name = this.pharmacyName;
         this.pharmacy.description = this.pharmacyDesc;
         PharmacyDataService.setPharmacy(this.pharmacy)
-          .then(response => {alert("You successfaly changed pharmacy info.");});
+          .then(response => {this.inicijalizujPoruku("You successfaly changed pharmacy info.", true);});
       },
       funkcija(l, samoLek) {
         this.originalLeka = l;
@@ -525,15 +586,19 @@ export default {
         this.originalLeka.medicine.perscription = this.perscription;
         MedicineDataService.editMedicinePharmacyAdmin(this.id, this.originalLeka)
           .then(response => {
-              if (response.data == 1) { alert("You successfully edited medicine"); return true;} 
-              alert("Something goes wrong");
+              if (response.data == 1) { 
+                this.inicijalizujPoruku("You successfully edited medicine", true);
+                this.osveziLekove(); 
+                return true;
+              } 
+              this.inicijalizujPoruku("Something goes wrong", true);
               return false;});
         return true;
       },
       proveri_broj(unos, poruka) {
         for (var karakter of unos) {
           if (karakter < '0' || karakter > '9') {
-            alert(poruka);
+            this.inicijalizujPoruku(poruka, true);
             return 1;
           }
         }
@@ -542,7 +607,7 @@ export default {
       proveri_cenu() {
         var lista = String(this.price).split('.')
         if (lista.length > 2) {
-          alert("Price must be in form 5.2");
+          this.inicijalizujPoruku("Price must be in form 5.2", true);
           return 1;
         }
         for (var elem of lista) {
@@ -553,11 +618,11 @@ export default {
       },
       provera_prazan(unos, poruka) {
         if (unos == null) {
-          alert(poruka);
+          this.inicijalizujPoruku(poruka, true);
           return 1;
         }
         if (unos.length == 0) {
-          alert(poruka);
+          this.inicijalizujPoruku(poruka, true);
           return 1;
         }
         return 0;
@@ -572,16 +637,21 @@ export default {
           this.perscription = 1;
           return 0;
         }
-        alert("Perscription must be yes or on");
+        this.inicijalizujPoruku("Perscription must be yes or on", true);
         return 1;
       },
       izbrisiLek() {
         MedicineDataService.deleteMedicinePharmacyAdmin(this.id, this.originalLeka.medicine.code)
           .then(response => {
-              if (response.data == 1) { alert("You successfully deleted medicine"); return true;} 
-              if (response.data == 0) { alert("Refresh page, you already delete this medicine"); return false;} 
-              alert("Something goes wrong");
+              if (response.data == 1) { 
+                this.inicijalizujPoruku("You successfully deleted medicine", true); 
+                this.osveziLekove();
+                return true;
+                } 
+              if (response.data == 0) { this.inicijalizujPoruku("Refresh page, you already delete this medicine", true); return false;} 
+              this.inicijalizujPoruku("Something goes wrong", true);
               return false;});
+        this.osveziLekove();
       },
       dodajLek() {
         var provera = 0;
@@ -616,9 +686,16 @@ export default {
           "currentPrice": this.price, "inStock": this.quantity};
         MedicineDataService.addMedicinePharmacyAdmin(this.id, noviLek)
           .then(response => {
-              if (response.data == 1) { alert("You successfully added medicine."); return true;} 
-              if (response.data == 0) { alert("Code is already used, enter the new code."); return false;} 
-              alert("Something goes wrong");
+              if (response.data == 1) { 
+                this.inicijalizujPoruku("You successfully added medicine.", true); 
+                this.osveziLekove();
+                return true;
+              } 
+              if (response.data == 0) { 
+                this.inicijalizujPoruku("Code is already used, enter the new code.", true); 
+                return false;
+              } 
+              this.inicijalizujPoruku("Something goes wrong", true);
               return false;});
       },
     }
