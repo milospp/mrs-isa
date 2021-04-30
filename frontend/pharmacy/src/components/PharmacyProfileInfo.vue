@@ -79,7 +79,7 @@
                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
                   
                     <td> <input type="text" v-model="pharmaSearch"  size="50"/></td>
-                    <td> <form v-on:click.prevent="pretragaFarm()"> <input type="submit" value="Search"/></form></td>
+                    <td> <form v-on:click.prevent="pretragaFarm()"> <input type="submit" data-toggle="modal" data-target="#obavestenje" value="Search"/></form></td>
                 </tr>
                 <tr>
                   <td> &emsp; </td>
@@ -115,7 +115,7 @@
                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
                   
                     <td> <input type="text" v-model="dermaSearch"  size="50"/></td>
-                    <td> <form v-on:click.prevent="pretraga()"> <input type="submit" value="Search"/></form></td>
+                    <td> <form v-on:click.prevent="pretraga()"> <input type="submit" data-toggle="modal" data-target="#obavestenje" value="Search"/></form></td>
                 </tr>
                 <tr>
                   <td> &emsp; </td>
@@ -220,7 +220,7 @@
         <div class="modal-body" align="left">Street: <input type="text" v-model="filterAdrU"/></div>
         <div class="modal-body" align="left">Number: <input type="text" v-model="filterAdrB"/></div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="filter(true)">Seaarch</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="filter(true)">Seaarch</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -245,7 +245,7 @@
         <div class="modal-body" align="left">Street: <input type="text" v-model="filterAdrU"/></div>
         <div class="modal-body" align="left">Number: <input type="text" v-model="filterAdrB"/></div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="filter(false)">Seaarch</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="filter(false)">Seaarch</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -333,13 +333,15 @@ export default {
         DermatologistDataService.filterDermatologistPharmacy(this.id, this.dermaSearch, this.filterIme, this.filterPrez, this.filterBroj, 
           this.filterAdrD, this.filterAdrG, this.filterAdrU, this.filterAdrB,)
           .then(response => {
-            this.sviZaposleniDermatolozi = response.data;});
+            this.sviZaposleniDermatolozi = response.data;
+            this.inicijalizujPoruku("Find " + this.sviZaposleniDermatolozi.length + " results");});
       }
       else {                            // za farmaceute
         PharmacistDataService.filterPharmacistPharmacy(this.id, this.pharmaSearch, this.filterIme, this.filterPrez, this.filterBroj, 
             this.filterAdrD, this.filterAdrG, this.filterAdrU, this.filterAdrB,)
             .then(response => {
-              this.sviZaposleniFarmaceuti = response.data;});
+              this.sviZaposleniFarmaceuti = response.data;
+              this.inicijalizujPoruku("Find " + this.sviZaposleniFarmaceuti.length + " results");});
       }
 
     },
@@ -350,7 +352,8 @@ export default {
         }
         DermatologistDataService.searchDermatologistPharmacy(this.id, this.dermaSearch)
         .then(response => {
-          this.sviZaposleniDermatolozi = response.data;});
+          this.sviZaposleniDermatolozi = response.data;
+          this.inicijalizujPoruku("Find " + this.sviZaposleniDermatolozi.length + " results");});
       },
       loadPharmacyData() {
           let self = this;
@@ -372,7 +375,8 @@ export default {
         }
         PharmacistDataService.searchPharmacistPharmacy(this.id, this.pharmaSearch)
         .then(response => {
-          this.sviZaposleniFarmaceuti = response.data;});
+          this.sviZaposleniFarmaceuti = response.data;
+          this.inicijalizujPoruku("Find " + this.sviZaposleniFarmaceuti.length + " results");});
       },
       funkcija(l) {
         this.lek_za_prikaz = l;
