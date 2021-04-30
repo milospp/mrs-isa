@@ -195,7 +195,7 @@
         <div class="modal-body" align="left">Quantity: <input type="text" v-model="kolicina"/> (max = {{lek_za_prikaz?.inStock}})</div>
         <div class="modal-body" align="left">Expiry date: <input type="date" v-model="datum"/></div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="provera(lek_za_prikaz)">Reserve</button>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" data-dismiss="modal" v-on:click.prevent="provera(lek_za_prikaz)">Reserve</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -253,6 +253,24 @@
   </div>
 </div>
 
+    <!-- obavestenje -->
+  <div class="modal fade" id="obavestenje" tabindex="-1" role="dialog" aria-labelledby="poruka" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="poruka">Message</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" align="left"><label>{{this.poruka}}</label></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="inicijalizujPoruku('Wait... Your require is in processing', false)">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <script>
@@ -295,14 +313,19 @@ export default {
               pharmacy: null,
             },
             userId: 1,
+            poruka: "Wait... Your require is in processing", 
 		}
 	},
   methods: {
+    inicijalizujPoruku(pk, prikaz) { 
+      this.poruka = pk;
+      if (prikaz) $("obavestenje").show();
+    },
     filter(filtDermatologa) {
       var suma = this.filterIme.length + this.filterPrez.length + this.filterBroj 
         + this.filterAdrD.length + this.filterAdrG.length + this.filterAdrU.length + this.filterAdrB.length;
       if (suma == 0) {
-        alert("You must enter some parameter for filter");
+        this.inicijalizujPoruku("You must enter some parameter for filter", true);
         return;
       }
 
@@ -322,7 +345,7 @@ export default {
     },
     pretraga() {
         if (this.dermaSearch.length == 0) {
-          alert("Input someting for searching");
+          this.inicijalizujPoruku("Input someting for searching", true);
           return;
         }
         DermatologistDataService.searchDermatologistPharmacy(this.id, this.dermaSearch)
@@ -344,15 +367,12 @@ export default {
       },
       pretragaFarm() {
         if (this.pharmaSearch.length == 0) {
-          alert("Input someting for searching");
+          this.inicijalizujPoruku("Input someting for searching", true);
           return;
         }
         PharmacistDataService.searchPharmacistPharmacy(this.id, this.pharmaSearch)
         .then(response => {
           this.sviZaposleniFarmaceuti = response.data;});
-      },
-      DodajFarmaceuta() {
-        window.location.href = "/addPharmacist/" + this.id;
       },
       funkcija(l) {
         this.lek_za_prikaz = l;
@@ -368,13 +388,13 @@ export default {
       },
       proveri_broj(unos, poruka) {
         if (this.kolicina == null) {
-          alert("You must enter quantity.");
+          this.inicijalizujPoruku("You must enter quantity.", true);
           return 1;
         }
         for (var karakter of unos) {
           if (this.datum == unos && karakter == '.') continue;
           if (karakter < '0' || karakter > '9') {
-            alert(poruka);
+            this.inicijalizujPoruku(poruka, true);
             return 1;
           }
         }
@@ -383,7 +403,7 @@ export default {
       proveri_kolicinu(unos) {
         var broj = parseInt(unos);
         if (broj < 0 || broj > this.max_kolicina) {
-          alert("Quantity must be in interval [1, " + this.max_kolicina + "].");
+          this.inicijalizujPoruku("Quantity must be in interval [1, " + this.max_kolicina + "].", true);
           return 1;
         }
         return 0;
@@ -415,7 +435,7 @@ export default {
 
         }).catch(error => {
           // TODO: DODATI OSTALE PROVERE!!!!
-          alert("Pacijent je alergičan");
+          this.inicijalizujPoruku("Pacijent je alergičan", true);
             });
 
 
@@ -470,7 +490,7 @@ export default {
           let rating = this.rating.ratingValue;
 
           if (rating < 1 || rating > 5) {
-            alert("Wrong rate value");
+            this.inicijalizujPoruku("Wrong rate value", true);
             return
           }
 
@@ -483,7 +503,7 @@ export default {
             if (response.data) {
               this.loadPharmacyData();
               $("#rating-modal").modal('hide');
-              alert("Successfully voted!");
+              this.inicijalizujPoruku("Successfully voted!", true);
             }
           });
         },

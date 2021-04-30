@@ -40,13 +40,31 @@
             title="End hour must be in form 17:17">
             </div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" v-on:click.prevent="zaposli(true)" data-dismiss="modal">Hire</button>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="zaposli(true)" data-dismiss="modal">Hire</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
   </div>
 
+
+    <!-- obavestenje -->
+  <div class="modal fade" id="obavestenje" tabindex="-1" role="dialog" aria-labelledby="poruka" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="poruka">Message</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" align="left"><label>{{this.poruka}}</label></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="inicijalizujPoruku('Wait... Your require is in processing')">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -59,6 +77,7 @@ export default {
             startHour: "",
             endHour: "",
             sviDermatolozi: [],
+            poruka: "Wait... Your require is in processing", 
         };
     },
     created() {
@@ -72,51 +91,69 @@ export default {
         .then(response => {
           this.sviDermatolozi = response.data;});
     },
-    methods: {      // sve metode se pozivaju istovremeno
+    methods: {
+        osveziKandidate() {
+            DermatologistDataService.getDermAdminHire(this.id)
+                .then(response => {
+                    this.sviDermatolozi = response.data;});
+        },
+        inicijalizujPoruku(pk) { 
+            this.poruka = pk;
+        },
         zaposli() {
             if (!this.provera_vremena()) return false;
             DermatologistDataService.hireDermatologist(this.id, this.zaposliRadnika, this.startHour, this.endHour)
                 .then(response => {
-                if (response.data == 0) { alert("You successfully hired a dermatologist."); return true;} 
-                else if (response.data == -1) { alert("Something goes wrong."); return false;}
-                else if (response.data == -2) { alert("This dermatologist is already hired in your pharmacy."); return false;}
-                alert("Doctor has job in that time in another pharmacy!");
+                if (response.data == 0) { 
+                    this.inicijalizujPoruku("You successfully hired a dermatologist.");
+                    this.osveziKandidate();
+                    return true;
+                } 
+                else if (response.data == -1) { 
+                    this.inicijalizujPoruku("Something goes wrong."); 
+                    return false;
+                }
+                else if (response.data == -2) { 
+                    this.inicijalizujPoruku("This dermatologist is already hired in your pharmacy."); 
+                    return false;
+                }
+                this.inicijalizujPoruku("Doctor has job in that time in another pharmacy!");
                 return false;});
         },
         podesi(rad) { this.zaposliRadnika = rad; },
         provera_vremena() {
             if ( this.startHour.length == 0 || this.endHour.length == 0) {
-                alert("You must enter start and end hour");
+                this.inicijalizujPoruku("You must enter start and end hour");
                 return false;
             }
             var splitStart = this.startHour.split(':');
             var splitEnd = this.endHour.split(':');
             if ( splitStart.length != 2 || splitStart.length != 2) {
-                alert("You must enter time in form 17:37");
+                this.inicijalizujPoruku("You must enter time in form 17:37");
                 return false;
             }
             try {
                 if (parseInt(splitStart[0]) > parseInt(splitEnd[0])) {
-                    alert("Start hour must be before end hour");
+                    this.inicijalizujPoruku("Start hour must be before end hour");
                     return false;
                     }
                 else if (parseInt(splitStart[0]) == parseInt(splitEnd[0]) 
                     && parseInt(splitStart[1]) > parseInt(splitStart[1])) {
-                    alert("Start hour must be before end hour");
+                    this.inicijalizujPoruku("Start hour must be before end hour");
                     return false;
                     }
                 if (parseInt(splitEnd[0]) > 24) {
-                    alert("Hours must be in interval 0-24");
+                    this.inicijalizujPoruku("Hours must be in interval 0-24");
                     return false;
                     }
                 else if (parseInt(splitEnd[0]) > 60) {
-                    alert("Minutes must be in interval 0-60");
+                    this.inicijalizujPoruku("Minutes must be in interval 0-60");
                     return false;
                     }
                 return true;
             }
             catch {
-                alert("You must enter time in form 17:37");
+                this.inicijalizujPoruku("You must enter time in form 17:37");
             }
             
         }

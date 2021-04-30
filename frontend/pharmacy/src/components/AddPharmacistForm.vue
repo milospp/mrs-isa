@@ -94,10 +94,28 @@
 
             <tr>
                 <td></td>
-                <td colspan="2"><input type="submit" id="dugme" value="   Add   "></td>
+                <td colspan="2"><input type="submit" data-toggle="modal" data-target="#obavestenje" id="dugme" value="   Add   "></td>
             </tr>
         </table>
     </form>
+
+        <!-- obavestenje -->
+  <div class="modal fade" id="obavestenje" tabindex="-1" role="dialog" aria-labelledby="poruka" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="poruka">Message</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" align="left"><label>{{this.poruka}}</label></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="inicijalizujPoruku('Wait... Your require is in processing', false)">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -122,28 +140,31 @@ export default {
             },
             startHour: "10:00",
             endHour: "12:00",
+            poruka: "Wait... Your require is in processing", 
         };
     },
     created() {
         this.id = this.$route.params.id; 
     },
-    methods: {      // sve metode se pozivaju istovremeno
+    methods: {
+        inicijalizujPoruku(pk) { 
+            this.poruka = pk;
+        },
         proveraForme(e) {
             if (!this.provera_vremena()) {
-                alert("Start hour mus be smaller than end hour");
+                this.inicijalizujPoruku("Start hour must be smaller than end hour");
                 return false;
             }
             PharmacistDataService.SendPharmacist(this.id, this.$data)
-				.catch(function (error) {
-					if (error.response) {
-						console.log(error.response.data);
-					} else if (error.request) {
-						console.log(error.request);
-					}
-					console.log("error.config");
-					console.log(error.config);
-				});
-        },
+            .then(response => {
+                if (response.data == 0) { 
+                    this.inicijalizujPoruku("You successfully hired a pharmacist"); 
+                    return true;
+                } 
+                this.inicijalizujPoruku("Email is not unique!");
+                return false;
+            });
+		},
         provera_vremena() {
             var splitStart = this.startHour.split(':');
             var splitEnd = this.endHour.split(':');

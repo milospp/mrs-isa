@@ -215,7 +215,7 @@
         <div class="modal-body" align="left">Shape: <input type="text" v-model="shape" placeholder=shape/></div>
         <div class="modal-body" align="left">Rating: {{this.rating}}</div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#odavestenje" v-on:click.prevent="provera()">Save changes</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="provera()">Save changes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -283,7 +283,7 @@
           </button>
         </div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#odavestenje" v-on:click.prevent="otpusti()" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="otpusti()" data-dismiss="modal">Yes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -301,7 +301,7 @@
           </button>
         </div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#odavestenje" v-on:click.prevent="izbrisiLek()" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="izbrisiLek()" data-dismiss="modal">Yes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -334,7 +334,7 @@
               <option v-for="m in this.sviLekovi" v-bind:value=m.id>{{m.name}}</option>
           </select></div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal"  data-toggle="modal" data-target="#odavestenje" v-on:click.prevent="dodajLek()">Save medicine</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal"  data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="dodajLek()">Save medicine</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -342,7 +342,7 @@
   </div>
 
     <!-- obavestenje -->
-  <div class="modal fade" id="odavestenje" tabindex="-1" role="dialog" aria-labelledby="poruka" aria-hidden="true">
+  <div class="modal fade" id="obavestenje" tabindex="-1" role="dialog" aria-labelledby="poruka" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -441,8 +441,8 @@ export default {
       }, 
       inicijalizujPoruku(pk, prikaz) { 
         this.poruka = pk;
-        if (prikaz) $("odavestenje").show();
-        },
+        if (prikaz) $("obavestenje").show();
+      },
       podesi(farm_der, jesteFar) { this.otpustiRadnika = farm_der; this.jesteFarmaceut = jesteFar;},
       otpusti() {
         if (this.jesteFarmaceut) {
