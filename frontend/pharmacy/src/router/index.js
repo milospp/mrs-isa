@@ -25,6 +25,7 @@ import AddMedicine from '@/views/AddMedicine.vue'
 import Login from '@/views/Login.vue'
 import LogoutView from '@/views/LogoutView.vue'
 import Appointment from '@/views/Appointment.vue'
+import AddSysAdmin from '@/views/AddSysAdmin.vue'
 
 
 const routes = [
@@ -160,6 +161,11 @@ const routes = [
     path: '/addMedicine',
     name: 'AddMedicine',
     component: AddMedicine
+  },
+  {
+    path: '/addSysAdmin',
+    name: 'AddSysAdmin',
+    component: AddSysAdmin
   },
   {
     path: '/appointment/:id',

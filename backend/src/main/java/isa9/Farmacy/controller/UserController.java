@@ -814,6 +814,18 @@ public class UserController {
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
+    @PostMapping("register/systemAdmin")
+    @PreAuthorize("hasAuthority('SYS_ADMIN')")
+    public ResponseEntity<Boolean> registerSysAdmin(@RequestBody SysAdminRegistrationDTO newSysAdminDTO){
+        if(!userService.isAvaibleEmail(newSysAdminDTO.getEmail())) return new ResponseEntity<>(false, HttpStatus.OK);
+        SysAdmin newlyRegistered = new SysAdmin(0L, newSysAdminDTO.getName(), newSysAdminDTO.getSurname(),
+                newSysAdminDTO.getEmail(), passwordEncoder.encode(newSysAdminDTO.getPassword()), newSysAdminDTO.getAddress(),
+                newSysAdminDTO.getPhoneNumber(), this.userRoleService.findOne(1L), null);
+        userService.save(newlyRegistered);
+        System.out.println(newlyRegistered);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
     @PostMapping("edit/dermatologist")
     public ResponseEntity<Boolean> editDermatologistData(@RequestBody DermatologistDTO dermatologistDTO){
         Doctor doctor = userService.getDoctorById(dermatologistDTO.getId());
