@@ -199,3 +199,9 @@ insert into doctor_working (doctor_id, working_id) values (16, 7);
 --system administrator - password : sef
 insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (30, 'sissadmin@maildrop.cc', true, 'Mladen', '$2a$10$oJ1iLjwac72nZ8/sRNs1W.Er/tQuW8FxY80hveTjyDK8/7W0bOpAK', '0618878232', 1, 'Tasić', LOCALTIMESTAMP);
 insert into sys_admin (id) values (18);
+
+
+
+--suppliers
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (16, 'milenkotep@maildrop.cc', true, 'Milenko', '$2a$10$0jpTwKzrxhpekj0zDufFvelVsfilpPXk7EX4U65u9gZfb7FTnOIlG', '0632212458', 6, 'Tepić', LOCALTIMESTAMP); --sifra : imamrobu
+insert into supplier (id) values (19);
