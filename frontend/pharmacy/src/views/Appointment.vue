@@ -27,16 +27,33 @@
                 <input :disabled="!patientAppeared" v-model="appointment.examination.diagnose" class="form-control" placeholder="Diagnose" id="diagnose">
             </div>
 
-            <div class="form-group row">
-                <!-- <input :disabled="!patientAppeared" type="search" class="form-control col" id="searchMedicine" placeholder="Search Medicine"> -->
-                <select :disabled="!patientAppeared" class="form-control col">
-                    <option :key="m.id" v-for="m in medicines" value="{{m.code}}">{{m.name}}</option>
-                </select>
-                <input type="number" class="form-control col-2" id="days" min="1">
-            </div>
+        <div class="form-group">
+            <label for="selectMed">Therapy</label>
+                <div class="row mb-2">
+                    <!-- <input :disabled="!patientAppeared" type="search" class="form-control col" id="searchMedicine" placeholder="Search Medicine"> -->
+                    
+                    <select v-model="therapyMed" :disabled="!patientAppeared" class="form-control col mx-3" id="selectMed">
+                        <option :key="m.id" v-for="m in medicines">{{m.name}}</option>
+                    </select>
+                    <input type="number" v-model="therapyDays" class="form-control col-2 mr-3" id="days" min="1">
+                    <button class="btn btn-primary mr-3" @click="addTherapy()" :disabled="!patientAppeared">Add</button>
+                </div>
 
-            <div class="form-group">
-                <button class="form-control btn btn-primary" id="finish" @click="finishAppointment()">Finish</button>
+                <div id="therapyDiv">
+                    <table class="table table-striped box-shadow">
+                        <thead>
+                            <th>Medicine</th>
+                            <th>Days</th>
+                        </thead>
+                        <tbody id="therapyRow">
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-group">
+                    <button class="form-control btn btn-success" id="finish" @click="finishAppointment()">Finish</button>
+                </div>
             </div>
         </div>
 
@@ -50,6 +67,20 @@
                 <label for="diagnose">Diagnose</label>
                 <input :disabled="true" v-model="appointment.examination.diagnose" class="form-control" placeholder="Diagnose" id="diagnose">
             </div>
+            <div id="therapyDiv2">
+                    <table class="table table-striped box-shadow">
+                        <thead>
+                            <th>Medicine</th>
+                            <th>Days</th>
+                        </thead>
+                        <tbody id="therapyRow">
+                            <tr :key="t.id" v-for="t in appointment.examination.therapy">
+                                <td>{{t.medicine.name}}</td>
+                                <td>{{t.days}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             <div class="form-group">
                 <button :disabled="true" class="form-control btn btn-primary" id="finish" @click="finishAppointment()">Finish</button>
             </div>
@@ -61,6 +92,7 @@
         <div v-else-if="appointment.examination.status == 'CANCELED'">
             <p class="badge badge-danger">CANCELED</p>
         </div>
+
     </div>
 </div>
 </template>
@@ -83,6 +115,7 @@
 import NavBar from '@/components/NavBar.vue'
 import AppointmentDataService from '@/service/AppointmentDataService.js'
 import UtilService from '../service/UtilService.js';
+import MedicineDataService from '../service/MedicineDataService.js';
 
 // @ is an alias to /src
 export default {
@@ -116,7 +149,9 @@ export default {
                     },
             },
             patientAppeared: null,
-            medicines: [{name:'lek1', code: 1}, {name: 'lek2', code: 2}, {name: 'lek3', code: 3}],
+            medicines: [{name: 'lek1', code: 1}, {name: 'lek2', code: 2}, {name: 'lek3', code: 3}],
+            therapyMed: null,
+            therapyDays: 0,
         };
     },
     methods: {
@@ -146,6 +181,16 @@ export default {
                         alert("Info saved.");
                     }
                 });
+        },
+        addTherapy() {
+            $('#therapyRow').append('<tr><td>'+ this.therapyMed + '</td><td>' + this.therapyDays +'</td></tr>');
+        },
+        getMedicineForTherapy(){
+            MedicineDataService.getAllMedicines()
+                .then(response =>
+                        {
+                            this.medicines = response.data;
+                        });
         }
         // confirmLeave() {
         //     return window.confirm('Do you really want to leave? you have unsaved changes!')
@@ -179,6 +224,7 @@ export default {
         this.appId = this.$route.params.id;
         // this.id = 3;
         this.getAppointmentData();
+        this.getMedicineForTherapy();
     },
 
     // beforeUnmount() {
