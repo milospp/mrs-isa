@@ -64,7 +64,8 @@
 					<router-link :to="{ name: 'AddSupplier'}" class="nav-item nav-link">Add Supplier</router-link>
 					<router-link :to="{ name: 'AddDermatologist' }" class="nav-item nav-link">Add Dermatologist</router-link>
 					<router-link :to="{ name: 'AddMedicine' }" class="nav-item nav-link">Add Medicine</router-link>
-					<router-link :to="{ name: 'AddPharmacyAdmin' }" class="nav-item nav-link">Add Pharmacy Admin</router-link>
+					<router-link :to="{ name: 'AddPharmacyAdmin' }" class="nav-item nav-link">Add Pharmacy Admin.</router-link>
+					<router-link :to="{ name: 'AddSysAdmin' }" class="nav-item nav-link">Add Sys. Admin.</router-link>
 					
 				</div>
 
