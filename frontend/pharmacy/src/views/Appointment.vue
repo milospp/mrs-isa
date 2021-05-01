@@ -26,6 +26,15 @@
                 <label for="diagnose">Diagnose</label>
                 <input :disabled="!patientAppeared" v-model="appointment.examination.diagnose" class="form-control" placeholder="Diagnose" id="diagnose">
             </div>
+
+            <div class="form-group row">
+                <!-- <input :disabled="!patientAppeared" type="search" class="form-control col" id="searchMedicine" placeholder="Search Medicine"> -->
+                <select :disabled="!patientAppeared" class="form-control col">
+                    <option :key="m.id" v-for="m in medicines" value="{{m.code}}">{{m.name}}</option>
+                </select>
+                <input type="number" class="form-control col-2" id="days" min="1">
+            </div>
+
             <div class="form-group">
                 <button class="form-control btn btn-primary" id="finish" @click="finishAppointment()">Finish</button>
             </div>
@@ -107,6 +116,7 @@ export default {
                     },
             },
             patientAppeared: null,
+            medicines: [{name:'lek1', code: 1}, {name: 'lek2', code: 2}, {name: 'lek3', code: 3}],
         };
     },
     methods: {
