@@ -317,15 +317,14 @@ export default {
 		}
 	},
   methods: {
-    inicijalizujPoruku(pk, prikaz) { 
+    inicijalizujPoruku(pk) { 
       this.poruka = pk;
-      if (prikaz) $("obavestenje").show();
     },
     filter(filtDermatologa) {
       var suma = this.filterIme.length + this.filterPrez.length + this.filterBroj 
         + this.filterAdrD.length + this.filterAdrG.length + this.filterAdrU.length + this.filterAdrB.length;
       if (suma == 0) {
-        this.inicijalizujPoruku("You must enter some parameter for filter", true);
+        this.poruka = "You must enter some parameter for filter";
         return;
       }
 
@@ -334,26 +333,26 @@ export default {
           this.filterAdrD, this.filterAdrG, this.filterAdrU, this.filterAdrB,)
           .then(response => {
             this.sviZaposleniDermatolozi = response.data;
-            this.inicijalizujPoruku("Find " + this.sviZaposleniDermatolozi.length + " results");});
+            this.poruka = "Find " + this.sviZaposleniDermatolozi.length + " results";});
       }
       else {                            // za farmaceute
         PharmacistDataService.filterPharmacistPharmacy(this.id, this.pharmaSearch, this.filterIme, this.filterPrez, this.filterBroj, 
             this.filterAdrD, this.filterAdrG, this.filterAdrU, this.filterAdrB,)
             .then(response => {
               this.sviZaposleniFarmaceuti = response.data;
-              this.inicijalizujPoruku("Find " + this.sviZaposleniFarmaceuti.length + " results");});
+              this.poruka = "Find " + this.sviZaposleniFarmaceuti.length + " results";});
       }
 
     },
     pretraga() {
         if (this.dermaSearch.length == 0) {
-          this.inicijalizujPoruku("Input someting for searching", true);
+          this.poruka = "Input someting for searching";
           return;
         }
         DermatologistDataService.searchDermatologistPharmacy(this.id, this.dermaSearch)
         .then(response => {
           this.sviZaposleniDermatolozi = response.data;
-          this.inicijalizujPoruku("Find " + this.sviZaposleniDermatolozi.length + " results");});
+          this.poruka = "Find " + this.sviZaposleniDermatolozi.length + " results";});
       },
       loadPharmacyData() {
           let self = this;
@@ -370,13 +369,13 @@ export default {
       },
       pretragaFarm() {
         if (this.pharmaSearch.length == 0) {
-          this.inicijalizujPoruku("Input someting for searching", true);
+          this.poruka = "Input someting for searching";
           return;
         }
         PharmacistDataService.searchPharmacistPharmacy(this.id, this.pharmaSearch)
         .then(response => {
           this.sviZaposleniFarmaceuti = response.data;
-          this.inicijalizujPoruku("Find " + this.sviZaposleniFarmaceuti.length + " results");});
+          this.poruka = "Find " + this.sviZaposleniFarmaceuti.length + " results";});
       },
       funkcija(l) {
         this.lek_za_prikaz = l;
@@ -392,13 +391,13 @@ export default {
       },
       proveri_broj(unos, poruka) {
         if (this.kolicina == null) {
-          this.inicijalizujPoruku("You must enter quantity.", true);
+          this.poruka = "You must enter quantity.";
           return 1;
         }
         for (var karakter of unos) {
           if (this.datum == unos && karakter == '.') continue;
           if (karakter < '0' || karakter > '9') {
-            this.inicijalizujPoruku(poruka, true);
+            this.poruka = poruka;
             return 1;
           }
         }
@@ -407,7 +406,7 @@ export default {
       proveri_kolicinu(unos) {
         var broj = parseInt(unos);
         if (broj < 0 || broj > this.max_kolicina) {
-          this.inicijalizujPoruku("Quantity must be in interval [1, " + this.max_kolicina + "].", true);
+          this.poruka = "Quantity must be in interval [1, " + this.max_kolicina + "].";
           return 1;
         }
         return 0;
@@ -439,7 +438,7 @@ export default {
 
         }).catch(error => {
           // TODO: DODATI OSTALE PROVERE!!!!
-          this.inicijalizujPoruku("Pacijent je alergičan", true);
+          this.poruka = "Pacijent je alergičan";
             });
 
 
@@ -494,7 +493,7 @@ export default {
           let rating = this.rating.ratingValue;
 
           if (rating < 1 || rating > 5) {
-            this.inicijalizujPoruku("Wrong rate value", true);
+            this.poruka = "Wrong rate value";
             return
           }
 
@@ -507,7 +506,7 @@ export default {
             if (response.data) {
               this.loadPharmacyData();
               $("#rating-modal").modal('hide');
-              this.inicijalizujPoruku("Successfully voted!", true);
+              this.poruka = "Successfully voted!";
             }
           });
         },

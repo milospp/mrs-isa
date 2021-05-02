@@ -42,11 +42,14 @@
 					<router-link :to="{ name: 'VacationRequest' }" class="nav-item nav-link">Vacation Request</router-link>
 					
 				</div>
+
+			<!-- Za administratora apotekee -->
 				<div v-else-if="user.role === 'PHARMACY_ADMIN'" class="navbar-nav mr-auto mt-2 mt-lg-0">
 
 					<a class="navbar-brand" href="/">Navbar</a>
 
 					<router-link :to="{ name: 'HomePagePharmacyAdmin'}" class="nav-item nav-link">Dashboard</router-link>
+					<router-link :to="{ name: 'CardPharmacyAdmin'}" class="nav-item nav-link">Card</router-link>
 					
 				</div>
 				<div v-else-if="user.role === 'SYS_ADMIN'" class="navbar-nav mr-auto mt-2 mt-lg-0">

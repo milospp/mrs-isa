@@ -123,37 +123,37 @@ export default {
         podesi(rad) { this.zaposliRadnika = rad; },
         provera_vremena() {
             if ( this.startHour.length == 0 || this.endHour.length == 0) {
-                this.inicijalizujPoruku("You must enter start and end hour");
+                this.poruka = "You must enter start and end hour";
                 return false;
             }
             var splitStart = this.startHour.split(':');
             var splitEnd = this.endHour.split(':');
             if ( splitStart.length != 2 || splitStart.length != 2) {
-                this.inicijalizujPoruku("You must enter time in form 17:37");
+                this.poruka = "You must enter time in form 17:37";
                 return false;
             }
             try {
                 if (parseInt(splitStart[0]) > parseInt(splitEnd[0])) {
-                    this.inicijalizujPoruku("Start hour must be before end hour");
+                    this.poruka = "Start hour must be before end hour";
                     return false;
                     }
                 else if (parseInt(splitStart[0]) == parseInt(splitEnd[0]) 
                     && parseInt(splitStart[1]) > parseInt(splitStart[1])) {
-                    this.inicijalizujPoruku("Start hour must be before end hour");
+                    this.poruka = "Start hour must be before end hour";
                     return false;
                     }
                 if (parseInt(splitEnd[0]) > 24) {
-                    this.inicijalizujPoruku("Hours must be in interval 0-24");
+                    this.poruka = "Hours must be in interval 0-24";
                     return false;
                     }
                 else if (parseInt(splitEnd[0]) > 60) {
-                    this.inicijalizujPoruku("Minutes must be in interval 0-60");
+                    this.poruka = "Minutes must be in interval 0-60";
                     return false;
                     }
                 return true;
             }
             catch {
-                this.inicijalizujPoruku("You must enter time in form 17:37");
+                this.poruka = "You must enter time in form 17:37";
             }
             
         }

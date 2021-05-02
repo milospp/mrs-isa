@@ -111,7 +111,7 @@
         </div>
         <div class="modal-body" align="left"><label>{{this.poruka}}</label></div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="inicijalizujPoruku('Wait... Your require is in processing', false)">OK</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="inicijalizujPoruku('Wait... Your require is in processing')">OK</button>
         </div>
       </div>
     </div>
@@ -152,16 +152,16 @@ export default {
         },
         proveraForme(e) {
             if (!this.provera_vremena()) {
-                this.inicijalizujPoruku("Start hour must be smaller than end hour");
+                this.poruka = "Start hour must be smaller than end hour";
                 return false;
             }
             PharmacistDataService.SendPharmacist(this.id, this.$data)
             .then(response => {
                 if (response.data == 0) { 
-                    this.inicijalizujPoruku("You successfully hired a pharmacist"); 
+                    this.poruka = "You successfully hired a pharmacist"; 
                     return true;
                 } 
-                this.inicijalizujPoruku("Email is not unique!");
+                this.poruka = "Email is not unique!";
                 return false;
             });
 		},

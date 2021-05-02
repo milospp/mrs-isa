@@ -3,16 +3,14 @@ package isa9.Farmacy.controller;
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.*;
 import isa9.Farmacy.service.*;
-import isa9.Farmacy.support.MedReservationToMedReservationDTO;
-import isa9.Farmacy.support.MedicineInPharmacyToMedInPharmaDTO;
-import isa9.Farmacy.support.MedicineToMedicineDTO;
-import isa9.Farmacy.support.RatingToRatingDTO;
+import isa9.Farmacy.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -225,6 +223,26 @@ public class MedicineController {
         noviUApoteci.setInStock(lek.getInStock());
         apoteka.getMedicines().add(noviUApoteci);
         pharmacyService.save(apoteka);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @PostMapping("/order/{idAdmina}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<Integer> orderPharmacyAdmin(@PathVariable Long idAdmina, @RequestBody OrderHelp pomocna) {
+        User user = userService.findOne(idAdmina);
+        int povratna = -1;
+        if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
+        PharmacyAdmin admin = (PharmacyAdmin) user;
+        povratna = 0;
+        List<MedicineQuantity> listaLekova = (new MedQuantityDTOtoMedQuantity(this.medicineService)).convert(pomocna.getMedicines());
+
+        MedicineOrder porudzbina = new MedicineOrder();
+        porudzbina.setPharmacy(admin.getPharmacy());
+        porudzbina.setAuthor(admin);
+        porudzbina.setAllMedicines(listaLekova);
+        porudzbina.setStartDate(pomocna.getStartDate());
+        porudzbina.setStartDate(pomocna.getEndDate());
+        medicineService.saveOrder(porudzbina);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 

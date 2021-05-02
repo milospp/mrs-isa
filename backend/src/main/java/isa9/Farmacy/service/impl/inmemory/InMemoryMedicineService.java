@@ -48,4 +48,9 @@ public class InMemoryMedicineService extends MedicineServiceBase implements Medi
     public Set<Medicine> idsToMedicines(List<Long> ids) {
         return null;
     }
+
+    @Override
+    public MedicineOrder saveOrder(MedicineOrder medicineOrder) {
+        return null;
+    }
 }
