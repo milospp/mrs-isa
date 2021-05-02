@@ -49,7 +49,7 @@
 					<a class="navbar-brand" href="/">Navbar</a>
 
 					<router-link :to="{ name: 'HomePagePharmacyAdmin'}" class="nav-item nav-link">Dashboard</router-link>
-					<router-link :to="{ name: 'CardPharmacyAdmin'}" class="nav-item nav-link">Card</router-link>
+					<router-link :to="{ name: 'CartPharmacyAdmin'}" class="nav-item nav-link">Cart</router-link>
 					
 				</div>
 				<div v-else-if="user.role === 'SYS_ADMIN'" class="navbar-nav mr-auto mt-2 mt-lg-0">

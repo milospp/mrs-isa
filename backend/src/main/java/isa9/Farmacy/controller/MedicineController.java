@@ -241,7 +241,7 @@ public class MedicineController {
         porudzbina.setAuthor(admin);
         porudzbina.setAllMedicines(listaLekova);
         porudzbina.setStartDate(pomocna.getStartDate());
-        porudzbina.setStartDate(pomocna.getEndDate());
+        porudzbina.setEndDate(pomocna.getEndDate());
         medicineService.saveOrder(porudzbina);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }

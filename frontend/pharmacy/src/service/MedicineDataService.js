@@ -50,6 +50,7 @@ class MedicineDataService {
   }
 
   orderPharmacyAdmin(idAdminaApoteke, lekovi, pocetak, kraj) {
+    alert(kraj);
     return axios({
       method: 'post',
       url: API_URL + "/order/" + idAdminaApoteke,

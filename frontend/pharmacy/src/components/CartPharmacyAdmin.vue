@@ -4,13 +4,27 @@
       <div class="col-md-12">
         <div>
           <ul class="nav nav-tabs">
-            <li class="nav-item active"><a class="nav-link" data-toggle="tab" href="#tab-medicines">Your card</a></li>
+            <li class="nav-item active"><a class="nav-link" data-toggle="tab" href="#tab-medicines">Your cart</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">All medicines</a></li>
           </ul>
         
           <div class="tab-content">
             <div id="tab-medicines" class="tab-pane in fade active in">
-              <h3>Medicines in card</h3>
+              <h3>Medicines in cart</h3>
+              <div v-if="this.korpaLekova.length != 0"> 
+                <table><tr>
+                    <td><button type="button" align="center" class="btn btn-primary" data-toggle="modal" 
+                      data-target="#potvrda">Delete all</button></td>
+                    <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+                  <td><button type="button" align="center" class="btn btn-primary" data-toggle="modal" 
+                    data-target="#podesiDatume">Order</button></td>
+                </tr><tr><td>&emsp;</td></tr></table>
+               </div>
               <table class="table table-striped">
                  <thead class="card-header">
                   <th>Code</th>
@@ -31,10 +45,6 @@
                   </tr>
                 </tbody>
               </table>
-              <div v-if="this.korpaLekova.length != 0"> 
-                  <button type="button" align="center" class="btn btn-primary" data-toggle="modal" 
-                    data-target="#podesiDatume">Order</button>
-               </div>
             </div>
           <!-- </div> -->
 
@@ -55,7 +65,7 @@
                       <td>{{l.name}}</td>
                       <td>{{l.type}}</td>
                       <td>{{l.structure}}</td>
-                      <td><form v-on:click.prevent="dodajUKorpu(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje">Add to card</button></form></td>
+                      <td><form v-on:click.prevent="dodajUKorpu(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje">Add to cart</button></form></td>
                   </tr>
                 </tbody>
               </table>
@@ -85,9 +95,27 @@
         <div class="modal-body" align="left">Points: {{this.odabraniLek?.medicine?.points}}</div>
         <div class="modal-body" align="left">With receipt: {{this.odabraniLek?.medicine?.perscription}}</div>
         <div class="modal-body" align="left">Shape: {{this.odabraniLek?.medicine?.shape}}</div>
-        <div class="modal-body" align="left">In card: <input type="number" v-model="quantity" placeholder=quantity/></div>
+        <div class="modal-body" align="left">In cart: <input type="number" v-model="quantity" placeholder=quantity/></div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary"  data-dismiss="modal" v-on:click.prevent="promeniKolicinu()">Save changes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- brisanje svega -->
+   <div class="modal fade" id="potvrda" tabindex="-1" role="dialog" aria-labelledby="Brisanje" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="Brisa">Are you sure you want to delete all medicine from cart?</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+         <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="obrisiLekove()" data-dismiss="modal">Yes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -156,7 +184,7 @@ import MedicineDataService from '../service/MedicineDataService.js';
 import AuthService from "../service/AuthService.js";
 
 export default {
-    name: 'CardPharmacyAdmin',
+    name: 'CartPharmacyAdmin',
     data() {
         return {
             sviLekovi: [], poruka: "Wait... Your require is in processing", 
@@ -203,13 +231,18 @@ export default {
                     break;
                 }
             if (nadjen) {
-                this.poruka = "You already add this medicine to your card";
+                this.poruka = "You already add this medicine to your cart";
                 return;
             }
 
             this.korpaLekova[this.korpaLekova.length] = {"medicine": lek, "quantity": 1};
-            this.poruka = "You successfully added medicine to your card";
+            this.poruka = "You successfully added medicine to your cart";
             this.sacuvajKorpu();
+        },
+        obrisiLekove() {
+          this.korpaLekova = [];
+          this.poruka = "You successfully clean your cart";
+          this.sacuvajKorpu();
         },
         obrisiLek() {
             var korpica = [];
@@ -220,11 +253,12 @@ export default {
                     brojac++;
                 }
             this.korpaLekova = korpica;
-            this.poruka = "You successfully deleted medicine from your card";
+            this.poruka = "You successfully deleted medicine from your cart";
             this.sacuvajKorpu();
         },
         poruci() {
           if (!this.proveri_datum()) return false;
+          alert(this.krajnjiDatum);
           MedicineDataService.orderPharmacyAdmin(this.id, this.korpaLekova, this.pocetniDatum, 
           this.krajnjiDatum).then(response => { 
               this.poruka = "You successfully made order";

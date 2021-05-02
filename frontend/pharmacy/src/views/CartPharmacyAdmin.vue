@@ -2,19 +2,19 @@
   <NavBar/>
   <div class="container">
     <h1>Home page</h1>
-    <Card/>
+    <Cart/>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import NavBar from '@/components/NavBar.vue'
-import Card from '@/components/CardPharmacyAdmin.vue'
+import Cart from '@/components/CartPharmacyAdmin.vue'
 export default {
-  name: 'CardPharmacyAdmin',
+  name: 'CartPharmacyAdmin',
   components: {
     NavBar,
-    Card,
+    Cart,
   }
 }
 </script>
