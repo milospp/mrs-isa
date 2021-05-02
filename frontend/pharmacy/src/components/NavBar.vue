@@ -64,8 +64,6 @@
 				<div v-else-if="user.role === 'SUPPLIER'" class="navbar-nav mr-auto mt-2 mt-lg-0">
 
 					<a class="navbar-brand" href="/">Navbar</a>
-					
-					<router-link :to="{ name: 'MyOffers'}" class="nav-item nav-link">My Offers</router-link>
 
 				</div>
 
@@ -111,8 +109,7 @@ export default {
   created(){
 	  this.user = AuthService.getCurrentUser();
 	  if (this.user)
-	  	
-	   console.log(this.user);
+	   console.log(this.user.role);
 	//   
   }
 }
