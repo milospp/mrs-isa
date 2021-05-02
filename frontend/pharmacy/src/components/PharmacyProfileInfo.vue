@@ -79,7 +79,7 @@
                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
                   
                     <td> <input type="text" v-model="pharmaSearch"  size="50"/></td>
-                    <td> <form v-on:click.prevent="pretragaFarm()"> <input type="submit" value="Search"/></form></td>
+                    <td> <form v-on:click.prevent="pretragaFarm()"> <input type="submit" data-toggle="modal" data-target="#obavestenje" value="Search"/></form></td>
                 </tr>
                 <tr>
                   <td> &emsp; </td>
@@ -115,7 +115,7 @@
                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
                   
                     <td> <input type="text" v-model="dermaSearch"  size="50"/></td>
-                    <td> <form v-on:click.prevent="pretraga()"> <input type="submit" value="Search"/></form></td>
+                    <td> <form v-on:click.prevent="pretraga()"> <input type="submit" data-toggle="modal" data-target="#obavestenje" value="Search"/></form></td>
                 </tr>
                 <tr>
                   <td> &emsp; </td>
@@ -195,7 +195,7 @@
         <div class="modal-body" align="left">Quantity: <input type="text" v-model="kolicina"/> (max = {{lek_za_prikaz?.inStock}})</div>
         <div class="modal-body" align="left">Expiry date: <input type="date" v-model="datum"/></div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="provera(lek_za_prikaz)">Reserve</button>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" data-dismiss="modal" v-on:click.prevent="provera(lek_za_prikaz)">Reserve</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -220,7 +220,7 @@
         <div class="modal-body" align="left">Street: <input type="text" v-model="filterAdrU"/></div>
         <div class="modal-body" align="left">Number: <input type="text" v-model="filterAdrB"/></div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="filter(true)">Seaarch</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="filter(true)">Seaarch</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -245,13 +245,31 @@
         <div class="modal-body" align="left">Street: <input type="text" v-model="filterAdrU"/></div>
         <div class="modal-body" align="left">Number: <input type="text" v-model="filterAdrB"/></div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="filter(false)">Seaarch</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="filter(false)">Seaarch</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+    <!-- obavestenje -->
+  <div class="modal fade" id="obavestenje" tabindex="-1" role="dialog" aria-labelledby="poruka" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="poruka">Message</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" align="left"><label>{{this.poruka}}</label></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="inicijalizujPoruku('Wait... Your require is in processing', false)">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </template>
 
@@ -295,14 +313,18 @@ export default {
               pharmacy: null,
             },
             userId: 1,
+            poruka: "Wait... Your require is in processing", 
 		}
 	},
   methods: {
+    inicijalizujPoruku(pk) { 
+      this.poruka = pk;
+    },
     filter(filtDermatologa) {
       var suma = this.filterIme.length + this.filterPrez.length + this.filterBroj 
         + this.filterAdrD.length + this.filterAdrG.length + this.filterAdrU.length + this.filterAdrB.length;
       if (suma == 0) {
-        alert("You must enter some parameter for filter");
+        this.poruka = "You must enter some parameter for filter";
         return;
       }
 
@@ -310,24 +332,27 @@ export default {
         DermatologistDataService.filterDermatologistPharmacy(this.id, this.dermaSearch, this.filterIme, this.filterPrez, this.filterBroj, 
           this.filterAdrD, this.filterAdrG, this.filterAdrU, this.filterAdrB,)
           .then(response => {
-            this.sviZaposleniDermatolozi = response.data;});
+            this.sviZaposleniDermatolozi = response.data;
+            this.poruka = "Find " + this.sviZaposleniDermatolozi.length + " results";});
       }
       else {                            // za farmaceute
         PharmacistDataService.filterPharmacistPharmacy(this.id, this.pharmaSearch, this.filterIme, this.filterPrez, this.filterBroj, 
             this.filterAdrD, this.filterAdrG, this.filterAdrU, this.filterAdrB,)
             .then(response => {
-              this.sviZaposleniFarmaceuti = response.data;});
+              this.sviZaposleniFarmaceuti = response.data;
+              this.poruka = "Find " + this.sviZaposleniFarmaceuti.length + " results";});
       }
 
     },
     pretraga() {
         if (this.dermaSearch.length == 0) {
-          alert("Input someting for searching");
+          this.poruka = "Input someting for searching";
           return;
         }
         DermatologistDataService.searchDermatologistPharmacy(this.id, this.dermaSearch)
         .then(response => {
-          this.sviZaposleniDermatolozi = response.data;});
+          this.sviZaposleniDermatolozi = response.data;
+          this.poruka = "Find " + this.sviZaposleniDermatolozi.length + " results";});
       },
       loadPharmacyData() {
           let self = this;
@@ -344,15 +369,13 @@ export default {
       },
       pretragaFarm() {
         if (this.pharmaSearch.length == 0) {
-          alert("Input someting for searching");
+          this.poruka = "Input someting for searching";
           return;
         }
         PharmacistDataService.searchPharmacistPharmacy(this.id, this.pharmaSearch)
         .then(response => {
-          this.sviZaposleniFarmaceuti = response.data;});
-      },
-      DodajFarmaceuta() {
-        window.location.href = "/addPharmacist/" + this.id;
+          this.sviZaposleniFarmaceuti = response.data;
+          this.poruka = "Find " + this.sviZaposleniFarmaceuti.length + " results";});
       },
       funkcija(l) {
         this.lek_za_prikaz = l;
@@ -368,13 +391,13 @@ export default {
       },
       proveri_broj(unos, poruka) {
         if (this.kolicina == null) {
-          alert("You must enter quantity.");
+          this.poruka = "You must enter quantity.";
           return 1;
         }
         for (var karakter of unos) {
           if (this.datum == unos && karakter == '.') continue;
           if (karakter < '0' || karakter > '9') {
-            alert(poruka);
+            this.poruka = poruka;
             return 1;
           }
         }
@@ -383,7 +406,7 @@ export default {
       proveri_kolicinu(unos) {
         var broj = parseInt(unos);
         if (broj < 0 || broj > this.max_kolicina) {
-          alert("Quantity must be in interval [1, " + this.max_kolicina + "].");
+          this.poruka = "Quantity must be in interval [1, " + this.max_kolicina + "].";
           return 1;
         }
         return 0;
@@ -415,7 +438,7 @@ export default {
 
         }).catch(error => {
           // TODO: DODATI OSTALE PROVERE!!!!
-          alert("Pacijent je alergičan");
+          this.poruka = "Pacijent je alergičan";
             });
 
 
@@ -470,7 +493,7 @@ export default {
           let rating = this.rating.ratingValue;
 
           if (rating < 1 || rating > 5) {
-            alert("Wrong rate value");
+            this.poruka = "Wrong rate value";
             return
           }
 
@@ -483,7 +506,7 @@ export default {
             if (response.data) {
               this.loadPharmacyData();
               $("#rating-modal").modal('hide');
-              alert("Successfully voted!");
+              this.poruka = "Successfully voted!";
             }
           });
         },

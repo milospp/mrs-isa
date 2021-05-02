@@ -10,10 +10,14 @@ class PharmacistDataService {
       method: 'post',
       url: API_URL + "/api/users/register/pharmacist/" + idAdmina,
       data: promenljiva
-    }).then(response => {
-      if (response.data == 0) { alert("You successfully hired a pharmacist"); return true;} 
-      alert("Email is not unique!");
-      return false;
+    }).catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("error.config");
+      console.log(error.config);
     });
   }
   

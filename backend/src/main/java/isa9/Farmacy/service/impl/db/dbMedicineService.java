@@ -1,7 +1,11 @@
 package isa9.Farmacy.service.impl.db;
 
 import isa9.Farmacy.model.Medicine;
+import isa9.Farmacy.model.MedicineOrder;
+import isa9.Farmacy.model.MedicineQuantity;
+import isa9.Farmacy.repository.MedQuantityRepository;
 import isa9.Farmacy.repository.MedicineRepository;
+import isa9.Farmacy.repository.OrderRepository;
 import isa9.Farmacy.service.MedicineService;
 import isa9.Farmacy.service.impl.base.MedicineServiceBase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +24,14 @@ import java.util.Set;
 public class dbMedicineService extends MedicineServiceBase implements MedicineService {
 
     private final MedicineRepository medicineRepository;
+    private final OrderRepository orderRepository;
+    private final MedQuantityRepository medQuantityRepository;
 
     @Autowired
-    public dbMedicineService(MedicineRepository medicineRepository) {
+    public dbMedicineService(MedicineRepository medicineRepository, OrderRepository orderRepository, MedQuantityRepository medQuantityRepository) {
         this.medicineRepository = medicineRepository;
+        this.orderRepository = orderRepository;
+        this.medQuantityRepository = medQuantityRepository;
     }
 
     @Override
@@ -38,6 +46,12 @@ public class dbMedicineService extends MedicineServiceBase implements MedicineSe
 
     @Override
     public Medicine save(Medicine entity) { return this.medicineRepository.save(entity); }
+
+    @Override
+    public MedicineOrder saveOrder(MedicineOrder entity) {
+        for (MedicineQuantity mq : entity.getAllMedicines()) this.medQuantityRepository.save(mq);
+        return this.orderRepository.save(entity);
+    }
 
     @Override
     public Boolean isCodeAvailable(String medicineId) {
