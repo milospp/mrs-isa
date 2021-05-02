@@ -211,6 +211,7 @@ public class MedicineController {
                     break;
                 }}}
         novi.setReplacementMedication(zamenski);
+        medicineService.save(novi);
 
         // lek u apoteci
         MedicineInPharmacy noviUApoteci = new MedicineInPharmacy();
