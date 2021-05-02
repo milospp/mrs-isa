@@ -874,4 +874,25 @@ public class UserController {
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
+    @PostMapping("edit/supplier")
+    public ResponseEntity<Boolean> editSupplierData(@RequestBody SupplierDTO supplierDTO){
+        Supplier supplier = (Supplier) userService.findOne(supplierDTO.getId());
+        supplier.setName(supplierDTO.getName());
+        supplier.setSurname(supplierDTO.getSurname());
+        if (supplier.getAddress() != supplierDTO.getAddress()){
+            Address newAdress = Address.builder()
+                    .id(null)
+                    .state(supplierDTO.getAddress().getState())
+                    .city(supplierDTO.getAddress().getCity())
+                    .street(supplierDTO.getAddress().getStreet())
+                    .number(supplierDTO.getAddress().getNumber())
+                    .build();
+            supplier.setAddress(newAdress);
+        }
+        //pharmacist.setAddress(pharmacistDTO.getAddress()); // not using this because it changes someone else's address also
+        supplier.setEmail(supplierDTO.getEmail());
+        supplier.setPhoneNumber(supplierDTO.getPhoneNumber());
+        userService.save(supplier);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
 }

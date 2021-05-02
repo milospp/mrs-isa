@@ -26,6 +26,7 @@ import Login from '@/views/Login.vue'
 import LogoutView from '@/views/LogoutView.vue'
 import Appointment from '@/views/Appointment.vue'
 import AddSysAdmin from '@/views/AddSysAdmin.vue'
+import SupplierProfile from '@/views/SupplierProfile.vue'
 
 
 const routes = [
@@ -166,6 +167,11 @@ const routes = [
     path: '/addSysAdmin',
     name: 'AddSysAdmin',
     component: AddSysAdmin
+  },
+  {
+    path: '/supplier/profile',
+    name: 'SupplierProfile',
+    component: SupplierProfile    
   },
   {
     path: '/appointment/:id',

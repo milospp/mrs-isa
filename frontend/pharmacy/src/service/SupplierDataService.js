@@ -18,6 +18,17 @@ class SupplierDataService {
 			return false;
         });
     }
+
+    getSupplier(id){
+        return axios.get(`${API_URL}/` + id);
+    }
+    editPersonalData(supplier){
+        return axios({
+          method: 'post',
+          url: API_URL + "/edit/supplier",
+          data: supplier
+        });
+    }
 }
 
 
