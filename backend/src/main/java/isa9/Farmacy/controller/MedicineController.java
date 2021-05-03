@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -325,5 +322,28 @@ public class MedicineController {
 
         RatingDTO dto = ratingToRatingDTO.convert(rating);
         return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping("/prices/{id}")
+    public ResponseEntity<List<PricesInPharmaciesDTO>> getPricesOfMedicine(@PathVariable Long id){
+        Medicine medToLookFor = this.medicineService.findOne(id);
+        ArrayList<PricesInPharmaciesDTO> prices = new ArrayList<PricesInPharmaciesDTO>();
+        ArrayList<Pharmacy> allPharmacies = (ArrayList<Pharmacy>) this.pharmacyService.findAll();
+        for(Pharmacy ph : allPharmacies){
+            for(Iterator<MedicineInPharmacy> i = ph.getMedicines().iterator(); i.hasNext(); ){
+                MedicineInPharmacy m = i.next();
+                if(m.getMedicine().getCode().equals(medToLookFor.getCode())){
+                    prices.add(new PricesInPharmaciesDTO(m.getCurrentPrice().getPrice(), m.getPharmacy().getName()));
+                    break;
+                }
+            }
+        }
+
+
+        if(prices.size() == 0){
+            return new ResponseEntity<List<PricesInPharmaciesDTO>>(prices, HttpStatus.NOT_FOUND);
+        }else{
+            return new ResponseEntity<List<PricesInPharmaciesDTO>>(prices, HttpStatus.OK);
+        }
     }
 }
