@@ -247,6 +247,14 @@ public class MedicineController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
+    @GetMapping("/allOrder/admin/{idAdmina}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<List<MedicineOrderDTO>> getOrderAdmin(@PathVariable Long idAdmina) {
+        MedOrderToMedOrderDTO konverter = new MedOrderToMedOrderDTO();
+        List<MedicineOrderDTO> povratna = konverter.convert(this.medicineService.getAllOrders(idAdmina));
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
     @GetMapping("/pharmacy/{id}")
     public ResponseEntity<List<MedInPharmaDTO>> getAllMedicinePharmacy(@PathVariable Long id) {
         Pharmacy apoteka = pharmacyService.findOne(id);

@@ -57,7 +57,6 @@
                   <th>Type</th>
                   <th>Structure</th>
                   <th></th>
-                  <th></th>
                 </thead>
                 <tbody>
                     <tr :key="l" v-for="l in this.sviLekovi">
@@ -258,6 +257,7 @@ export default {
         },
         poruci() {
           if (!this.proveri_datum()) return false;
+          if (!this.proveri_kolicinu()) return false;
           alert(this.krajnjiDatum);
           MedicineDataService.orderPharmacyAdmin(this.id, this.korpaLekova, this.pocetniDatum, 
           this.krajnjiDatum).then(response => { 
@@ -265,6 +265,13 @@ export default {
               this.korpaLekova = [];
               this.sacuvajKorpu();
             });
+        },
+        proveri_kolicinu() {
+          for (var l in this.korpaLekova) if (l.quantity <= 0) {
+            this.poruka = "Quantity in cart must be positive number."
+            return false;
+          }
+          return true;
         },
         proveri_datum(){
           if (!this.pocetniDatum) {

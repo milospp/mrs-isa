@@ -18,6 +18,19 @@ class PharmacyAdminDataService {
 			return false;
         });
     }
+
+    getOrder(idAdmina) {
+        return axios.get("http://localhost:8080/api/medicines/allOrder/admin/" + idAdmina)
+        .catch(function (error) {
+          if (error.response) {
+            console.log(error.response.data);
+          } else if (error.request) {
+            console.log(error.request);
+          }
+          console.log("Error");
+          console.log(error.config);
+      });
+    }
 }
 
 

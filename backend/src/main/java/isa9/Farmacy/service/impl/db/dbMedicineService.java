@@ -54,6 +54,13 @@ public class dbMedicineService extends MedicineServiceBase implements MedicineSe
     }
 
     @Override
+    public List<MedicineOrder> getAllOrders(Long idAdmina) {
+        List<MedicineOrder> povratna = new ArrayList<>();
+        for (MedicineOrder mo : this.orderRepository.findAll()) if (mo.getAuthor().getId() == idAdmina) povratna.add(mo);
+        return povratna;
+    }
+
+    @Override
     public Boolean isCodeAvailable(String medicineId) {
         List<Medicine> allMeds = this.medicineRepository.findAll();
         for(Medicine med : allMeds){
