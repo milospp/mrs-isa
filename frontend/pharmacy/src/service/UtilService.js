@@ -34,7 +34,6 @@ class UtilService {
   }
 
   formatDate(date) {
-    console.log("FORMAAA DAATEEE");
     date = date[0] + "-" + date[1] + "-" + date[2];
     if (date instanceof moment) return date.format('DD/MM/YYYY');
     return moment(date).format('DD/MM/YYYY');

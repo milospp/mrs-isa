@@ -35,8 +35,9 @@
             <li class="nav-item active"><a class="nav-link" data-toggle="tab" href="#tab-medicines">Medicines</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Pharmacists</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Dermatologists</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu3">Invalid receipts</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu4">Map</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu3">Orders</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu4">Invalid receipts</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu5">Map</a></li>
           </ul>
         
           <div class="tab-content">
@@ -142,7 +143,54 @@
                 </tbody>
               </table>
             </div>
+
             <div id="menu3" class="tab-pane fade">
+              <h3>Orders</h3>
+              <table>
+                <tr>
+                  <td> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+                    <td> <select id="filterOrder" style="width: 100%;" v-on:change="filterNarudzbenica()" v-model="filterOrder" required="required">
+                      <option>In process</option>
+                      <option>Processed</option>
+                    </select> </td>
+                </tr>
+                <tr>
+                  <td> &emsp; </td>
+                </tr>
+              </table>
+                <table class="table table-striped">
+                  <thead class="card-header">
+                  <th>Start date</th>
+                  <th>End date</th>
+                  <th>Number of items</th>
+                  <th>Chosen offer</th>
+                  <th>Number of offer</th>
+                  <th>&emsp;</th>
+                  <th>&emsp;</th>
+                </thead>
+                <tbody>
+                    <tr :key="p.name" v-for="p in this.ponudeZaIspis">
+                      <td>{{p.startDate[2]}}.{{p.startDate[1]}}.{{p.startDate[0]}}.</td>
+                      <td>{{p.endDate[2]}}.{{p.endDate[1]}}.{{p.endDate[0]}}.</td>
+                      <td>{{p.allMedicines.length}}</td>
+                      <td>{{p.chosenOffer?.supplier?.name}} {{p.chosenOffer?.supplier.surname}}</td>
+                      <td>{{p?.allOffer.length}}</td>
+                      <td><form v-on:click.prevent="postaviPonudu(p)"><button type="button" class="btn btn-primary">View</button></form></td>
+                      <td><div v-if="!p.chosenOffer"><form v-on:click.prevent="postaviPonudu(p)">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obrisiNar">Delete</button>
+                        </form></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+
+            <div id="menu4" class="tab-pane fade">
               <h3>All invalid receipts</h3>
               <table class="table table-striped">
                 <thead>
@@ -164,7 +212,7 @@
               </table>
             </div>
             <!-- mora na kraj jer inace ne radi kako valja -->
-            <div id="menu4" class="tab-pane fade active">
+            <div id="menu5" class="tab-pane fade active">
 					          <Mapa/>
             </div>
           </div>
@@ -308,6 +356,24 @@
     </div>
   </div>
 
+  <!-- obrisi narudzbenicu -->
+  <div class="modal fade" id="obrisiNar" tabindex="-1" role="dialog" aria-labelledby="ObrisiNarudzbenicu" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ObrisiNar">Are you sure you want to delete order?</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+         <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="obrisiNarudzbenicu()" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
     <!-- Dodaj leku -->
   <div class="modal fade" id="dodajLek" tabindex="-1" role="dialog" aria-labelledby="Dodaj lek" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -366,6 +432,7 @@ import DermatologistDataService from '../service/DermatologistDataService.js';
 import PharmacistDataService from '../service/PharmacistDataService.js';
 import PharmacyDataService from '../service/PharmacyDataService.js';
 import MedicineDataService from '../service/MedicineDataService.js';
+import PharmacyAdminDataService from '../service/PharmacyAdminDataService.js';
 import Mapa from "../components/Maps.vue";
 import AuthService from "../service/AuthService.js";
 
@@ -388,6 +455,7 @@ export default {
             filterAdrD: "", filterAdrG: "", filterAdrU: "", filterAdrB: "", 
             otpustiRadnika: null, jesteFarmaceut: false, 
             sviLekovi: [], zamenskiLekovi: [], poruka: "Wait... Your require is in processing", 
+            filterOrder: 0, ponuda: null, svePonude: [], ponudeZaIspis: [],
         };
     },
     created() {
@@ -412,6 +480,11 @@ export default {
       .then(response => {
           this.sviLekovi = response.data;
       });
+      PharmacyAdminDataService.getOrders(this.id)
+        .then(response => {
+          this.svePonude = response.data;
+          this.ponudeZaIspis = response.data;
+      });
     },
     mounted() {
       PharmacistDataService.getAllPharmacistAdmin(this.id)
@@ -424,6 +497,11 @@ export default {
       MedicineDataService.getMedicineForPharmacyAdmin(this.id)
       .then(response => {
           this.lekovi = response.data;
+      });
+      PharmacyAdminDataService.getOrders(this.id)
+        .then(response => {
+          this.svePonude = response.data;
+          this.ponudeZaIspis = response.data;
       });
     },
     methods : {
@@ -438,7 +516,13 @@ export default {
       osveziLekove() {
         MedicineDataService.getMedicineForPharmacyAdmin(this.id)
         .then(response => { this.lekovi = response.data;});        
-      }, 
+      },
+      osveziPorudzbine() {
+        PharmacyAdminDataService.getOrders(this.id)
+        .then(response => {
+          this.svePonude = response.data;
+          this.ponudeZaIspis = response.data;});   
+      },
       inicijalizujPoruku(pk) { 
         this.poruka = pk;
       },
@@ -700,6 +784,30 @@ export default {
               } 
               this.poruka = "Something goes wrong";
               return false;});
+      },
+      filterNarudzbenica() {
+        this.ponudeZaIspis = [];
+        var brojac = 0;
+        if (this.filterOrder == "In process")
+          for (var pon of this.svePonude) 
+            if (pon.chosenOffer == null) {
+              this.ponudeZaIspis[brojac] = pon;
+              brojac++;
+            }
+        else 
+          for (var pon of this.svePonude) 
+            if (pon.chosenOffer != null) {
+              this.ponudeZaIspis[brojac] = pon;
+              brojac++;
+            }
+      },
+      postaviPonudu(p) { this.ponuda = p; },  // prelazak na drugu formu
+      obrisiNarudzbenicu() {
+        PharmacyAdminDataService.deleteOrder(this.ponuda)
+        .then(response => {
+          this.poruka = "You successfully deleted order.";
+          this.osveziPorudzbine();
+          });
       },
     }
 }
