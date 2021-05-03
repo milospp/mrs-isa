@@ -31,8 +31,8 @@
             </select>          
           </div>
           <div class="form-group col-md-2">
-            <label for="inputAddress">Sort</label>
-            <select class="form-control" id="exampleFormControlSelect1">
+            <label for="sortSelect">Sort</label>
+            <select class="form-control" id="sortSelect" v-model="searchParams.sort">
               <option value="NAME_ASC">By Name Asc</option>
               <option value="NAME_DES">By Name Des</option>
               <option value="ADDRESS_ASC">By Address Asc</option>
