@@ -11,7 +11,7 @@
         <p class="gray">Pharmacy: {{appointment.pharmacy.name}}</p>
 
 
-        <div v-if="appointment.examination.status == 'PENDING'">
+        <div v-if="status == 'PENDING'">
             <div class="form-group">
                 <div class="custom-control custom-checkbox">
                     <input v-model="patientAppeared" type="checkbox" class="custom-control-input" id="customCheck1">
@@ -29,11 +29,11 @@
 
         <div class="form-group">
             <label for="selectMed">Therapy</label>
-                <div class="row mb-2">
+                <div v-if="medicines" class="row mb-2">
                     <!-- <input :disabled="!patientAppeared" type="search" class="form-control col" id="searchMedicine" placeholder="Search Medicine"> -->
                     
                     <select v-model="therapyMed" :disabled="!patientAppeared" class="form-control col mx-3" id="selectMed">
-                        <option :key="m.id" v-for="m in medicines">{{m.name}}</option>
+                        <option :key="m.id" v-for="m in medicines" :value="m">{{m.medicine.name}}</option>
                     </select>
                     <input type="number" v-model="therapyDays" class="form-control col-2 mr-3" id="days" min="1">
                     <button class="btn btn-primary mr-3" @click="addTherapy()" :disabled="!patientAppeared">Add</button>
@@ -57,7 +57,7 @@
             </div>
         </div>
 
-        <div v-else-if="appointment.examination.status == 'HELD'">
+        <div v-else-if="status == 'HELD'">
             <p class="badge badge-success">HELD</p>
             <div class="form-group">
                 <label for="info">Anamnesis (conversation with patient)</label>
@@ -75,7 +75,7 @@
                         </thead>
                         <tbody id="therapyRow">
                             <tr :key="t.id" v-for="t in appointment.examination.therapy">
-                                <td>{{t.medicine.name}}</td>
+                                <td>{{t.medInPharma.medicine.name}}</td>
                                 <td>{{t.days}}</td>
                             </tr>
                         </tbody>
@@ -86,10 +86,10 @@
             </div>
         </div>
 
-        <div v-else-if="appointment.examination.status == 'NOT_HELD'">
+        <div v-else-if="status == 'NOT_HELD'">
             <p class="badge badge-warning">PATIENT DID NOT SHOW UP</p>
         </div>
-        <div v-else-if="appointment.examination.status == 'CANCELED'">
+        <div v-else-if="status == 'CANCELED'">
             <p class="badge badge-danger">CANCELED</p>
         </div>
 
@@ -130,7 +130,7 @@ export default {
         return {
             message: null,
             appointment: {
-                id: 1,
+                id: null,
                 examination: {
                     patient: {
                         name: '',
@@ -139,6 +139,7 @@ export default {
                     },
                     diagnose: '',
                     examinationInfo: '',
+                    therapy: []
                 },
                 startTime: '',
                 pharmacy: '',
@@ -152,6 +153,7 @@ export default {
             medicines: [{name: 'lek1', code: 1}, {name: 'lek2', code: 2}, {name: 'lek3', code: 3}],
             therapyMed: null,
             therapyDays: 0,
+            status: '',
         };
     },
     methods: {
@@ -159,10 +161,20 @@ export default {
             AppointmentDataService.getAppointmentInfo(this.appId)
             .then(response => {
                     this.appointment = response.data;
+                    this.status = this.appointment.examination.status;
                     console.log(response.data);
+                    MedicineDataService.getMedicineForPharmacy(this.appointment.pharmacy.id)
+                    .then(response =>
+                            {
+                                this.medicines = response.data;
+                                for (var m in this.medicines.values){
+                                    //console.log(JSON.stringify(m));
+                                }
+                            });
                 });
         },
         finishAppointment(){
+            //console.log(JSON.stringify(this.appointment));
             if (this.appointment.examination.status == 'PENDING'){
                 if (this.patientAppeared != null){
                     if (this.patientAppeared == true)
@@ -179,19 +191,18 @@ export default {
             .then(response => {
                     if (response.data){
                         alert("Info saved.");
+                        this.status = this.appointment.examination.status;
                     }
                 });
         },
         addTherapy() {
-            $('#therapyRow').append('<tr><td>'+ this.therapyMed + '</td><td>' + this.therapyDays +'</td></tr>');
-        },
-        getMedicineForTherapy(){
-            MedicineDataService.getAllMedicines()
-                .then(response =>
-                        {
-                            this.medicines = response.data;
-                        });
+            this.appointment.examination.therapy.push({medInPharma: this.therapyMed, days: this.therapyDays+''});
+            console.log(this.appointment.examination.therapy);
+            $('#therapyRow').append('<tr><td>'+ this.therapyMed.medicine.name + '</td><td>' + this.therapyDays +'</td></tr>');
         }
+        // getMedicineForTherapy(){
+            
+        // }
         // confirmLeave() {
         //     return window.confirm('Do you really want to leave? you have unsaved changes!')
         // },
@@ -224,7 +235,7 @@ export default {
         this.appId = this.$route.params.id;
         // this.id = 3;
         this.getAppointmentData();
-        this.getMedicineForTherapy();
+        // this.getMedicineForTherapy();
     },
 
     // beforeUnmount() {
