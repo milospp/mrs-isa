@@ -73,6 +73,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/auth/**").permitAll()
 				.antMatchers("/h2-console/**").permitAll()
 				.antMatchers("/api/pharmacies").permitAll()
+				.antMatchers("/api/pharmacies/search").permitAll()
 				.antMatchers("/api/medicines").permitAll()
 				.antMatchers("/api/auth/getLoggedIn").permitAll()
 				.antMatchers("/api/users/dermatologists/pharmacy/**").permitAll()

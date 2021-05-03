@@ -1,10 +1,7 @@
 package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.*;
-import isa9.Farmacy.model.dto.MedicineDTO;
-import isa9.Farmacy.model.dto.PharmacyDTO;
-import isa9.Farmacy.model.dto.RatingDTO;
-import isa9.Farmacy.model.dto.WorkDTO;
+import isa9.Farmacy.model.dto.*;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.RatingService;
 import isa9.Farmacy.service.UserService;
@@ -48,6 +45,14 @@ public class PharmacyController {
     @GetMapping("")
     public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
         List<PharmacyDTO> resultDTOS = pharmacyToPharmacyDTO.convert(this.pharmacyService.findAll());
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+    }
+
+    @PostMapping("search")
+    public ResponseEntity<List<PharmacyDTO>> SearchPharmacies(@RequestBody(required=false) PharmacySearchDTO pharmacySearchDTO) {
+        List<Pharmacy> pharmacies = this.pharmacyService.findAll();
+        pharmacies = pharmacyService.filterPharmacies(pharmacies, pharmacySearchDTO);
+        List<PharmacyDTO> resultDTOS = pharmacyToPharmacyDTO.convert(pharmacies);
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
     }
 
