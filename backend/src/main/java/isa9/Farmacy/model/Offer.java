@@ -28,7 +28,7 @@ public class Offer {
     private String offerDescription;
     @ManyToOne
     private Supplier supplier;
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private MedicineOrder order;
     @Enumerated
     private OfferStatus status;

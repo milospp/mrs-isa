@@ -29,8 +29,8 @@ public class MedOrderToMedOrderDTO implements Converter<MedicineOrder, MedicineO
 
         OfferToOfferDTO ponuda = new OfferToOfferDTO();
         povratna.setChosenOffer((medicineOrder.getChosenOffer() == null ? null : ponuda.convert(medicineOrder.getChosenOffer())));
-//        povratna.setAllOffer((medicineOrder.getAllOffer().size() == 0 ? new ArrayList<>() : ponuda.convert(medicineOrder.getAllOffer())));
-        povratna.setAllOffer(new ArrayList<>());
+
+        povratna.setAllOffer((medicineOrder.getAllOffer().size() == 0 ? new ArrayList<>() : ponuda.convert(medicineOrder.getAllOffer())));
 
         return povratna;
     }

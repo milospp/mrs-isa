@@ -38,7 +38,6 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
 
     @Override
     public MedicineOrder save(MedicineOrder entity) {
-        for (MedicineQuantity mq : entity.getAllMedicines()) this.medQuantityService.save(mq);
         for (Offer o : entity.getAllOffer()) this.offerService.save(o);
         return this.orderRepository.save(entity);
     }
@@ -46,7 +45,11 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
     @Override
     public List<MedicineOrder> getAdminOrders(Long idAdmina) {
         List<MedicineOrder> povratna = new ArrayList<>();
-        for (MedicineOrder mo : this.orderRepository.findAll()) if (mo.getAuthor().getId() == idAdmina) povratna.add(mo);
+        for (MedicineOrder mo : this.orderRepository.findAll()) if (mo.getAuthor().getId() == idAdmina) {
+            List<Offer> ponude = this.offerService.getOffers(mo.getId());
+            mo.setAllOffer(ponude);
+            povratna.add(mo);
+        }
         return povratna;
     }
 
