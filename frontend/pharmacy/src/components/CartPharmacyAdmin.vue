@@ -180,6 +180,7 @@
 
 <script>
 import MedicineDataService from '../service/MedicineDataService.js';
+import PharmacyAdminDataService from '../service/PharmacyAdminDataService.js';
 import AuthService from "../service/AuthService.js";
 
 export default {
@@ -211,8 +212,11 @@ export default {
         this.poruka = pk;
       },
         osveziLekove() {
-            MedicineDataService.getMedicineForPharmacyAdmin(this.id)
-            .then(response => { this.lekovi = response.data;});        
+           MedicineDataService.getAllMedicines()
+            .then(response => {
+                this.sviLekovi = response.data;
+                this.prevediKorpu();
+          });        
         },
         postaviLek(l) {
             this.odabraniLek = l;
@@ -258,8 +262,7 @@ export default {
         poruci() {
           if (!this.proveri_datum()) return false;
           if (!this.proveri_kolicinu()) return false;
-          alert(this.krajnjiDatum);
-          MedicineDataService.orderPharmacyAdmin(this.id, this.korpaLekova, this.pocetniDatum, 
+          PharmacyAdminDataService.addOrder(this.id, this.korpaLekova, this.pocetniDatum, 
           this.krajnjiDatum).then(response => { 
               this.poruka = "You successfully made order";
               this.korpaLekova = [];

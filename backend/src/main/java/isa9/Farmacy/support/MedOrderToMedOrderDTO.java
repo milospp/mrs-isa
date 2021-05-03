@@ -22,7 +22,7 @@ public class MedOrderToMedOrderDTO implements Converter<MedicineOrder, MedicineO
         List<MedicineQuantityDTO> mqPomocno = new ArrayList<>();
 //        System.out.println("tip - " + medicineOrder.getAllMedicines());
 //        System.out.println("broj - " + medicineOrder.getAllMedicines().size());
-//        if (medicineOrder.getAllMedicines().size() != 0) mqPomocno = medQuantity.convert(medicineOrder.getAllMedicines());
+        if (medicineOrder.getAllMedicines().size() != 0) mqPomocno = medQuantity.convert(medicineOrder.getAllMedicines());
         povratna.setAllMedicines(mqPomocno);
 
         PAdminToPAdminDTO pAdmin = new PAdminToPAdminDTO();

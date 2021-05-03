@@ -175,7 +175,7 @@
                 <tbody>
                     <tr :key="p.name" v-for="p in this.svePonude">
                       <td>{{p.startDate[2]}}.{{p.startDate[1]}}.{{p.startDate[0]}}.</td>
-                      <td>{{p.endDate[2]}}.{{p.endDate[1]}}.{{p.endDate[0]}}</td>
+                      <td>{{p.endDate[2]}}.{{p.endDate[1]}}.{{p.endDate[0]}}.</td>
                       <td>{{p.allMedicines.length}}</td>
                       <td>{{p.chosenOffer?.supplier?.name}} {{p.chosenOffer?.supplier.surname}}</td>
                       <td>{{p?.allOffer.length}}</td>
@@ -458,7 +458,7 @@ export default {
       .then(response => {
           this.sviLekovi = response.data;
       });
-      PharmacyAdminDataService.getOrder(this.id)
+      PharmacyAdminDataService.getOrders(this.id)
         .then(response => {
           this.svePonude = response.data;
       });
@@ -475,7 +475,7 @@ export default {
       .then(response => {
           this.lekovi = response.data;
       });
-      PharmacyAdminDataService.getOrder(this.id)
+      PharmacyAdminDataService.getOrders(this.id)
         .then(response => {
           this.svePonude = response.data;
       });

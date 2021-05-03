@@ -48,19 +48,6 @@ public class dbMedicineService extends MedicineServiceBase implements MedicineSe
     public Medicine save(Medicine entity) { return this.medicineRepository.save(entity); }
 
     @Override
-    public MedicineOrder saveOrder(MedicineOrder entity) {
-        for (MedicineQuantity mq : entity.getAllMedicines()) this.medQuantityRepository.save(mq);
-        return this.orderRepository.save(entity);
-    }
-
-    @Override
-    public List<MedicineOrder> getAllOrders(Long idAdmina) {
-        List<MedicineOrder> povratna = new ArrayList<>();
-        for (MedicineOrder mo : this.orderRepository.findAll()) if (mo.getAuthor().getId() == idAdmina) povratna.add(mo);
-        return povratna;
-    }
-
-    @Override
     public Boolean isCodeAvailable(String medicineId) {
         List<Medicine> allMeds = this.medicineRepository.findAll();
         for(Medicine med : allMeds){
