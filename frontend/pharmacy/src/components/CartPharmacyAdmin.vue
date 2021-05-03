@@ -57,7 +57,6 @@
                   <th>Type</th>
                   <th>Structure</th>
                   <th></th>
-                  <th></th>
                 </thead>
                 <tbody>
                     <tr :key="l" v-for="l in this.sviLekovi">
@@ -181,6 +180,7 @@
 
 <script>
 import MedicineDataService from '../service/MedicineDataService.js';
+import PharmacyAdminDataService from '../service/PharmacyAdminDataService.js';
 import AuthService from "../service/AuthService.js";
 
 export default {
@@ -212,8 +212,11 @@ export default {
         this.poruka = pk;
       },
         osveziLekove() {
-            MedicineDataService.getMedicineForPharmacyAdmin(this.id)
-            .then(response => { this.lekovi = response.data;});        
+           MedicineDataService.getAllMedicines()
+            .then(response => {
+                this.sviLekovi = response.data;
+                this.prevediKorpu();
+          });        
         },
         postaviLek(l) {
             this.odabraniLek = l;
@@ -258,13 +261,20 @@ export default {
         },
         poruci() {
           if (!this.proveri_datum()) return false;
-          alert(this.krajnjiDatum);
-          MedicineDataService.orderPharmacyAdmin(this.id, this.korpaLekova, this.pocetniDatum, 
+          if (!this.proveri_kolicinu()) return false;
+          PharmacyAdminDataService.addOrder(this.id, this.korpaLekova, this.pocetniDatum, 
           this.krajnjiDatum).then(response => { 
               this.poruka = "You successfully made order";
               this.korpaLekova = [];
               this.sacuvajKorpu();
             });
+        },
+        proveri_kolicinu() {
+          for (var l in this.korpaLekova) if (l.quantity <= 0) {
+            this.poruka = "Quantity in cart must be positive number."
+            return false;
+          }
+          return true;
         },
         proveri_datum(){
           if (!this.pocetniDatum) {
