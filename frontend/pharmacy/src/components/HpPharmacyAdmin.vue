@@ -171,6 +171,7 @@
                   <th>Chosen offer</th>
                   <th>Number of offer</th>
                   <th>&emsp;</th>
+                  <th>&emsp;</th>
                 </thead>
                 <tbody>
                     <tr :key="p.name" v-for="p in this.ponudeZaIspis">
@@ -180,6 +181,9 @@
                       <td>{{p.chosenOffer?.supplier?.name}} {{p.chosenOffer?.supplier.surname}}</td>
                       <td>{{p?.allOffer.length}}</td>
                       <td><form v-on:click.prevent="postaviPonudu(p)"><button type="button" class="btn btn-primary">View</button></form></td>
+                      <td><div v-if="!p.chosenOffer"><form v-on:click.prevent="postaviPonudu(p)">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obrisiNar">Delete</button>
+                        </form></div></td>
                   </tr>
                 </tbody>
               </table>
@@ -352,6 +356,24 @@
     </div>
   </div>
 
+  <!-- obrisi narudzbenicu -->
+  <div class="modal fade" id="obrisiNar" tabindex="-1" role="dialog" aria-labelledby="ObrisiNarudzbenicu" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ObrisiNar">Are you sure you want to delete order?</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+         <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="obrisiNarudzbenicu()" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
     <!-- Dodaj leku -->
   <div class="modal fade" id="dodajLek" tabindex="-1" role="dialog" aria-labelledby="Dodaj lek" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -433,7 +455,7 @@ export default {
             filterAdrD: "", filterAdrG: "", filterAdrU: "", filterAdrB: "", 
             otpustiRadnika: null, jesteFarmaceut: false, 
             sviLekovi: [], zamenskiLekovi: [], poruka: "Wait... Your require is in processing", 
-            filterOrder: 0, ponuda: null, svePonude: [], ponudeZaIspis: []
+            filterOrder: 0, ponuda: null, svePonude: [], ponudeZaIspis: [],
         };
     },
     created() {
@@ -494,6 +516,12 @@ export default {
       osveziLekove() {
         MedicineDataService.getMedicineForPharmacyAdmin(this.id)
         .then(response => { this.lekovi = response.data;});        
+      },
+      osveziPorudzbine() {
+        PharmacyAdminDataService.getOrders(this.id)
+        .then(response => {
+          this.svePonude = response.data;
+          this.ponudeZaIspis = response.data;});   
       },
       inicijalizujPoruku(pk) { 
         this.poruka = pk;
@@ -774,6 +802,13 @@ export default {
             }
       },
       postaviPonudu(p) { this.ponuda = p; },  // prelazak na drugu formu
+      obrisiNarudzbenicu() {
+        PharmacyAdminDataService.deleteOrder(this.ponuda)
+        .then(response => {
+          this.poruka = "You successfully deleted order.";
+          this.osveziPorudzbine();
+          });
+      },
     }
 }
 </script>

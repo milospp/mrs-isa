@@ -3,9 +3,7 @@ package isa9.Farmacy.support;
 import isa9.Farmacy.model.MedicineOrder;
 import isa9.Farmacy.model.dto.MedicineOrderDTO;
 import isa9.Farmacy.model.dto.MedicineQuantityDTO;
-import isa9.Farmacy.model.dto.PharmacyAdminDTO;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.security.core.parameters.P;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +18,6 @@ public class MedOrderToMedOrderDTO implements Converter<MedicineOrder, MedicineO
 
         MedicineQuantityToMedicineQuantityDTO medQuantity = new MedicineQuantityToMedicineQuantityDTO();
         List<MedicineQuantityDTO> mqPomocno = new ArrayList<>();
-//        System.out.println("tip - " + medicineOrder.getAllMedicines());
-//        System.out.println("broj - " + medicineOrder.getAllMedicines().size());
         if (medicineOrder.getAllMedicines().size() != 0) mqPomocno = medQuantity.convert(medicineOrder.getAllMedicines());
         povratna.setAllMedicines(mqPomocno);
 
@@ -33,8 +29,8 @@ public class MedOrderToMedOrderDTO implements Converter<MedicineOrder, MedicineO
 
         OfferToOfferDTO ponuda = new OfferToOfferDTO();
         povratna.setChosenOffer((medicineOrder.getChosenOffer() == null ? null : ponuda.convert(medicineOrder.getChosenOffer())));
-//        povratna.setAllOffer((medicineOrder.getAllOffer().size() == 0 ? new ArrayList<>() : ponuda.convert(medicineOrder.getAllOffer())));
-        povratna.setAllOffer(new ArrayList<>());
+
+        povratna.setAllOffer((medicineOrder.getAllOffer().size() == 0 ? new ArrayList<>() : ponuda.convert(medicineOrder.getAllOffer())));
 
         return povratna;
     }

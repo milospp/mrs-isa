@@ -7,4 +7,5 @@ import java.util.List;
 public interface OrderService extends GenericService<MedicineOrder>  {
 
     List<MedicineOrder> getAdminOrders(Long idAdmina);
+    void delete(MedicineOrder zaBrisanje);
 }

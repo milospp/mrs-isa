@@ -6,6 +6,7 @@ import isa9.Farmacy.model.dto.MedicineOrderDTO;
 import isa9.Farmacy.service.MedicineService;
 import isa9.Farmacy.service.OrderService;
 import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.support.MedOrderDTOtoMedOrder;
 import isa9.Farmacy.support.MedOrderToMedOrderDTO;
 import isa9.Farmacy.support.MedQuantityDTOtoMedQuantity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,6 @@ public class OrderController {
         this.medicineService = medicineService;
         this.userService = userService;
     }
-
 
     @PostMapping("/add/{idAdmina}")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
@@ -62,6 +62,18 @@ public class OrderController {
     public ResponseEntity<List<MedicineOrderDTO>> getOrderAdmin(@PathVariable Long idAdmina) {
         MedOrderToMedOrderDTO konverter = new MedOrderToMedOrderDTO();
         List<MedicineOrderDTO> povratna = konverter.convert(this.orderService.getAdminOrders(idAdmina));
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @PostMapping("/delete")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<Integer> deleteOrderAdmin(@RequestBody MedicineOrderDTO porudzbina) {
+        int povratna = -1;
+        MedOrderDTOtoMedOrder konverter = new MedOrderDTOtoMedOrder(this.orderService);
+        MedicineOrder zaBrisanje = konverter.convert(porudzbina);
+        if (zaBrisanje == null) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
+        povratna = 0;
+        this.orderService.delete(zaBrisanje);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 }
