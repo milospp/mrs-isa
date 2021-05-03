@@ -174,7 +174,7 @@
                   <th>&emsp;</th>
                 </thead>
                 <tbody>
-                    <tr :key="p.name" v-for="p in this.svePonude">
+                    <tr :key="p.name" v-for="p in this.ponudeZaIspis">
                       <td>{{p.startDate[2]}}.{{p.startDate[1]}}.{{p.startDate[0]}}.</td>
                       <td>{{p.endDate[2]}}.{{p.endDate[1]}}.{{p.endDate[0]}}.</td>
                       <td>{{p.allMedicines.length}}</td>
@@ -483,6 +483,7 @@ export default {
       PharmacyAdminDataService.getOrders(this.id)
         .then(response => {
           this.svePonude = response.data;
+          this.ponudeZaIspis = response.data;
       });
     },
     mounted() {
@@ -500,6 +501,7 @@ export default {
       PharmacyAdminDataService.getOrders(this.id)
         .then(response => {
           this.svePonude = response.data;
+          this.ponudeZaIspis = response.data;
       });
     },
     methods : {
@@ -783,7 +785,22 @@ export default {
               this.poruka = "Something goes wrong";
               return false;});
       },
-      filterNarudzbenica() {alert("Ispisss");},
+      filterNarudzbenica() {
+        this.ponudeZaIspis = [];
+        var brojac = 0;
+        if (this.filterOrder == "In process")
+          for (var pon of this.svePonude) 
+            if (pon.chosenOffer == null) {
+              this.ponudeZaIspis[brojac] = pon;
+              brojac++;
+            }
+        else 
+          for (var pon of this.svePonude) 
+            if (pon.chosenOffer != null) {
+              this.ponudeZaIspis[brojac] = pon;
+              brojac++;
+            }
+      },
       postaviPonudu(p) { this.ponuda = p; },  // prelazak na drugu formu
       obrisiNarudzbenicu() {
         PharmacyAdminDataService.deleteOrder(this.ponuda)
