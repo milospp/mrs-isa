@@ -3,6 +3,48 @@
   <div class="row">
     <h3>All Pharmacies</h3>
   </div>
+		<div class="row mb-3">
+			<div class="col-md-12">
+				<a class="btn btn-primary float-right" data-toggle="collapse" href="#searchCollapse" role="button" aria-expanded="false" aria-controls="searchCollapse">
+					Filter
+				</a>
+			</div>
+		</div>
+	<form v-on:submit.prevent="searchTickets" class="collapse" id="searchCollapse">
+      <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="inputEmail4">Name</label>
+            <input type="text" class="form-control" id="inputName">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="inputAddress">Address</label>
+            <input type="text" class="form-control" id="inputAddress">
+          </div>
+          <div class="form-group col-md-2">
+            <label for="inputAddress">Rating</label>
+            <select class="form-control" id="exampleFormControlSelect1">
+              <option>>4*</option>
+              <option>4-5</option>
+              <option>3-4</option>
+              <option>2-3</option>
+              <option>1-2</option>
+            </select>          
+          </div>
+          <div class="form-group col-md-2">
+            <label for="inputAddress">Sort</label>
+            <select class="form-control" id="exampleFormControlSelect1">
+              <option>By Name</option>
+              <option>By Address</option>
+              <option>By Rating</option>
+            </select>          
+          </div>
+
+      </div>
+      <button type="submit" class="btn btn-primary">Search</button> 
+  </form>
+
+
+
   <div class="row">
 
 
