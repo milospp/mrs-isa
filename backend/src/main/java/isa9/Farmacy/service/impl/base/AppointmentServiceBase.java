@@ -1,18 +1,15 @@
 package isa9.Farmacy.service.impl.base;
 
 import isa9.Farmacy.model.*;
+import isa9.Farmacy.model.dto.DermAppointmentReqDTO;
 import isa9.Farmacy.service.AppointmentService;
 import isa9.Farmacy.service.ExaminationService;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class AppointmentServiceBase implements AppointmentService {
@@ -81,7 +78,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         Examination examination;
         examination = appointment.getExamination();
         if (examination == null) return false;
-        if (examination.getStatus().equals(ExaminationStatus.NOT_HELD)) return true;
+        if (examination.getStatus().equals(ExaminationStatus.PENDING)) return true;
         if (examination.getStatus().equals(ExaminationStatus.CANCELED) && appointment.getStartTime().isAfter(LocalDateTime.now())) return true;
 
         return false;
@@ -118,12 +115,19 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     }
 
     @Override
+    public Boolean isCanceled(Appointment appointment) {
+        if (appointment.getExamination() == null) return false;
+        if (appointment.getExamination().getStatus().equals(ExaminationStatus.CANCELED)) return true;
+        return false;
+    }
+
+    @Override
     public List<Appointment> getPatientUpcomingDermAppointments(Long patientId) {
         User user = userService.findOne(patientId);
         if (!user.getRole().getName().equals("PATIENT")) return new ArrayList<>();
         Patient patient = (Patient) user;
 
-        List<Appointment> allAppointments;
+        List<Appointment> allAppointments = findAll();
         allAppointments = findAll().stream()
                 .filter(x -> isAssignedToPatient(x, patient) && isDermExamination(x) && isUpcoming(x))
                 .collect(Collectors.toList());
@@ -152,7 +156,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         if (!user.getRole().getName().equals("PATIENT")) return new ArrayList<>();
         Patient patient = (Patient) user;
 
-        List<Appointment> allAppointments;
+        List<Appointment> allAppointments = findAll();
         allAppointments = findAll().stream()
                 .filter(x -> isAssignedToPatient(x, patient) && isUpcoming(x))
                 .collect(Collectors.toList());
@@ -223,9 +227,60 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         appointment.getExamination().setStatus(ExaminationStatus.CANCELED);
 
         save(appointment);
-        save(cloneAppointment(appointment));
+        if (appointment.getType().equals(TypeOfReview.EXAMINATION))
+            save(cloneAppointment(appointment));
         return appointment;
     }
+
+    @Override
+    public List<Pharmacist> getOccupiedPharmacists(LocalDateTime start, LocalDateTime end) {
+        List<Appointment> appointments = getAllAppointmentsInInterval(start, end);
+        Set<Pharmacist> pharmacists = new HashSet<Pharmacist>();
+
+        for (Appointment appointment : appointments){
+            if (appointment.getDoctor().getRole().getName().equalsIgnoreCase("PHARMACIST") && !isCanceled(appointment)){
+                pharmacists.add((Pharmacist) appointment.getDoctor());
+            }
+        }
+        List<Pharmacist> listPharmacist = new ArrayList<>();
+        listPharmacist.addAll(pharmacists);
+        return listPharmacist;
+    }
+
+    @Override
+    public Appointment bookDermAppointment(DermAppointmentReqDTO appointmentReqDTO, Patient patient) {
+
+        Set<Work> workSet = getFreePharmacist(appointmentReqDTO);
+        Boolean available = workSet.stream().anyMatch(w ->
+                w.getDoctor().getId() == appointmentReqDTO.getPharmacistId() &&
+                w.getPharmacy().getId() == appointmentReqDTO.getPharmacyId());
+
+        if (!available) return null;
+
+        Doctor doctor = userService.getDoctorById(appointmentReqDTO.getPharmacistId());
+        Pharmacy pharmacy = pharmacyService.findOne(appointmentReqDTO.getPharmacyId());
+
+        // TODO: Fix price
+        Double price = 444.0;
+
+        Appointment appointment = Appointment.builder()
+                .doctor(doctor).pharmacy(pharmacy)
+                .durationInMins(appointmentReqDTO.getDurationInMins())
+                .startTime(appointmentReqDTO.getStartTime())
+                .price(price * appointmentReqDTO.getDurationInMins() / 60)
+                .type(TypeOfReview.COUNSELING)
+                .build();
+
+        Examination examination = Examination.builder()
+                .patient(patient)
+                .status(ExaminationStatus.PENDING)
+                .appointment(appointment).build();
+        appointment.setExamination(examination);
+
+        return save(appointment);
+
+
+
 
     @Override
     public List<Appointment> getDoctorUpcomingAppointments(Long doctorId) {

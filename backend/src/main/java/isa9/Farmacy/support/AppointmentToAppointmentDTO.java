@@ -30,6 +30,8 @@ public class AppointmentToAppointmentDTO implements Converter<Appointment, Appoi
 
     @Override
     public AppointmentDTO convert(Appointment appointment) {
+        if (appointment == null) return null;
+
         AppointmentDTO dto = new AppointmentDTO();
 
         dto.setId(appointment.getId());

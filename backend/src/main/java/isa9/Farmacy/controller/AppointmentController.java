@@ -2,6 +2,9 @@ package isa9.Farmacy.controller;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import isa9.Farmacy.model.*;
+import isa9.Farmacy.model.dto.*;
+import isa9.Farmacy.support.DermatologistToDermatologistDTO;
+import isa9.Farmacy.support.WorkToWorkDTO;
 import isa9.Farmacy.model.dto.AppointmentDTO;
 import isa9.Farmacy.model.dto.PatientDTO;
 import isa9.Farmacy.model.dto.TherapyItemDTO;
@@ -12,6 +15,7 @@ import isa9.Farmacy.support.MedicineInPharmacyToMedInPharmaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -26,15 +30,18 @@ public class AppointmentController {
 
     private final AppointmentService appointmentService;
     private final AppointmentToAppointmentDTO appointmentToAppointmentDTO;
+    private final DermatologistToDermatologistDTO dermatologistToDermatologistDTO;
+    private final WorkToWorkDTO workToWorkDTO;
     private final MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO;
     private final MedInPharmaService medInPharmaService;
     private final PharmacyService pharmacyService;
     private final UserService userService;
     private final MedicineService medicineService;
     private final ExaminationService examinationService;
+    private final WorkService workService;
 
     @Autowired
-    public AppointmentController(AppointmentService appointmentService, AppointmentToAppointmentDTO appointmentToAppointmentDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedInPharmaService medInPharmaService, PharmacyService pharmacyService, UserService userService, MedicineService medicineService, ExaminationService examinationService){
+    public AppointmentController(AppointmentService appointmentService, AppointmentToAppointmentDTO appointmentToAppointmentDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedInPharmaService medInPharmaService, PharmacyService pharmacyService, UserService userService, MedicineService medicineService, ExaminationService examinationService, WorkService workService, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, WorkToWorkDTO workToWorkDTO){
         this.appointmentService = appointmentService;
         this.appointmentToAppointmentDTO = appointmentToAppointmentDTO;
         this.medicineInPharmacyToMedInPharmaDTO = medicineInPharmacyToMedInPharmaDTO;
@@ -43,6 +50,9 @@ public class AppointmentController {
         this.userService = userService;
         this.medicineService = medicineService;
         this.examinationService = examinationService;
+        this.workService = workService;
+        this.dermatologistToDermatologistDTO = dermatologistToDermatologistDTO;
+        this.workToWorkDTO = workToWorkDTO;
     }
 
 //    @GetMapping("tmp-test")
@@ -183,6 +193,28 @@ public class AppointmentController {
     public ResponseEntity<List<AppointmentDTO>> getPatientUpcomingAppointments(@PathVariable Long id) {
         this.appointmentService.getPatientUpcomingAppointments(id);
         List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.getPatientUpcomingAppointments(id));
+
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
+
+    @GetMapping("free-derm")
+    public ResponseEntity<List<WorkDTO>> getFreeDerm(@RequestBody DermAppointmentReqDTO appointmentRequest) {
+
+        List<WorkDTO> resultDTOS = workToWorkDTO.convert(this.appointmentService.getFreePharmacist(appointmentRequest));
+
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
+
+    @PostMapping("derm-examination")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<AppointmentDTO> bookDermAppointment(@RequestBody DermAppointmentReqDTO appointmentRequest) {
+
+        User user = userService.getLoggedInUser();
+
+
+        AppointmentDTO resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.bookDermAppointment(appointmentRequest, (Patient) user));
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
 

@@ -1,12 +1,13 @@
 package isa9.Farmacy.service;
 
-import isa9.Farmacy.model.Appointment;
-import isa9.Farmacy.model.Doctor;
-import isa9.Farmacy.model.Patient;
-import isa9.Farmacy.model.Pharmacy;
+import isa9.Farmacy.model.*;
+import isa9.Farmacy.model.dto.DermAppointmentReqDTO;
+import isa9.Farmacy.model.dto.DermatologistRegDTO;
+import org.apache.tomcat.jni.Local;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public interface AppointmentService extends GenericService<Appointment>{
 
@@ -19,6 +20,7 @@ public interface AppointmentService extends GenericService<Appointment>{
     Boolean isAppointmentFree(Appointment appointment);
     Boolean isCancelable(Appointment appointment);
     Boolean isPatientValid(Patient patient);
+    Boolean isCanceled(Appointment appointment);
 
     Appointment bookAnAppointment(Long patientId, Long appointmentId);
     Appointment cancelAppointment(Long appointmentId);
@@ -36,5 +38,10 @@ public interface AppointmentService extends GenericService<Appointment>{
     Boolean patientCanRateDoctor(Patient patient, Doctor doctor);
     Boolean patientHadAppointmentInPharmacy(Patient patient, Pharmacy pharmacy);
 
+    List<Pharmacist> getOccupiedPharmacists(LocalDateTime start, LocalDateTime end);
+    Set<Work> getFreePharmacist(DermAppointmentReqDTO appointmentReqDTO);
+    List<Appointment> getAllAppointmentsInInterval(LocalDateTime start, LocalDateTime end);
+
+    Appointment bookDermAppointment(DermAppointmentReqDTO appointmentReqDTO, Patient patient);
     List<Appointment> getDoctorUpcomingAppointments(Long id);
 }
