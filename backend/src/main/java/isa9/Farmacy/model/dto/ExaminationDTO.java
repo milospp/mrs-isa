@@ -24,7 +24,7 @@ public class ExaminationDTO {
     private ExaminationStatus status; // held, not held or canceled
     private String examinationInfo;
     private String diagnose;
-    private Set<TherapyItem> therapy; // maybe should be the code of the medicine
+    private Set<TherapyItemDTO> therapy; // maybe should be the code of the medicine
     private TypeOfReview type;
 
 

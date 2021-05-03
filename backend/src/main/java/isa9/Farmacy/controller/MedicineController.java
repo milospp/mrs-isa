@@ -66,7 +66,7 @@ public class MedicineController {
         // TODO: Get patient from session
         User user = userService.getLoggedInUser();
 
-        if (!form.getPatientId().equals(user.getId())){
+        if (!form.getPatientId().equals(user.getId()) && !user.getRole().getName().equals("DERMATOLOGIST") && !user.getRole().getName().equals("PHARMACIST")){
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
 
@@ -77,7 +77,10 @@ public class MedicineController {
         if (medReservation == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
-        MedReservationDTO dto = medReservationToMedReservationDTO.convert(medReservation);
+        MedReservation reservationWithId = medReservationService.getByCode(medReservation.getCode());
+
+        MedReservationDTO dto = medReservationToMedReservationDTO.convert(reservationWithId);
+        System.out.println("Id rezervacije: " + dto.getId());
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
