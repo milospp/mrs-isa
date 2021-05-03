@@ -7,6 +7,16 @@ class PharmacyDataService {
     getAllPharmacies() {
         return axios.get(`${API_URL}`);
     }
+    searchPharmacies(searchParams) {
+      console.log(searchParams);
+
+      return axios({
+        method: 'post',
+        url: `${API_URL}/search`,
+        data: JSON.parse(searchParams)
+      })
+    }
+
     getPharmacy(id) {
       return axios.get(`${API_URL}/` + id);
     }
