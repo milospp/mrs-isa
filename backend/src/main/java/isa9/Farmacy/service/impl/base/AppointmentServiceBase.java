@@ -274,6 +274,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         Examination examination = Examination.builder()
                 .patient(patient)
                 .status(ExaminationStatus.PENDING)
+                .therapy(new HashSet<>())
                 .appointment(appointment).build();
         appointment.setExamination(examination);
 
