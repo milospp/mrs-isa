@@ -29,13 +29,14 @@
 
         <div class="form-group">
             <label for="selectMed">Therapy</label>
-                <div v-if="medicines" class="row mb-2">
+                <div class="row mb-2">
                     <!-- <input :disabled="!patientAppeared" type="search" class="form-control col" id="searchMedicine" placeholder="Search Medicine"> -->
                     
                     <select v-model="therapyMed" :disabled="!patientAppeared" class="form-control col mx-3" id="selectMed">
                         <option :key="m.id" v-for="m in medicines" :value="m">{{m.medicine.name}}</option>
                     </select>
-                    <input type="number" v-model="therapyDays" class="form-control col-2 mr-3" id="days" min="1">
+                    <input type="number" v-model="therapyDays" class="form-control col-2 mr-3" id="days" min="1" :disabled="!patientAppeared">
+                    <input type="date" class="form-control col-2 mr-3" v-model="reservationDate" :disabled="!patientAppeared"/>
                     <button class="btn btn-primary mr-3" @click="addTherapy()" :disabled="!patientAppeared">Add</button>
                 </div>
 
@@ -44,9 +45,20 @@
                         <thead>
                             <th>Medicine</th>
                             <th>Days</th>
+                            <th>Reservation date</th>
+                            <th></th>
                         </thead>
                         <tbody id="therapyRow">
-
+                            <tr :key="r.id" v-for="r in reservations">
+                                <td>{{r.medicineInPharmacy.medicine.name}}</td>
+                                <td>{{r.days}}</td>
+                                <td>{{r.lastDate}}</td>
+                                <td>
+                                    <button class="btn btn-danger" @click="removeTherapy(r.id)">
+                                        Remove
+                                    </button>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -152,7 +164,9 @@ export default {
             patientAppeared: null,
             medicines: [{name: 'lek1', code: 1}, {name: 'lek2', code: 2}, {name: 'lek3', code: 3}],
             therapyMed: null,
-            therapyDays: 0,
+            therapyDays: null,
+            reservationDate: null,
+            reservations: {},
             status: '',
         };
     },
@@ -196,9 +210,50 @@ export default {
                 });
         },
         addTherapy() {
-            this.appointment.examination.therapy.push({medInPharma: this.therapyMed, days: this.therapyDays+''});
-            console.log(this.appointment.examination.therapy);
-            $('#therapyRow').append('<tr><td>'+ this.therapyMed.medicine.name + '</td><td>' + this.therapyDays +'</td></tr>');
+            if (this.therapyMed && this.therapyDays && this.reservationDate){
+                let unique = true;
+                console.log('polja nisu prazna');
+                for (let t in this.appointment.examination.therapy){
+                    console.log('gledam neki lek u terapiji');
+                    if (this.appointment.examination.therapy[t].medInPharma === this.therapyMed){
+                        unique = false;
+                        console.log('vec je rezervisan taj lek');
+                        break;
+                    }
+                }
+                if (!unique){ alert('Medicine is already prescribed'); return; }
+                if (UtilService.isPastDate(this.reservationDate)) { alert('Date is invalid'); return; }
+
+                let reserve_form = {
+                    medicineId: this.therapyMed.medicine.id,
+                    pharmacyId: this.appointment.pharmacy.id,
+                    patientId: this.appointment.examination.patient.id,
+                    quantity: 1,
+                    expirityDate: this.reservationDate
+                };
+
+                MedicineDataService.reserveMedicine(reserve_form)
+                    .then( response => {
+                        if (response.data){
+                            alert('Medicine successfuly reserved');
+                            this.reservations[response.data.id] = response.data;
+                            this.reservations[response.data.id].days = this.therapyDays;
+                            console.log("rezervacije!!!\n"+JSON.stringify(this.reservations));
+
+                            this.appointment.examination.therapy.push({medInPharma: this.therapyMed, days: this.therapyDays+''});
+                            console.log("terapija!!!\n"+JSON.stringify(this.appointment.examination.therapy));
+                            //$('#therapyRow').append('<tr><td>'+ this.therapyMed.medicine.name + '</td><td>' + this.therapyDays +'</td><td>'+ this.reservationDate +'</td><td><button class="btn btn-danger" onclick="removeTherapy('+ response.data.id +')">Remove</button></td></tr>');
+                            this.therapyMed = null; this.therapyDays = null; this.reservationDate = null;
+                        }
+                    });
+                
+                
+            }
+            
+        },
+        removeTherapy(reservationIndex){
+            console.log("rezervacija koja je selektovana!!!\n"+JSON.stringify(this.reservations[reservationIndex]));
+            
         }
         // getMedicineForTherapy(){
             
