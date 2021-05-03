@@ -128,6 +128,7 @@ import NavBar from '@/components/NavBar.vue'
 import AppointmentDataService from '@/service/AppointmentDataService.js'
 import UtilService from '../service/UtilService.js';
 import MedicineDataService from '../service/MedicineDataService.js';
+import PatientDataService from '../service/PatientDataService.js';
 
 // @ is an alias to /src
 export default {
@@ -201,6 +202,12 @@ export default {
                 }
             }
             // alert(this.appointment.examination.examinationInfo);
+            for (let r in this.reservations){
+                this.appointment.examination.therapy.push({medInPharma: this.reservations[r].medicineInPharmacy, days: this.reservations[r].days+''});
+            }
+            console.table(this.appointment.examination.therapy);
+
+
             AppointmentDataService.postAppointmentInfo(this.appointment)
             .then(response => {
                     if (response.data){
@@ -233,15 +240,15 @@ export default {
                 };
 
                 MedicineDataService.reserveMedicine(reserve_form)
-                    .then( response => {
+                    .then(response => {
                         if (response.data){
                             alert('Medicine successfuly reserved');
                             this.reservations[response.data.id] = response.data;
                             this.reservations[response.data.id].days = this.therapyDays;
                             console.log("rezervacije!!!\n"+JSON.stringify(this.reservations));
 
-                            this.appointment.examination.therapy.push({medInPharma: this.therapyMed, days: this.therapyDays+''});
-                            console.log("terapija!!!\n"+JSON.stringify(this.appointment.examination.therapy));
+                            //this.appointment.examination.therapy.push({medInPharma: this.therapyMed, days: this.therapyDays+''});
+                            //console.log("terapija!!!\n"+JSON.stringify(this.appointment.examination.therapy));
                             //$('#therapyRow').append('<tr><td>'+ this.therapyMed.medicine.name + '</td><td>' + this.therapyDays +'</td><td>'+ this.reservationDate +'</td><td><button class="btn btn-danger" onclick="removeTherapy('+ response.data.id +')">Remove</button></td></tr>');
                             this.therapyMed = null; this.therapyDays = null; this.reservationDate = null;
                         }
@@ -253,6 +260,25 @@ export default {
         },
         removeTherapy(reservationIndex){
             console.log("rezervacija koja je selektovana!!!\n"+JSON.stringify(this.reservations[reservationIndex]));
+            console.log(reservationIndex + " = " + this.reservations[reservationIndex].id);
+            PatientDataService.cancelReservation(reservationIndex)
+                .then(response => {
+                    if (response){
+                        
+                        // const index = this.appointment.examination.therapy.indexOf({medInPharma: this.reservations[reservationIndex].medicineInPharmacy, days: this.reservations[reservationIndex].days+''});
+                        // if (index > -1) {
+                        //     this.appointment.examination.therapy.splice(index, 1);
+                        // }
+
+                        // console.log('nakon uklanjanja iz terapije');
+                        console.log(JSON.stringify(this.appointment.examination.therapy));
+
+                        delete this.reservations[reservationIndex];
+                        console.log('nakon brisanja');
+                        console.log(JSON.stringify(this.reservations));
+                        
+                    }
+                });
             
         }
         // getMedicineForTherapy(){

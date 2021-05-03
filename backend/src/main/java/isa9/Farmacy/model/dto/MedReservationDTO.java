@@ -28,8 +28,4 @@ public class MedReservationDTO {
     private int quantity;
 
     private PharmacistDTO issued;
-
-
-
-
 }
