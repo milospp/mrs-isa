@@ -226,4 +226,15 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         save(cloneAppointment(appointment));
         return appointment;
     }
+
+    @Override
+    public List<Appointment> getDoctorUpcomingAppointments(Long doctorId) {
+        Doctor doctor = userService.getDoctorById(doctorId);
+
+        List<Appointment> allAppointments;
+        allAppointments = findAll().stream()
+                .filter(x -> isAssignedToDoctor(x, doctor) && isUpcoming(x))
+                .collect(Collectors.toList());
+        return allAppointments;
+    }
 }

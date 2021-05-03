@@ -1,17 +1,22 @@
 package isa9.Farmacy.controller;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.AppointmentDTO;
 import isa9.Farmacy.model.dto.PatientDTO;
 import isa9.Farmacy.model.dto.TherapyItemDTO;
 import isa9.Farmacy.service.*;
 import isa9.Farmacy.support.AppointmentToAppointmentDTO;
+import isa9.Farmacy.support.DateTimeDTO;
 import isa9.Farmacy.support.MedicineInPharmacyToMedInPharmaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 @RestController
@@ -189,6 +194,84 @@ public class AppointmentController {
         List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.getPastPatientAppointments(id));
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
+
+    @PostMapping("book")
+    public ResponseEntity<Boolean> bookAnAppointment(@RequestBody DateTimeDTO dateTime) {
+        System.out.println(dateTime);
+
+        boolean badTime = false;
+
+        Doctor doctor = userService.getDoctorById(dateTime.getDoctorId());
+        Patient patient = userService.getPatientById(dateTime.getPatientId());
+        Pharmacy pharmacy = pharmacyService.findOne(dateTime.getPharmacyId());
+
+        boolean derm = doctor.getRole().getName().equals("DERMATOLOGIST");
+
+        List<Appointment> patientAppointments = appointmentService.getPatientUpcomingAppointments(patient.getId());
+        List<Appointment> doctorAppointments = appointmentService.getDoctorUpcomingAppointments(doctor.getId());
+
+        List<Work> works = pharmacyService.findDoctorsWork(doctor);
+        for (Work work : works){
+            for (Appointment a : doctorAppointments){
+                if (LocalTime.from(dateTime.getDateTime()).isAfter(work.getEndHour()) ||
+                        LocalTime.from(dateTime.getDateTime()).isBefore(work.getStartHour()) ||
+                        LocalTime.from(dateTime.getDateTime()).plusMinutes(dateTime.getDurationInMins()).isAfter(work.getEndHour())){
+                    badTime = true;
+                }
+            }
+        }
+
+        // patient validation
+        for (Appointment a : patientAppointments){
+            if (dateTime.getDateTime().isAfter(a.getStartTime()) && dateTime.getDateTime().isBefore(a.getStartTime().plusMinutes(dateTime.getDurationInMins()))){
+                badTime = true;
+                break;
+            }
+            if (dateTime.getDateTime().isEqual(a.getStartTime()) || dateTime.getDateTime().isEqual(a.getStartTime().plusMinutes(dateTime.getDurationInMins()))){
+                badTime = true;
+                break;
+            }
+        }
+
+        // doctor validation
+        for (Appointment a : doctorAppointments){
+            if (dateTime.getDateTime().isAfter(a.getStartTime()) && dateTime.getDateTime().isBefore(a.getStartTime().plusMinutes(dateTime.getDurationInMins()))){
+                badTime = true;
+                break;
+            }
+            if (dateTime.getDateTime().isEqual(a.getStartTime()) || dateTime.getDateTime().isEqual(a.getStartTime().plusMinutes(dateTime.getDurationInMins()))) {
+                badTime = true;
+                break;
+            }
+        }
+
+        if (badTime) return new ResponseEntity<>(false, HttpStatus.OK);
+
+        Appointment appointment = Appointment.builder()
+                .id(null)
+                .doctor(doctor)
+                .durationInMins(dateTime.getDurationInMins())
+                .examination(Examination.builder()
+                        .id(null)
+                        .patient(patient)
+                        .status(ExaminationStatus.PENDING)
+                        .build())
+                .pharmacy(pharmacy)
+                .price(dateTime.getPrice())
+                .startTime(dateTime.getDateTime())
+                .build();
+        appointment.getExamination().setAppointment(appointment);
+        if (derm)
+            appointment.setType(TypeOfReview.EXAMINATION);
+        else
+            appointment.setType(TypeOfReview.COUNSELING);
+
+        appointmentService.save(appointment);
+
+        //AppointmentDTO dto = appointmentToAppointmentDTO.convert(appointment);
+        return new ResponseEntity<>(true, HttpStatus.OK);
 
     }
 

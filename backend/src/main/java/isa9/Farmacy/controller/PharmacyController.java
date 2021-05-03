@@ -97,6 +97,12 @@ public class PharmacyController {
     public ResponseEntity<List<WorkDTO>> getPharmacistPharmacy(@PathVariable Long doctorId) {
         Doctor doctor = userService.getDoctorById(doctorId);
         List<Work> work = pharmacyService.findDoctorsWork(doctor);
+
+        System.out.println(work.get(0).getStartHour());
+        System.out.println(work.get(0).getEndHour());
+        System.out.println(work.get(1).getStartHour());
+        System.out.println(work.get(1).getEndHour());
+
         List<WorkDTO> convertedWork = this.workToWorkDTO.convert(work);
         return new ResponseEntity<>(convertedWork, HttpStatus.OK);
     }
