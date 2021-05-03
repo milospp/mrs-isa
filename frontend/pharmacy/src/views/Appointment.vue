@@ -27,6 +27,16 @@
                 <input :disabled="!patientAppeared" v-model="appointment.examination.diagnose" class="form-control" placeholder="Diagnose" id="diagnose">
             </div>
             <div class="form-group">
+                <button @click="bookNewAppointmentModal()" :disabled="!patientAppeared" class="btn btn-secondary">Book New Custom 
+                    <span v-if="appointment.type == 'EXAMINATION'">
+                        Examination
+                    </span>
+                    <span v-else>
+                        Counseling
+                    </span>
+                </button>
+            </div>
+            <div class="form-group">
                 <button class="form-control btn btn-primary" id="finish" @click="finishAppointment()">Finish</button>
             </div>
         </div>
@@ -35,11 +45,11 @@
             <p class="badge badge-success">HELD</p>
             <div class="form-group">
                 <label for="info">Anamnesis (conversation with patient)</label>
-                <textarea :disabled="true" v-model="appointment.examination.examinationInfo" class="form-control" id="info" rows="5" placeholder="Info..."></textarea>
+                <textarea :disabled="true" v-model="appointment.examination.examinationInfo" class="form-control" id="info" rows="5"></textarea>
             </div>
             <div class="form-group">
                 <label for="diagnose">Diagnose</label>
-                <input :disabled="true" v-model="appointment.examination.diagnose" class="form-control" placeholder="Diagnose" id="diagnose">
+                <input :disabled="true" v-model="appointment.examination.diagnose" class="form-control" id="diagnose">
             </div>
             <div class="form-group">
                 <button :disabled="true" class="form-control btn btn-primary" id="finish" @click="finishAppointment()">Finish</button>
@@ -51,6 +61,40 @@
         </div>
         <div v-else-if="appointment.examination.status == 'CANCELED'">
             <p class="badge badge-danger">CANCELED</p>
+        </div>
+    </div>
+
+    <!-- MODAL for booking new appointment -->
+    <div class="modal" tabindex="-1" role="dialog" id="newAppointmentModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Book Custom Appointment</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="customTimeAppointment" class="form-group">
+                        <div class="form-group">
+                            <label for="datetime">Date and time</label>
+                            <input id="datetime" class="form-control" v-model="newAppointment.dateTime" type="datetime-local">
+                        </div>
+                        <div class="form-group">
+                            <label for="duration">Duration (minutes)</label>
+                            <input id="duration" class="form-control" v-model="newAppointment.durationInMins" type="number" min="5" step="5">
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Price</label>
+                            <input id="price" class="form-control" v-model="newAppointment.price" type="number" min="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @click="bookAtCustomTime()">Book</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -74,6 +118,7 @@
 import NavBar from '@/components/NavBar.vue'
 import AppointmentDataService from '@/service/AppointmentDataService.js'
 import UtilService from '../service/UtilService.js';
+import $ from 'jquery';
 
 // @ is an alias to /src
 export default {
@@ -105,8 +150,16 @@ export default {
                         name: '',
                         surname: '',
                     },
+                price: 0,
             },
             patientAppeared: null,
+            //newAppointmentDateTime: null,
+            newAppointment: null,
+            newAppointment: {
+                "dateTime": null,
+                "price": 0,
+                "durationInMins": 0
+            },
         };
     },
     methods: {
@@ -136,6 +189,21 @@ export default {
                         alert("Info saved.");
                     }
                 });
+        },
+        bookNewAppointmentModal(){
+            $('#newAppointmentModal').modal();
+        },
+        bookAtCustomTime(){
+            console.log(this.newAppointment.dateTime, this.appointment.doctor.id, this.appointment.examination.patient.id, this.appointment.pharmacy.id, this.newAppointment.price, this.newAppointment.durationInMins);
+            AppointmentDataService.bookCustomAppointment(this.newAppointment.dateTime, this.appointment.doctor.id, this.appointment.examination.patient.id, this.appointment.pharmacy.id, this.newAppointment.price, this.newAppointment.durationInMins)
+            .then(response => {
+                if (response.data){
+                    alert('Successfuly booked appoinment at ' + this.newAppointment.dateTime);
+                }
+                else {
+                    alert('Time is not valid');
+                }
+            });
         }
         // confirmLeave() {
         //     return window.confirm('Do you really want to leave? you have unsaved changes!')

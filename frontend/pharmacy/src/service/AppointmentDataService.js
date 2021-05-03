@@ -45,6 +45,21 @@ class MedicineDataService {
     });
   }
 
+  bookCustomAppointment(datetime, doctorId, patientId, pharmacyId, price, durationInMins){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/book`,
+      data: {
+        "dateTime": datetime, 
+        "doctorId": doctorId, 
+        "patientId": patientId, 
+        "pharmacyId": pharmacyId, 
+        "price": price,
+        "durationInMins": durationInMins
+      }
+    });
+  }
+
 }
 
 export default new MedicineDataService();
