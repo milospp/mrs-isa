@@ -1,12 +1,8 @@
 package isa9.Farmacy.service.impl.db;
 
-import isa9.Farmacy.model.Examination;
 import isa9.Farmacy.model.Work;
-import isa9.Farmacy.repository.ExaminationRepository;
 import isa9.Farmacy.repository.WorkRepository;
-import isa9.Farmacy.service.ExaminationService;
 import isa9.Farmacy.service.WorkService;
-import isa9.Farmacy.service.impl.base.ExaminationServiceBase;
 import isa9.Farmacy.service.impl.base.WorkServiceBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -15,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Set;
 
 @Component
 @Primary
@@ -45,7 +40,7 @@ public class dbWorkService extends WorkServiceBase implements WorkService {
     }
 
     @Override
-    public Set<Work> getWorksByTime(LocalTime time) {
+    public List<Work> getWorksByTime(LocalTime time) {
         System.out.println("time.toString() = " + time.toString());
         return workRepository.getAllWorksByTime(time.toString());
     }

@@ -4,18 +4,18 @@ import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.DermAppointmentReqDTO;
 import isa9.Farmacy.repository.AppointmentRepository;
 import isa9.Farmacy.service.AppointmentService;
+import isa9.Farmacy.service.WorkService;
 import isa9.Farmacy.service.impl.base.AppointmentServiceBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 @Component
 @Primary
@@ -23,10 +23,12 @@ import java.util.Map;
 public class dbAppointmentService extends AppointmentServiceBase implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
+    private final WorkService workService;
 
     @Autowired
-    public dbAppointmentService(AppointmentRepository appointmentRepository) {
+    public dbAppointmentService(AppointmentRepository appointmentRepository, WorkService workService) {
         this.appointmentRepository = appointmentRepository;
+        this.workService = workService;
     }
 
     @Override
@@ -62,14 +64,30 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
     }
 
     @Override
-    public List<Dermatologist> getFreeDermatologist(DermAppointmentReqDTO appointmentReqDTO) {
+    public Set<Work> getFreePharmacist(DermAppointmentReqDTO appointmentReqDTO) {
+        LocalDateTime start = appointmentReqDTO.getStartTime();
+        LocalDateTime end = appointmentReqDTO.getStartTime().plusMinutes(appointmentReqDTO.getDurationInMins());
+        if (start.until(end, ChronoUnit.DAYS) >= 1 ) return new HashSet<>();
 
-        return null;
+        List<Pharmacist> dermatologists = getOccupiedPharmacists(start, end);
+        List<Work> employees = workService.getWorksInInterval(start.toLocalTime(), end.toLocalTime());
+        Set<Work> workSet = new HashSet<>(employees);
+        Set<Work> invalidWorkSet = new HashSet<>();
+
+        for (Work work : workSet) {
+            if (work.getDoctor().getRole().getId() != 5L) invalidWorkSet.add(work);
+            else if (dermatologists.stream().anyMatch(d -> d.getId() == work.getDoctor().getId())) invalidWorkSet.add(work);
+        }
+
+        workSet.removeAll(invalidWorkSet);
+
+        return workSet;
 
     }
 
     @Override
     public List<Appointment> getAllAppointmentsInInterval(LocalDateTime start, LocalDateTime end) {
+
         return appointmentRepository.getAppointmentsInInterval(start.toString(), end.toString());
     }
 }

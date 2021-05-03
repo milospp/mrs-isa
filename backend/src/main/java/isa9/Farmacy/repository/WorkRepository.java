@@ -16,6 +16,6 @@ public interface WorkRepository extends JpaRepository<Work, Long> {
     List<Work> findAllByDoctor(Doctor doctor);
 
     @Query("SELECT w FROM Work w WHERE ((w.endHour < w.startHour) and (w.startHour < cast(?1 AS time) or w.endHour > cast(?1 AS time))) or ((w.endHour > w.startHour) and (w.startHour < cast(?1 AS time) and w.endHour > cast(?1 AS time)))")
-    Set<Work> getAllWorksByTime(String time);
+    List<Work> getAllWorksByTime(String time);
 
 }
