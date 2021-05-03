@@ -1,9 +1,8 @@
 package isa9.Farmacy.service;
 
-import isa9.Farmacy.model.Appointment;
-import isa9.Farmacy.model.Doctor;
-import isa9.Farmacy.model.Patient;
-import isa9.Farmacy.model.Pharmacy;
+import isa9.Farmacy.model.*;
+import isa9.Farmacy.model.dto.DermAppointmentReqDTO;
+import isa9.Farmacy.model.dto.DermatologistRegDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,4 +34,7 @@ public interface AppointmentService extends GenericService<Appointment>{
 
     Boolean patientCanRateDoctor(Patient patient, Doctor doctor);
     Boolean patientHadAppointmentInPharmacy(Patient patient, Pharmacy pharmacy);
+
+    List<Dermatologist> getFreeDermatologist(DermAppointmentReqDTO appointmentReqDTO);
+    List<Appointment> getAllAppointmentsInInterval(LocalDateTime start, LocalDateTime end);
 }

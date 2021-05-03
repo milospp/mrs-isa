@@ -1,6 +1,7 @@
 package isa9.Farmacy.service.impl.db;
 
 import isa9.Farmacy.model.*;
+import isa9.Farmacy.model.dto.DermAppointmentReqDTO;
 import isa9.Farmacy.repository.AppointmentRepository;
 import isa9.Farmacy.service.AppointmentService;
 import isa9.Farmacy.service.impl.base.AppointmentServiceBase;
@@ -58,5 +59,17 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
         appointment = appointmentRepository.findFirstByPharmacyAndExamination_PatientAndExamination_Status(pharmacy,patient,ExaminationStatus.HELD);
         if (appointment == null) return false;
         else return true;
+    }
+
+    @Override
+    public List<Dermatologist> getFreeDermatologist(DermAppointmentReqDTO appointmentReqDTO) {
+
+        return null;
+
+    }
+
+    @Override
+    public List<Appointment> getAllAppointmentsInInterval(LocalDateTime start, LocalDateTime end) {
+        return appointmentRepository.getAppointmentsInInterval(start.toString(), end.toString());
     }
 }

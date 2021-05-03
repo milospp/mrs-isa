@@ -1,10 +1,11 @@
 package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.*;
-import isa9.Farmacy.model.dto.AppointmentDTO;
-import isa9.Farmacy.model.dto.PatientDTO;
+import isa9.Farmacy.model.dto.*;
 import isa9.Farmacy.service.*;
 import isa9.Farmacy.support.AppointmentToAppointmentDTO;
+import isa9.Farmacy.support.DermatologistToDermatologistDTO;
+import isa9.Farmacy.support.WorkToWorkDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,19 +20,25 @@ public class AppointmentController {
 
     private final AppointmentService appointmentService;
     private final AppointmentToAppointmentDTO appointmentToAppointmentDTO;
+    private final DermatologistToDermatologistDTO dermatologistToDermatologistDTO;
+    private final WorkToWorkDTO workToWorkDTO;
     private final PharmacyService pharmacyService;
     private final UserService userService;
     private final MedicineService medicineService;
     private final ExaminationService examinationService;
+    private final WorkService workService;
 
     @Autowired
-    public AppointmentController(AppointmentService appointmentService, AppointmentToAppointmentDTO appointmentToAppointmentDTO, PharmacyService pharmacyService, UserService userService, MedicineService medicineService, ExaminationService examinationService){
+    public AppointmentController(AppointmentService appointmentService, AppointmentToAppointmentDTO appointmentToAppointmentDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, WorkToWorkDTO workToWorkDTO, PharmacyService pharmacyService, UserService userService, MedicineService medicineService, ExaminationService examinationService, WorkService workService){
         this.appointmentService = appointmentService;
         this.appointmentToAppointmentDTO = appointmentToAppointmentDTO;
+        this.dermatologistToDermatologistDTO = dermatologistToDermatologistDTO;
+        this.workToWorkDTO = workToWorkDTO;
         this.pharmacyService = pharmacyService;
         this.userService = userService;
         this.medicineService = medicineService;
         this.examinationService = examinationService;
+        this.workService = workService;
     }
 
     @GetMapping("tmp-test")
@@ -157,6 +164,18 @@ public class AppointmentController {
     public ResponseEntity<List<AppointmentDTO>> getPatientUpcomingAppointments(@PathVariable Long id) {
         this.appointmentService.getPatientUpcomingAppointments(id);
         List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.getPatientUpcomingAppointments(id));
+
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
+
+    @GetMapping("free-derm")
+    public ResponseEntity<List<AppointmentDTO>> getFreeDerm(@RequestBody DermAppointmentReqDTO appointmentRequest) {
+
+//        List<WorkDTO> resultDTOS = workToWorkDTO.convert(this.workService.getWorksByTime(appointmentRequest.getStartTime()));
+        List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.getAllAppointmentsInInterval(
+                appointmentRequest.getStartTime(), appointmentRequest.getStartTime().plusMinutes(appointmentRequest.getDurationInMins())
+        ));
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
 
