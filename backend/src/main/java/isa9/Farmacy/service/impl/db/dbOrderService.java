@@ -49,4 +49,9 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
         for (MedicineOrder mo : this.orderRepository.findAll()) if (mo.getAuthor().getId() == idAdmina) povratna.add(mo);
         return povratna;
     }
+
+    @Override
+    public void delete(MedicineOrder zaBrisanje) {
+        this.orderRepository.delete(zaBrisanje);
+    }
 }
