@@ -13,5 +13,4 @@ public interface MedicineService extends GenericService<Medicine> {
 
     Medicine updateMedicineRating(Medicine medicine);
 
-    MedicineOrder saveOrder(MedicineOrder medicineOrder);
 }

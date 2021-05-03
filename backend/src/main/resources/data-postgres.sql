@@ -95,11 +95,11 @@ insert into users (address_id, email, enabled, name, password, phone_number, rol
 insert into pharmacy_admin (id, pharmacy_id) values (14, 1);
 
 --works
-insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (11, CURRENT_TIME + INTERVAL '5hour', 1, CURRENT_TIME);
+insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (11, current_timestamp + INTERVAL '3 hours', 1, current_timestamp);
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 1);
-insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (12, CURRENT_TIME + INTERVAL '5hour', 1, CURRENT_TIME);
+insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (12, current_timestamp + INTERVAL '6 hours', 1, current_timestamp + INTERVAL '9 hours');
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 2);
-insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (11, CURRENT_TIME + INTERVAL '5hour', 2, CURRENT_TIME);
+insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (11, current_timestamp + INTERVAL '3 hours', 2, current_timestamp);
 insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 3);
 
 --med price
@@ -182,13 +182,13 @@ insert into users (address_id, email, enabled, name, password, phone_number, rol
 insert into doctor (id) values (17);
 insert into dermatologist (id) values (17);
         -- works
-insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (15, CURRENT_TIME + INTERVAL '5hour', 1, CURRENT_TIME);
+insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (15, current_time + INTERVAL '3 hours', 1, current_time);
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 4);
-insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (16, CURRENT_TIME + INTERVAL '5hour', 1, CURRENT_TIME);
+insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (16, current_timestamp + INTERVAL '3 hours', 1, CURRENT_TIME);
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 5);
-insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (17, CURRENT_TIME + INTERVAL '5hour', 1, CURRENT_TIME);
+insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (17, '08:00:00', 1, '16:00:00');
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 6);
-insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (16, CURRENT_TIME + INTERVAL '5hour', 2, CURRENT_TIME);
+insert into work (doctor_id, end_hour, pharmacy_id, start_hour) values (16, '20:00:00', 2, '23:00:00');
 insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 7);
         -- doctor_working
 insert into doctor_working (doctor_id, working_id) values (15, 4);

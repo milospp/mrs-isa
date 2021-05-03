@@ -38,10 +38,10 @@ public interface AppointmentService extends GenericService<Appointment>{
     Boolean patientCanRateDoctor(Patient patient, Doctor doctor);
     Boolean patientHadAppointmentInPharmacy(Patient patient, Pharmacy pharmacy);
 
-
     List<Pharmacist> getOccupiedPharmacists(LocalDateTime start, LocalDateTime end);
     Set<Work> getFreePharmacist(DermAppointmentReqDTO appointmentReqDTO);
     List<Appointment> getAllAppointmentsInInterval(LocalDateTime start, LocalDateTime end);
 
     Appointment bookDermAppointment(DermAppointmentReqDTO appointmentReqDTO, Patient patient);
+    List<Appointment> getDoctorUpcomingAppointments(Long id);
 }

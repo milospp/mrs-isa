@@ -49,8 +49,4 @@ public class InMemoryMedicineService extends MedicineServiceBase implements Medi
         return null;
     }
 
-    @Override
-    public MedicineOrder saveOrder(MedicineOrder medicineOrder) {
-        return null;
-    }
 }

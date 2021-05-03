@@ -66,7 +66,7 @@ public class MedicineController {
         // TODO: Get patient from session
         User user = userService.getLoggedInUser();
 
-        if (!form.getPatientId().equals(user.getId())){
+        if (!form.getPatientId().equals(user.getId()) && !user.getRole().getName().equals("DERMATOLOGIST") && !user.getRole().getName().equals("PHARMACIST")){
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
 
@@ -77,7 +77,10 @@ public class MedicineController {
         if (medReservation == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
-        MedReservationDTO dto = medReservationToMedReservationDTO.convert(medReservation);
+        MedReservation reservationWithId = medReservationService.getByCode(medReservation.getCode());
+
+        MedReservationDTO dto = medReservationToMedReservationDTO.convert(reservationWithId);
+        System.out.println("Id rezervacije: " + dto.getId());
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
@@ -224,26 +227,6 @@ public class MedicineController {
         noviUApoteci.setInStock(lek.getInStock());
         apoteka.getMedicines().add(noviUApoteci);
         pharmacyService.save(apoteka);
-        return new ResponseEntity<>(povratna, HttpStatus.OK);
-    }
-
-    @PostMapping("/order/{idAdmina}")
-    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
-    public ResponseEntity<Integer> orderPharmacyAdmin(@PathVariable Long idAdmina, @RequestBody OrderHelp pomocna) {
-        User user = userService.findOne(idAdmina);
-        int povratna = -1;
-        if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
-        PharmacyAdmin admin = (PharmacyAdmin) user;
-        povratna = 0;
-        List<MedicineQuantity> listaLekova = (new MedQuantityDTOtoMedQuantity(this.medicineService)).convert(pomocna.getMedicines());
-
-        MedicineOrder porudzbina = new MedicineOrder();
-        porudzbina.setPharmacy(admin.getPharmacy());
-        porudzbina.setAuthor(admin);
-        porudzbina.setAllMedicines(listaLekova);
-        porudzbina.setStartDate(pomocna.getStartDate());
-        porudzbina.setEndDate(pomocna.getEndDate());
-        medicineService.saveOrder(porudzbina);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 

@@ -20,7 +20,7 @@ public class TherapyItem {
     private Long id;
 
     @OneToOne
-    private Medicine medicine;
+    private MedicineInPharmacy medicine;
 
     @Column
     @EqualsAndHashCode.Include
