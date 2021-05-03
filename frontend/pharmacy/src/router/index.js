@@ -28,6 +28,7 @@ import LogoutView from '@/views/LogoutView.vue'
 import Appointment from '@/views/Appointment.vue'
 import AddSysAdmin from '@/views/AddSysAdmin.vue'
 import SupplierProfile from '@/views/SupplierProfile.vue'
+import MedicineSearchPage from '@/views/MedicineSearchPage.vue'
 
 
 const routes = [
@@ -178,6 +179,11 @@ const routes = [
     path: '/supplier/profile',
     name: 'SupplierProfile',
     component: SupplierProfile    
+  },
+  {
+    path: '/medicineSearch',
+    name: 'MedicineSearchPage',
+    component: MedicineSearchPage
   },
   {
     path: '/appointment/:id',

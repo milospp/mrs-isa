@@ -17,6 +17,7 @@
 					<router-link :to="{ name: 'HomePage'}" class="nav-item nav-link">Home</router-link>
 					<router-link :to="{ name: 'Pharmacies'}" class="nav-item nav-link">Pharmacies</router-link>
 					<router-link :to="{ name: 'Medicines'}" class="nav-item nav-link">Medicines</router-link>
+					<router-link :to="{ name: 'MedicineSearchPage'}" class="nav-item nav-link">Search medicines</router-link>
 					<!-- <router-link :to="{ name: 'DermAppointments'}" class="nav-item nav-link">Derm. Appointments</router-link> -->
 
 
