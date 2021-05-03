@@ -253,7 +253,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         Set<Work> workSet = getFreePharmacist(appointmentReqDTO);
         Boolean available = workSet.stream().anyMatch(w ->
                 w.getDoctor().getId() == appointmentReqDTO.getPharmacistId() &&
-                w.getPharmacy().getId() == appointmentReqDTO.getPharmacyId());
+                        w.getPharmacy().getId() == appointmentReqDTO.getPharmacyId());
 
         if (!available) return null;
 
@@ -279,7 +279,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
 
         return save(appointment);
 
-
+    }
 
 
     @Override
