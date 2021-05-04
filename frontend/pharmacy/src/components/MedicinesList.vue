@@ -2,6 +2,99 @@
   <div class="row">
     <h3>All Medicines</h3>
   </div>
+
+
+	<div class="row mb-3">
+			<div class="col-md-12">
+				<a class="btn btn-primary float-right" data-toggle="collapse" href="#searchCollapse" role="button" aria-expanded="false" aria-controls="searchCollapse">
+					Filter
+				</a>
+			</div>
+	</div>
+  <div class="searchForm collapse mb-2 bg-light" id="searchCollapse">
+    <form v-on:submit.prevent="searchMedicines" class="p-3">
+          <h4>Filter</h4>
+
+        <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="inputEmail4">Name</label>
+              <input type="text" class="form-control" id="inputName" v-model="searchParams.name">
+            </div>
+            <div class="form-group col-md-4">
+              <label for="inputStructure">Structure</label>
+              <input type="text" class="form-control" id="inputStructure" v-model="searchParams.structure">
+            </div>
+            <div class="form-group col-md-4">
+              <label for="inputManufacturer">Manufacturer</label>
+              <input type="text" class="form-control" id="inputAddress" v-model="searchParams.manufacturer">
+            </div>
+
+            <div class="form-group col-md-3">
+              <label for="inputShape">Shape</label>
+              <input type="text" class="form-control" id="inputShape" v-model="searchParams.shape">
+            </div>
+
+
+
+            <div class="form-group col-md-3">
+              <label for="inputType">Type</label>
+              <input type="text" class="form-control" id="inputType" v-model="searchParams.type">
+            </div>
+
+            <div class="form-group col-md-2">
+              <label for="inputPerscription">Perscription</label>
+              <select class="form-control" id="inputPerscription" v-model="searchParams.perscription">
+                <option value="WITH_RECEIPT">With Receipt</option>
+                <option value="WITHOUT_RECEIPT">Without Receipt</option>
+              </select>          
+            </div>
+
+            <div class="form-group col-md-2">
+              <label for="inputPoints">Points</label>
+
+              <div class="input-group">
+
+                  <input type="text" class="form-control" id="inputShape" v-model="searchParams.minPoints">
+
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroupPrepend2">-</span>
+                  </div>
+                  <input type="text" class="form-control" id="inputShape" v-model="searchParams.maxPoints">
+              </div>
+            </div>
+
+            <div class="form-group col-md-2">
+              <label for="inputMinRating">Rating</label>
+
+              <div class="input-group">
+
+                  <input type="text" class="form-control" id="inputMinRating" v-model="searchParams.minRating">
+
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputMaxRating">-</span>
+                  </div>
+                  <input type="text" class="form-control" id="inputMaxRating" v-model="searchParams.maxRating">
+              </div>
+            </div>
+
+
+            <div class="form-group col-md-2">
+              <label for="sortSelect">Sort</label>
+              <select class="form-control" id="sortSelect" v-model="searchParams.sort">
+                <option value="NAME_ASC">By Name Asc</option>
+                <option value="NAME_DES">By Name Des</option>
+                <option value="ADDRESS_ASC">By Address Asc</option>
+                <option value="ADDRESS_DES">By Address Des</option>
+                <option value="RAING_ASC">By Rating Asc</option>
+                <option value="RAING_DES">By Rating Des</option>
+              </select>          
+            </div>
+
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button> 
+    </form>
+  </div>
+  
   <div class="row">
 
     <div class="col-md-4" v-for="m in medicinesSlice">
@@ -36,6 +129,7 @@ export default {
         return {
             medicines: [],
             message: null,
+            searchParams: {},
             // limit: 0,
         };
     },
@@ -54,6 +148,14 @@ export default {
                     console.log(response.data);
                 });
         },
+        searchMedicines() {
+          MedicineDataService.searchMedicines(JSON.stringify(this.searchParams));
+                // .then(response => {
+                //     this.pharmacies = response.data;
+                //     console.log(response.data);
+                // });
+        },
+
     },
     mounted() {
         this.getMedicines();
