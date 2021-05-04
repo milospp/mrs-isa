@@ -123,7 +123,7 @@
 			</div>
 	</div>
   <div class="searchForm collapse mb-2 bg-light" id="searchCollapse">
-    <form v-on:submit.prevent="searchMedicines" class="p-3">
+    <form v-on:submit.prevent="searchPastAppointments" class="p-3">
           <h4>Filter</h4>
 
         <div class="form-row">
@@ -138,7 +138,8 @@
 
             <div class="form-group col-md-4">
               <label for="inputPerscription">Status</label>
-              <select class="form-control" id="inputPerscription" v-model="searchParams.perscription">
+              <select class="form-control" id="inputPerscription" v-model="searchParams.status">
+                <option value="ALL">All</option>
                 <option value="HELD">Held</option>
                 <option value="NOT_HELD">Not Held</option>
                 <option value="CANCELED">Canceled</option>
@@ -150,12 +151,12 @@
 
               <div class="input-group">
 
-                  <input type="datetime-local" class="form-control" id="inputShape" min="0" :max="Math.min(9999,searchParams.maxDuration)" v-model="searchParams.minDuration">
+                  <input type="datetime-local" class="form-control" id="inputShape" min="0" :max="Math.min(9999,searchParams.endTime)" v-model="searchParams.startTime">
 
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroupPrepend2">-</span>
                   </div>
-                  <input type="datetime-local" class="form-control" id="inputShape" :min="Math.max(0,searchParams.minDuration)" max="999" v-model="searchParams.maxDuration">
+                  <input type="datetime-local" class="form-control" id="inputShape" :min="Math.max(0,searchParams.startTime)" max="999" v-model="searchParams.endTime">
               </div>
             </div>
 
@@ -171,7 +172,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="inputDuration">-</span>
                   </div>
-                  <input type="number" class="form-control" id="inputDurationMax" :min="Math.max(0,searchParams.minDuration)" max="999" v-model="searchParams.maxDuration">
+                  <input type="number" class="form-control" id="inputDurationMax" :min="Math.max(0,searchParams.minDuration)" max="9999" v-model="searchParams.maxDuration">
               </div>
             </div>
 
@@ -193,16 +194,19 @@
             <div class="form-group col-md-2">
               <label for="sortSelect">Sort</label>
               <select class="form-control" id="sortSelect" v-model="searchParams.sort">
-                <option value="NAME_ASC">By Name Asc</option>
-                <option value="NAME_DES">By Name Des</option>
-                <option value="SHAPE_ASC">By Shape Asc</option>
-                <option value="SHAPE_DES">By Shape Des</option>
-                <option value="TYPE_ASC">By Type Asc</option>
-                <option value="TYPE_DES">By Type Des</option>
-                <option value="POINTS_ASC">By Points Asc</option>
-                <option value="POINTS_DES">By Points Des</option>
-                <option value="RAING_ASC">By Rating Asc</option>
-                <option value="RAING_DES">By Rating Des</option>
+                <option value="DATE_ASC">By Date Asc</option>
+                <option value="DATE_DES" selected>By Date Des</option>
+                <option value="DOCTOR_ASC">By Doctor Asc</option>
+                <option value="DOCTOR_DES">By Doctor Des</option>
+                <option value="PHARMACY_ASC">By Pharmacy Asc</option>
+                <option value="PHARMACY_DES">By Pharmacy Des</option>
+                <option value="STATUS_ASC">By Status Asc</option>
+                <option value="STATUS_DES">By Status Des</option>
+                <option value="DURATION_ASC">By Duration Asc</option>
+                <option value="DURATION_DES">By Duration Des</option>
+
+                <option value="PRICE_ASC">By Price Asc</option>
+                <option value="PRICE_DES">By Price Des</option>
               </select>          
             </div>
 
@@ -375,7 +379,16 @@ export default {
               alert("Successfully voted!");
             }
           });
-        }
+        },
+
+        searchPastAppointments() {
+          AppointmentDataService.searchAllUserPastAppointments(this.id, JSON.stringify(this.searchParams)) // HARDCODED
+                .then(response => {
+                    this.appointments = response.data;
+                });
+        },
+
+
   },
   computed: {
     filteredHistory(){

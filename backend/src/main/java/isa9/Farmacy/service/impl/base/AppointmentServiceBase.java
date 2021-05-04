@@ -1,6 +1,7 @@
 package isa9.Farmacy.service.impl.base;
 
 import isa9.Farmacy.model.*;
+import isa9.Farmacy.model.dto.AppointmentSearchDTO;
 import isa9.Farmacy.model.dto.DermAppointmentReqDTO;
 import isa9.Farmacy.service.AppointmentService;
 import isa9.Farmacy.service.ExaminationService;
@@ -292,5 +293,37 @@ public abstract class AppointmentServiceBase implements AppointmentService {
                 .filter(x -> isAssignedToDoctor(x, doctor) && isUpcoming(x))
                 .collect(Collectors.toList());
         return allAppointments;
+    }
+
+    @Override
+    public List<Appointment> filterPastAppointments(List<Appointment> appointments, AppointmentSearchDTO appointmentSearchDTO) {
+        if (appointmentSearchDTO == null) return appointments;
+        final Map<String, Comparator<Appointment>> critMap = new HashMap<String, Comparator<Appointment>>();
+
+        critMap.put("DATE_ASC", Comparator.comparing(Appointment::getStartTime).reversed());
+        critMap.put("DATE_DES", Comparator.comparing(Appointment::getStartTime));
+        critMap.put("DOCTOR_ASC", (o1,o2)->{return (o1.getDoctor().getName() + " " + o1.getDoctor().getSurname()).compareToIgnoreCase(o2.getDoctor().getName() + " " + o2.getDoctor().getSurname()); });
+        critMap.put("DOCTOR_DES", (o2,o1)->{return (o1.getDoctor().getName() + " " + o1.getDoctor().getSurname()).compareToIgnoreCase(o2.getDoctor().getName() + " " + o2.getDoctor().getSurname()); });
+        critMap.put("PHARMACY_ASC", (o1,o2)->{return o1.getPharmacy().getName().trim().compareToIgnoreCase(o2.getPharmacy().getName().trim());});
+        critMap.put("PHARMACY_DES", (o2,o1)->{return o1.getPharmacy().getName().trim().compareToIgnoreCase(o2.getPharmacy().getName().trim());});
+        critMap.put("STATUS_ASC", (o1,o2)->{return o1.getExamination().getStatus().toString().compareToIgnoreCase(o2.getExamination().getStatus().toString());});
+        critMap.put("STATUS_DES", (o2,o1)->{return o1.getExamination().getStatus().toString().compareToIgnoreCase(o2.getExamination().getStatus().toString());});
+        critMap.put("DURATION_ASC", Comparator.comparingDouble(Appointment::getDurationInMins));
+        critMap.put("DURATION_DES", Comparator.comparingDouble(Appointment::getDurationInMins).reversed());
+        critMap.put("PRICE_ASC", Comparator.comparingDouble(Appointment::getPrice));
+        critMap.put("PRICE_DES", Comparator.comparingDouble(Appointment::getPrice).reversed());
+
+        Comparator<Appointment> comp = critMap.getOrDefault(appointmentSearchDTO.getSort().toUpperCase().trim(), critMap.values().iterator().next());
+        // TODO : FIX IF EXAMINATION IS NULL
+        return appointments.stream()
+                .filter(a -> appointmentSearchDTO.getDoctorName().isEmpty() || (a.getDoctor().getName() + " " + a.getDoctor().getSurname()).toLowerCase().contains(appointmentSearchDTO.getDoctorName().toLowerCase()))
+                .filter(a -> appointmentSearchDTO.getPharmacyName().isEmpty() || a.getPharmacy().getName().toLowerCase().contains(appointmentSearchDTO.getPharmacyName()))
+                .filter(a -> appointmentSearchDTO.getStatus().isEmpty() || a.getPharmacy().getName().toLowerCase().contains(appointmentSearchDTO.getPharmacyName()))
+                .filter(a -> appointmentSearchDTO.getStatus().equalsIgnoreCase("ALL") || a.getExamination().getStatus().toString().equalsIgnoreCase(appointmentSearchDTO.getStatus()))
+                .filter(a -> appointmentSearchDTO.getStartTime() == null || a.getStartTime().isAfter(appointmentSearchDTO.getStartTime()))
+                .filter(a -> appointmentSearchDTO.getEndTime() == null || a.getStartTime().isBefore(appointmentSearchDTO.getEndTime()))
+                .filter(a -> a.getDurationInMins() >= appointmentSearchDTO.getMinDuration() && a.getDurationInMins() <= appointmentSearchDTO.getMaxDuration())
+                .filter(a -> a.getPrice() >= appointmentSearchDTO.getMinPrice() && a.getPrice() <= appointmentSearchDTO.getMaxPrice())
+                .sorted(comp).collect(Collectors.toList());
     }
 }

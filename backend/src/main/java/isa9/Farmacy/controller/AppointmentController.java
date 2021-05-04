@@ -229,6 +229,15 @@ public class AppointmentController {
 
     }
 
+    @PostMapping("patient-past/{id}/search")
+    public ResponseEntity<List<AppointmentDTO>> searchPastPatientAppointments(@PathVariable Long id, @RequestBody AppointmentSearchDTO appointmentSearchDTO) {
+
+        List<Appointment> appointments = this.appointmentService.getPastPatientAppointments(id);
+        appointments = appointmentService.filterPastAppointments(appointments, appointmentSearchDTO);
+        List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(appointments);
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+    }
+
     @PostMapping("book")
     public ResponseEntity<Boolean> bookAnAppointment(@RequestBody DateTimeDTO dateTime) {
         System.out.println(dateTime);
