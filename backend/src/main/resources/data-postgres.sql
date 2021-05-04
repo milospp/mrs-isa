@@ -80,8 +80,8 @@ insert into doctor (id) values (13);
 insert into dermatologist (id) values (13);
 
 --medicine
-insert into medicine (code, manufacturer, name, note, perscription, points, shape, structure, type) values ('AZ45', 'Nemci', 'PHIIIZER', 'vakcina', 0, 3, 'PILL', 'struucturee', 'some type idl');
-insert into medicine (code, manufacturer, name, note, perscription, points, shape, structure, type) values ('BZ55', 'Kinezi', 'Sinopharm', 'vakcina', 0, 5, 'PILL', 'struucturee', 'some type idl');
+insert into medicine (code, manufacturer, name, note, perscription, points, shape, structure, type) values ('AZ45', 'Hemofarm', 'Methyldopa', 'Može uzrokovati pospanost', 0, 3, 'pills', 'laktoza', 'Alfa-adrenergicki agonist');
+insert into medicine (code, manufacturer, name, note, perscription, points, shape, structure, type) values ('BZ55', 'Kinezi', 'Sinopharm', 'vakcina', 0, 5, 'pills', 'struucturee', 'some type idl');
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, structure, type) values ('FAR-123', 'Galenika','Farin','Piti isključivo prema receptu',0,2,'tablets','varfarin','antikoagulans');
 
 --pharmacies
