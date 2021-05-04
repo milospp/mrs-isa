@@ -60,6 +60,24 @@ class MedicineDataService {
     });
   }
 
+  getAvailableEmployes(timeRequest) {
+    return axios({
+      method: 'post',
+      url: `${API_URL}/free-derm`,
+      data: timeRequest
+    });
+  }
+
+  bookCounseling(appointmentRequest) {
+    return axios({
+      method: 'post',
+      url: `${API_URL}/derm-examination`,
+      data: appointmentRequest
+    });
+  }
+
 }
+
+
 
 export default new MedicineDataService();

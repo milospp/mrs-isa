@@ -22,6 +22,16 @@
 
 
 				</div>
+				<div v-else-if="user.role === 'PATIENT'" class="navbar-nav mr-auto mt-2 mt-lg-0">
+
+					<a class="navbar-brand" href="/">Navbar</a>
+
+					<router-link :to="{ name: 'HomePage'}" class="nav-item nav-link">Home</router-link>
+					<router-link :to="{ name: 'Pharmacies'}" class="nav-item nav-link">Pharmacies</router-link>
+					<router-link :to="{ name: 'Medicines'}" class="nav-item nav-link">Medicines</router-link>
+					<router-link :to="{ name: 'Counseling'}" class="nav-item nav-link">Counseling</router-link>
+					
+				</div>
 				<div v-else-if="user.role === 'PHARMACIST'" class="navbar-nav mr-auto mt-2 mt-lg-0">
 
 					<a class="navbar-brand" href="/pharmacist">Navbar</a>

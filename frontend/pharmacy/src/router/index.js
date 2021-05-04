@@ -28,6 +28,7 @@ import LogoutView from '@/views/LogoutView.vue'
 import Appointment from '@/views/Appointment.vue'
 import AddSysAdmin from '@/views/AddSysAdmin.vue'
 import SupplierProfile from '@/views/SupplierProfile.vue'
+import CounselingPage from '@/views/CounselingPage.vue'
 import MedicineSearchPage from '@/views/MedicineSearchPage.vue'
 
 
@@ -189,8 +190,12 @@ const routes = [
     path: '/appointment/:id',
     name: 'Appointment',
     component: Appointment    // view je komponenta
+  },
+  {
+    path: '/counseling',
+    name: 'Counseling',
+    component: CounselingPage
   }
-
 
   // {
   //   path: '/about',
