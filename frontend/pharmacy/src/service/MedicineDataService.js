@@ -10,11 +10,11 @@ class MedicineDataService {
   searchMedicines(searchParams) {
     console.log(searchParams);
 
-    /*return axios({
+    return axios({
       method: 'post',
       url: `${API_URL}/search`,
       data: JSON.parse(searchParams)
-    })*/
+    })
   }
 
   getMedicineForPharmacyAdmin(idAdminaApoteke) {

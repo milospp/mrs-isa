@@ -1,8 +1,5 @@
 <template>
 
-  <div class="row">
-    <h3>All Pharmacies</h3>
-  </div>
 		<div class="row mb-3">
 			<div class="col-md-12">
 				<a class="btn btn-primary float-right" data-toggle="collapse" href="#searchCollapse" role="button" aria-expanded="false" aria-controls="searchCollapse">
@@ -21,14 +18,17 @@
             <input type="text" class="form-control" id="inputAddress" v-model="searchParams.addressString">
           </div>
           <div class="form-group col-md-2">
-            <label for="inputAddress">Rating</label>
-            <select class="form-control" id="exampleFormControlSelect1" v-model="searchParams.rating">
-              <option>>4*</option>
-              <option>4-5</option>
-              <option>3-4</option>
-              <option>2-3</option>
-              <option>1-2</option>
-            </select>          
+            <label for="inputMinRating">Rating</label>
+
+            <div class="input-group">
+
+                <input type="number" class="form-control" id="inputMinRating" min="0" :max="Math.min(5,searchParams.maxRating)" v-model="searchParams.minRating">
+
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="inputMaxRating">-</span>
+                </div>
+                <input type="number" class="form-control" id="inputMaxRating" :min="Math.max(0,searchParams.minRating)" max="5" v-model="searchParams.maxRating">
+            </div>
           </div>
           <div class="form-group col-md-2">
             <label for="sortSelect">Sort</label>
@@ -92,7 +92,10 @@ export default {
         return {
             pharmacies: [],
             message: null,
-            searchParams: {},
+            searchParams: {
+              minRating: 0,
+              maxRating: 5,
+            },
         };
     },
     props: ['limit'],

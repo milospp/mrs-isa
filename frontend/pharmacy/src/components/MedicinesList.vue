@@ -1,8 +1,4 @@
 <template>
-  <div class="row">
-    <h3>All Medicines</h3>
-  </div>
-
 
 	<div class="row mb-3">
 			<div class="col-md-12">
@@ -44,6 +40,7 @@
             <div class="form-group col-md-2">
               <label for="inputPerscription">Perscription</label>
               <select class="form-control" id="inputPerscription" v-model="searchParams.perscription">
+                <option value="ALL">All</option>
                 <option value="WITH_RECEIPT">With Receipt</option>
                 <option value="WITHOUT_RECEIPT">Without Receipt</option>
               </select>          
@@ -54,12 +51,12 @@
 
               <div class="input-group">
 
-                  <input type="text" class="form-control" id="inputShape" v-model="searchParams.minPoints">
+                  <input type="number" class="form-control" id="inputShape" min="0" :max="Math.min(999,searchParams.maxPoints)" v-model="searchParams.minPoints">
 
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroupPrepend2">-</span>
                   </div>
-                  <input type="text" class="form-control" id="inputShape" v-model="searchParams.maxPoints">
+                  <input type="number" class="form-control" id="inputShape" :min="Math.max(0,searchParams.minPoints)" max="999" v-model="searchParams.maxPoints">
               </div>
             </div>
 
@@ -68,12 +65,12 @@
 
               <div class="input-group">
 
-                  <input type="text" class="form-control" id="inputMinRating" v-model="searchParams.minRating">
+                  <input type="number" class="form-control" id="inputMinRating" min="0" :max="Math.min(5,searchParams.maxRating)" v-model="searchParams.minRating">
 
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="inputMaxRating">-</span>
                   </div>
-                  <input type="text" class="form-control" id="inputMaxRating" v-model="searchParams.maxRating">
+                  <input type="number" class="form-control" id="inputMaxRating" :min="Math.max(0,searchParams.minRating)" max="5" v-model="searchParams.maxRating">
               </div>
             </div>
 
@@ -83,8 +80,12 @@
               <select class="form-control" id="sortSelect" v-model="searchParams.sort">
                 <option value="NAME_ASC">By Name Asc</option>
                 <option value="NAME_DES">By Name Des</option>
-                <option value="ADDRESS_ASC">By Address Asc</option>
-                <option value="ADDRESS_DES">By Address Des</option>
+                <option value="SHAPE_ASC">By Shape Asc</option>
+                <option value="SHAPE_DES">By Shape Des</option>
+                <option value="TYPE_ASC">By Type Asc</option>
+                <option value="TYPE_DES">By Type Des</option>
+                <option value="POINTS_ASC">By Points Asc</option>
+                <option value="POINTS_DES">By Points Des</option>
                 <option value="RAING_ASC">By Rating Asc</option>
                 <option value="RAING_DES">By Rating Des</option>
               </select>          
@@ -129,7 +130,12 @@ export default {
         return {
             medicines: [],
             message: null,
-            searchParams: {},
+            searchParams: {
+              minPoints: 0,
+              maxPoints: 999,
+              minRating: 0,
+              maxRating: 5,
+            },
             // limit: 0,
         };
     },
@@ -149,11 +155,10 @@ export default {
                 });
         },
         searchMedicines() {
-          MedicineDataService.searchMedicines(JSON.stringify(this.searchParams));
-                // .then(response => {
-                //     this.pharmacies = response.data;
-                //     console.log(response.data);
-                // });
+          MedicineDataService.searchMedicines(JSON.stringify(this.searchParams))
+                .then(response => {
+                    this.medicines = response.data;
+                });
         },
 
     },
