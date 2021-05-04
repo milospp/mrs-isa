@@ -42,6 +42,7 @@ public class Pharmacy {
     private Set<Rating> ratings;
 
     @Column (nullable = false, columnDefinition="Decimal(2,1) default '0.0'")
+    @Builder.Default
     private double rating = 0.0;
 
 

@@ -198,7 +198,7 @@ public class AppointmentController {
 
     }
 
-    @GetMapping("free-derm")
+    @PostMapping("free-derm")
     public ResponseEntity<List<WorkDTO>> getFreeDerm(@RequestBody DermAppointmentReqDTO appointmentRequest) {
 
         List<WorkDTO> resultDTOS = workToWorkDTO.convert(this.appointmentService.getFreePharmacist(appointmentRequest));
@@ -212,7 +212,7 @@ public class AppointmentController {
     public ResponseEntity<AppointmentDTO> bookDermAppointment(@RequestBody DermAppointmentReqDTO appointmentRequest) {
 
         User user = userService.getLoggedInUser();
-
+        // TODO: CHECK IF PATIENT ALREADY HAVE APPOINTMENT AT THIS TIME
 
         AppointmentDTO resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.bookDermAppointment(appointmentRequest, (Patient) user));
 
