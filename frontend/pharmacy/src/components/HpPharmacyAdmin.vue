@@ -175,13 +175,13 @@
                 </thead>
                 <tbody>
                     <tr :key="p.name" v-for="p in this.ponudeZaIspis">
-                      <td>{{p.startDate[2]}}.{{p.startDate[1]}}.{{p.startDate[0]}}.</td>
-                      <td>{{p.endDate[2]}}.{{p.endDate[1]}}.{{p.endDate[0]}}.</td>
+                      <td>{{p.startDate[2]}}.{{p.startDate[1]}}.{{p.startDate[0]}}. {{p.startDate[3]}}:{{p.startDate[4]}}</td>
+                      <td>{{p.endDate[2]}}.{{p.endDate[1]}}.{{p.endDate[0]}}. {{p.startDate[3]}}:{{p.startDate[4]}}</td>
                       <td>{{p.allMedicines.length}}</td>
                       <td>{{p.chosenOffer?.supplier?.name}} {{p.chosenOffer?.supplier.surname}}</td>
-                      <td>{{p?.allOffer.length}}</td>
+                      <td>{{p.allOffer?.length}}</td>
                       <td><form v-on:click.prevent="postaviPonudu(p)"><button type="button" class="btn btn-primary">View</button></form></td>
-                      <td><div v-if="!p.chosenOffer"><form v-on:click.prevent="postaviPonudu(p)">
+                      <td><div v-if="p.allOffer?.length == 0"><form v-on:click.prevent="postaviPonudu(p)">
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obrisiNar">Delete</button>
                         </form></div></td>
                   </tr>

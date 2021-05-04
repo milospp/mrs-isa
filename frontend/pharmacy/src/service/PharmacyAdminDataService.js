@@ -32,11 +32,11 @@ class PharmacyAdminDataService {
       });
     }
 
-    addOrder(idAdminaApoteke, lekovi, pocetak, kraj) {
+    addOrder(idAdminaApoteke, lekovi, kraj) {
       return axios({
         method: 'post',
         url: API_URL + "/orders/add/" + idAdminaApoteke,
-        data: {"medicines": lekovi, "startDate": pocetak + "T06:00", "endDate": kraj + "T06:00"}
+        data: {"medicines": lekovi, "endDate": kraj}
       }).catch(function (error) {
         if (error.response) {
             console.log(error.response.data);

@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +42,10 @@ public class OrderController {
         int povratna = -1;
         if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
         PharmacyAdmin admin = (PharmacyAdmin) user;
+        povratna = 1;
+
+        pomocna.setStartDate(LocalDateTime.now());
+        if (pomocna.getStartDate().isAfter(pomocna.getEndDate())) return new ResponseEntity<>(povratna, HttpStatus.OK);
         povratna = 0;
 
         MedQuantityDTOtoMedQuantity konverter = new MedQuantityDTOtoMedQuantity(this.medicineService);

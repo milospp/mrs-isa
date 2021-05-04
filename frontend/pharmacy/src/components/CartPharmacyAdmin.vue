@@ -149,8 +149,7 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body" align="left">Start date: <input type="date" v-model="pocetniDatum"/></div>
-        <div class="modal-body" align="left">End date: <input type="date" v-model="krajnjiDatum"/></div>
+        <div class="modal-body" align="left">End date: <input type="datetime-local" v-model="krajnjiDatum"/></div>
         <div class="modal-footer">
           <button type="button" v-on:click.prevent="poruci()" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#obavestenje">Make order</button>
         </div>
@@ -189,7 +188,7 @@ export default {
         return {
             sviLekovi: [], poruka: "Wait... Your require is in processing", 
             korpaLekova: [], odabraniLek: null, 
-            pocetniDatum: null, krajnjiDatum: null, quantity: 0, 
+            krajnjiDatum: null, quantity: 0, 
         };
     },
     created() {
@@ -262,11 +261,16 @@ export default {
         poruci() {
           if (!this.proveri_datum()) return false;
           if (!this.proveri_kolicinu()) return false;
-          PharmacyAdminDataService.addOrder(this.id, this.korpaLekova, this.pocetniDatum, 
-          this.krajnjiDatum).then(response => { 
-              this.poruka = "You successfully made order";
-              this.korpaLekova = [];
-              this.sacuvajKorpu();
+          PharmacyAdminDataService.addOrder(this.id, this.korpaLekova, this.krajnjiDatum)
+            .then(response => { 
+              if (response.data == 0) {
+                this.poruka = "You successfully made order";
+                this.korpaLekova = [];
+                this.sacuvajKorpu();
+              }
+              else {
+                this.poruka = "End date must be in feature";
+              }
             });
         },
         proveri_kolicinu() {
@@ -277,14 +281,8 @@ export default {
           return true;
         },
         proveri_datum(){
-          if (!this.pocetniDatum) {
-            this.poruka = "You must enter start date";
-            return false;}
           if (!this.krajnjiDatum) {
             this.poruka = "You must enter end date";
-            return false;}
-          if (this.pocetniDatum >= this.krajnjiDatum) {
-            this.poruka = "End date must be after than start date";
             return false;}
           return true;
         },
