@@ -25,17 +25,6 @@ public class MedOrderDTOtoMedOrder implements Converter<MedicineOrderDTO, Medici
                 m.getEndDate().equals((medicineOrderDTO.getEndDate())) &&
                 m.getAuthor().getName().equals(medicineOrderDTO.getAuthor().getName()) &&
                 m.getAuthor().getSurname().equals(medicineOrderDTO.getAuthor().getSurname())) {
-                int broj = 0;
-                for (MedicineQuantity mq : m.getAllMedicines()) {
-                    if (mq.getQuantity() != medicineOrderDTO.getAllMedicines().get(broj).getQuantity() ||
-                            !mq.getMedicine().getName().equals(
-                                    medicineOrderDTO.getAllMedicines().get(broj).getMedicine().getName())) {
-                        broj = -1;
-                        break;
-                    }
-                    broj += 1;
-                }
-                if (broj == -1) continue;
                 povratna = m;
                 break;
             }

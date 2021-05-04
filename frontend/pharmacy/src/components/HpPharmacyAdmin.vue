@@ -180,7 +180,7 @@
                       <td>{{p.allMedicines.length}}</td>
                       <td>{{p.chosenOffer?.supplier?.name}} {{p.chosenOffer?.supplier.surname}}</td>
                       <td>{{p.allOffer?.length}}</td>
-                      <td><form v-on:click.prevent="postaviPonudu(p)"><button type="button" class="btn btn-primary">View</button></form></td>
+                      <td><form v-on:click.prevent="izmeniPonudu(p)"><button type="button" class="btn btn-primary">View</button></form></td>
                       <td><div v-if="p.allOffer?.length == 0"><form v-on:click.prevent="postaviPonudu(p)">
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obrisiNar">Delete</button>
                         </form></div></td>
@@ -432,7 +432,7 @@ import DermatologistDataService from '../service/DermatologistDataService.js';
 import PharmacistDataService from '../service/PharmacistDataService.js';
 import PharmacyDataService from '../service/PharmacyDataService.js';
 import MedicineDataService from '../service/MedicineDataService.js';
-import PharmacyAdminDataService from '../service/PharmacyAdminDataService.js';
+import OrderDataService from '../service/OrderDataService.js';
 import Mapa from "../components/Maps.vue";
 import AuthService from "../service/AuthService.js";
 
@@ -455,7 +455,7 @@ export default {
             filterAdrD: "", filterAdrG: "", filterAdrU: "", filterAdrB: "", 
             otpustiRadnika: null, jesteFarmaceut: false, 
             sviLekovi: [], zamenskiLekovi: [], poruka: "Wait... Your require is in processing", 
-            filterOrder: 0, ponuda: null, svePonude: [], ponudeZaIspis: [],
+            filterOrder: 0, narudzbenica: null, svePonude: [], ponudeZaIspis: [],
         };
     },
     created() {
@@ -480,7 +480,7 @@ export default {
       .then(response => {
           this.sviLekovi = response.data;
       });
-      PharmacyAdminDataService.getOrders(this.id)
+      OrderDataService.getOrders(this.id)
         .then(response => {
           this.svePonude = response.data;
           this.ponudeZaIspis = response.data;
@@ -498,7 +498,7 @@ export default {
       .then(response => {
           this.lekovi = response.data;
       });
-      PharmacyAdminDataService.getOrders(this.id)
+      OrderDataService.getOrders(this.id)
         .then(response => {
           this.svePonude = response.data;
           this.ponudeZaIspis = response.data;
@@ -518,7 +518,7 @@ export default {
         .then(response => { this.lekovi = response.data;});        
       },
       osveziPorudzbine() {
-        PharmacyAdminDataService.getOrders(this.id)
+        OrderDataService.getOrders(this.id)
         .then(response => {
           this.svePonude = response.data;
           this.ponudeZaIspis = response.data;});   
@@ -801,13 +801,22 @@ export default {
               brojac++;
             }
       },
-      postaviPonudu(p) { this.ponuda = p; },  // prelazak na drugu formu
+      postaviPonudu(p) { this.narudzbenica = p; },  // prelazak na drugu formu
       obrisiNarudzbenicu() {
-        PharmacyAdminDataService.deleteOrder(this.ponuda)
+        OrderDataService.deleteOrder(this.narudzbenica)
         .then(response => {
           this.poruka = "You successfully deleted order.";
           this.osveziPorudzbine();
           });
+      },
+      izmeniPonudu(p) {
+        var stringPonude = "{";
+        stringPonude += '"startDate": [' + p.startDate + "], ";
+        stringPonude += '"endDate": [' + p.endDate + "], ";
+        stringPonude += '"author": {"name": "' + p.author.name + '", "surname": "' + p.author.surname + '"}';
+        stringPonude += "}";
+        localStorage.setItem("narudzbenica", stringPonude);
+        window.location.href = "/changeOrder";
       },
     }
 }

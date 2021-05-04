@@ -37,7 +37,7 @@ public class OrderController {
 
     @PostMapping("/add/{idAdmina}")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
-    public ResponseEntity<Integer> addOrderAdmin(@PathVariable Long idAdmina, @RequestBody OrderHelp pomocna) {
+    public ResponseEntity<Integer> addOrder(@PathVariable Long idAdmina, @RequestBody OrderHelp pomocna) {
         User user = userService.findOne(idAdmina);
         int povratna = -1;
         if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
@@ -64,7 +64,7 @@ public class OrderController {
 
     @GetMapping("/{idAdmina}")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
-    public ResponseEntity<List<MedicineOrderDTO>> getOrderAdmin(@PathVariable Long idAdmina) {
+    public ResponseEntity<List<MedicineOrderDTO>> getOrders(@PathVariable Long idAdmina) {
         MedOrderToMedOrderDTO konverter = new MedOrderToMedOrderDTO();
         List<MedicineOrderDTO> povratna = konverter.convert(this.orderService.getAdminOrders(idAdmina));
         return new ResponseEntity<>(povratna, HttpStatus.OK);
@@ -72,13 +72,25 @@ public class OrderController {
 
     @PostMapping("/delete")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
-    public ResponseEntity<Integer> deleteOrderAdmin(@RequestBody MedicineOrderDTO porudzbina) {
+    public ResponseEntity<Integer> deleteOrder(@RequestBody MedicineOrderDTO porudzbina) {
         int povratna = -1;
         MedOrderDTOtoMedOrder konverter = new MedOrderDTOtoMedOrder(this.orderService);
         MedicineOrder zaBrisanje = konverter.convert(porudzbina);
         if (zaBrisanje == null) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
         povratna = 0;
         this.orderService.delete(zaBrisanje);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @PostMapping("/findOne")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<MedicineOrderDTO> findOneOrder(@RequestBody MedicineOrderDTO porudzbina) {
+        MedOrderDTOtoMedOrder konverterDTO = new MedOrderDTOtoMedOrder(this.orderService);
+        MedicineOrder odgovarajuca = konverterDTO.convert(porudzbina);
+        if (odgovarajuca == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+
+        MedOrderToMedOrderDTO konverter = new MedOrderToMedOrderDTO();
+        MedicineOrderDTO povratna = konverter.convert(odgovarajuca);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 }

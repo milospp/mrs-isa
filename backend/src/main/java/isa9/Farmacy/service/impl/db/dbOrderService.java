@@ -28,12 +28,22 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
 
     @Override
     public List<MedicineOrder> findAll() {
-        return this.orderRepository.findAll();
+        List<MedicineOrder> povratna = new ArrayList<>();
+        for (MedicineOrder mo : this.orderRepository.findAll()) {
+            List<Offer> ponude = this.offerService.getOffers(mo.getId());
+            mo.setAllOffer(ponude);
+            povratna.add(mo);
+        }
+        return povratna;
     }
 
     @Override
     public MedicineOrder findOne(Long id) {
-        return this.orderRepository.findById(id).orElse(null);
+        MedicineOrder povratna = this.orderRepository.findById(id).orElse(null);
+        if (povratna == null) return povratna;
+        List<Offer> ponude = this.offerService.getOffers(povratna.getId());
+        povratna.setAllOffer(ponude);
+        return povratna;
     }
 
     @Override

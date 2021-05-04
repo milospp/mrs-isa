@@ -179,7 +179,7 @@
 
 <script>
 import MedicineDataService from '../service/MedicineDataService.js';
-import PharmacyAdminDataService from '../service/PharmacyAdminDataService.js';
+import OrderDataService from '../service/OrderDataService.js';
 import AuthService from "../service/AuthService.js";
 
 export default {
@@ -261,7 +261,7 @@ export default {
         poruci() {
           if (!this.proveri_datum()) return false;
           if (!this.proveri_kolicinu()) return false;
-          PharmacyAdminDataService.addOrder(this.id, this.korpaLekova, this.krajnjiDatum)
+          OrderDataService.addOrder(this.id, this.korpaLekova, this.krajnjiDatum)
             .then(response => { 
               if (response.data == 0) {
                 this.poruka = "You successfully made order";
