@@ -271,11 +271,14 @@ export default {
             if (this.therapyMed && this.therapyDays && this.reservationDate){
                 let unique = true;
                 console.log('polja nisu prazna');
-                for (let t in this.appointment.examination.therapy){
-                    console.log('gledam neki lek u terapiji');
-                    if (this.appointment.examination.therapy[t].medInPharma === this.therapyMed){
+                console.log(this.reservations);
+                for (let t in this.reservations){
+                    console.log('gledam neki lek u terapiji' + t);
+                    console.log(JSON.stringify(this.reservations[t].medicineInPharmacy.id));
+                    if (this.reservations[t].medicineInPharmacy.id === this.therapyMed.id){
                         unique = false;
                         console.log('vec je rezervisan taj lek');
+                        console.log(unique);
                         break;
                     }
                 }
@@ -294,6 +297,7 @@ export default {
                     .then(response => {
                         if (response.data){
                             alert('Medicine successfuly reserved');
+                            console.log(response.data.id);
                             this.reservations[response.data.id] = response.data;
                             this.reservations[response.data.id].days = this.therapyDays;
                             console.log("rezervacije!!!\n"+JSON.stringify(this.reservations));
