@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -167,5 +168,16 @@ public abstract class UserServiceBase implements UserService {
 
         User user = (User) authentication.getPrincipal();
         return user;
+    }
+
+    @Override
+    public boolean changePassword(Long id, String newPassword) {
+        User user = this.findOne(id);
+        if(user == null) return false;
+
+        user.setPassword(newPassword);
+        user.setLastPasswordResetDate(new Timestamp(System.currentTimeMillis()));
+        this.save(user);
+        return true;
     }
 }

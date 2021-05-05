@@ -5,18 +5,20 @@ const API_URL = "http://localhost:8080";
 
 class AuthService {
 	login(credentials){
+		localStorage.setItem('credentials', JSON.stringify(credentials));
+
 		return axios({
-		  method: 'post',
-		  url: `${API_URL}/api/auth/login`,
-		  data: credentials
+			method: 'post',
+			url: `${API_URL}/api/auth/login`,
+			data: credentials
 		}).then(response => {
 			if (response.data.accessToken) {
-			  localStorage.setItem('userToken', JSON.stringify(response.data));
-			  axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
-			  console.log(axios.defaults.headers.common['Authorization']);
-			  this.setCurrentUser(response.data.accessToken).then(response => {
-				window.location.href = "/";
-			  });
+				localStorage.setItem('userToken', JSON.stringify(response.data));
+				axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
+				console.log(axios.defaults.headers.common['Authorization']);
+				this.setCurrentUser(response.data.accessToken).then(response => {
+					window.location.href = "/";
+				});			  	
 				window.location.href = "/";
 
 			  	return response.data;
@@ -67,6 +69,25 @@ class AuthService {
   
   
 		return user.id;
+	}
+
+	getPasswordResetDate(id){
+		return axios.get(`${API_URL}/api/auth/getPasswordResetDate/`+id).then(response => {
+			return response.data;
+		})
+	}
+
+	getOldPassword(){
+		let credentials = JSON.parse(localStorage.getItem('credentials'));
+		return credentials.password;
+	}
+
+	SendNewPassword(id,newPassword) {
+		return axios({
+			method: 'post',
+			url: `${API_URL}/api/auth/changePassword/`+id,
+			data: newPassword
+		});
 	}
 }
 

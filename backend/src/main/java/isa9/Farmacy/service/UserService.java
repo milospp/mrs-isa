@@ -41,4 +41,6 @@ public interface UserService extends GenericService<User> {
     Doctor updateDoctorRating(Doctor doctor);
 
     User getLoggedInUser();
+
+    boolean changePassword(Long id, String newPassword);
 }
