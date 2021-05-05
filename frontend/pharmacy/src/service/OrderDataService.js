@@ -64,6 +64,23 @@ class OrderDataService {
         console.log(error.config);
     });
 }
+
+editOrder(order) {
+  return axios({
+      method: 'post',
+      url: API_URL + "/orders/edit",
+      data: order
+  }).catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("Error");
+      console.log(error.config);
+  });
+}
+
 }
 
 

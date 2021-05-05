@@ -3,12 +3,14 @@ package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.MedicineOrderDTO;
+import isa9.Farmacy.model.dto.MedicineQuantityDTO;
 import isa9.Farmacy.service.MedicineService;
 import isa9.Farmacy.service.OrderService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.support.MedOrderDTOtoMedOrder;
 import isa9.Farmacy.support.MedOrderToMedOrderDTO;
 import isa9.Farmacy.support.MedQuantityDTOtoMedQuantity;
+import isa9.Farmacy.support.MedicineQuantityToMedicineQuantityDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -91,6 +93,28 @@ public class OrderController {
 
         MedOrderToMedOrderDTO konverter = new MedOrderToMedOrderDTO();
         MedicineOrderDTO povratna = konverter.convert(odgovarajuca);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @PostMapping("/edit")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<Integer> editOrder(@RequestBody MedicineOrderDTO porudzbina) {
+        int povratna = -1;
+        MedOrderDTOtoMedOrder konverterDTO = new MedOrderDTOtoMedOrder(this.orderService);
+        MedicineOrder odgovarajuca = konverterDTO.convert(porudzbina);
+        if (odgovarajuca == null) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
+
+        povratna = 1;
+        if (porudzbina.getEndDate().isBefore(LocalDateTime.now())) return new ResponseEntity<>(povratna, HttpStatus.OK);
+        povratna = 0;
+        odgovarajuca.setEndDate(porudzbina.getEndDate());
+
+        MedQuantityDTOtoMedQuantity konverter = new MedQuantityDTOtoMedQuantity(this.medicineService);
+        List<MedicineQuantity> listaLekova = konverter.convert(porudzbina.getAllMedicines());
+
+        odgovarajuca.setAllMedicines(listaLekova);
+
+        this.orderService.save(odgovarajuca);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 }

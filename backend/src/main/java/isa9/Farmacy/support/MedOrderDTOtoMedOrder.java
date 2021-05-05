@@ -22,7 +22,6 @@ public class MedOrderDTOtoMedOrder implements Converter<MedicineOrderDTO, Medici
         MedicineOrder povratna = null;
         for (MedicineOrder m : orderService.findAll())
             if (m.getStartDate().equals(medicineOrderDTO.getStartDate()) &&
-                m.getEndDate().equals((medicineOrderDTO.getEndDate())) &&
                 m.getAuthor().getName().equals(medicineOrderDTO.getAuthor().getName()) &&
                 m.getAuthor().getSurname().equals(medicineOrderDTO.getAuthor().getSurname())) {
                 povratna = m;

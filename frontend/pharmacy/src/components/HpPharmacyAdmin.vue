@@ -174,14 +174,14 @@
                   <th>&emsp;</th>
                 </thead>
                 <tbody>
-                    <tr :key="p.name" v-for="p in this.ponudeZaIspis">
-                      <td>{{p.startDate[2]}}.{{p.startDate[1]}}.{{p.startDate[0]}}. {{p.startDate[3]}}:{{p.startDate[4]}}</td>
-                      <td>{{p.endDate[2]}}.{{p.endDate[1]}}.{{p.endDate[0]}}. {{p.startDate[3]}}:{{p.startDate[4]}}</td>
-                      <td>{{p.allMedicines.length}}</td>
-                      <td>{{p.chosenOffer?.supplier?.name}} {{p.chosenOffer?.supplier.surname}}</td>
-                      <td>{{p.allOffer?.length}}</td>
-                      <td><form v-on:click.prevent="izmeniPonudu(p)"><button type="button" class="btn btn-primary">View</button></form></td>
-                      <td><div v-if="p.allOffer?.length == 0"><form v-on:click.prevent="postaviPonudu(p)">
+                    <tr :key="n.name" v-for="n in this.narudzbeniceZaIspis">
+                      <td>{{n.startDate[1]}}/{{n.startDate[2]}}/{{n.startDate[0]}} {{n.startDate[3]}}:{{n.startDate[4]}}</td>
+                      <td>{{n.endDate[1]}}/{{n.endDate[2]}}/{{n.endDate[0]}} {{n.startDate[3]}}:{{n.startDate[4]}}</td>
+                      <td>{{n.allMedicines.length}}</td>
+                      <td>{{n.chosenOffer?.supplier?.name}} {{n.chosenOffer?.supplier.surname}}</td>
+                      <td>{{n.allOffer?.length}}</td>
+                      <td><form v-on:click.prevent="izmeniNarudzbenicu(n)"><button type="button" class="btn btn-primary">View</button></form></td>
+                      <td><div v-if="n.allOffer?.length == 0"><form v-on:click.prevent="postaviNarudzbenicu(n)">
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obrisiNar">Delete</button>
                         </form></div></td>
                   </tr>
@@ -455,7 +455,7 @@ export default {
             filterAdrD: "", filterAdrG: "", filterAdrU: "", filterAdrB: "", 
             otpustiRadnika: null, jesteFarmaceut: false, 
             sviLekovi: [], zamenskiLekovi: [], poruka: "Wait... Your require is in processing", 
-            filterOrder: 0, narudzbenica: null, svePonude: [], ponudeZaIspis: [],
+            filterOrder: 0, narudzbenica: null, sveNarudzbenice: [], narudzbeniceZaIspis: [],
         };
     },
     created() {
@@ -482,27 +482,15 @@ export default {
       });
       OrderDataService.getOrders(this.id)
         .then(response => {
-          this.svePonude = response.data;
-          this.ponudeZaIspis = response.data;
+          this.sveNarudzbenice = response.data;
+          this.podesiDatume();          // da bude lepsi prikaz datuma
+          this.narudzbeniceZaIspis = this.sveNarudzbenice;
       });
     },
     mounted() {
-      PharmacistDataService.getAllPharmacistAdmin(this.id)
-        .then(response => {
-          this.sviZaposleniFarmaceuti = response.data;});
-          
-      DermatologistDataService.getAllDermatologistAdmin(this.id)
-        .then(response => {
-          this.sviZaposleniDermatolozi = response.data;});
-      MedicineDataService.getMedicineForPharmacyAdmin(this.id)
-      .then(response => {
-          this.lekovi = response.data;
-      });
-      OrderDataService.getOrders(this.id)
-        .then(response => {
-          this.svePonude = response.data;
-          this.ponudeZaIspis = response.data;
-      });
+    },
+    deleted() {
+        localStorage.removeItem("narudzbenica");
     },
     methods : {
       osveziFarmaceute() {
@@ -520,8 +508,9 @@ export default {
       osveziPorudzbine() {
         OrderDataService.getOrders(this.id)
         .then(response => {
-          this.svePonude = response.data;
-          this.ponudeZaIspis = response.data;});   
+          this.sveNarudzbenice = response.data;
+          this.podesiDatume();          // da bude lepsi prikaz datuma
+          this.narudzbeniceZaIspis = this.sveNarudzbenice;});   
       },
       inicijalizujPoruku(pk) { 
         this.poruka = pk;
@@ -786,22 +775,22 @@ export default {
               return false;});
       },
       filterNarudzbenica() {
-        this.ponudeZaIspis = [];
+        this.narudzbeniceZaIspis = [];
         var brojac = 0;
         if (this.filterOrder == "In process")
-          for (var pon of this.svePonude) 
+          for (var pon of this.sveNarudzbenice) 
             if (pon.chosenOffer == null) {
-              this.ponudeZaIspis[brojac] = pon;
+              this.narudzbeniceZaIspis[brojac] = pon;
               brojac++;
             }
         else 
-          for (var pon of this.svePonude) 
+          for (var pon of this.sveNarudzbenice) 
             if (pon.chosenOffer != null) {
-              this.ponudeZaIspis[brojac] = pon;
+              this.narudzbeniceZaIspis[brojac] = pon;
               brojac++;
             }
       },
-      postaviPonudu(p) { this.narudzbenica = p; },  // prelazak na drugu formu
+      postaviNarudzbenicu(p) { this.narudzbenica = p; },  // prelazak na drugu formu
       obrisiNarudzbenicu() {
         OrderDataService.deleteOrder(this.narudzbenica)
         .then(response => {
@@ -809,14 +798,50 @@ export default {
           this.osveziPorudzbine();
           });
       },
-      izmeniPonudu(p) {
-        var stringPonude = "{";
-        stringPonude += '"startDate": [' + p.startDate + "], ";
-        stringPonude += '"endDate": [' + p.endDate + "], ";
-        stringPonude += '"author": {"name": "' + p.author.name + '", "surname": "' + p.author.surname + '"}';
-        stringPonude += "}";
-        localStorage.setItem("narudzbenica", stringPonude);
+      izmeniNarudzbenicu(n) {
+        // prvo za lekoveNarudzbenice
+        var stringic = '[';
+          for (var lek of n.allMedicines) {
+            stringic += '{"medicine": "';
+            stringic += lek.medicine.code;
+            stringic += '", "quantity": "';
+            stringic += lek.quantity;
+            stringic += '"}'
+            if (lek != n.allMedicines[n.allMedicines.length -1]) stringic += ", ";
+          }
+        stringic += "]";
+        localStorage.setItem("lekoviNarudzbenice", stringic);
+
+        // vrati datum da bude int[]
+        n.endDate[1] = parseInt(n.endDate[1]);
+        n.endDate[2] = parseInt(n.endDate[2]);
+        n.endDate[3] = parseInt(n.endDate[3]);
+        n.endDate[4] = parseInt(n.endDate[4]);
+        n.startDate[1] = parseInt(n.startDate[1]);
+        n.startDate[2] = parseInt(n.startDate[2]);
+        n.startDate[3] = parseInt(n.startDate[3]);
+        n.startDate[4] = parseInt(n.startDate[4]);
+        
+        var stringNarudzbenice = "{";
+        stringNarudzbenice += '"startDate": [' + n.startDate + "], ";
+        stringNarudzbenice += '"endDate": [' + n.endDate + "], ";
+        stringNarudzbenice += '"author": {"name": "' + n.author.name + '", "surname": "' + n.author.surname + '"}';
+        stringNarudzbenice += "}";
+        localStorage.setItem("narudzbenica", stringNarudzbenice);
         window.location.href = "/changeOrder";
+      },
+      podesiDatume() {
+        for (var por of this.sveNarudzbenice) {
+          if (por.endDate[1] < 10) por.endDate[1] = "0" + por.endDate[1];
+          if (por.endDate[2] < 10) por.endDate[2] = "0" + por.endDate[2];
+          if (por.endDate[3] < 10) por.endDate[3] = "0" + por.endDate[3];
+          if (por.endDate[4] < 10) por.endDate[4] = "0" + por.endDate[4];
+
+          if (por.startDate[1] < 10) por.startDate[1] = "0" + por.startDate[1];
+          if (por.startDate[2] < 10) por.startDate[2] = "0" + por.startDate[2];
+          if (por.startDate[3] < 10) por.startDate[3] = "0" + por.startDate[3];
+          if (por.startDate[4] < 10) por.startDate[4] = "0" + por.startDate[4]; 
+        }
       },
     }
 }

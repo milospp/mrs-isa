@@ -39,7 +39,7 @@
                       <td>{{l?.medicine.code}}</td>
                       <td>{{l?.medicine.name}}</td>
                       <td>{{l?.medicine.type}}</td>
-                      <td><input type="number" size="10"  v-on:change.prevent="sacuvajKorpu()" v-model="l.quantity" placeholder=l?.quantity></td>
+                      <td><input type="number" size="10"  v-on:change.prevent="pozitivan_broj(l, false)" min="1" v-model="l.quantity" placeholder=l?.quantity></td>
                       <td><form v-on:click.prevent="postaviLek(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">View</button></form></td>
                       <td><form v-on:click.prevent="postaviLek(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#brisanje">Delete</button></form></td>
                   </tr>
@@ -94,9 +94,9 @@
         <div class="modal-body" align="left">Points: {{this.odabraniLek?.medicine?.points}}</div>
         <div class="modal-body" align="left">With receipt: {{this.odabraniLek?.medicine?.perscription}}</div>
         <div class="modal-body" align="left">Shape: {{this.odabraniLek?.medicine?.shape}}</div>
-        <div class="modal-body" align="left">In cart: <input type="number" v-model="quantity" placeholder=quantity/></div>
+        <div class="modal-body" align="left">In cart: <input type="number" min="1" v-model="quantity" placeholder=quantity/></div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary"  data-dismiss="modal" v-on:click.prevent="promeniKolicinu()">Save changes</button>
+          <button type="button" class="btn btn-primary"  data-dismiss="modal" v-on:click.prevent="pozitivan_broj(quantity, true)">Save changes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -200,11 +200,9 @@ export default {
       });
     },
     mounted() {  
-      MedicineDataService.getAllMedicines()
-      .then(response => {
-          this.sviLekovi = response.data;
-          this.prevediKorpu();
-      });
+    },
+    deleted() {
+        localStorage.removeItem("korpa");
     },
     methods : {
       inicijalizujPoruku(pk) { 
@@ -269,7 +267,7 @@ export default {
                 this.sacuvajKorpu();
               }
               else {
-                this.poruka = "End date must be in feature";
+                this.poruka = "End date must be in future";
               }
             });
         },
@@ -310,6 +308,15 @@ export default {
                 brojac++;
                 break;
                 }
+        },
+        pozitivan_broj(broj, jesteBroj) {
+            if (!jesteBroj) {       // kada mu prosledim lek
+                this.odabraniLek = broj; 
+                broj = broj.quantity;
+            }
+            if (broj > 0) {this.sacuvajKorpu(); return;}
+            this.kolicina = 1;
+            this.promeniKolicinu();
         },
     }
 }
