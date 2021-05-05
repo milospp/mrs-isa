@@ -4,13 +4,11 @@ package isa9.Farmacy.controller;
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.MedicineOrderDTO;
 import isa9.Farmacy.model.dto.MedicineQuantityDTO;
+import isa9.Farmacy.model.dto.OfferDTO;
 import isa9.Farmacy.service.MedicineService;
 import isa9.Farmacy.service.OrderService;
 import isa9.Farmacy.service.UserService;
-import isa9.Farmacy.support.MedOrderDTOtoMedOrder;
-import isa9.Farmacy.support.MedOrderToMedOrderDTO;
-import isa9.Farmacy.support.MedQuantityDTOtoMedQuantity;
-import isa9.Farmacy.support.MedicineQuantityToMedicineQuantityDTO;
+import isa9.Farmacy.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -115,6 +113,13 @@ public class OrderController {
         odgovarajuca.setAllMedicines(listaLekova);
 
         this.orderService.save(odgovarajuca);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @PostMapping("/choose")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<Integer> chooseOrder(@RequestBody OfferDTO ponuda) {
+        int povratna = this.orderService.chooseOffer(ponuda);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 }

@@ -56,7 +56,7 @@
             </div>
 
             <div id="menu1" class="tab-pane fade">
-                <h3>All medicines 111</h3>
+                <h3>All medicines</h3>
                     <table class="table table-striped">
                     <thead class="card-header">
                     <th>Code</th>
@@ -76,18 +76,76 @@
                     </tbody>
                 </table>
                 </div>
-
             </div>
             </div>
         </div>
         </div>
     </div>         <!-- uslovni div -->
     <div v-else>
-        <label> Start date: {{this.narudzbenica.startDate[2]}}.{{this.narudzbenica.startDate[1]}}.{{this.narudzbenica.startDate[0]}}. 
-        {{this.narudzbenica.startDate[3]}}:{{this.narudzbenica.startDate[4]}} </label>
-        <label> End date: {{this.narudzbenica.endDate[2]}}.{{this.narudzbenica.endDate[1]}}.{{this.narudzbenica.endDate[0]}}. 
-            {{this.narudzbenica.endDate[3]}}:{{this.narudzbenica.endDate[4]}} </label>
-        <label> Chosen offer: </label>
+        <label> Start date: {{this.narudzbenica.startDate[1]}}/{{this.narudzbenica.startDate[2]}}/{{this.narudzbenica.startDate[0]}} 
+        {{this.narudzbenica.startDate[3]}}:{{this.narudzbenica.startDate[4]}} <br />
+         End date: {{this.narudzbenica.endDate[1]}}/{{this.narudzbenica.endDate[2]}}/{{this.narudzbenica.endDate[0]}} 
+            {{this.narudzbenica.endDate[3]}}:{{this.narudzbenica.endDate[4]}} <br />
+         Chosen offer: {{this.narudzbenica.chosenOffer?.supplier.name}} {{this.narudzbenica.chosenOffer?.supplier.surname}}</label>
+
+        <div class="row">
+        <div class="col-md-12">
+            <div>
+            <ul class="nav nav-tabs">
+                <li class="nav-item active"><a class="nav-link" data-toggle="tab" href="#tab-medicines">Order info</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">All offer</a></li>
+            </ul>
+            
+            <div class="tab-content">
+                <div id="tab-medicines" class="tab-pane in fade active in">
+                <h3>Medicines</h3>
+              <table class="table table-striped">
+                 <thead class="card-header">
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Quantity</th>
+                  <th></th>
+                </thead>
+                <tbody>
+                    <tr :key="l" v-for="l in this.narudzbenica.allMedicines">
+                      <td>{{l?.medicine.code}}</td>
+                      <td>{{l?.medicine.name}}</td>
+                      <td>{{l?.medicine.type}}</td>
+                      <td>{{l?.quantity}}</td>
+                      <td><form v-on:click.prevent="postaviLek(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">View</button></form></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div id="menu1" class="tab-pane fade">
+                <h3>Offers</h3>
+                    <table class="table table-striped">
+                    <thead class="card-header">
+                    <th>Supplier</th>
+                    <th>Price</th>
+                    <th>Start date</th>
+                    <th>End date</th>
+                    <th></th>
+                    </thead>
+                    <tbody>
+                        <tr :key="o" v-for="o in this.narudzbenica.allOffer">
+                        <td>{{o?.supplier.name}} {{o?.supplier.surname}}</td>
+                        <td>{{o?.price}}</td>
+                        <td>{{o?.startDate.startDate[1]}}/{{o?.startDate.startDate[2]}}/{{o?.startDate.startDate[0]}} 
+                            {{o?.startDate.startDate[3]}}:{{o?.startDate.startDate[4]}} </td>
+                        <td>{{o?.endDate.endDate[1]}}/{{o?.endDate.endDate[2]}}/{{o?.endDate.endDate[0]}} 
+                            {{o?.endDate.endDate[3]}}:{{o?.endDate.endDate[4]}}</td>
+                        <td><form v-on:click.prevent="postaviPonudu(o)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaciPonude">View</button></form></td>
+                    </tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
     </div>
 
 
@@ -110,9 +168,15 @@
         <div class="modal-body" align="left">Points: {{this.odabraniLek?.medicine?.points}}</div>
         <div class="modal-body" align="left">With receipt: {{this.odabraniLek?.medicine?.perscription}}</div>
         <div class="modal-body" align="left">Shape: {{this.odabraniLek?.medicine?.shape}}</div>
-        <div class="modal-body" align="left">In cart: <input type="number" min="1" v-model="kolicina" placeholder=kolicina/></div>
+        <div v-if="this.narudzbenica?.allOffer.length != 0">
+            <div class="modal-body" align="left">In order: <input type="number" min="1" v-model="kolicina" placeholder=kolicina/></div>
+        </div><div v-else>
+            <div class="modal-body" align="left">In order: {{this.odabraniLek?.quantity}}</div>
+        </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary"  data-dismiss="modal" v-on:click.prevent="proveri_broj(kolicina, true)">Save changes</button>
+          <div v-if="this.narudzbenica?.allOffer.length != 0">
+            <button type="button" class="btn btn-primary"  data-dismiss="modal" v-on:click.prevent="proveri_broj(kolicina, true)">Save changes</button>
+          </div>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -191,6 +255,55 @@
     </div>
   </div>
 
+   <!-- Info o ponudi -->
+  <div class="modal fade" id="podaciPonude" tabindex="-1" role="dialog" aria-labelledby="About offer" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="AboutOffer">About offer</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" align="left">Supplier: {{this.odabranaPonuda?.supplier.name}} {{this.odabranaPonuda?.supplier.surname}}</div>
+        <div class="modal-body" align="left">Supplier address: {{this.odabranaPonuda?.supplier.address.state}} {{this.odabranaPonuda?.supplier.address.city}} 
+            {{this.odabranaPonuda?.supplier.address.street}} {{this.odabranaPonuda?.supplier.address.number}}</div>
+        <div class="modal-body" align="left">Price: {{this.odabranaPonuda?.price}}</div>
+        <div class="modal-body" align="left">Start date: {{this.odabranaPonuda?.startDate.startDate[1]}}/{{this.odabranaPonuda?.startDate.startDate[2]}}/{{this.odabranaPonuda?.startDate.startDate[0]}} 
+            {{this.odabranaPonuda?.startDate.startDate[3]}}:{{this.odabranaPonuda?.startDate.startDate[4]}}</div>
+        <div class="modal-body" align="left">End date: {{this.odabranaPonuda?.endDate.endDate[1]}}/{{this.odabranaPonuda?.endDate.endDate[2]}}/{{this.odabranaPonuda?.endDate.endDate[0]}} 
+            {{this.odabranaPonuda?.endDate.endDate[3]}}:{{this.odabranaPonuda?.endDate.endDate[4]}}</div>
+        <div class="modal-body" align="left">Offer description: {{this.odabranaPonuda?.supplier.offerDescription}}</div>
+        <div class="modal-footer">
+          <div v-if="this.narudzbenica?.chosenOffer == null">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#potvrdaPonude" data-dismiss="modal">Choose offer</button>
+          </div>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+       <!-- potvrda -->
+  <div class="modal fade" id="potvrda" tabindex="-1" role="dialog" aria-labelledby="Potvrda" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="Potvrdica">Are you sure you want choose this offer? <br/>
+            Supplier: {{this.odabranaPonuda?.supplier.name}} {{this.odabranaPonuda?.supplier.surname}} <br/>
+            Price: {{this.odabranaPonuda?.price}} <br/></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+         <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="odaberiPonudu()" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <script>
@@ -201,8 +314,8 @@ export default {
     name: 'ChangeOrder',
     data() {
         return {
-            narudzbenica: null, sviLekovi: [], odabraniLek: null, kolicina: null,
-            poruka: "Wait... Your require is in processing", datumi: null, 
+            narudzbenica: null, sviLekovi: [], odabraniLek: null, kolicina: null, datumi: null,
+            poruka: "Wait... Your require is in processing", odabranaPonuda: null,
         };
     },
     created() {
@@ -269,24 +382,28 @@ export default {
                     } 
                     else {          // Kada ne sme izmena
                         this.narudzbenica.allMedicines = this.narudzbenica.allMedicines;
+                        for (var o of this.narudzbenica.allOffer) this.podesiDvocifrene(o);
                     } 
                 });
 
         },
         podesiDatume() {
-            // sacuvamo otiginalni izgled datuma
+            // sacuvamo originalni izgled datuma
             this.datumi = [[this.narudzbenica.startDate[1], this.narudzbenica.startDate[2], this.narudzbenica.startDate[3], this.narudzbenica.startDate[4]],
              [this.narudzbenica.endDate[0], this.narudzbenica.endDate[1], this.narudzbenica.endDate[2], this.narudzbenica.endDate[3], this.narudzbenica.endDate[4]]];
             
-            if (this.narudzbenica.endDate[1] < 10) this.narudzbenica.endDate[1] = "0" + this.narudzbenica.endDate[1];
-            if (this.narudzbenica.endDate[2] < 10) this.narudzbenica.endDate[2] = "0" + this.narudzbenica.endDate[2];
-            if (this.narudzbenica.endDate[3] < 10) this.narudzbenica.endDate[3] = "0" + this.narudzbenica.endDate[3];
-            if (this.narudzbenica.endDate[4] < 10) this.narudzbenica.endDate[4] = "0" + this.narudzbenica.endDate[4];
+            this.podesiDvocifrene(this.narudzbenica);
+        },
+        podesiDvocifrene(objekat) {
+            if (objekat.endDate[1] < 10) objekat.endDate[1] = "0" + objekat.endDate[1];
+            if (objekat.endDate[2] < 10) objekat.endDate[2] = "0" + objekat.endDate[2];
+            if (objekat.endDate[3] < 10) objekat.endDate[3] = "0" + objekat.endDate[3];
+            if (objekat.endDate[4] < 10) objekat.endDate[4] = "0" + objekat.endDate[4];
 
-            if (this.narudzbenica.startDate[1] < 10) this.narudzbenica.startDate[1] = "0" + this.narudzbenica.startDate[1];
-            if (this.narudzbenica.startDate[2] < 10) this.narudzbenica.startDate[2] = "0" + this.narudzbenica.startDate[2];
-            if (this.narudzbenica.startDate[3] < 10) this.narudzbenica.startDate[3] = "0" + this.narudzbenica.startDate[3];
-            if (this.narudzbenica.startDate[4] < 10) this.narudzbenica.startDate[4] = "0" + this.narudzbenica.startDate[4]; 
+            if (objekat.startDate[1] < 10) objekat.startDate[1] = "0" + objekat.startDate[1];
+            if (objekat.startDate[2] < 10) objekat.startDate[2] = "0" + objekat.startDate[2];
+            if (objekat.startDate[3] < 10) objekat.startDate[3] = "0" + objekat.startDate[3];
+            if (objekat.startDate[4] < 10) objekat.startDate[4] = "0" + objekat.startDate[4]; 
         },
         postaviLek(l) {
             this.odabraniLek = l;
@@ -358,6 +475,17 @@ export default {
             this.narudzbenica.allMedicines[this.narudzbenica.allMedicines.length] = {"medicine": lek, "quantity": 1};
             this.poruka = "You successfully added medicine to your order";
             this.sacuvajKorpu();
+        },
+        postaviPonudu(o) { this.odabranaPonuda = o; },
+        odaberiPonudu() {
+            OrderDataService.chooseOffer(this.odabranaPonuda)
+                .then(response => {
+                    if (response.data == 0) {
+                        this.poruka = "You successfully chose offer";
+                        this.procitajNarudzbenicu();
+                    }
+                    else this.poruka = "Offer is not available (end date is passed)";
+                });
         },
     }
 }
