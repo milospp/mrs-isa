@@ -168,13 +168,13 @@
         <div class="modal-body" align="left">Points: {{this.odabraniLek?.medicine?.points}}</div>
         <div class="modal-body" align="left">With receipt: {{this.odabraniLek?.medicine?.perscription}}</div>
         <div class="modal-body" align="left">Shape: {{this.odabraniLek?.medicine?.shape}}</div>
-        <div v-if="this.narudzbenica?.allOffer.length != 0">
+        <div v-if="this.narudzbenica?.allOffer.length == 0">
             <div class="modal-body" align="left">In order: <input type="number" min="1" v-model="kolicina" placeholder=kolicina/></div>
         </div><div v-else>
             <div class="modal-body" align="left">In order: {{this.odabraniLek?.quantity}}</div>
         </div>
         <div class="modal-footer">
-          <div v-if="this.narudzbenica?.allOffer.length != 0">
+          <div v-if="this.narudzbenica?.allOffer.length == 0">
             <button type="button" class="btn btn-primary"  data-dismiss="modal" v-on:click.prevent="proveri_broj(kolicina, true)">Save changes</button>
           </div>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
