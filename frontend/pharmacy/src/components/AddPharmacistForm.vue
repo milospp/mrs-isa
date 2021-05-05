@@ -82,13 +82,11 @@
                 <td colspan="2" align="left">
                     <span>&ensp; from &nbsp;</span>
                     <input 
-                        type="text" id="startHour" v-model="startHour" required="required" size="7"
-                        pattern="[0-9]{1,2}[:][0-9]{1,2}" title="Start hour must be in form 17:17"
+                        type="time" id="startHour" v-model="startHour" required="required"
                     >
                     <span>&ensp; to &ensp;</span>
                      <input 
-                        type="text" id="endHour" v-model="endHour" required="required" size="7"
-                            pattern="[0-9]{1,2}[:][0-9]{1,2}" title="End hour must be in form 17:17"
+                        type="time" id="endHour" v-model="endHour" required="required"
                     ></td>
             </tr>
 

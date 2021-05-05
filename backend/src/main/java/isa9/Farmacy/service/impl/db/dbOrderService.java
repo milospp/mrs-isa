@@ -1,17 +1,20 @@
 package isa9.Farmacy.service.impl.db;
 
 import isa9.Farmacy.model.MedicineOrder;
-import isa9.Farmacy.model.MedicineQuantity;
 import isa9.Farmacy.model.Offer;
+import isa9.Farmacy.model.OfferStatus;
+import isa9.Farmacy.model.dto.OfferDTO;
 import isa9.Farmacy.repository.OrderRepository;
 import isa9.Farmacy.service.OrderService;
 import isa9.Farmacy.service.impl.base.OrderServiceBase;
+import isa9.Farmacy.support.OfferDTOtoOffer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -28,12 +31,22 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
 
     @Override
     public List<MedicineOrder> findAll() {
-        return this.orderRepository.findAll();
+        List<MedicineOrder> povratna = new ArrayList<>();
+        for (MedicineOrder mo : this.orderRepository.findAll()) {
+            List<Offer> ponude = this.offerService.getOffers(mo.getId());
+            mo.setAllOffer(ponude);
+            povratna.add(mo);
+        }
+        return povratna;
     }
 
     @Override
     public MedicineOrder findOne(Long id) {
-        return this.orderRepository.findById(id).orElse(null);
+        MedicineOrder povratna = this.orderRepository.findById(id).orElse(null);
+        if (povratna == null) return povratna;
+        List<Offer> ponude = this.offerService.getOffers(povratna.getId());
+        povratna.setAllOffer(ponude);
+        return povratna;
     }
 
     @Override
@@ -56,5 +69,21 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
     @Override
     public void delete(MedicineOrder zaBrisanje) {
         this.orderRepository.delete(zaBrisanje);
+    }
+
+    @Override
+    public int chooseOffer(OfferDTO offerDTO) {
+        int povratna = -1;
+        OfferDTOtoOffer konverter = new OfferDTOtoOffer(this.offerService);
+        Offer ponuda = konverter.convert(offerDTO);
+        MedicineOrder narudzbenica = this.orderRepository.findById(offerDTO.getOrder()).orElse(null);
+
+        if (ponuda.getEndDate().before(new Date())) return povratna;
+        povratna = 0;
+        narudzbenica.setChosenOffer(ponuda);
+        ponuda.setStatus(OfferStatus.ACCEPTED);
+        for (Offer o : narudzbenica.getAllOffer()) if (o.getId() != ponuda.getId()) o.setStatus(OfferStatus.REJECTED);
+        this.orderRepository.save(narudzbenica);
+        return povratna;
     }
 }

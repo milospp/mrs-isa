@@ -3,18 +3,19 @@ package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.MedicineOrderDTO;
+import isa9.Farmacy.model.dto.MedicineQuantityDTO;
+import isa9.Farmacy.model.dto.OfferDTO;
 import isa9.Farmacy.service.MedicineService;
 import isa9.Farmacy.service.OrderService;
 import isa9.Farmacy.service.UserService;
-import isa9.Farmacy.support.MedOrderDTOtoMedOrder;
-import isa9.Farmacy.support.MedOrderToMedOrderDTO;
-import isa9.Farmacy.support.MedQuantityDTOtoMedQuantity;
+import isa9.Farmacy.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,11 +37,15 @@ public class OrderController {
 
     @PostMapping("/add/{idAdmina}")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
-    public ResponseEntity<Integer> addOrderAdmin(@PathVariable Long idAdmina, @RequestBody OrderHelp pomocna) {
+    public ResponseEntity<Integer> addOrder(@PathVariable Long idAdmina, @RequestBody OrderHelp pomocna) {
         User user = userService.findOne(idAdmina);
         int povratna = -1;
         if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
         PharmacyAdmin admin = (PharmacyAdmin) user;
+        povratna = 1;
+
+        pomocna.setStartDate(LocalDateTime.now());
+        if (pomocna.getStartDate().isAfter(pomocna.getEndDate())) return new ResponseEntity<>(povratna, HttpStatus.OK);
         povratna = 0;
 
         MedQuantityDTOtoMedQuantity konverter = new MedQuantityDTOtoMedQuantity(this.medicineService);
@@ -59,7 +64,7 @@ public class OrderController {
 
     @GetMapping("/{idAdmina}")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
-    public ResponseEntity<List<MedicineOrderDTO>> getOrderAdmin(@PathVariable Long idAdmina) {
+    public ResponseEntity<List<MedicineOrderDTO>> getOrders(@PathVariable Long idAdmina) {
         MedOrderToMedOrderDTO konverter = new MedOrderToMedOrderDTO();
         List<MedicineOrderDTO> povratna = konverter.convert(this.orderService.getAdminOrders(idAdmina));
         return new ResponseEntity<>(povratna, HttpStatus.OK);
@@ -67,13 +72,54 @@ public class OrderController {
 
     @PostMapping("/delete")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
-    public ResponseEntity<Integer> deleteOrderAdmin(@RequestBody MedicineOrderDTO porudzbina) {
+    public ResponseEntity<Integer> deleteOrder(@RequestBody MedicineOrderDTO porudzbina) {
         int povratna = -1;
         MedOrderDTOtoMedOrder konverter = new MedOrderDTOtoMedOrder(this.orderService);
         MedicineOrder zaBrisanje = konverter.convert(porudzbina);
         if (zaBrisanje == null) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
         povratna = 0;
         this.orderService.delete(zaBrisanje);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @PostMapping("/findOne")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<MedicineOrderDTO> findOneOrder(@RequestBody MedicineOrderDTO porudzbina) {
+        MedOrderDTOtoMedOrder konverterDTO = new MedOrderDTOtoMedOrder(this.orderService);
+        MedicineOrder odgovarajuca = konverterDTO.convert(porudzbina);
+        if (odgovarajuca == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+
+        MedOrderToMedOrderDTO konverter = new MedOrderToMedOrderDTO();
+        MedicineOrderDTO povratna = konverter.convert(odgovarajuca);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @PostMapping("/edit")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<Integer> editOrder(@RequestBody MedicineOrderDTO porudzbina) {
+        int povratna = -1;
+        MedOrderDTOtoMedOrder konverterDTO = new MedOrderDTOtoMedOrder(this.orderService);
+        MedicineOrder odgovarajuca = konverterDTO.convert(porudzbina);
+        if (odgovarajuca == null) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
+
+        povratna = 1;
+        if (porudzbina.getEndDate().isBefore(LocalDateTime.now())) return new ResponseEntity<>(povratna, HttpStatus.OK);
+        povratna = 0;
+        odgovarajuca.setEndDate(porudzbina.getEndDate());
+
+        MedQuantityDTOtoMedQuantity konverter = new MedQuantityDTOtoMedQuantity(this.medicineService);
+        List<MedicineQuantity> listaLekova = konverter.convert(porudzbina.getAllMedicines());
+
+        odgovarajuca.setAllMedicines(listaLekova);
+
+        this.orderService.save(odgovarajuca);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @PostMapping("/choose")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<Integer> chooseOrder(@RequestBody OfferDTO ponuda) {
+        int povratna = this.orderService.chooseOffer(ponuda);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 }
