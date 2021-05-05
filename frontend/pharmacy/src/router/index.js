@@ -30,6 +30,7 @@ import AddSysAdmin from '@/views/AddSysAdmin.vue'
 import SupplierProfile from '@/views/SupplierProfile.vue'
 import CounselingPage from '@/views/CounselingPage.vue'
 import MedicineSearchPage from '@/views/MedicineSearchPage.vue'
+import FirstLogin from '@/views/FirstLogin.vue'
 
 
 const routes = [
@@ -190,6 +191,11 @@ const routes = [
     path: '/appointment/:id',
     name: 'Appointment',
     component: Appointment    // view je komponenta
+  },
+  {
+    path: '/firstLogin',
+    name: 'FirstLogin',
+    component: FirstLogin
   },
   {
     path: '/counseling',

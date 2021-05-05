@@ -44,8 +44,6 @@ export default {
         checkForm(e) {
             AuthService.login(this.loginData);
 			// AuthService.setCurrentUser();
-			
-			
         }
     }
 }
