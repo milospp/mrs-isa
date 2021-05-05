@@ -7,6 +7,15 @@ class MedicineDataService {
   getAllMedicines() {
     return axios.get(`${API_URL}`);
   }
+  searchMedicines(searchParams) {
+    console.log(searchParams);
+
+    return axios({
+      method: 'post',
+      url: `${API_URL}/search`,
+      data: JSON.parse(searchParams)
+    })
+  }
 
   getMedicineForPharmacyAdmin(idAdminaApoteke) {
     return axios.get(API_URL + "/pharmacyAdmin/" + idAdminaApoteke);
