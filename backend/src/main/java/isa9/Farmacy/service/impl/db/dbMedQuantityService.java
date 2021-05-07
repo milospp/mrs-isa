@@ -37,4 +37,9 @@ public class dbMedQuantityService extends MedQuantityServiceBase implements MedQ
     public MedicineQuantity save(MedicineQuantity entity) {
         return medQuantityRepository.save(entity);
     }
+
+    @Override
+    public void delete(MedicineQuantity medicineQuantity) {
+        this.medQuantityRepository.delete(medicineQuantity);
+    }
 }

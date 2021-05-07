@@ -73,9 +73,8 @@ public abstract class PharmacyServiceBase implements PharmacyService {
 
         return pharmacies.stream()
                 .filter(p -> pharmacySearchDTO.getName().isEmpty() || p.getName().toLowerCase().contains(pharmacySearchDTO.getName().toLowerCase()))
-//                .filter(p -> pharmacySearchDTO.getAddressString().isEmpty() || (p.getAddress().getCity() + p.getAddress().getState() + p.getAddress().getStreet()).toLowerCase().contains(pharmacySearchDTO.getAddressString()))
-//                .filter(p -> p.getRating() > pharmacySearchDTO.getMinRating())
-//                .filter(p -> p.getRating() < pharmacySearchDTO.getMaxRating())
+                .filter(p -> pharmacySearchDTO.getAddressString().isEmpty() || (p.getAddress().getCity() + p.getAddress().getState() + p.getAddress().getStreet()).toLowerCase().contains(pharmacySearchDTO.getAddressString()))
+                .filter(p -> p.getRating() > pharmacySearchDTO.getMinRating() && p.getRating() < pharmacySearchDTO.getMaxRating())
                 .sorted(comp).collect(Collectors.toList());
     }
 }

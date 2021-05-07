@@ -84,30 +84,20 @@ public class MedicineController {
 
 
     @GetMapping("")
-    public ResponseEntity<List<MedicineDTO>> test(){
+    public ResponseEntity<List<MedicineDTO>> getMedicines(){
 
         List<MedicineDTO> resultDTOS = medicineToMedicineDTO.convert(this.medicineService.findAll());
-//        for (Medicine medicine : this.medicineService.findAll()) {
-//            resultDTOS.add(new MedicineDTO(
-//                    medicine.getId(),
-//                    medicine.getCode(),
-//                    medicine.getName(),
-//                    medicine.getStructure(),
-//                    medicine.getManufacturer(),
-//                    medicine.getNote(),
-//                    medicine.getPoints(),
-//                    medicine.getShape(),
-//                    medicine.getType(),
-//                    medicine.getPerscription(),
-//                    medicine.getReplacementMedication().stream()
-//                            .map(Medicine::getCode)
-//                            .collect(Collectors.toList())
-//            ));
-//        }
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
     }
 
+    @PostMapping("search")
+    public ResponseEntity<List<MedicineDTO>> SearchMedicines(@RequestBody(required=false) MedicineSearchDTO medicineSearchDTO) {
+        List<Medicine> medicines = this.medicineService.findAll();
+        medicines = medicineService.filterMedicines(medicines, medicineSearchDTO);
+        List<MedicineDTO> resultDTOS = medicineToMedicineDTO.convert(medicines);
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+    }
 
     @GetMapping("/pharmacyAdmin/{id}")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")

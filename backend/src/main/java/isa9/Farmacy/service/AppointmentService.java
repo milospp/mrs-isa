@@ -1,8 +1,10 @@
 package isa9.Farmacy.service;
 
 import isa9.Farmacy.model.*;
+import isa9.Farmacy.model.dto.AppointmentSearchDTO;
 import isa9.Farmacy.model.dto.DermAppointmentReqDTO;
 import isa9.Farmacy.model.dto.DermatologistRegDTO;
+import isa9.Farmacy.model.dto.PharmacySearchDTO;
 import org.apache.tomcat.jni.Local;
 
 import java.time.LocalDateTime;
@@ -44,4 +46,7 @@ public interface AppointmentService extends GenericService<Appointment>{
 
     Appointment bookDermAppointment(DermAppointmentReqDTO appointmentReqDTO, Patient patient);
     List<Appointment> getDoctorUpcomingAppointments(Long id);
+
+    List<Appointment> filterPastAppointments(List<Appointment> appointments, AppointmentSearchDTO appointmentSearchDTO);
+
 }
