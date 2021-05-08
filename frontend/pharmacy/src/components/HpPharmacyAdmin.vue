@@ -2,7 +2,8 @@
     <table>
         <tr>
             <td align="left"> <form v-on:submit.prevent="">
-                    <input type="submit" class="btn btn-primary" value="Make appointment"></form> </td>
+                    <input type="submit" class="btn btn-primary" data-toggle="modal" data-target="#napraviPregled" 
+                      v-on:click.prevent="osveziDermatologe()" value="Make appointment"></form> </td>
             <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
              <td align="left"> <form v-on:submit.prevent="">
                     <input type="submit" class="btn btn-primary" value="Make pricelist"></form> </td>
@@ -35,9 +36,10 @@
             <li class="nav-item active"><a class="nav-link" data-toggle="tab" href="#tab-medicines">Medicines</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Pharmacists</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Dermatologists</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu3">Orders</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu4">Invalid receipts</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu5">Map</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu3">Examination</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu4">Orders</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu5">Invalid receipts</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu6">Map</a></li>
           </ul>
         
           <div class="tab-content">
@@ -92,6 +94,8 @@
                   <th>Last name</th>
                   <th>Address</th>
                   <th>Phone number</th>
+                  <th>Start time</th>
+                  <th>End time</th>
                   <th>&emsp;</th>
                 </thead>
                 <tbody>
@@ -100,6 +104,8 @@
                       <td>{{f.surname}}</td>
                       <td>{{f.address["state"]}}, {{f.address["city"]}}, {{f.address["street"]}}, {{f.address["number"]}}</td>
                       <td>{{f.phoneNumber}}</td>
+                      <td>{{(f.pharmacyWork.startHour[0] < 10 ? "0" + f.pharmacyWork.startHour[0] : f.pharmacyWork.startHour[0])}}:{{(f.pharmacyWork.startHour[1] < 10 ? "0" + f.pharmacyWork.startHour[1] : f.pharmacyWork.startHour[1])}}</td>
+                      <td>{{(f.pharmacyWork.endHour[0] < 10 ? "0" + f.pharmacyWork.endHour[0] : f.pharmacyWork.endHour[0])}}:{{(f.pharmacyWork.endHour[1] < 10 ? "0" + f.pharmacyWork.endHour[1] : f.pharmacyWork.endHour[1])}}</td>
                       <td><form v-on:click.prevent="podesi(f, true)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#potvrda">Fire</button></form></td>
                   </tr>
                 </tbody>
@@ -130,6 +136,8 @@
                   <th>Last name</th>
                   <th>Address</th>
                   <th>Phone number</th>
+                  <th>Start time</th>
+                  <th>End time</th>
                   <th>&emsp;</th>
                 </thead>
                 <tbody>
@@ -138,6 +146,8 @@
                       <td>{{d.surname}}</td>
                       <td>{{d.address["state"]}}, {{d.address["city"]}}, {{d.address["street"]}}, {{d.address["number"]}}</td>
                       <td>{{d.phoneNumber}}</td>
+                      <td>{{(d.pharmacyWork.startHour[0] < 10 ? "0" + d.pharmacyWork.startHour[0] : d.pharmacyWork.startHour[0])}}:{{(d.pharmacyWork.startHour[1] < 10 ? "0" + d.pharmacyWork.startHour[1] : d.pharmacyWork.startHour[1])}}</td>
+                      <td>{{(d.pharmacyWork.endHour[0] < 10 ? "0" + d.pharmacyWork.endHour[0] : d.pharmacyWork.endHour[0])}}:{{(d.pharmacyWork.endHour[1] < 10 ? "0" + d.pharmacyWork.endHour[1] : d.pharmacyWork.endHour[1])}}</td>
                       <td><form v-on:click.prevent="podesi(d, false)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#potvrda">Fire</button></form></td>
                   </tr>
                 </tbody>
@@ -145,6 +155,34 @@
             </div>
 
             <div id="menu3" class="tab-pane fade">
+              <h3>Examination for dermatologists</h3>
+                <table class="table table-striped">
+                  <thead class="card-header">
+                  <th>First ame</th>
+                  <th>Last name</th>
+                  <th>Phone number</th>
+                  <th>Start time</th>
+                  <th>Duration</th>
+                  <th>Price</th>
+                  <th>&emsp;</th>
+                  <th>&emsp;</th>
+                </thead>
+                <tbody>
+                    <tr :key="p.name" v-for="p in this.sviPreglediDermatologa">
+                      <td>{{p.doctor.name}}</td>
+                      <td>{{p.doctor.surname}}</td>
+                      <td>{{p.doctor.phoneNumber}} </td>
+                      <td> {{p.startTime}}</td>
+                      <td>{{p.durationInMins}}</td>
+                      <td>{{p.price}}</td>
+                      <td><form v-on:click.prevent="podesiPregled(p)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#???">View</button></form></td>
+                      <td><form v-on:click.prevent="podesiPregled(p)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#???">Delete</button></form></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div id="menu4" class="tab-pane fade">
               <h3>Orders</h3>
               <table>
                 <tr>
@@ -190,7 +228,7 @@
             </div>
 
 
-            <div id="menu4" class="tab-pane fade">
+            <div id="menu5" class="tab-pane fade">
               <h3>All invalid receipts</h3>
               <table class="table table-striped">
                 <thead>
@@ -212,7 +250,7 @@
               </table>
             </div>
             <!-- mora na kraj jer inace ne radi kako valja -->
-            <div id="menu5" class="tab-pane fade active">
+            <div id="menu6" class="tab-pane fade active">
 					          <Mapa/>
             </div>
           </div>
@@ -425,6 +463,31 @@
     </div>
   </div>
 
+      <!-- Napravi pregled -->
+  <div class="modal fade" id="napraviPregled" tabindex="-1" role="dialog" aria-labelledby="Napravi pregled" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="lekic">New appointment</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" align="left">Start time: <input type="datetime-local" v-model="pregledStartuje"/></div>
+        <div class="modal-body" align="left">Duration : <input type="number" min="1" v-model="pregledTraje"/> minutes</div>
+        <div class="modal-body" align="left">Price: <input type="number" min="1" v-model="pregledKosta"/></div>
+        <div class="modal-body" align="left">Chose dermatologist: 
+          <select id="zamenski" style="width: 80%;" v-model="pregledDoktor" required="required">
+              <option v-for="d in this.sviZaposleniDermatolozi" v-bind:value=d>{{d.name}} {{d.surname}} {{d.phoneNumber}}</option>
+          </select></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal"  data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="dodajPregled()">Make</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <script>
@@ -433,6 +496,7 @@ import PharmacistDataService from '../service/PharmacistDataService.js';
 import PharmacyDataService from '../service/PharmacyDataService.js';
 import MedicineDataService from '../service/MedicineDataService.js';
 import OrderDataService from '../service/OrderDataService.js';
+import AppointmentDataService from '../service/AppointmentDataService.js';
 import Mapa from "../components/Maps.vue";
 import AuthService from "../service/AuthService.js";
 
@@ -456,6 +520,8 @@ export default {
             otpustiRadnika: null, jesteFarmaceut: false, 
             sviLekovi: [], zamenskiLekovi: [], poruka: "Wait... Your require is in processing", 
             filterOrder: 0, narudzbenica: null, sveNarudzbenice: [], narudzbeniceZaIspis: [],
+            pregledStartuje:null, pregledTraje: 0, pregledKosta: 0,  pregledDoktor: null,
+            sviPreglediDermatologa: [], izabraniPregled: null, 
         };
     },
     created() {
@@ -465,27 +531,17 @@ export default {
           this.pharmacy = response.data;
           this.pharmacyName = this.pharmacy.name;
           this.pharmacyDesc = this.pharmacy.description;
+          this.osveziPreglede();
         });
-      PharmacistDataService.getAllPharmacistAdmin(this.id)
-        .then(response => {
-          this.sviZaposleniFarmaceuti = response.data;});
-      DermatologistDataService.getAllDermatologistAdmin(this.id)
-        .then(response => {
-          this.sviZaposleniDermatolozi = response.data;});
-      MedicineDataService.getMedicineForPharmacyAdmin(this.id)
-      .then(response => {
-          this.lekovi = response.data;
-      });
+      this.osveziFarmaceute();
+      this.osveziDermatologe();
+      this.osveziLekove();
       MedicineDataService.getAllMedicines()
       .then(response => {
           this.sviLekovi = response.data;
       });
-      OrderDataService.getOrders(this.id)
-        .then(response => {
-          this.sveNarudzbenice = response.data;
-          this.podesiDatume();          // da bude lepsi prikaz datuma
-          this.narudzbeniceZaIspis = this.sveNarudzbenice;
-      });
+      this.osveziPorudzbine();
+
     },
     mounted() {
     },
@@ -512,10 +568,17 @@ export default {
           this.podesiDatume();          // da bude lepsi prikaz datuma
           this.narudzbeniceZaIspis = this.sveNarudzbenice;});   
       },
-      inicijalizujPoruku(pk) { 
-        this.poruka = pk;
+      osveziPreglede() {
+        AppointmentDataService.getAppointmentApoteka(this.pharmacy.id)
+        .then(response => {
+          this.sviPreglediDermatologa = response.data;});   
       },
+
+      inicijalizujPoruku(pk) { this.poruka = pk; },
       podesi(farm_der, jesteFar) { this.otpustiRadnika = farm_der; this.jesteFarmaceut = jesteFar;},
+      postaviNarudzbenicu(p) { this.narudzbenica = p; },  // prelazak na drugu formu
+      podesiPregled(p) { this.izabraniPregled = p; },
+
       otpusti() {
         if (this.jesteFarmaceut) {
           PharmacistDataService.firePharmacist(this.id, this.otpustiRadnika)        
@@ -790,7 +853,6 @@ export default {
               brojac++;
             }
       },
-      postaviNarudzbenicu(p) { this.narudzbenica = p; },  // prelazak na drugu formu
       obrisiNarudzbenicu() {
         OrderDataService.deleteOrder(this.narudzbenica)
         .then(response => {
@@ -843,6 +905,36 @@ export default {
           if (por.startDate[4] < 10) por.startDate[4] = "0" + por.startDate[4]; 
         }
       },
+      dodajPregled() {
+        if (this.pregledStartuje == null) {
+          this.poruka = "You must enter start time for appointment";
+          return false;
+        }
+        if (this.pregledTraje <= 0) {
+          this.poruka = "Appointment duration must be positive number";
+          return false;
+        }
+        if (this.pregledKosta <= 0) {
+          this.poruka = "Appointment price must be positive number";
+          return false;
+        }
+        if (this.pregledDoktor == null) {
+          this.poruka = "You must select one of dermatologist for appointment";
+          return false;
+        }
+
+        AppointmentDataService.makeAppointmentPAdmin(this.pregledStartuje, this.pregledTraje, this.pregledKosta,
+          this.pregledDoktor, this.pregledDoktor.pharmacyWork.pharmacyId)
+          .then(response => {
+            if (response.data == 0) this.poruka = "You successfully made appointment";
+            else if (response.data == -1) this.poruka = "Dermatologist doesn't work in this pharmacy in inputed time";
+            else if (response.data == -2) this.poruka = "Appointment is too long, end time is after end hour of dermatologist";
+            else if (response.data == -3) this.poruka = "Dermatologist already have some appointment at inputed time";
+            this.osveziPreglede();
+            return;
+          });
+        },
+
     }
 }
 </script>
