@@ -126,6 +126,22 @@ class MedicineDataService {
   });
   }
 
+  deleteAppointmentApoteka(pregled) {
+    return axios({
+      method: 'post',
+      url: API_URL + "/delete",
+      data: pregled
+    }).catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("error.config");
+      console.log(error.config);
+    });
+  }
+
 }
 
 

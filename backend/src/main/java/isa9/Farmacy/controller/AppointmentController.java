@@ -342,10 +342,30 @@ public class AppointmentController {
 
     @GetMapping("/allForPharmacy/{idApoteke}")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
-    public ResponseEntity<List<AppointmentDTO>> pharmacyAdminMake(@PathVariable Long idApoteke) {
+    public ResponseEntity<List<AppointmentDTO>> getAppAdmin(@PathVariable Long idApoteke) {
         List<AppointmentDTO> povratna = new ArrayList<>();
         for (Appointment pregled : this.appointmentService.findAll())
             if (idApoteke == pregled.getPharmacy().getId()) povratna.add(this.appointmentToAppointmentDTO.convert(pregled));
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @PostMapping("/delete")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<Integer> deleteAppointmentAdmin(@RequestBody AppointmentDTO pregled) {
+        int povratna = -1;
+        Appointment odabrani = this.appointmentService.findOne(pregled.getId());
+        if (odabrani == null) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
+        povratna = 0;
+        for (Examination ex : this.examinationService.findAll())
+            if (ex.getAppointment().getId() == pregled.getId()) {
+                 if (ex.getStatus() != ExaminationStatus.CANCELED) continue;
+                 if (ex.getStatus() == ExaminationStatus.HELD || ex.getStatus() == ExaminationStatus.NOT_HELD)
+                     povratna = 1;
+                 else povratna = 2;
+                 break;
+            }
+        if (povratna != 0) return new ResponseEntity<>(povratna, HttpStatus.OK);
+        this.appointmentService.deleteApponitment(pregled.getId());
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 

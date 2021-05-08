@@ -176,7 +176,7 @@
                       <td>{{p.durationInMins}}</td>
                       <td>{{p.price}}</td>
                       <td><form v-on:click.prevent="podesiPregled(p)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#???">View</button></form></td>
-                      <td><form v-on:click.prevent="podesiPregled(p)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#???">Delete</button></form></td>
+                      <td><form v-on:click.prevent="podesiPregled(p)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obrisiPregled">Delete</button></form></td>
                   </tr>
                 </tbody>
               </table>
@@ -412,6 +412,26 @@
     </div>
   </div>
 
+  <!-- brisanje pregleda -->
+  <div class="modal fade" id="obrisiPregled" tabindex="-1" role="dialog" aria-labelledby="ObrisiPreged" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ObrisiNar">Are you sure you want to delete examination? </h5>
+          
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+          <label>&emsp; {{this.izabraniPregled?.doctor.name}} {{this.izabraniPregled?.doctor.surname}} {{this.izabraniPregled?.doctor.phoneNumber}}</label>
+          <label>&emsp; {{this.izabraniPregled?.startTime}} {{this.izabraniPregled?.duration}}</label>
+         <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="obrisiPregled()" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
     <!-- Dodaj leku -->
   <div class="modal fade" id="dodajLek" tabindex="-1" role="dialog" aria-labelledby="Dodaj lek" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -926,11 +946,26 @@ export default {
         AppointmentDataService.makeAppointmentPAdmin(this.pregledStartuje, this.pregledTraje, this.pregledKosta,
           this.pregledDoktor, this.pregledDoktor.pharmacyWork.pharmacyId)
           .then(response => {
-            if (response.data == 0) this.poruka = "You successfully made appointment";
+            if (response.data == 0) {
+              this.poruka = "You successfully made appointment";
+              this.osveziPreglede();
+            }
             else if (response.data == -1) this.poruka = "Dermatologist doesn't work in this pharmacy in inputed time";
             else if (response.data == -2) this.poruka = "Appointment is too long, end time is after end hour of dermatologist";
             else if (response.data == -3) this.poruka = "Dermatologist already have some appointment at inputed time";
-            this.osveziPreglede();
+
+            return;
+          });
+        },
+        obrisiPregled() {
+          AppointmentDataService.deleteAppointmentApoteka(this.izabraniPregled)
+          .then(response => {
+            if (response.data == 1) this.poruka = "You can't delete examination, he was in past";
+            else if (response.data == 2) this.poruka = "You can't delete examination, someone reserved him";
+            else {
+              this.poruka = "You successfully deleted examination";
+              this.osveziPreglede();
+              }
             return;
           });
         },
