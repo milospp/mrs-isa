@@ -113,6 +113,19 @@ class MedicineDataService {
     });
   }
 
+  getAppointmentApoteka(idApoteke) {
+    return axios.get(API_URL + "/allForPharmacy/" + idApoteke)
+    .catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("Error");
+      console.log(error.config);
+  });
+  }
+
 }
 
 

@@ -26,7 +26,7 @@ public class AppointmentDTOtoAppointment implements Converter<AppointmentDTO, Ap
         Doctor doktor = (Doctor) this.userService.findOne(appointmentDTO.getDoctor().getId());
         povratna.setDoctor(doktor);
         povratna.setDurationInMins(appointmentDTO.getDurationInMins());
-        povratna.setPrice(povratna.getPrice());
+        povratna.setPrice(appointmentDTO.getPrice());
         povratna.setStartTime(appointmentDTO.getStartTime());
         povratna.setType(appointmentDTO.getType());
         Pharmacy apoteka = this.pharmacyService.findOne(appointmentDTO.getPharmacy().getId());

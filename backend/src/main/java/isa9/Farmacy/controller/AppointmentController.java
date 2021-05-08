@@ -313,6 +313,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<Integer> pharmacyAdminMake(@RequestBody AppointmentDTO podaci) {
         LocalTime pocetakPregleda = LocalTime.of(podaci.getStartTime().getHour(), podaci.getStartTime().getMinute());
 
@@ -336,6 +337,15 @@ public class AppointmentController {
         AppointmentDTOtoAppointment konverter = new AppointmentDTOtoAppointment(this.userService, this.pharmacyService);
         Appointment pregled = konverter.convert(podaci);
         this.appointmentService.save(pregled);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @GetMapping("/allForPharmacy/{idApoteke}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<List<AppointmentDTO>> pharmacyAdminMake(@PathVariable Long idApoteke) {
+        List<AppointmentDTO> povratna = new ArrayList<>();
+        for (Appointment pregled : this.appointmentService.findAll())
+            if (idApoteke == pregled.getPharmacy().getId()) povratna.add(this.appointmentToAppointmentDTO.convert(pregled));
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 

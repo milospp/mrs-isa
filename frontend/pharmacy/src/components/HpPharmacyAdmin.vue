@@ -36,9 +36,10 @@
             <li class="nav-item active"><a class="nav-link" data-toggle="tab" href="#tab-medicines">Medicines</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Pharmacists</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Dermatologists</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu3">Orders</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu4">Invalid receipts</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu5">Map</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu3">Examination</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu4">Orders</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu5">Invalid receipts</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu6">Map</a></li>
           </ul>
         
           <div class="tab-content">
@@ -154,6 +155,34 @@
             </div>
 
             <div id="menu3" class="tab-pane fade">
+              <h3>Examination for dermatologists</h3>
+                <table class="table table-striped">
+                  <thead class="card-header">
+                  <th>First ame</th>
+                  <th>Last name</th>
+                  <th>Phone number</th>
+                  <th>Start time</th>
+                  <th>Duration</th>
+                  <th>Price</th>
+                  <th>&emsp;</th>
+                  <th>&emsp;</th>
+                </thead>
+                <tbody>
+                    <tr :key="p.name" v-for="p in this.sviPreglediDermatologa">
+                      <td>{{p.doctor.name}}</td>
+                      <td>{{p.doctor.surname}}</td>
+                      <td>{{p.doctor.phoneNumber}} </td>
+                      <td> {{p.startTime}}</td>
+                      <td>{{p.durationInMins}}</td>
+                      <td>{{p.price}}</td>
+                      <td><form v-on:click.prevent="podesiPregled(p)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#???">View</button></form></td>
+                      <td><form v-on:click.prevent="podesiPregled(p)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#???">Delete</button></form></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div id="menu4" class="tab-pane fade">
               <h3>Orders</h3>
               <table>
                 <tr>
@@ -199,7 +228,7 @@
             </div>
 
 
-            <div id="menu4" class="tab-pane fade">
+            <div id="menu5" class="tab-pane fade">
               <h3>All invalid receipts</h3>
               <table class="table table-striped">
                 <thead>
@@ -221,7 +250,7 @@
               </table>
             </div>
             <!-- mora na kraj jer inace ne radi kako valja -->
-            <div id="menu5" class="tab-pane fade active">
+            <div id="menu6" class="tab-pane fade active">
 					          <Mapa/>
             </div>
           </div>
@@ -492,6 +521,7 @@ export default {
             sviLekovi: [], zamenskiLekovi: [], poruka: "Wait... Your require is in processing", 
             filterOrder: 0, narudzbenica: null, sveNarudzbenice: [], narudzbeniceZaIspis: [],
             pregledStartuje:null, pregledTraje: 0, pregledKosta: 0,  pregledDoktor: null,
+            sviPreglediDermatologa: [], izabraniPregled: null, 
         };
     },
     created() {
@@ -501,27 +531,17 @@ export default {
           this.pharmacy = response.data;
           this.pharmacyName = this.pharmacy.name;
           this.pharmacyDesc = this.pharmacy.description;
+          this.osveziPreglede();
         });
-      PharmacistDataService.getAllPharmacistAdmin(this.id)
-        .then(response => {
-          this.sviZaposleniFarmaceuti = response.data;});
-      DermatologistDataService.getAllDermatologistAdmin(this.id)
-        .then(response => {
-          this.sviZaposleniDermatolozi = response.data;});
-      MedicineDataService.getMedicineForPharmacyAdmin(this.id)
-      .then(response => {
-          this.lekovi = response.data;
-      });
+      this.osveziFarmaceute();
+      this.osveziDermatologe();
+      this.osveziLekove();
       MedicineDataService.getAllMedicines()
       .then(response => {
           this.sviLekovi = response.data;
       });
-      OrderDataService.getOrders(this.id)
-        .then(response => {
-          this.sveNarudzbenice = response.data;
-          this.podesiDatume();          // da bude lepsi prikaz datuma
-          this.narudzbeniceZaIspis = this.sveNarudzbenice;
-      });
+      this.osveziPorudzbine();
+
     },
     mounted() {
     },
@@ -548,10 +568,17 @@ export default {
           this.podesiDatume();          // da bude lepsi prikaz datuma
           this.narudzbeniceZaIspis = this.sveNarudzbenice;});   
       },
-      inicijalizujPoruku(pk) { 
-        this.poruka = pk;
+      osveziPreglede() {
+        AppointmentDataService.getAppointmentApoteka(this.pharmacy.id)
+        .then(response => {
+          this.sviPreglediDermatologa = response.data;});   
       },
+
+      inicijalizujPoruku(pk) { this.poruka = pk; },
       podesi(farm_der, jesteFar) { this.otpustiRadnika = farm_der; this.jesteFarmaceut = jesteFar;},
+      postaviNarudzbenicu(p) { this.narudzbenica = p; },  // prelazak na drugu formu
+      podesiPregled(p) { this.izabraniPregled = p; },
+
       otpusti() {
         if (this.jesteFarmaceut) {
           PharmacistDataService.firePharmacist(this.id, this.otpustiRadnika)        
@@ -826,7 +853,6 @@ export default {
               brojac++;
             }
       },
-      postaviNarudzbenicu(p) { this.narudzbenica = p; },  // prelazak na drugu formu
       obrisiNarudzbenicu() {
         OrderDataService.deleteOrder(this.narudzbenica)
         .then(response => {
@@ -904,9 +930,11 @@ export default {
             else if (response.data == -1) this.poruka = "Dermatologist doesn't work in this pharmacy in inputed time";
             else if (response.data == -2) this.poruka = "Appointment is too long, end time is after end hour of dermatologist";
             else if (response.data == -3) this.poruka = "Dermatologist already have some appointment at inputed time";
+            this.osveziPreglede();
             return;
           });
         },
+
     }
 }
 </script>
