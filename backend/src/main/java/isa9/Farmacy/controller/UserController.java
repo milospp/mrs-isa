@@ -434,8 +434,11 @@ public class UserController {
         for (User u : svi) if (u.getClass() == Pharmacist.class) {
             Pharmacist farmaceut = (Pharmacist) u;
             if (!farmaceut.getWorking().isEmpty() && farmaceut.getWorking().iterator().next().getPharmacy().getId()
-                    .equals(admin.getPharmacy().getId()))
-                povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
+                    .equals(admin.getPharmacy().getId())) {
+                Work posao = null;
+                for (Work w : farmaceut.getWorking()) posao = w;    // on ima samo 1 posao
+                povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut, posao));
+            }
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
@@ -454,7 +457,9 @@ public class UserController {
                     .equals(admin.getPharmacy().getId()))
                 if (farmaceut.getSurname().toLowerCase().contains(search.toLowerCase()) ||
                         farmaceut.getName().toLowerCase().contains(search.toLowerCase())) {
-                    povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
+                    Work posao = null;
+                    for (Work w : farmaceut.getWorking()) posao = w;    // on ima samo 1 posao
+                    povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut, posao));
                 }
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
@@ -481,7 +486,9 @@ public class UserController {
                         farmaceut.getAddress().getStreet().toLowerCase().contains(podaci.getFilterAdrU().toLowerCase()) ||
                         farmaceut.getAddress().getNumber().toLowerCase().contains(podaci.getFilterAdrB().toLowerCase()) ||
                         farmaceut.getPhoneNumber().toLowerCase().contains(podaci.getFilterBroj().toLowerCase())) {
-                    povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
+                    Work posao = null;
+                    for (Work w : farmaceut.getWorking()) posao = w;    // on ima samo 1 posao
+                    povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut, posao));
                 }
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
@@ -493,8 +500,11 @@ public class UserController {
         List<PharmacistDTO> povratna = new ArrayList<>();
         for (User u : svi) if (u.getClass() == Pharmacist.class) {
             Pharmacist farmaceut = (Pharmacist) u;
-            if (!farmaceut.getWorking().isEmpty() && farmaceut.getWorking().iterator().next().getPharmacy().getId().equals(id))
-                povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
+            if (!farmaceut.getWorking().isEmpty() && farmaceut.getWorking().iterator().next().getPharmacy().getId().equals(id)) {
+                Work posao = null;
+                for (Work w : farmaceut.getWorking()) posao = w;    // on ima samo 1 posao
+                povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut, posao));
+        }
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
@@ -533,7 +543,9 @@ public class UserController {
             if (!farmaceut.getWorking().isEmpty() && farmaceut.getWorking().iterator().next().getPharmacy().getId().equals(id))
                 if (farmaceut.getSurname().toLowerCase().contains(search.toLowerCase()) ||
                         farmaceut.getName().toLowerCase().contains(search.toLowerCase())) {
-                    povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
+                    Work posao = null;
+                    for (Work w : farmaceut.getWorking()) posao = w;    // on ima samo 1 posao
+                    povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut, posao));
                 }
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
@@ -555,7 +567,9 @@ public class UserController {
                         farmaceut.getPhoneNumber().contains(podaci.getFilterBroj()) ||
                         farmaceut.getName().toLowerCase().contains(podaci.getSearch().toLowerCase())||
                         farmaceut.getSurname().toLowerCase().contains(podaci.getSearch().toLowerCase())) {
-                    povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut));
+                    Work posao = null;
+                    for (Work w : farmaceut.getWorking()) posao = w;    // on ima samo 1 posao
+                    povratna.add(this.pharmacistToPharmacistDTO.convert(farmaceut, posao));
                 }
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
@@ -573,7 +587,7 @@ public class UserController {
             Dermatologist dermatolog = (Dermatologist) u;
             for (Work work : dermatolog.getWorking())
                 if (work.getPharmacy().getId().equals(admin.getPharmacy().getId())) {
-                    povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog));
+                    povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog, work));
                     break;
                 }
         }
@@ -589,11 +603,11 @@ public class UserController {
         PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
         List<DermatologistDTO> povratna = new ArrayList<>();
         for (User u : svi) if (u.getClass() == Dermatologist.class) {
-            boolean radi = false;
+            Work posao = null;
             Dermatologist dermatolog = (Dermatologist) u;
             for (Work work : dermatolog.getWorking())
-                if (work.getPharmacy().getId().equals(admin.getPharmacy().getId())) { radi = true; break;}
-            if (!radi) povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog));
+                if (work.getPharmacy().getId().equals(admin.getPharmacy().getId())) { posao = work; break;}
+            if (posao != null) povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog, posao));
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
@@ -650,7 +664,7 @@ public class UserController {
                 if (work.getPharmacy().getId().equals(admin.getPharmacy().getId())) {
                     if (dermatolog.getSurname().toLowerCase().contains(search.toLowerCase()) ||
                             dermatolog.getName().toLowerCase().contains(search.toLowerCase())) {
-                        povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog));
+                        povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog, work));
                     }
                     break;
                 }}
@@ -679,7 +693,7 @@ public class UserController {
                             dermatolog.getAddress().getStreet().toLowerCase().contains(podaci.getFilterAdrU().toLowerCase()) ||
                             dermatolog.getAddress().getNumber().toLowerCase().contains(podaci.getFilterAdrB().toLowerCase()) ||
                             dermatolog.getPhoneNumber().toLowerCase().contains(podaci.getFilterBroj().toLowerCase())) {
-                        povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog));
+                        povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog, work));
                     }
                     break;
                 }}
@@ -748,7 +762,7 @@ public class UserController {
                             dermatolog.getAddress().getStreet().toLowerCase().contains(podaci.getFilterAdrU().toLowerCase()) ||
                             dermatolog.getAddress().getNumber().toLowerCase().contains(podaci.getFilterAdrB().toLowerCase()) ||
                             dermatolog.getPhoneNumber().toLowerCase().contains(podaci.getFilterBroj().toLowerCase())) {
-                        povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog));
+                        povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog, work));
                     }
                     break;
                 }
@@ -767,7 +781,7 @@ public class UserController {
                 if (work.getPharmacy().getId().equals(id)) {
                     if (dermatolog.getSurname().toLowerCase().contains(search.toLowerCase()) ||
                             dermatolog.getName().toLowerCase().contains(search.toLowerCase())) {
-                        povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog));
+                        povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog, work));
                     }
                     break;
                 }
@@ -783,7 +797,7 @@ public class UserController {
             Dermatologist dermatolog = (Dermatologist) u;
             for (Work work : dermatolog.getWorking())
                 if (work.getPharmacy().getId().equals(id)) {
-                    povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog));
+                    povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog, work));
                     break;
                 }
         }
