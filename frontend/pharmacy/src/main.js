@@ -8,9 +8,10 @@ import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'vue-choice';
 import axios from 'axios';
+import { SetupCalendar, Calendar, DatePicker } from 'v-calendar';
 
 window.$ = window.jQuery = require('jquery');
 
 const app = createApp(App);
-app.use(store).use(router).mount('#app');
+app.use(store).use(router).use(SetupCalendar, {}).component('Calendar', Calendar).mount('#app');
 app.config.globalProperties.$axios = axios;
