@@ -79,10 +79,16 @@ insert into users (address_id, email, enabled, name, password, phone_number, rol
 insert into doctor (id) values (13);
 insert into dermatologist (id) values (13);
 
+--medicineSpecs
+insert into medicine_specifications (side_effects, daily_intake, structure) values ('Pospanost, naleti raspoloženja','1 pilula na dan','metildopa');
+insert into medicine_specifications (side_effects, daily_intake, structure) values ('Might learn mandarin','2 doses','Structurrrre');
+insert into medicine_specifications (side_effects, daily_intake, structure) values ('Krvarenje, žutica','2 tablete na dan','varfarin');
+
 --medicine
-insert into medicine (code, manufacturer, name, note, perscription, points, shape, structure, type) values ('AZ45', 'Hemofarm', 'Methyldopa', 'Može uzrokovati pospanost', 0, 3, 'pills', 'laktoza', 'Alfa-adrenergicki agonist');
-insert into medicine (code, manufacturer, name, note, perscription, points, shape, structure, type) values ('BZ55', 'Kinezi', 'Sinopharm', 'vakcina', 0, 5, 'pills', 'struucturee', 'some type idl');
-insert into medicine (code, manufacturer, name, note, perscription, points, shape, structure, type) values ('FAR-123', 'Galenika','Farin','Piti isključivo prema receptu',0,2,'tablets','varfarin','antikoagulans');
+insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('AZ45', 'Hemofarm', 'Methyldopa', 'Može uzrokovati pospanost', 0, 3, 'pills', 1, 'Alfa-adrenergicki agonist');
+insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('BZ55', 'Kinezi', 'Sinopharm', 'vakcina', 0, 5, 'pills', 2, 'some type idl');
+insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('FAR-123', 'Galenika','Farin','Piti isključivo prema receptu',0,2,'tablets',3,'antikoagulans');
+
 
 --pharmacies
 insert into pharmacy (description, name, address_id) values ('Otvoreni smo non-stop', 'Prima', 1);

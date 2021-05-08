@@ -1,6 +1,7 @@
 package isa9.Farmacy.model.dto;
 
 import isa9.Farmacy.model.MedPrice;
+import isa9.Farmacy.model.MedSpecification;
 import isa9.Farmacy.model.Medicine;
 import isa9.Farmacy.model.Pharmacy;
 import lombok.*;
@@ -19,8 +20,5 @@ public class MedInPharmaDTO {
     private MedicineDTO medicine;
     private int inStock;
     private PharmacyDTO pharmacy;
-
-
-
 
 }

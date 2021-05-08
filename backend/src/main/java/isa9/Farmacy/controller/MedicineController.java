@@ -180,7 +180,7 @@ public class MedicineController {
         Medicine novi = new Medicine();
         novi.setCode(lek.getMedicine().getCode());
         novi.setName(lek.getMedicine().getName());
-        novi.setStructure(lek.getMedicine().getStructure());
+        novi.setSpecification(lek.getMedicine().getSpecification());
         novi.setType(lek.getMedicine().getType());
         novi.setShape(lek.getMedicine().getShape());
         novi.setManufacturer(lek.getMedicine().getName());
@@ -228,7 +228,7 @@ public class MedicineController {
     @PreAuthorize("hasAuthority('SYS_ADMIN')")
     public ResponseEntity<Integer> addMedicine(@RequestBody MedicineDTO medicineDTO){
         List<Long> replacementMedsIds = medicineDTO.getReplacementMedicationIds().stream().map(Long::parseLong).collect(Collectors.toList());
-        Medicine newMedicine = new Medicine(0L, medicineDTO.getCode(), medicineDTO.getName(), medicineDTO.getStructure(),
+        Medicine newMedicine = new Medicine(0L, medicineDTO.getCode(), medicineDTO.getName(), medicineDTO.getSpecification(),
                 medicineDTO.getManufacturer(), medicineDTO.getNote(), medicineDTO.getPoints(), medicineDTO.getShape(),
                 medicineDTO.getType(), medicineDTO.getPerscription(), medicineService.idsToMedicines(replacementMedsIds));
         boolean checkCode = this.medicineService.isCodeAvailable(newMedicine.getCode());
