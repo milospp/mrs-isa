@@ -23,7 +23,7 @@ public class MedicineToMedicineDTO implements Converter<Medicine, MedicineDTO> {
         dto.setId(medicine.getId());
         dto.setCode(medicine.getCode());
         dto.setName(medicine.getName());
-        dto.setStructure(medicine.getStructure());
+        dto.setSpecification(medicine.getSpecification());
         dto.setManufacturer(medicine.getManufacturer());
         dto.setNote(medicine.getNote());
         dto.setPoints(medicine.getPoints());
