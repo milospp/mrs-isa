@@ -2,7 +2,8 @@
     <table>
         <tr>
             <td align="left"> <form v-on:submit.prevent="">
-                    <input type="submit" class="btn btn-primary" value="Make appointment"></form> </td>
+                    <input type="submit" class="btn btn-primary" data-toggle="modal" data-target="#napraviPregled" 
+                      v-on:click.prevent="osveziDermatologe()" value="Make appointment"></form> </td>
             <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
              <td align="left"> <form v-on:submit.prevent="">
                     <input type="submit" class="btn btn-primary" value="Make pricelist"></form> </td>
@@ -92,6 +93,8 @@
                   <th>Last name</th>
                   <th>Address</th>
                   <th>Phone number</th>
+                  <th>Start time</th>
+                  <th>End time</th>
                   <th>&emsp;</th>
                 </thead>
                 <tbody>
@@ -100,6 +103,8 @@
                       <td>{{f.surname}}</td>
                       <td>{{f.address["state"]}}, {{f.address["city"]}}, {{f.address["street"]}}, {{f.address["number"]}}</td>
                       <td>{{f.phoneNumber}}</td>
+                      <td>{{(f.pharmacyWork.startHour[0] < 10 ? "0" + f.pharmacyWork.startHour[0] : f.pharmacyWork.startHour[0])}}:{{(f.pharmacyWork.startHour[1] < 10 ? "0" + f.pharmacyWork.startHour[1] : f.pharmacyWork.startHour[1])}}</td>
+                      <td>{{(f.pharmacyWork.endHour[0] < 10 ? "0" + f.pharmacyWork.endHour[0] : f.pharmacyWork.endHour[0])}}:{{(f.pharmacyWork.endHour[1] < 10 ? "0" + f.pharmacyWork.endHour[1] : f.pharmacyWork.endHour[1])}}</td>
                       <td><form v-on:click.prevent="podesi(f, true)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#potvrda">Fire</button></form></td>
                   </tr>
                 </tbody>
@@ -130,6 +135,8 @@
                   <th>Last name</th>
                   <th>Address</th>
                   <th>Phone number</th>
+                  <th>Start time</th>
+                  <th>End time</th>
                   <th>&emsp;</th>
                 </thead>
                 <tbody>
@@ -138,6 +145,8 @@
                       <td>{{d.surname}}</td>
                       <td>{{d.address["state"]}}, {{d.address["city"]}}, {{d.address["street"]}}, {{d.address["number"]}}</td>
                       <td>{{d.phoneNumber}}</td>
+                      <td>{{(d.pharmacyWork.startHour[0] < 10 ? "0" + d.pharmacyWork.startHour[0] : d.pharmacyWork.startHour[0])}}:{{(d.pharmacyWork.startHour[1] < 10 ? "0" + d.pharmacyWork.startHour[1] : d.pharmacyWork.startHour[1])}}</td>
+                      <td>{{(d.pharmacyWork.endHour[0] < 10 ? "0" + d.pharmacyWork.endHour[0] : d.pharmacyWork.endHour[0])}}:{{(d.pharmacyWork.endHour[1] < 10 ? "0" + d.pharmacyWork.endHour[1] : d.pharmacyWork.endHour[1])}}</td>
                       <td><form v-on:click.prevent="podesi(d, false)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#potvrda">Fire</button></form></td>
                   </tr>
                 </tbody>
@@ -425,6 +434,31 @@
     </div>
   </div>
 
+      <!-- Napravi pregled -->
+  <div class="modal fade" id="napraviPregled" tabindex="-1" role="dialog" aria-labelledby="Napravi pregled" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="lekic">New appointment</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" align="left">Start time: <input type="datetime-local" v-model="pregledStartuje"/></div>
+        <div class="modal-body" align="left">Duration : <input type="number" min="1" v-model="pregledTraje"/> minutes</div>
+        <div class="modal-body" align="left">Price: <input type="number" min="1" v-model="pregledKosta"/></div>
+        <div class="modal-body" align="left">Chose dermatologist: 
+          <select id="zamenski" style="width: 80%;" v-model="pregledDoktor" required="required">
+              <option v-for="d in this.sviZaposleniDermatolozi" v-bind:value=d>{{d.name}} {{d.surname}} {{d.phoneNumber}}</option>
+          </select></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal"  data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="dodajPregled()">Make</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <script>
@@ -433,6 +467,7 @@ import PharmacistDataService from '../service/PharmacistDataService.js';
 import PharmacyDataService from '../service/PharmacyDataService.js';
 import MedicineDataService from '../service/MedicineDataService.js';
 import OrderDataService from '../service/OrderDataService.js';
+import AppointmentDataService from '../service/AppointmentDataService.js';
 import Mapa from "../components/Maps.vue";
 import AuthService from "../service/AuthService.js";
 
@@ -456,6 +491,7 @@ export default {
             otpustiRadnika: null, jesteFarmaceut: false, 
             sviLekovi: [], zamenskiLekovi: [], poruka: "Wait... Your require is in processing", 
             filterOrder: 0, narudzbenica: null, sveNarudzbenice: [], narudzbeniceZaIspis: [],
+            pregledStartuje:null, pregledTraje: 0, pregledKosta: 0,  pregledDoktor: null,
         };
     },
     created() {
@@ -843,6 +879,34 @@ export default {
           if (por.startDate[4] < 10) por.startDate[4] = "0" + por.startDate[4]; 
         }
       },
+      dodajPregled() {
+        if (this.pregledStartuje == null) {
+          this.poruka = "You must enter start time for appointment";
+          return false;
+        }
+        if (this.pregledTraje <= 0) {
+          this.poruka = "Appointment duration must be positive number";
+          return false;
+        }
+        if (this.pregledKosta <= 0) {
+          this.poruka = "Appointment price must be positive number";
+          return false;
+        }
+        if (this.pregledDoktor == null) {
+          this.poruka = "You must select one of dermatologist for appointment";
+          return false;
+        }
+
+        AppointmentDataService.makeAppointmentPAdmin(this.pregledStartuje, this.pregledTraje, this.pregledKosta,
+          this.pregledDoktor, this.pregledDoktor.pharmacyWork.pharmacyId)
+          .then(response => {
+            if (response.data == 0) this.poruka = "You successfully made appointment";
+            else if (response.data == -1) this.poruka = "Dermatologist doesn't work in this pharmacy in inputed time";
+            else if (response.data == -2) this.poruka = "Appointment is too long, end time is after end hour of dermatologist";
+            else if (response.data == -3) this.poruka = "Dermatologist already have some appointment at inputed time";
+            return;
+          });
+        },
     }
 }
 </script>

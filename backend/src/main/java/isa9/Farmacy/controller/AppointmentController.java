@@ -3,15 +3,11 @@ package isa9.Farmacy.controller;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.*;
-import isa9.Farmacy.support.DermatologistToDermatologistDTO;
-import isa9.Farmacy.support.WorkToWorkDTO;
+import isa9.Farmacy.support.*;
 import isa9.Farmacy.model.dto.AppointmentDTO;
 import isa9.Farmacy.model.dto.PatientDTO;
 import isa9.Farmacy.model.dto.TherapyItemDTO;
 import isa9.Farmacy.service.*;
-import isa9.Farmacy.support.AppointmentToAppointmentDTO;
-import isa9.Farmacy.support.DateTimeDTO;
-import isa9.Farmacy.support.MedicineInPharmacyToMedInPharmaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -314,6 +310,33 @@ public class AppointmentController {
         //AppointmentDTO dto = appointmentToAppointmentDTO.convert(appointment);
         return new ResponseEntity<>(true, HttpStatus.OK);
 
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<Integer> pharmacyAdminMake(@RequestBody AppointmentDTO podaci) {
+        LocalTime pocetakPregleda = LocalTime.of(podaci.getStartTime().getHour(), podaci.getStartTime().getMinute());
+
+        int povratna = -1;  // radno vreme nije tad = -1
+        if (podaci.getDoctor().getPharmacyWork().getStartHour().isAfter(pocetakPregleda) ||
+            podaci.getDoctor().getPharmacyWork().getEndHour().isBefore(pocetakPregleda))
+            return new ResponseEntity<>(povratna, HttpStatus.OK);
+
+        povratna = -2;  // probija mu radno vreme = -2
+        LocalTime krajPregleda = LocalTime.of(podaci.getStartTime().getHour(), podaci.getStartTime().getMinute());
+        krajPregleda.plusMinutes(podaci.getDurationInMins());
+        if (podaci.getDoctor().getPharmacyWork().getEndHour().isBefore(krajPregleda))
+            return new ResponseEntity<>(povratna, HttpStatus.OK);
+
+        povratna = -3; // preklapa se sa nekim drugim terminom = -3
+        if (!this.appointmentService.isDermatologistFree(podaci.getDoctor().getId(), podaci.getStartTime(), podaci.getDurationInMins()))
+            return new ResponseEntity<>(povratna, HttpStatus.OK);
+
+        povratna = 0;   // sve je okej
+        podaci.setType(TypeOfReview.EXAMINATION);
+        AppointmentDTOtoAppointment konverter = new AppointmentDTOtoAppointment(this.userService, this.pharmacyService);
+        Appointment pregled = konverter.convert(podaci);
+        this.appointmentService.save(pregled);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
 }
