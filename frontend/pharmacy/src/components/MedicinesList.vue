@@ -96,6 +96,29 @@
     </form>
   </div>
   
+  <div class="modal fade" id="specsView" tabindex="-1" role="dialog" aria-labelledby="specsView" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="Potvrdica">Specification of {{this.viewedMedicine.name}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <div>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr><td>Structure: </td><td>{{this.viewedMedicine.specification.structure}}</td></tr>
+                            <tr><td>Daily intake: </td><td>{{this.viewedMedicine.specification.dailyIntake}}</td></tr>
+                            <tr><td>Side effects: </td><td>{{this.viewedMedicine.specification.sideEffects}}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
   <div class="row">
 
     <div class="col-md-4" v-for="m in medicinesSlice">
@@ -107,14 +130,15 @@
           <h6>{{m.type}}</h6>
           <h6>{{m.shape}}</h6>
           <h6>{{m.manufacturer}}</h6>
-          <p class="card-text">
+          <!-- <p class="card-text">
             {{m.note}}
-          </p>
+          </p> -->
           
           <div class="d-flex justify-content-between align-items-center">
             <!-- <router-link class="btn btn-block btn-primary" :to="{ name: 'MedicinePage', params: { id: m.id  }}">View</router-link> -->
-            <button type="button" class="btn btn-block btn-primary">View TODO</button>
+            <button type="button" class="btn btn-block btn-primary" v-on:click="fetchMedicine(m)" data-toggle="modal" data-target="#specsView">View specification</button>
           </div>
+          
         </div>
       </div>
     </div>
@@ -136,6 +160,7 @@ export default {
               minRating: 0,
               maxRating: 5,
             },
+            viewedMedicine: { specification: {structure:"", dailyIntake:"", sideEffects:""}},
             // limit: 0,
         };
     },
@@ -159,6 +184,9 @@ export default {
                 .then(response => {
                     this.medicines = response.data;
                 });
+        },
+        fetchMedicine(medicine){
+          this.viewedMedicine = medicine;
         },
 
     },
