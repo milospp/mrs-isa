@@ -80,9 +80,9 @@ insert into doctor (id) values (13);
 insert into dermatologist (id) values (13);
 
 --medicineSpecs
-insert into medicine_specifications (daily_intake, side_effects, structure) values ('Pospanost, naleti raspoloženja','1 pilula na dan','metildopa');
-insert into medicine_specifications (daily_intake, side_effects, structure) values ('Might learn mandarin','2 doses','Structurrrre');
-insert into medicine_specifications (daily_intake, side_effects, structure) values ('Krvarenje, žutica','2 tablete na dan','varfarin');
+insert into medicine_specifications (side_effects, daily_intake, structure) values ('Pospanost, naleti raspoloženja','1 pilula na dan','metildopa');
+insert into medicine_specifications (side_effects, daily_intake, structure) values ('Might learn mandarin','2 doses','Structurrrre');
+insert into medicine_specifications (side_effects, daily_intake, structure) values ('Krvarenje, žutica','2 tablete na dan','varfarin');
 
 --medicine
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('AZ45', 'Hemofarm', 'Methyldopa', 'Može uzrokovati pospanost', 0, 3, 'pills', 1, 'Alfa-adrenergicki agonist');
