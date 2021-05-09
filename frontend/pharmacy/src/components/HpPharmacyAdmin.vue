@@ -96,6 +96,7 @@
                   <th>Phone number</th>
                   <th>Start time</th>
                   <th>End time</th>
+                  <th>Saraly per hour</th>
                   <th>&emsp;</th>
                 </thead>
                 <tbody>
@@ -106,6 +107,7 @@
                       <td>{{f.phoneNumber}}</td>
                       <td>{{(f.pharmacyWork.startHour[0] < 10 ? "0" + f.pharmacyWork.startHour[0] : f.pharmacyWork.startHour[0])}}:{{(f.pharmacyWork.startHour[1] < 10 ? "0" + f.pharmacyWork.startHour[1] : f.pharmacyWork.startHour[1])}}</td>
                       <td>{{(f.pharmacyWork.endHour[0] < 10 ? "0" + f.pharmacyWork.endHour[0] : f.pharmacyWork.endHour[0])}}:{{(f.pharmacyWork.endHour[1] < 10 ? "0" + f.pharmacyWork.endHour[1] : f.pharmacyWork.endHour[1])}}</td>
+                      <td>{{f.pharmacyWork.salaryPerHour}}</td>
                       <td><form v-on:click.prevent="podesi(f, true)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#potvrda">Fire</button></form></td>
                   </tr>
                 </tbody>
@@ -424,7 +426,8 @@
           </button>
         </div>
           <label>&emsp; {{this.izabraniPregled?.doctor.name}} {{this.izabraniPregled?.doctor.surname}} {{this.izabraniPregled?.doctor.phoneNumber}}</label>
-          <label>&emsp; {{this.izabraniPregled?.startTime}} {{this.izabraniPregled?.duration}}</label>
+          <label>&emsp; {{this.izabraniPregled?.startTime[2]}}/{{this.izabraniPregled?.startTime[1]}}/{{this.izabraniPregled?.startTime[0]}}
+            {{this.izabraniPregled?.startTime[3]}}:{{this.izabraniPregled?.startTime[4]}} {{this.izabraniPregled?.durationInMins}}</label>
          <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="obrisiPregled()" data-dismiss="modal">Yes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
