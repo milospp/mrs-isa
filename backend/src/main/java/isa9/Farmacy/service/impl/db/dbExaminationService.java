@@ -50,8 +50,8 @@ public class dbExaminationService extends ExaminationServiceBase implements Exam
         return super.getFutureExaminations(idfarmaceuta);
     }
 
-//    @Override
-//    public void delete(Examination examination) {
-//        this.examinationRepository.delete(examination);
-//    }
+    @Override
+    public void delete(Examination examination) {
+        this.examinationRepository.delete(examination);
+    }
 }

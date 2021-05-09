@@ -111,24 +111,24 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
 
     @Override
     public void deleteApponitment(Long id) {
-//        List<Examination> zaBrisanje = new ArrayList<>();
-//        for (User u : this.userService.findAll()) {
-//            if (u.getClass() == Patient.class) {
-//                zaBrisanje.clear();
-//                for (Examination e : ((Patient) u).getMyExaminations()) {
-//                    if (e.getAppointment().getId() == id) {
-//                        zaBrisanje.add(e);
-//                    }
-//                ((Patient) u).getMyExaminations().removeAll(zaBrisanje);
-//                this.userService.save(u);
-//                }
-//            }
-//        }
-//
-//        for (Examination ex : this.examinationService.findAll()) {
-//            if (ex.getAppointment().getId() == id) {
-//                this.examinationService.delete(ex);}
-//        }
+        List<Examination> zaBrisanje = new ArrayList<>();
+        for (User u : this.userService.findAll()) {
+            if (u.getClass() == Patient.class) {
+                zaBrisanje.clear();
+                for (Examination e : ((Patient) u).getMyExaminations()) {
+                    if (e.getAppointment().getId() == id) {
+                        zaBrisanje.add(e);
+                    }
+                }
+                ((Patient) u).getMyExaminations().removeAll(zaBrisanje);
+                this.userService.save(u);
+            }
+        }
+
+        for (Examination ex : this.examinationService.findAll()) {
+            if (ex.getAppointment().getId() == id) {
+                this.examinationService.delete(ex);}
+        }
         this.appointmentRepository.delete(this.appointmentRepository.getOne(id));
     }
 

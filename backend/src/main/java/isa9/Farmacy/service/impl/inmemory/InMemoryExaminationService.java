@@ -49,8 +49,8 @@ public class InMemoryExaminationService extends ExaminationServiceBase implement
         return super.getFutureExaminations(idfarmaceuta);
     }
 
-//    @Override
-//    public void delete(Examination examination) {
-//        return;
-//    }
+    @Override
+    public void delete(Examination examination) {
+        return;
+    }
 }
