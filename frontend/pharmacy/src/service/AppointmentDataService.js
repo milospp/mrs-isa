@@ -1,3 +1,4 @@
+import { variationPlacements } from "@popperjs/core";
 import axios from "axios";
 
 
@@ -87,6 +88,64 @@ class AppointmentDataService {
   getDermAppFromPharmacy(dermId, pharmacyId) {
     return axios.get(`${API_URL}/` + `calendar/derm/`+dermId+`/pharmacy/`+pharmacyId);
   }
+
+  makeAppointmentPAdmin(pocetak, trajanje, cena, dermatolog, idApoteke) {
+    //2021-05-28T16:32  
+    pocetak = pocetak.split('T');
+    var vreme = pocetak[0].split('-');
+    var brojac = 0;
+    var konacnoVreme = [];
+    for (var i of vreme) { konacnoVreme[brojac] = parseInt(i); brojac++; }
+    
+    vreme = pocetak[1].split(':');
+    for (var i of vreme) { konacnoVreme[brojac] = parseInt(i); brojac++; }
+
+    var pregled = { "startTime": konacnoVreme, "durationInMins": trajanje, "price": cena,
+      "doctor": dermatolog, "pharmacy": {"id" : idApoteke} }; 
+    return axios({
+      method: 'post',
+      url: API_URL + "/add",
+      data: pregled
+    }).catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("error.config");
+      console.log(error.config);
+    });
+  }
+
+  getAppointmentApoteka(idApoteke) {
+    return axios.get(API_URL + "/allForPharmacy/" + idApoteke)
+    .catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("Error");
+      console.log(error.config);
+  });
+  }
+
+  deleteAppointmentApoteka(pregled) {
+    return axios({
+      method: 'post',
+      url: API_URL + "/delete",
+      data: pregled
+    }).catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("error.config");
+      console.log(error.config);
+    });
+  }
+
 }
 
 

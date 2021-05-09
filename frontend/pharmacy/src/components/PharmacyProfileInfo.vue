@@ -2,7 +2,6 @@
 <div>
   <RatingModal modalId="rating-modal" v-model="rating" @rated="ratePharmacy"></RatingModal>
 
-
     <div v-if="pharmacy" class="row">
       <div class="col-md-4" align="left">
         <h2>{{pharmacy.name}}</h2>
@@ -91,6 +90,8 @@
                   <th>Last name</th>
                   <th>Address</th>
                   <th>Phone number</th>
+                  <th>Start time</th>
+                  <th>End time</th>
                 </thead>
                 <tbody>
                     <tr :key="f.name" v-for="f in this.sviZaposleniFarmaceuti">
@@ -98,6 +99,8 @@
                       <td>{{f.surname}}</td>
                       <td>{{UtilService.AddressToString(f.address)}}</td>
                       <td>{{f.phoneNumber}}</td>
+                      <td>{{(f.pharmacyWork.startHour[0] < 10 ? "0" + f.pharmacyWork.startHour[0] : f.pharmacyWork.startHour[0])}}:{{(f.pharmacyWork.startHour[1] < 10 ? "0" + f.pharmacyWork.startHour[1] : f.pharmacyWork.startHour[1])}}</td>
+                      <td>{{(f.pharmacyWork.endHour[0] < 10 ? "0" + f.pharmacyWork.endHour[0] : f.pharmacyWork.endHour[0])}}:{{(f.pharmacyWork.endHour[1] < 10 ? "0" + f.pharmacyWork.endHour[1] : f.pharmacyWork.endHour[1])}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -127,6 +130,8 @@
                   <th>Last name</th>
                   <th>Address</th>
                   <th>Phone number</th>
+                  <th>Start time</th>
+                  <th>End time</th>
                 </thead>
                 <tbody>
                     <tr :key="d.name" v-for="d in this.sviZaposleniDermatolozi">
@@ -134,6 +139,8 @@
                       <td>{{d.surname}}</td>
                       <td>{{UtilService.AddressToString(d.address)}}</td>
                       <td>{{d.phoneNumber}}</td>
+                      <td>{{(d.pharmacyWork.startHour[0] < 10 ? "0" + d.pharmacyWork.startHour[0] : d.pharmacyWork.startHour[0])}}:{{(d.pharmacyWork.startHour[1] < 10 ? "0" + d.pharmacyWork.startHour[1] : d.pharmacyWork.startHour[1])}}</td>
+                      <td>{{(d.pharmacyWork.endHour[0] < 10 ? "0" + d.pharmacyWork.endHour[0] : d.pharmacyWork.endHour[0])}}:{{(d.pharmacyWork.endHour[1] < 10 ? "0" + d.pharmacyWork.endHour[1] : d.pharmacyWork.endHour[1])}}</td>
                   </tr>
                 </tbody>
               </table>

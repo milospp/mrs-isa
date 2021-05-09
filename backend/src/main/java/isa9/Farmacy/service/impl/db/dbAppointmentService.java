@@ -90,4 +90,25 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
 
         return appointmentRepository.getAppointmentsInInterval(start.toString(), end.toString());
     }
+
+    @Override
+    public Boolean isDermatologistFree(Long id, LocalDateTime start, int duration) {
+        LocalDateTime end = start.plusMinutes(duration);
+        LocalDateTime kraj;
+        for (Appointment pregled : this.appointmentRepository.findAll()) {
+            if (pregled.getDoctor().getId() != id) continue;
+            kraj = pregled.getStartTime().plusMinutes(pregled.getDurationInMins());
+            if ((start.isAfter(pregled.getStartTime()) && start.isBefore(kraj))
+                    || (start.isBefore(pregled.getStartTime()) && end.isAfter(pregled.getStartTime()))
+                    || (start.getMinute() == pregled.getStartTime().getMinute()
+                        && start.getHour() == pregled.getStartTime().getHour()))
+                return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void deleteApponitment(Long id) {
+        this.appointmentRepository.delete(this.appointmentRepository.getOne(id));
+    }
 }

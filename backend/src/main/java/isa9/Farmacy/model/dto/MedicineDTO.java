@@ -1,6 +1,7 @@
 package isa9.Farmacy.model.dto;
 
 import isa9.Farmacy.model.DispencingMedicine;
+import isa9.Farmacy.model.MedSpecification;
 import isa9.Farmacy.model.Medicine;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class MedicineDTO {
     private Long id;
     private String code;
     private String name;
-    private String structure;
+    private MedSpecification specification;
     private String manufacturer;
     private String note;
     private int points;

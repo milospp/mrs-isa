@@ -3,9 +3,6 @@ package isa9.Farmacy.service;
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.AppointmentSearchDTO;
 import isa9.Farmacy.model.dto.DermAppointmentReqDTO;
-import isa9.Farmacy.model.dto.DermatologistRegDTO;
-import isa9.Farmacy.model.dto.PharmacySearchDTO;
-import org.apache.tomcat.jni.Local;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,4 +48,7 @@ public interface AppointmentService extends GenericService<Appointment>{
     List<Appointment> filterPastAppointments(List<Appointment> appointments, AppointmentSearchDTO appointmentSearchDTO);
 
     List<Appointment> getDermForPharmacyAppointments(Long dermId, Long pharamcyId);
+  
+    Boolean isDermatologistFree(Long id, LocalDateTime start, int duration);
+    void deleteApponitment(Long id);
 }
