@@ -315,24 +315,8 @@ public class AppointmentController {
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<Integer> pharmacyAdminMake(@RequestBody AppointmentDTO podaci) {
-        LocalTime pocetakPregleda = LocalTime.of(podaci.getStartTime().getHour(), podaci.getStartTime().getMinute());
-
-        int povratna = -1;  // radno vreme nije tad = -1
-        if (podaci.getDoctor().getPharmacyWork().getStartHour().isAfter(pocetakPregleda) ||
-            podaci.getDoctor().getPharmacyWork().getEndHour().isBefore(pocetakPregleda))
-            return new ResponseEntity<>(povratna, HttpStatus.OK);
-
-        povratna = -2;  // probija mu radno vreme = -2
-        LocalTime krajPregleda = LocalTime.of(podaci.getStartTime().getHour(), podaci.getStartTime().getMinute());
-        krajPregleda.plusMinutes(podaci.getDurationInMins());
-        if (podaci.getDoctor().getPharmacyWork().getEndHour().isBefore(krajPregleda))
-            return new ResponseEntity<>(povratna, HttpStatus.OK);
-
-        povratna = -3; // preklapa se sa nekim drugim terminom = -3
-        if (!this.appointmentService.isDermatologistFree(podaci.getDoctor().getId(), podaci.getStartTime(), podaci.getDurationInMins()))
-            return new ResponseEntity<>(povratna, HttpStatus.OK);
-
-        povratna = 0;   // sve je okej
+        int povratna = this.proveriVreme(podaci);
+        if (povratna != 0) return new ResponseEntity<>(povratna, HttpStatus.OK);
         podaci.setType(TypeOfReview.EXAMINATION);
         AppointmentDTOtoAppointment konverter = new AppointmentDTOtoAppointment(this.userService, this.pharmacyService);
         Appointment pregled = konverter.convert(podaci);
@@ -345,7 +329,13 @@ public class AppointmentController {
     public ResponseEntity<List<AppointmentDTO>> getAppAdmin(@PathVariable Long idApoteke) {
         List<AppointmentDTO> povratna = new ArrayList<>();
         for (Appointment pregled : this.appointmentService.findAll())
-            if (idApoteke == pregled.getPharmacy().getId()) povratna.add(this.appointmentToAppointmentDTO.convert(pregled));
+            if (idApoteke == pregled.getPharmacy().getId()) {
+                for (Work w : pregled.getDoctor().getWorking())
+                    if (w.getPharmacy().getId() == pregled.getPharmacy().getId()) {
+                        povratna.add(this.appointmentToAppointmentDTO.convert(pregled, w));
+                        break;
+                    }
+            }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
@@ -355,19 +345,52 @@ public class AppointmentController {
         int povratna = -1;
         Appointment odabrani = this.appointmentService.findOne(pregled.getId());
         if (odabrani == null) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
-        povratna = 0;
-        for (Examination ex : this.examinationService.findAll())
-            if (ex.getAppointment().getId() == pregled.getId()) {
-                 if (ex.getStatus() != ExaminationStatus.CANCELED) continue;
-                 if (ex.getStatus() == ExaminationStatus.HELD || ex.getStatus() == ExaminationStatus.NOT_HELD)
-                     povratna = 1;
-                 else povratna = 2;
-                 break;
-            }
+        povratna = this.appointmentService.canEditDelete(pregled.getId());
         if (povratna != 0) return new ResponseEntity<>(povratna, HttpStatus.OK);
         this.appointmentService.deleteApponitment(pregled.getId());
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
+    @GetMapping("/canEdit/{id}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<Integer> canEditAdmin(@PathVariable Long id) {
+        return new ResponseEntity<>(this.appointmentService.canEditDelete(id), HttpStatus.OK);
+    }
+
+    @PostMapping("/edit")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<Integer> editAppointmentAdmin(@RequestBody AppointmentDTO pregled) {
+        int povratna = -1;
+        Appointment odabrani = this.appointmentService.findOne(pregled.getId());
+        if (odabrani == null) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
+        povratna = 1;
+        if (pregled.getStartTime().isBefore(LocalDateTime.now())) return new ResponseEntity<>(povratna, HttpStatus.OK);
+
+        povratna = this.proveriVreme(pregled);
+        if (povratna != 0) new ResponseEntity<>(povratna, HttpStatus.OK);
+        odabrani.setStartTime(pregled.getStartTime());
+        odabrani.setDurationInMins(pregled.getDurationInMins());
+        odabrani.setPrice(pregled.getPrice());
+        this.appointmentService.save(odabrani);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+
+    private int proveriVreme(AppointmentDTO podaci) {
+        LocalTime pocetakPregleda = LocalTime.of(podaci.getStartTime().getHour(), podaci.getStartTime().getMinute());
+        if (podaci.getDoctor().getPharmacyWork().getStartHour().isAfter(pocetakPregleda) ||
+                podaci.getDoctor().getPharmacyWork().getEndHour().isBefore(pocetakPregleda))
+            return -1;  // radno vreme nije tad = -1
+
+        LocalTime krajPregleda = LocalTime.of(podaci.getStartTime().getHour(), podaci.getStartTime().getMinute());
+        krajPregleda.plusMinutes(podaci.getDurationInMins());
+        if (podaci.getDoctor().getPharmacyWork().getEndHour().isBefore(krajPregleda))
+            return -2;  // probija mu radno vreme = -2
+
+        if (!this.appointmentService.isDermatologistFree(podaci.getId(), podaci.getDoctor().getId(), podaci.getStartTime(), podaci.getDurationInMins()))
+            return -3; // preklapa se sa nekim drugim terminom = -3
+
+        return 0;      // vreme je okej
+    }
 }
 

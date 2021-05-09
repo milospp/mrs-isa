@@ -3,6 +3,7 @@ package isa9.Farmacy.support;
 
 import isa9.Farmacy.model.Appointment;
 import isa9.Farmacy.model.Appointment;
+import isa9.Farmacy.model.Work;
 import isa9.Farmacy.model.dto.AppointmentDTO;
 import isa9.Farmacy.model.dto.AppointmentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,24 @@ public class AppointmentToAppointmentDTO implements Converter<Appointment, Appoi
         for (Appointment appointment : appointments){
             dto.add(convert(appointment));
         }
+        return dto;
+    }
+
+    public AppointmentDTO convert(Appointment appointment, Work posaoUApoteci) {
+        if (appointment == null) return null;
+
+        AppointmentDTO dto = new AppointmentDTO();
+
+        dto.setId(appointment.getId());
+        dto.setStartTime(appointment.getStartTime());
+        dto.setPrice(appointment.getPrice());
+        dto.setDurationInMins(appointment.getDurationInMins());
+        dto.setExamination(examinationToExaminationDTO.convert(appointment.getExamination()));
+        dto.setType(appointment.getType());
+        dto.setDoctor(doctorToDoctorDTO.convert(appointment.getDoctor(), posaoUApoteci));
+        dto.setPharmacy(pharmacyToPharmacyDTO.convert(appointment.getPharmacy()));
+
+
         return dto;
     }
 
