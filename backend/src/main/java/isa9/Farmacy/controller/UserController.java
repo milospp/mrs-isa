@@ -303,14 +303,8 @@ public class UserController {
         posao.setStartHour( LocalTime.parse(user.getStartHour()));
         posao.setEndHour(LocalTime.parse(user.getEndHour()));
         posao.setDoctor(user.getRegisterData());
+        posao.setSalaryPerHour(user.getSalaryPerHour());
         user.getRegisterData().getWorking().add(posao);
-
-        Work w = new Work();
-        w.setDoctor(user.getRegisterData());
-        w.setPharmacy(((PharmacyAdmin) adminUser).getPharmacy());
-        w.setStartHour(LocalTime.parse(user.getStartHour()));
-        w.setEndHour(LocalTime.parse(user.getEndHour()));
-        user.getRegisterData().getWorking().add(w);
 
         userService.save(user.getRegisterData());
         return new ResponseEntity<>(povratna, HttpStatus.OK);
