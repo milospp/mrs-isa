@@ -29,7 +29,7 @@ export default {
     margin: auto;
     margin-top: 1%;
     margin-bottom: 1%;
-    width: 80%;
-    height: 90%;
+    /* width: 70%; */
+    /* height: 90%; */
 }
 </style>

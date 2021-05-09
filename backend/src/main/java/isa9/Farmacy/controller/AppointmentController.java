@@ -1,25 +1,18 @@
 package isa9.Farmacy.controller;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.*;
-import isa9.Farmacy.support.DermatologistToDermatologistDTO;
-import isa9.Farmacy.support.WorkToWorkDTO;
+import isa9.Farmacy.support.*;
 import isa9.Farmacy.model.dto.AppointmentDTO;
 import isa9.Farmacy.model.dto.PatientDTO;
 import isa9.Farmacy.model.dto.TherapyItemDTO;
 import isa9.Farmacy.service.*;
-import isa9.Farmacy.support.AppointmentToAppointmentDTO;
-import isa9.Farmacy.support.DateTimeDTO;
-import isa9.Farmacy.support.MedicineInPharmacyToMedInPharmaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -39,9 +32,10 @@ public class AppointmentController {
     private final MedicineService medicineService;
     private final ExaminationService examinationService;
     private final WorkService workService;
+    private final AppointmentToAppointmentCalendarDTO appointmentToAppointmentCalendarDTO;
 
     @Autowired
-    public AppointmentController(AppointmentService appointmentService, AppointmentToAppointmentDTO appointmentToAppointmentDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedInPharmaService medInPharmaService, PharmacyService pharmacyService, UserService userService, MedicineService medicineService, ExaminationService examinationService, WorkService workService, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, WorkToWorkDTO workToWorkDTO){
+    public AppointmentController(AppointmentService appointmentService, AppointmentToAppointmentDTO appointmentToAppointmentDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedInPharmaService medInPharmaService, PharmacyService pharmacyService, UserService userService, MedicineService medicineService, ExaminationService examinationService, WorkService workService, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, WorkToWorkDTO workToWorkDTO, AppointmentToAppointmentCalendarDTO appointmentToAppointmentCalendarDTO){
         this.appointmentService = appointmentService;
         this.appointmentToAppointmentDTO = appointmentToAppointmentDTO;
         this.medicineInPharmacyToMedInPharmaDTO = medicineInPharmacyToMedInPharmaDTO;
@@ -53,6 +47,7 @@ public class AppointmentController {
         this.workService = workService;
         this.dermatologistToDermatologistDTO = dermatologistToDermatologistDTO;
         this.workToWorkDTO = workToWorkDTO;
+        this.appointmentToAppointmentCalendarDTO = appointmentToAppointmentCalendarDTO;
     }
 
 //    @GetMapping("tmp-test")
@@ -314,6 +309,14 @@ public class AppointmentController {
         //AppointmentDTO dto = appointmentToAppointmentDTO.convert(appointment);
         return new ResponseEntity<>(true, HttpStatus.OK);
 
+    }
+
+    @GetMapping("calendar/derm/{dermId}/pharmacy/{pharmaId}")
+    public ResponseEntity<List<AppointmentCalendarDTO>> getDermaPharmaAppointmentsForCalendar(@PathVariable Long dermId, @PathVariable Long pharmaId) {
+        List<Appointment> appointments = this.appointmentService.getDermForPharmacyAppointments(dermId, pharmaId);
+        List<AppointmentCalendarDTO> resultDTOs = appointmentToAppointmentCalendarDTO.convert(appointments);
+
+        return new ResponseEntity<>(resultDTOs, HttpStatus.OK);
     }
 
 }

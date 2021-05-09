@@ -1,6 +1,12 @@
 <template>
-  <div class="text-center section">
-    <h2 class="h2 mb-3">Monthly Calendar</h2>
+
+  <h2 class="h2 mb-3">Monthly Calendar</h2>
+  <div v-if="jobs">
+    <div :key="w.pharmacyDTO.id" v-for="w in jobs">
+      <button class="btn btn-primary d-inline" @click="setAttributes(w.id)">{{w.pharmacyDTO.name}}</button>
+    </div>
+  </div>
+  <div class="text-center section" v-if="appointments">
     <!-- <p class="text-lg font-medium text-gray-600 mb-6">
       Monthly appointments and examinations
     </p> -->
@@ -19,11 +25,11 @@
             <p
               v-for="attr in attributes"
               :key="attr.key"
-              class="rounded p-1 mt-0 mb-0 mx-1 appointment"
-              :class="attr.customData.class"
+              class="rounded p-0 mt-0 mb-0 mx-1 appointment"
+              :class="attr.customData.typeForClass"
               v-on:click="a(attr.key)"
             >
-              {{ attr.customData.title }}
+              {{ attr.customData.startTime }} {{ attr.customData.durationInMins}}min - {{ attr.customData.patientName }} {{ attr.customData.patientSurname }}
             </p> <!--appointment-->
           </div>
         </div>
@@ -33,6 +39,10 @@
 </template>
 
 <script>
+import AppointmentDataService from '@/service/AppointmentDataService.js';
+import PharmacyDataService from '@/service/PharmacyDataService.js';
+import AuthService from '../service/AuthService.js';
+
 export default {
   data() {
     const month = new Date().getMonth();
@@ -42,15 +52,20 @@ export default {
       currentMonth: month,
       calendarRef: null,
 
+      chosenPharmacyId: 1,
+      doctor: null,
+      jobs: null,
+      appointments: null,
+
       //
       masks: {
         weekdays: 'WWWW',
       },
-      attributes: [
+      /*attributes: [
         {
           key: 1,
           customData: {
-            title: 'Lunch with mom.',
+            title: 'L',
             class: 'counseling',
           },
           dates: new Date(year, month, 1),
@@ -58,7 +73,7 @@ export default {
         {
           key: 2,
           customData: {
-            title: 'Take Noah to basketball practice',
+            title: 'T',
             class: 'free',
           },
           dates: new Date(year, month, 2),
@@ -66,7 +81,7 @@ export default {
         {
           key: 3,
           customData: {
-            title: "Noah's basketball game.",
+            title: "N",
             class: 'free',
           },
           dates: new Date(year, month, 5),
@@ -74,7 +89,7 @@ export default {
         {
           key: 4,
           customData: {
-            title: 'Take car to the shop',
+            title: 'T',
             class: 'counseling',
           },
           dates: new Date(year, month, 5),
@@ -82,7 +97,7 @@ export default {
         {
           key: 10,
           customData: {
-            title: 'New Appointment',
+            title: 'N',
             class: 'examination',
           },
           dates: new Date(year, month, 5),
@@ -90,7 +105,7 @@ export default {
         {
           key: 5,
           customData: {
-            title: 'E Petar Petrovic 11:00-12:00',
+            title: 'E',
             class: 'examination',
           },
           dates: new Date(year, month, 7),
@@ -98,7 +113,7 @@ export default {
         {
           key: 6,
           customData: {
-            title: "Mia's gymnastics practice.",
+            title: "M",
             class: 'examination',
           },
           dates: new Date(year, month, 11),
@@ -106,7 +121,7 @@ export default {
         {
           key: 7,
           customData: {
-            title: 'Cookout with friends.',
+            title: 'C',
             class: 'examination',
           },
           dates: { months: 5, ordinalWeekdays: { 2: 1 } },
@@ -114,7 +129,7 @@ export default {
         {
           key: 8,
           customData: {
-            title: "Mia's gymnastics recital.",
+            title: "M",
             class: 'free',
           },
           dates: new Date(year, month, 22),
@@ -122,21 +137,56 @@ export default {
         {
           key: 9,
           customData: {
-            title: 'Visit great grandma.',
+            title: 'V',
             class: 'free',
           },
           dates: new Date(year, month, 25),
         },
-      ],
+      ],*/
     };
   },
   mounted(){
-      this.calendarRef = this.$refs.calendar;
-      this.currentMonth = this.calendarRef.month;
+      // this.calendarRef = this.$refs.calendar;
+      // this.currentMonth = this.calendarRef.month;
+      this.doctor = AuthService.getCurrentUser();
+      this.getPharmacies();
+      this.setAttributes(1);
+  },
+  computed: {
+  	attributes() {
+      return this.appointments.map(t => ({
+        key: `appointment.${t.id}`,
+        dates: Date.parse(t.startDate),
+        customData: t,
+      }));
+    }
   },
   methods: {
       a(id){
           alert(id);
+      },
+      setAttributes(pharmacyId) {
+        AppointmentDataService.getDermAppFromPharmacy(this.doctor.id, pharmacyId)
+          .then(response => {
+            this.appointments = response.data;
+            // for (let i = 0; i < response.data.length; i++) {
+            //   this.attributes[i] = {
+            //     key: response.data[i].id,
+            //     customData: response.data[i],
+            //     dates: Date.parse(response.data[i].startDate)
+            //   }
+            //   //alert(JSON.stringify(this.attributes));
+            // }
+            //this.attributes = response.data;
+            alert(JSON.stringify(this.appointments[1]));
+          });
+      },
+      getPharmacies() {
+        PharmacyDataService.getDoctorsJobs(this.doctor.id)
+          .then(response => {
+            this.jobs = response.data;
+            //alert(JSON.stringify(this.jobs[0]));
+          });
       }
   }
 };
@@ -158,6 +208,11 @@ export default {
 .examination{
     background-color: var(--exam-bg);
     color: var(--exam-txt);
+}
+
+.held {
+  background-color: #b0b0b0;
+  color: var(--free-txt);
 }
 
 .counseling{

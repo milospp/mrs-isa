@@ -3,7 +3,7 @@ import axios from "axios";
 
 const API_URL = "http://localhost:8080/api/appointments";
 
-class MedicineDataService {
+class AppointmentDataService {
   getAllAppointments(id) {
     return axios.get(`${API_URL}`);
   }
@@ -84,8 +84,11 @@ class MedicineDataService {
     });
   }
 
+  getDermAppFromPharmacy(dermId, pharmacyId) {
+    return axios.get(`${API_URL}/` + `calendar/derm/`+dermId+`/pharmacy/`+pharmacyId);
+  }
 }
 
 
 
-export default new MedicineDataService();
+export default new AppointmentDataService();

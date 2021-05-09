@@ -123,6 +123,14 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     }
 
     @Override
+    public Boolean isInPharmacy(Appointment appointment, Long pharmacyId) {
+        if (appointment.getPharmacy().getId().equals(pharmacyId))
+            return true;
+        else
+            return false;
+    }
+
+    @Override
     public List<Appointment> getPatientUpcomingDermAppointments(Long patientId) {
         User user = userService.findOne(patientId);
         if (!user.getRole().getName().equals("PATIENT")) return new ArrayList<>();
@@ -325,5 +333,13 @@ public abstract class AppointmentServiceBase implements AppointmentService {
                 .filter(a -> a.getDurationInMins() >= appointmentSearchDTO.getMinDuration() && a.getDurationInMins() <= appointmentSearchDTO.getMaxDuration())
                 .filter(a -> a.getPrice() >= appointmentSearchDTO.getMinPrice() && a.getPrice() <= appointmentSearchDTO.getMaxPrice())
                 .sorted(comp).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Appointment> getDermForPharmacyAppointments(Long dermId, Long pharamcyId) {
+        Doctor d = userService.getDoctorById(dermId);
+        List<Appointment> allAppointments;
+        allAppointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && isInPharmacy(x, pharamcyId) && !isCanceled(x)).collect(Collectors.toList());
+        return allAppointments;
     }
 }
