@@ -4,7 +4,7 @@ import axios from "axios";
 
 const API_URL = "http://localhost:8080/api/appointments";
 
-class MedicineDataService {
+class AppointmentDataService {
   getAllAppointments(id) {
     return axios.get(`${API_URL}`);
   }
@@ -83,6 +83,10 @@ class MedicineDataService {
       url: `${API_URL}/derm-examination`,
       data: appointmentRequest
     });
+  }
+
+  getDermAppFromPharmacy(dermId, pharmacyId) {
+    return axios.get(`${API_URL}/` + `calendar/derm/`+dermId+`/pharmacy/`+pharmacyId);
   }
 
   makeAppointmentPAdmin(pocetak, trajanje, cena, dermatolog, idApoteke) {
@@ -187,4 +191,4 @@ class MedicineDataService {
 
 
 
-export default new MedicineDataService();
+export default new AppointmentDataService();

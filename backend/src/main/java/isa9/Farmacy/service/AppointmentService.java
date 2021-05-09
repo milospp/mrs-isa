@@ -20,6 +20,7 @@ public interface AppointmentService extends GenericService<Appointment>{
     Boolean isCancelable(Appointment appointment);
     Boolean isPatientValid(Patient patient);
     Boolean isCanceled(Appointment appointment);
+    Boolean isInPharmacy(Appointment appointment, Long pharmacyId);
 
     Appointment bookAnAppointment(Long patientId, Long appointmentId);
     Appointment cancelAppointment(Long appointmentId);
@@ -46,6 +47,7 @@ public interface AppointmentService extends GenericService<Appointment>{
 
     List<Appointment> filterPastAppointments(List<Appointment> appointments, AppointmentSearchDTO appointmentSearchDTO);
 
+    List<Appointment> getDermForPharmacyAppointments(Long dermId, Long pharamcyId);
     Boolean isDermatologistFree(Long id, Long idDoktora, LocalDateTime start, int duration);
     void deleteApponitment(Long id);
     int canEditDelete(Long id);
