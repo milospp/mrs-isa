@@ -106,4 +106,9 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
         }
         return true;
     }
+
+    @Override
+    public void deleteApponitment(Long id) {
+        this.appointmentRepository.delete(this.appointmentRepository.getOne(id));
+    }
 }
