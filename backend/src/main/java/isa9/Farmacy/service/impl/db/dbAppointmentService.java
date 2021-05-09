@@ -6,6 +6,7 @@ import isa9.Farmacy.repository.AppointmentRepository;
 import isa9.Farmacy.service.AppointmentService;
 import isa9.Farmacy.service.WorkService;
 import isa9.Farmacy.service.impl.base.AppointmentServiceBase;
+import net.bytebuddy.matcher.FilterableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -92,11 +94,11 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
     }
 
     @Override
-    public Boolean isDermatologistFree(Long id, LocalDateTime start, int duration) {
+    public Boolean isDermatologistFree(Long id, Long idDoktora, LocalDateTime start, int duration) {
         LocalDateTime end = start.plusMinutes(duration);
         LocalDateTime kraj;
         for (Appointment pregled : this.appointmentRepository.findAll()) {
-            if (pregled.getDoctor().getId() != id) continue;
+            if (pregled.getDoctor().getId() != idDoktora || pregled.getId() == id) continue;
             kraj = pregled.getStartTime().plusMinutes(pregled.getDurationInMins());
             if ((start.isAfter(pregled.getStartTime()) && start.isBefore(kraj))
                     || (start.isBefore(pregled.getStartTime()) && end.isAfter(pregled.getStartTime()))
@@ -109,6 +111,36 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
 
     @Override
     public void deleteApponitment(Long id) {
+        List<Examination> zaBrisanje = new ArrayList<>();
+        for (User u : this.userService.findAll()) {
+            if (u.getClass() == Patient.class) {
+                zaBrisanje.clear();
+                for (Examination e : ((Patient) u).getMyExaminations()) {
+                    if (e.getAppointment().getId() == id) {
+                        zaBrisanje.add(e);
+                    }
+                }
+                ((Patient) u).getMyExaminations().removeAll(zaBrisanje);
+                this.userService.save(u);
+            }
+        }
+
+        for (Examination ex : this.examinationService.findAll()) {
+            if (ex.getAppointment().getId() == id) {
+                this.examinationService.delete(ex);}
+        }
         this.appointmentRepository.delete(this.appointmentRepository.getOne(id));
+    }
+
+    @Override
+    public int canEditDelete(Long id) {
+        for (Examination ex : this.examinationService.findAll())
+            if (ex.getAppointment().getId() == id) {
+                if (ex.getStatus() != ExaminationStatus.CANCELED) continue;
+                if (ex.getStatus() == ExaminationStatus.HELD || ex.getStatus() == ExaminationStatus.NOT_HELD)
+                    return 1;               // bio je u proslosti
+                else return 2;              // neko je rezervisao
+            }
+        return 0;                           // mozes da menjas
     }
 }

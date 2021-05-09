@@ -48,6 +48,7 @@ public class PharmacistToPharmacistDTO implements Converter<Pharmacist, Pharmaci
         posaoUApoteci.setEndHour(workInPharmacy.getEndHour());
         posaoUApoteci.setStartHour(workInPharmacy.getStartHour());
         posaoUApoteci.setPharmacyId(workInPharmacy.getPharmacy().getId());
+        posaoUApoteci.setSalaryPerHour(workInPharmacy.getSalaryPerHour());
         dto.setPharmacyWork(posaoUApoteci);
         return dto;
     }

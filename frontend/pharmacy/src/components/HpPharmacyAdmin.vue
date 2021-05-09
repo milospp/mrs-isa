@@ -96,6 +96,7 @@
                   <th>Phone number</th>
                   <th>Start time</th>
                   <th>End time</th>
+                  <th>Saraly per hour</th>
                   <th>&emsp;</th>
                 </thead>
                 <tbody>
@@ -106,6 +107,7 @@
                       <td>{{f.phoneNumber}}</td>
                       <td>{{(f.pharmacyWork.startHour[0] < 10 ? "0" + f.pharmacyWork.startHour[0] : f.pharmacyWork.startHour[0])}}:{{(f.pharmacyWork.startHour[1] < 10 ? "0" + f.pharmacyWork.startHour[1] : f.pharmacyWork.startHour[1])}}</td>
                       <td>{{(f.pharmacyWork.endHour[0] < 10 ? "0" + f.pharmacyWork.endHour[0] : f.pharmacyWork.endHour[0])}}:{{(f.pharmacyWork.endHour[1] < 10 ? "0" + f.pharmacyWork.endHour[1] : f.pharmacyWork.endHour[1])}}</td>
+                      <td>{{f.pharmacyWork.salaryPerHour}}</td>
                       <td><form v-on:click.prevent="podesi(f, true)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#potvrda">Fire</button></form></td>
                   </tr>
                 </tbody>
@@ -172,11 +174,11 @@
                       <td>{{p.doctor.name}}</td>
                       <td>{{p.doctor.surname}}</td>
                       <td>{{p.doctor.phoneNumber}} </td>
-                      <td> {{p.startTime}}</td>
+                      <td>{{p.startTime[1]}}/{{p.startTime[2]}}/{{p.startTime[0]}} {{p.startTime[3]}}:{{p.startTime[4]}}</td>
                       <td>{{p.durationInMins}}</td>
                       <td>{{p.price}}</td>
-                      <td><form v-on:click.prevent="podesiPregled(p)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#???">View</button></form></td>
-                      <td><form v-on:click.prevent="podesiPregled(p)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obrisiPregled">Delete</button></form></td>
+                      <td><form v-on:click.prevent="podesiPregled(p, true)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#izmeniPregled">View</button></form></td>
+                      <td><form v-on:click.prevent="podesiPregled(p, false)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obrisiPregled">Delete</button></form></td>
                   </tr>
                 </tbody>
               </table>
@@ -424,7 +426,8 @@
           </button>
         </div>
           <label>&emsp; {{this.izabraniPregled?.doctor.name}} {{this.izabraniPregled?.doctor.surname}} {{this.izabraniPregled?.doctor.phoneNumber}}</label>
-          <label>&emsp; {{this.izabraniPregled?.startTime}} {{this.izabraniPregled?.duration}}</label>
+          <label>&emsp; {{this.izabraniPregled?.startTime[2]}}/{{this.izabraniPregled?.startTime[1]}}/{{this.izabraniPregled?.startTime[0]}}
+            {{this.izabraniPregled?.startTime[3]}}:{{this.izabraniPregled?.startTime[4]}} {{this.izabraniPregled?.durationInMins}}</label>
          <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="obrisiPregled()" data-dismiss="modal">Yes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -496,12 +499,43 @@
         <div class="modal-body" align="left">Start time: <input type="datetime-local" v-model="pregledStartuje"/></div>
         <div class="modal-body" align="left">Duration : <input type="number" min="1" v-model="pregledTraje"/> minutes</div>
         <div class="modal-body" align="left">Price: <input type="number" min="1" v-model="pregledKosta"/></div>
-        <div class="modal-body" align="left">Chose dermatologist: 
+        <div class="modal-body" align="left">Choose dermatologist: 
           <select id="zamenski" style="width: 80%;" v-model="pregledDoktor" required="required">
               <option v-for="d in this.sviZaposleniDermatolozi" v-bind:value=d>{{d.name}} {{d.surname}} {{d.phoneNumber}}</option>
           </select></div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="modal"  data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="dodajPregled()">Make</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+        <!-- Izmeni pregled -->
+  <div class="modal fade" id="izmeniPregled" tabindex="-1" role="dialog" aria-labelledby="Napravi pregled" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="lekic">Edit appointment</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div v-if="menjaPregled == true">
+          <div class="modal-body" align="left">Start time: <input type="datetime-local" v-model="pregledStartuje"/></div>
+          <div class="modal-body" align="left">Duration : <input type="number" min="1" v-model="pregledTraje"/> minutes</div>
+          <div class="modal-body" align="left">Price: <input type="number" min="1" v-model="pregledKosta"/></div>
+        </div><div v-else>
+          <div class="modal-body" align="left">Start time: {{this.izabraniPregled?.startTime[2]}}/{{this.izabraniPregled?.startTime[1]}}/{{this.izabraniPregled?.startTime[0]}}
+            {{this.izabraniPregled?.startTime[3]}}:{{this.izabraniPregled?.startTime[4]}} </div>
+          <div class="modal-body" align="left">Duration : {{this.izabraniPregled?.durationInMins}} minutes</div>
+          <div class="modal-body" align="left">Price: {{this.izabraniPregled?.price}}</div>
+        </div>
+        <div class="modal-body" align="left">Chosen dermatologist: {{this.izabraniPregled?.doctor.name}} {{this.izabraniPregled?.doctor.surname}} {{this.izabraniPregled?.doctor.phoneNumber}}</div>
+        <div class="modal-footer">
+          <div v-if="menjaPregled == true">
+            <button type="button" class="btn btn-primary" data-dismiss="modal"  data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="izmeniPregled()">Edit</button>
+          </div>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -541,7 +575,7 @@ export default {
             sviLekovi: [], zamenskiLekovi: [], poruka: "Wait... Your require is in processing", 
             filterOrder: 0, narudzbenica: null, sveNarudzbenice: [], narudzbeniceZaIspis: [],
             pregledStartuje:null, pregledTraje: 0, pregledKosta: 0,  pregledDoktor: null,
-            sviPreglediDermatologa: [], izabraniPregled: null, 
+            sviPreglediDermatologa: [], izabraniPregled: null, menjaPregled: false,
         };
     },
     created() {
@@ -591,13 +625,28 @@ export default {
       osveziPreglede() {
         AppointmentDataService.getAppointmentApoteka(this.pharmacy.id)
         .then(response => {
-          this.sviPreglediDermatologa = response.data;});   
+          this.sviPreglediDermatologa = response.data;
+          this.izmeniDatume();
+          });   
       },
 
       inicijalizujPoruku(pk) { this.poruka = pk; },
       podesi(farm_der, jesteFar) { this.otpustiRadnika = farm_der; this.jesteFarmaceut = jesteFar;},
       postaviNarudzbenicu(p) { this.narudzbenica = p; },  // prelazak na drugu formu
-      podesiPregled(p) { this.izabraniPregled = p; },
+      podesiPregled(p, zaIzmenu) { 
+        if (zaIzmenu) {
+          AppointmentDataService.canEditAppointment(p.id)
+            .then(response => {
+              if (response.data == 0) this.menjaPregled = true;
+              else this.menjaPregled = false;
+              return;});
+          this.pregledTraje = p.durationInMins;
+          this.pregledKosta = p.price;
+        }
+        this.izabraniPregled = p; 
+        this.pregledStartuje = p.startTime[0] + "-" + p.startTime[1] + "-" + p.startTime[2] + "T" +
+          p.startTime[3] + ":" + p.startTime[4];
+      },
 
       otpusti() {
         if (this.jesteFarmaceut) {
@@ -925,6 +974,17 @@ export default {
           if (por.startDate[4] < 10) por.startDate[4] = "0" + por.startDate[4]; 
         }
       },
+      izmeniDatume() {
+        for (var pregled of this.sviPreglediDermatologa) {
+          var split1 = pregled.startTime.split(' ');
+          var split2 = split1[0].split('-');
+          var brojac = 0;
+          pregled.startTime = [];
+          for (var i of split2) { pregled.startTime[brojac] = i < 10 ? "0" + i : i; brojac++; }
+          split2 = split1[1].split(':');
+          for (var i of split2) { pregled.startTime[brojac] = i; brojac++; }
+        }
+      },
       dodajPregled() {
         if (this.pregledStartuje == null) {
           this.poruka = "You must enter start time for appointment";
@@ -962,14 +1022,36 @@ export default {
           .then(response => {
             if (response.data == 1) this.poruka = "You can't delete examination, he was in past";
             else if (response.data == 2) this.poruka = "You can't delete examination, someone reserved him";
-            else {
-              this.poruka = "You successfully deleted examination";
-              this.osveziPreglede();
-              }
+            else this.poruka = "You successfully deleted examination";
+            this.osveziPreglede();
             return;
           });
         },
-
+        izmeniPregled() {
+          if (this.pregledTraje <= 0) {
+            this.poruka = "Appointment duration must be positive number";
+            return false;
+          }
+          if (this.pregledKosta <= 0) {
+            this.poruka = "Appointment price must be positive number";
+            return false;
+          }
+          this.izabraniPregled.startTime = this.pregledStartuje;
+          this.izabraniPregled.durationInMins = this.pregledTraje;
+          this.izabraniPregled.price = this.pregledKosta;
+          AppointmentDataService.editAppointmentApoteka(this.izabraniPregled)
+          .then(response => {
+            if (response.data == 1) this.poruka = "Start time must be in future";
+            else if (response.data == -1) this.poruka = "Dermatologist doesn't work in this pharmacy in inputed time";
+            else if (response.data == -2) this.poruka = "Appointment is too long, end time is after end hour of dermatologist";
+            else if (response.data == -3) this.poruka = "Dermatologist already have some appointment at inputed time";
+            else this.poruka = "You successfully edited examination";
+            this.osveziPreglede();
+            return;
+          });
+          
+          
+        },
     }
 }
 </script>

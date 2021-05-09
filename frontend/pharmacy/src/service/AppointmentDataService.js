@@ -131,6 +131,8 @@ class AppointmentDataService {
   }
 
   deleteAppointmentApoteka(pregled) {
+    var brojac = 0;
+    for (var i of pregled.startTime) { pregled.startTime[brojac] = parseInt(i); brojac++; }
     return axios({
       method: 'post',
       url: API_URL + "/delete",
@@ -144,6 +146,45 @@ class AppointmentDataService {
       console.log("error.config");
       console.log(error.config);
     });
+  }
+
+  editAppointmentApoteka(pregled) {
+    //2021-05-28T16:32  
+    pregled.startTime = pregled.startTime.split('T');
+    var vreme = pregled.startTime[0].split('-');
+    var brojac = 0;
+    var konacnoVreme = [];
+    for (var i of vreme) { konacnoVreme[brojac] = parseInt(i); brojac++; }
+    
+    vreme = pregled.startTime[1].split(':');
+    for (var i of vreme) { konacnoVreme[brojac] = parseInt(i); brojac++; }
+    pregled.startTime = konacnoVreme;
+    return axios({
+      method: 'post',
+      url: API_URL + "/edit",
+      data: pregled
+    }).catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("error.config");
+      console.log(error.config);
+    });
+  }
+
+  canEditAppointment(idPregleda) {
+    return axios.get(API_URL + "/canEdit/" + idPregleda)
+    .catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("Error");
+      console.log(error.config);
+  });
   }
 
 }
