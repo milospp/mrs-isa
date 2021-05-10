@@ -26,8 +26,20 @@
 
     <div class="pharmacySelection" v-if="workList != null && !selectedPharmacy">
         <h3>Select Pharmacy</h3>
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="sortPharmacy">SortBy</span>
+          </div>
+          <select type="text" class="form-control" id="basic-url" aria-describedby="sortPharmacy" v-model="sortMethod">
+            <option value="name" selected>Name</option>
+            <option value="price">Price</option>
+            <option value="rating">Rating</option>
+          </select>
+        </div>
+
         <div class="row">
-            <div class="col-md-3 py-2" v-for="p in getPharmacies()" :key="p.id">
+            <div class="col-md-3 py-2" v-for="p in sortedPharmacies" :key="p.id">
                 <div class="card h-100 box-shadow">
                     <div class="card-header">
                         <h4 class="my-0 font-weight-normal">{{p.name}} {{UtilService.formatRatingBracket(p.rating)}}</h4>
@@ -37,6 +49,7 @@
                         {{p.description}}
                         </p>
                         <p v-if="p.rating >= 1" class="rating">Rating: {{p.rating}} / 5</p>
+                        <p class="rating">Price (hour): ${{p.pricePerHour}}</p>
 
                         <hr>
                         <h6>
@@ -61,6 +74,8 @@
         <h2>x</h2>
         </div>
         <p class="mb-1">{{selectedPharmacy.description}}</p>
+        <p class="mb-1">Price per hour: ${{selectedPharmacy.pricePerHour}}</p>
+        <p class="mb-1"><strong>Total: ${{selectedPharmacy.pricePerHour / 60 * appointmentRequest.durationInMins}}</strong></p>
         <small>{{UtilService.AddressToString(selectedPharmacy.address)}}</small>
     </a>
 
@@ -77,12 +92,9 @@
                         {{p.email}}
                         </p>
                         <p v-if="p.rating >= 1" class="rating">Rating: {{p.rating}} / 5</p>
+                        <p v-else>No rating</p>
 
                         <hr>
-                        <h6>
-                            <!-- TODO -->
-                            Price: $444
-                        </h6>
                         <div class="d-flex justify-content-between align-items-center">
                         <button class="btn btn-block btn-primary" v-on:click="bookAppointment(p.id)">Book Appointment</button>
 
@@ -119,14 +131,27 @@ export default {
       availablePharmacies: {},
       availablePharmacists: {},
       selectedPharmacy: null,
+      sortMethod: "name",
     }
+  },
+
+  computed: {
+    sortedPharmacies() {
+      let pharmacies = Object.values(this.getPharmacies());
+      
+      if (this.sortMethod == 'name') pharmacies = pharmacies.sort((a, b) => (a.name > b.name) ? 1 : -1)
+      if (this.sortMethod == 'price') pharmacies = pharmacies.sort((a, b) => (a.pricePerHour > b.pricePerHour) ? 1 : -1)
+      if (this.sortMethod == 'rating') pharmacies = pharmacies.sort((a, b) => (a.rating > b.rating) ? 1 : -1)
+
+      return pharmacies;
+    },
+
   },
 
 
   methods: {
     findAvalibaleEmployes() {
       AppointmentDataService.getAvailableEmployes(this.appointmentRequest).then(response => {
-        console.log(response);
         this.workList = response.data;
       })
     },
@@ -162,11 +187,12 @@ export default {
         return pharmacists;
     },
 
+
+
     bookAppointment(pharmacistId) {
         this.appointmentRequest.pharmacyId = this.selectedPharmacy.id;
         this.appointmentRequest.pharmacistId = pharmacistId;
         AppointmentDataService.bookCounseling(this.appointmentRequest).then(response => {
-            console.log(response);
 
             alert("Zakazano");
         })

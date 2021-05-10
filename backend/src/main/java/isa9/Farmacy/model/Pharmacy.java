@@ -1,5 +1,6 @@
 package isa9.Farmacy.model;
 
+import com.sun.istack.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.core.annotation.Order;
@@ -44,6 +45,10 @@ public class Pharmacy {
     @Column (nullable = false, columnDefinition="Decimal(2,1) default '0.0'")
     @Builder.Default
     private double rating = 0.0;
+
+    @Column
+    @NotNull
+    private double pricePerHour;
 
 
     public Pharmacy(String name, Address address, String description, Long id) {
