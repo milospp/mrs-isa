@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -298,25 +297,23 @@ public class MedicineController {
     }
 
     @GetMapping("/prices/{id}")
-    public ResponseEntity<List<PricesInPharmaciesDTO>> getPricesOfMedicine(@PathVariable Long id){
+    public ResponseEntity<List<PriceInPharmaciesDTO>> getPricesOfMedicine(@PathVariable Long id){
         Medicine medToLookFor = this.medicineService.findOne(id);
-        ArrayList<PricesInPharmaciesDTO> prices = new ArrayList<PricesInPharmaciesDTO>();
-        ArrayList<Pharmacy> allPharmacies = (ArrayList<Pharmacy>) this.pharmacyService.findAll();
-        for(Pharmacy ph : allPharmacies){
-            for(Iterator<MedicineInPharmacy> i = ph.getMedicines().iterator(); i.hasNext(); ){
-                MedicineInPharmacy m = i.next();
-                if(m.getMedicine().getCode().equals(medToLookFor.getCode())){
-                    prices.add(new PricesInPharmaciesDTO(m.getCurrentPrice().getPrice(), m.getPharmacy().getName()));
-                    break;
-                }
-            }
+        List<PriceInPharmaciesDTO> prices = this.medicineService.getPricesOfMedicine(medToLookFor);
+        return new ResponseEntity<List<PriceInPharmaciesDTO>>(prices, HttpStatus.OK);
+    }
+
+    @GetMapping("/medicinesInStock")
+    public ResponseEntity<List<MedicineDTO>> getMedicinesInStock(){
+        List<MedicineDTO> inStock = new ArrayList<MedicineDTO>();
+        List<Medicine> allMeds = this.medicineService.findAll();
+
+        for(Medicine m : allMeds){
+            if(this.medicineService.getPricesOfMedicine(m).isEmpty()) continue;
+
+            inStock.add(medicineToMedicineDTO.convert(m));
         }
 
-
-        if(prices.size() == 0){
-            return new ResponseEntity<List<PricesInPharmaciesDTO>>(prices, HttpStatus.NOT_FOUND);
-        }else{
-            return new ResponseEntity<List<PricesInPharmaciesDTO>>(prices, HttpStatus.OK);
-        }
+        return new ResponseEntity<List<MedicineDTO>>(inStock, HttpStatus.OK);
     }
 }

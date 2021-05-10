@@ -4,6 +4,7 @@ import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
 import isa9.Farmacy.model.dto.MedicineSearchDTO;
 import isa9.Farmacy.model.dto.PharmacySearchDTO;
+import isa9.Farmacy.model.dto.PriceInPharmaciesDTO;
 import isa9.Farmacy.service.MedicineService;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.RatingService;
@@ -70,5 +71,23 @@ public abstract class MedicineServiceBase implements MedicineService {
                 .filter(m -> m.getRating() >= medicineSearchDTO.getMinRating() && m.getRating() <= medicineSearchDTO.getMaxRating())
                 .filter(m -> m.getPoints() >= medicineSearchDTO.getMinPoints() && m.getPoints() <= medicineSearchDTO.getMaxPoints())
                 .sorted(comp).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PriceInPharmaciesDTO> getPricesOfMedicine(Medicine medicine) {
+        ArrayList<PriceInPharmaciesDTO> prices = new ArrayList<PriceInPharmaciesDTO>();
+        ArrayList<Pharmacy> allPharmacies = (ArrayList<Pharmacy>) this.pharmacyService.findAll();
+
+        for(Pharmacy ph : allPharmacies){
+            for(Iterator<MedicineInPharmacy> i = ph.getMedicines().iterator(); i.hasNext(); ){
+                MedicineInPharmacy m = i.next();
+                if(m.getMedicine().getCode().equals(medicine.getCode())){
+                    prices.add(new PriceInPharmaciesDTO(m.getCurrentPrice().getPrice(), m.getPharmacy().getName()));
+                    break;
+                }
+            }
+        }
+
+        return prices;
     }
 }

@@ -105,6 +105,9 @@ class MedicineDataService {
     return axios.get(`${API_URL}/prices/` + medicine.id);
   }
 
+  getMedicinesInStock(){
+    return axios.get(`${API_URL}/medicinesInStock`);
+  }
 }
 
 export default new MedicineDataService();
