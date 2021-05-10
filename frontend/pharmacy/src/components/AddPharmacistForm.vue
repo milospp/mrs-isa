@@ -91,14 +91,6 @@
             </tr>
 
             <tr>
-                <td align="right">Salary per hour:</td>
-                <td colspan="2"><input 
-                    type="text" id="phoneNumber" v-model="info.salaryPerHour" required="required"
-                    pattern="[0-9]*[.][0-9]*" title="Salary must be in form 77.7" size="31"
-                ></td>
-            </tr>
-
-            <tr>
                 <td></td>
                 <td colspan="2"><input type="submit" data-toggle="modal" data-target="#obavestenje" id="dugme" value="   Add   "></td>
             </tr>
@@ -148,7 +140,6 @@ export default {
                 },
                 startHour: "10:00",
                 endHour: "12:00",
-                salaryPerHour: "77.7",
             },
             poruka: "Wait... Your require is in processing", 
         };
@@ -163,10 +154,6 @@ export default {
         proveraForme(e) {
             if (!this.provera_vremena()) {
                 this.poruka = "Start hour must be smaller than end hour";
-                return false;
-            }
-            if (this.info.salaryPerHour <= 0) {
-                this.poruka = "Salary must be positive number in form 77.7";
                 return false;
             }
             PharmacistDataService.SendPharmacist(this.id, this.$data.info)

@@ -105,9 +105,7 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
             if (pregled.getDoctor().getId() != idDoktora || pregled.getId() == id) continue;
             kraj = pregled.getStartTime().plusMinutes(pregled.getDurationInMins());
             if ((start.isAfter(pregled.getStartTime()) && start.isBefore(kraj))
-                    || (start.isBefore(pregled.getStartTime()) && end.isAfter(pregled.getStartTime()))
-                    || (start.getMinute() == pregled.getStartTime().getMinute()
-                        && start.getHour() == pregled.getStartTime().getHour()))
+                    || (start.isBefore(pregled.getStartTime()) && end.isAfter(pregled.getStartTime())))
                 return false;
         }
         return true;

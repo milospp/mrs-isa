@@ -303,7 +303,6 @@ public class UserController {
         posao.setStartHour( LocalTime.parse(user.getStartHour()));
         posao.setEndHour(LocalTime.parse(user.getEndHour()));
         posao.setDoctor(user.getRegisterData());
-        posao.setSalaryPerHour(user.getSalaryPerHour());
         user.getRegisterData().getWorking().add(posao);
 
         userService.save(user.getRegisterData());

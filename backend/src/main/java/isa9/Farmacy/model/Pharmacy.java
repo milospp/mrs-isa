@@ -80,13 +80,13 @@ public class Pharmacy {
             if (!d.getWorking().isEmpty()){
                 System.out.println("apotekar je vec zaposlen");
             } else {
-                Work work = new Work(id, d, this, time1, time2, 0);
+                Work work = new Work(id, d, this, time1, time2);
                 d.getWorking().add(work);
                 this.staff.add(work);
             }
         } else if (d.getClass() == Dermatologist.class) {
             // provara da li je dermatolog vec zaposlen tu? ili spolja da se uradi provera
-            Work work = new Work(id, d, this, time1, time2, 0);
+            Work work = new Work(id, d, this, time1, time2);
             d.getWorking().add(work);
             this.staff.add(work);
         }

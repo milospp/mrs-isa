@@ -6,7 +6,6 @@ const API_URL = "http://localhost:8080";
 
 class PharmacistDataService {
   SendPharmacist(idAdmina, promenljiva) {
-    alert(promenljiva.salaryPerHour);
     return axios({
       method: 'post',
       url: API_URL + "/api/users/register/pharmacist/" + idAdmina,

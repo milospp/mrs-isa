@@ -26,9 +26,6 @@ public class Work {
     private LocalTime startHour;
     @Column
     private LocalTime endHour;
-    @Column
-    private double salaryPerHour;
-
 
     @Override
     public int hashCode() {

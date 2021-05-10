@@ -35,7 +35,6 @@ public class WorkToWorkDTO implements Converter<Work, WorkDTO> {
         dto.setPharmacyDesc(work.getPharmacy().getDescription());
         dto.setPharmacyDTO(pharmacyToPharmacyDTO.convert(work.getPharmacy()));
         dto.setDoctorDTO(doctorToDoctorDTO.convert(work.getDoctor()));
-        dto.setSalaryPerHour(work.getSalaryPerHour());
 
         dto.setStartHour(work.getStartHour());
         dto.setEndHour(work.getEndHour());

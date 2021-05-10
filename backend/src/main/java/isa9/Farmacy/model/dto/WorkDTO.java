@@ -26,6 +26,5 @@ public class WorkDTO {
     private String pharmacyDesc;
     private LocalTime startHour;
     private LocalTime endHour;
-    private double salaryPerHour;
 
 }

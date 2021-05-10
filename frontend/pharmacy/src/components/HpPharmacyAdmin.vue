@@ -96,7 +96,6 @@
                   <th>Phone number</th>
                   <th>Start time</th>
                   <th>End time</th>
-                  <th>Saraly per hour</th>
                   <th>&emsp;</th>
                 </thead>
                 <tbody>
@@ -107,7 +106,6 @@
                       <td>{{f.phoneNumber}}</td>
                       <td>{{(f.pharmacyWork.startHour[0] < 10 ? "0" + f.pharmacyWork.startHour[0] : f.pharmacyWork.startHour[0])}}:{{(f.pharmacyWork.startHour[1] < 10 ? "0" + f.pharmacyWork.startHour[1] : f.pharmacyWork.startHour[1])}}</td>
                       <td>{{(f.pharmacyWork.endHour[0] < 10 ? "0" + f.pharmacyWork.endHour[0] : f.pharmacyWork.endHour[0])}}:{{(f.pharmacyWork.endHour[1] < 10 ? "0" + f.pharmacyWork.endHour[1] : f.pharmacyWork.endHour[1])}}</td>
-                      <td>{{f.pharmacyWork.salaryPerHour}}</td>
                       <td><form v-on:click.prevent="podesi(f, true)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#potvrda">Fire</button></form></td>
                   </tr>
                 </tbody>

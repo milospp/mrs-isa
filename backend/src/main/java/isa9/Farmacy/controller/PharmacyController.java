@@ -103,16 +103,12 @@ public class PharmacyController {
         Doctor doctor = userService.getDoctorById(doctorId);
         List<Work> work = pharmacyService.findDoctorsWork(doctor);
 
-        System.out.println(work.get(0).getStartHour());
-        System.out.println(work.get(0).getEndHour());
-        System.out.println(work.get(1).getStartHour());
-        System.out.println(work.get(1).getEndHour());
-
         List<WorkDTO> convertedWork = this.workToWorkDTO.convert(work);
         return new ResponseEntity<>(convertedWork, HttpStatus.OK);
     }
 
     @GetMapping("/admin/{id}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<PharmacyDTO> getPharmacyAdmin(@PathVariable Long id) {
         User user = userService.findOne(id);
         if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -121,27 +117,16 @@ public class PharmacyController {
     }
 
     @PostMapping("/setPharmacyInfo")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<Boolean> setPharmacyInfo(@RequestBody PharmacyDTO apotekaDTO) {
         Pharmacy apoteka = pharmacyService.findOne(apotekaDTO.getId());
-        Pharmacy apoteka2 = null;
-        // inace nepotrebno
-        for (User u : userService.findAll()) {
-            if (u.getClass() != PharmacyAdmin.class) continue;
-            PharmacyAdmin admin = (PharmacyAdmin) u;
-            if (admin.getPharmacy().getId() != apoteka.getId()) continue;
-            apoteka2 = admin.getPharmacy();
-            break;
-        }
-        // kraj inace nepotrebnog koda
         apoteka.setName(apotekaDTO.getName());
         apoteka.setDescription(apoteka.getDescription());
+        if (apoteka == null) return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         if (apotekaDTO.getPricePerHour() != null) apoteka.setPricePerHour(apotekaDTO.getPricePerHour());
-        if (apoteka2 != null) {
-            apoteka2.setName(apotekaDTO.getName());
-            apoteka2.setDescription(apoteka.getDescription());
-            if (apotekaDTO.getPricePerHour() != null) apoteka2.setPricePerHour(apotekaDTO.getPricePerHour());
-
-        }
+        apoteka.setName(apotekaDTO.getName());
+        apoteka.setDescription(apoteka.getDescription());
+        this.pharmacyService.save(apoteka);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
