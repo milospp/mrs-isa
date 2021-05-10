@@ -135,9 +135,12 @@ public class PharmacyController {
         // kraj inace nepotrebnog koda
         apoteka.setName(apotekaDTO.getName());
         apoteka.setDescription(apoteka.getDescription());
+        if (apotekaDTO.getPricePerHour() != null) apoteka.setPricePerHour(apotekaDTO.getPricePerHour());
         if (apoteka2 != null) {
             apoteka2.setName(apotekaDTO.getName());
             apoteka2.setDescription(apoteka.getDescription());
+            if (apotekaDTO.getPricePerHour() != null) apoteka2.setPricePerHour(apotekaDTO.getPricePerHour());
+
         }
         return new ResponseEntity<>(true, HttpStatus.OK);
     }

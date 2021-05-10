@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -194,7 +195,7 @@ public class AppointmentController {
     }
 
     @PostMapping("free-derm")
-    public ResponseEntity<List<WorkDTO>> getFreeDerm(@RequestBody DermAppointmentReqDTO appointmentRequest) {
+    public ResponseEntity<List<WorkDTO>> getFreeDerm(@RequestBody ConsultingAppointmentReqDTO appointmentRequest) {
 
         List<WorkDTO> resultDTOS = workToWorkDTO.convert(this.appointmentService.getFreePharmacist(appointmentRequest));
 
@@ -204,12 +205,16 @@ public class AppointmentController {
 
     @PostMapping("derm-examination")
     @PreAuthorize("hasAuthority('PATIENT')")
-    public ResponseEntity<AppointmentDTO> bookDermAppointment(@RequestBody DermAppointmentReqDTO appointmentRequest) {
+    public ResponseEntity<AppointmentDTO> bookDermAppointment(@RequestBody ConsultingAppointmentReqDTO appointmentRequest) {
 
         User user = userService.getLoggedInUser();
         // TODO: CHECK IF PATIENT ALREADY HAVE APPOINTMENT AT THIS TIME
 
-        AppointmentDTO resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.bookDermAppointment(appointmentRequest, (Patient) user));
+        Appointment appointment = this.appointmentService.bookConsultingAppointment(appointmentRequest, (Patient) user);
+        if (appointment == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
+        AppointmentDTO resultDTOS = appointmentToAppointmentDTO.convert(appointment);
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
 

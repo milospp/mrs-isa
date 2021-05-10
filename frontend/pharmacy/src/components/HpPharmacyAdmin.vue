@@ -272,6 +272,7 @@
         </div>
         <div class="modal-body" align="left">Name: <input type="text" v-model="pharmacyName" placeholder=pharmacyName/></div>
         <div class="modal-body" align="left">Description: <input type="text" v-model="pharmacyDesc" placeholder=pharmacyDesc/></div>
+        <div class="modal-body" align="left">Consulting Price: <input type="text" v-model="pharmacyConsulting" placeholder=pharmacyDesc/></div>
          <div class="modal-footer">
           <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#odavestenje" data-dismiss="modal" v-on:click.prevent="proveraApoteka()">Save changes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -564,7 +565,7 @@ export default {
             sviZaposleniFarmaceuti : [],
             sviZaposleniDermatolozi : [],
             pharmacy: null,
-            pharmacyName: null, pharmacyDesc: null,
+            pharmacyName: null, pharmacyDesc: null, pharmacyConsulting: null,
             lekovi: [], originalLeka: null,
             name: null, structure: null, manufacturer: null, price: null, rating: null, code:null,
             note: null, points: null, type: null, quantity: null, shape: null, perscription: null,
@@ -585,6 +586,7 @@ export default {
           this.pharmacy = response.data;
           this.pharmacyName = this.pharmacy.name;
           this.pharmacyDesc = this.pharmacy.description;
+          this.pharmacyConsulting = this.pharmacy.pricePerHour;
           this.osveziPreglede();
         });
       this.osveziFarmaceute();
@@ -741,12 +743,13 @@ export default {
          this.osveziFarmaceute();
       },
       proveraApoteka() {
-        if (this.pharmacyName.length == 0 || this.pharmacyDesc.length == 0) {
-          this.poruka = "Name and description can't be empty.";
+        if (this.pharmacyName.length == 0 || this.pharmacyDesc.length == 0 || this.pharmacyConsulting.length == 0) {
+          this.poruka = "Name, description and price can't be empty.";
           return false;
         }
         this.pharmacy.name = this.pharmacyName;
         this.pharmacy.description = this.pharmacyDesc;
+        this.pharmacy.pricePerHour = this.pharmacyConsulting;
         PharmacyDataService.setPharmacy(this.pharmacy)
           .then(response => {this.poruka = "You successfaly changed pharmacy info.";});
       },

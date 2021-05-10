@@ -19,7 +19,8 @@ public class PharmacyDTO {
     private String name;
     private String description;
     private Address address;
-    private double rating;
+    private Double rating;
+    private Double pricePerHour;
 
 
 }
