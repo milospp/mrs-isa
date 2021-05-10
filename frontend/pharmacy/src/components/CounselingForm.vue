@@ -37,6 +37,7 @@
                         {{p.description}}
                         </p>
                         <p v-if="p.rating >= 1" class="rating">Rating: {{p.rating}} / 5</p>
+                        <p class="rating">Price (hour): ${{p.pricePerHour}}</p>
 
                         <hr>
                         <h6>

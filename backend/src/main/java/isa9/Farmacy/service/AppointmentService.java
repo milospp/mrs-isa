@@ -2,7 +2,7 @@ package isa9.Farmacy.service;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.AppointmentSearchDTO;
-import isa9.Farmacy.model.dto.DermAppointmentReqDTO;
+import isa9.Farmacy.model.dto.ConsultingAppointmentReqDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,10 +39,10 @@ public interface AppointmentService extends GenericService<Appointment>{
     Boolean patientHadAppointmentInPharmacy(Patient patient, Pharmacy pharmacy);
 
     List<Pharmacist> getOccupiedPharmacists(LocalDateTime start, LocalDateTime end);
-    Set<Work> getFreePharmacist(DermAppointmentReqDTO appointmentReqDTO);
+    Set<Work> getFreePharmacist(ConsultingAppointmentReqDTO appointmentReqDTO);
     List<Appointment> getAllAppointmentsInInterval(LocalDateTime start, LocalDateTime end);
 
-    Appointment bookDermAppointment(DermAppointmentReqDTO appointmentReqDTO, Patient patient);
+    Appointment bookConsultingAppointment(ConsultingAppointmentReqDTO appointmentReqDTO, Patient patient);
     List<Appointment> getDoctorUpcomingAppointments(Long id);
 
     List<Appointment> filterPastAppointments(List<Appointment> appointments, AppointmentSearchDTO appointmentSearchDTO);

@@ -1,12 +1,11 @@
 package isa9.Farmacy.service.impl.db;
 
 import isa9.Farmacy.model.*;
-import isa9.Farmacy.model.dto.DermAppointmentReqDTO;
+import isa9.Farmacy.model.dto.ConsultingAppointmentReqDTO;
 import isa9.Farmacy.repository.AppointmentRepository;
 import isa9.Farmacy.service.AppointmentService;
 import isa9.Farmacy.service.WorkService;
 import isa9.Farmacy.service.impl.base.AppointmentServiceBase;
-import net.bytebuddy.matcher.FilterableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -66,7 +65,7 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
     }
 
     @Override
-    public Set<Work> getFreePharmacist(DermAppointmentReqDTO appointmentReqDTO) {
+    public Set<Work> getFreePharmacist(ConsultingAppointmentReqDTO appointmentReqDTO) {
         LocalDateTime start = appointmentReqDTO.getStartTime();
         LocalDateTime end = appointmentReqDTO.getStartTime().plusMinutes(appointmentReqDTO.getDurationInMins());
         if (start.until(end, ChronoUnit.DAYS) >= 1 ) return new HashSet<>();

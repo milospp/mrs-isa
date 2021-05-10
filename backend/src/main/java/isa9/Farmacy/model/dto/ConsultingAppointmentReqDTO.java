@@ -17,7 +17,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Builder
 
-public class DermAppointmentReqDTO {
+public class ConsultingAppointmentReqDTO {
 //    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 //    @JsonFormat(pattern="yyyy-M-d HH:mm:ss")
     private LocalDateTime startTime;
