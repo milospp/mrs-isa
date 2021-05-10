@@ -66,7 +66,6 @@ public abstract class MedicineServiceBase implements MedicineService {
                 .filter(m -> medicineSearchDTO.getManufacturer().isEmpty() || m.getManufacturer().toLowerCase().contains(medicineSearchDTO.getManufacturer().toLowerCase()))
                 .filter(m -> medicineSearchDTO.getShape().isEmpty() || m.getShape().toLowerCase().contains(medicineSearchDTO.getShape().toLowerCase()))
                 .filter(m -> medicineSearchDTO.getType().isEmpty() || m.getType().toLowerCase().contains(medicineSearchDTO.getType().toLowerCase()))
-                .filter(m -> medicineSearchDTO.getStructure().isEmpty() || m.getName().toLowerCase().contains(medicineSearchDTO.getStructure().toLowerCase()))
                 .filter(m -> medicineSearchDTO.getPerscription().equalsIgnoreCase("ALL") || m.getPerscription().toString().equalsIgnoreCase(medicineSearchDTO.getPerscription()))
                 .filter(m -> m.getRating() >= medicineSearchDTO.getMinRating() && m.getRating() <= medicineSearchDTO.getMaxRating())
                 .filter(m -> m.getPoints() >= medicineSearchDTO.getMinPoints() && m.getPoints() <= medicineSearchDTO.getMaxPoints())

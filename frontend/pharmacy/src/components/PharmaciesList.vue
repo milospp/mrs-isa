@@ -7,45 +7,50 @@
 				</a>
 			</div>
 		</div>
-	<form v-on:submit.prevent="searchPharmacies" class="collapse" id="searchCollapse">
-      <div class="form-row">
-          <div class="form-group col-md-4">
-            <label for="inputEmail4">Name</label>
-            <input type="text" class="form-control" id="inputName" v-model="searchParams.name">
-          </div>
-          <div class="form-group col-md-4">
-            <label for="inputAddress">Address</label>
-            <input type="text" class="form-control" id="inputAddress" v-model="searchParams.addressString">
-          </div>
-          <div class="form-group col-md-2">
-            <label for="inputMinRating">Rating</label>
+    <div class="searchForm collapse mb-2 bg-light" id="searchCollapse">
 
-            <div class="input-group">
+      <form v-on:submit.prevent="searchPharmacies" class="p-3">
+          <h4>Filter</h4>
 
-                <input type="number" class="form-control" id="inputMinRating" min="0" :max="Math.min(5,searchParams.maxRating)" v-model="searchParams.minRating">
+          <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="inputEmail4">Name</label>
+                <input type="text" class="form-control" id="inputName" v-model="searchParams.name">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="inputAddress">Address</label>
+                <input type="text" class="form-control" id="inputAddress" v-model="searchParams.addressString">
+              </div>
+              <div class="form-group col-md-2">
+                <label for="inputMinRating">Rating</label>
 
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="inputMaxRating">-</span>
+                <div class="input-group">
+
+                    <input type="number" class="form-control" id="inputMinRating" min="0" :max="Math.min(5,searchParams.maxRating)" v-model="searchParams.minRating">
+
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputMaxRating">-</span>
+                    </div>
+                    <input type="number" class="form-control" id="inputMaxRating" :min="Math.max(0,searchParams.minRating)" max="5" v-model="searchParams.maxRating">
                 </div>
-                <input type="number" class="form-control" id="inputMaxRating" :min="Math.max(0,searchParams.minRating)" max="5" v-model="searchParams.maxRating">
-            </div>
-          </div>
-          <div class="form-group col-md-2">
-            <label for="sortSelect">Sort</label>
-            <select class="form-control" id="sortSelect" v-model="searchParams.sort">
-              <option value="NAME_ASC">By Name Asc</option>
-              <option value="NAME_DES">By Name Des</option>
-              <option value="ADDRESS_ASC">By Address Asc</option>
-              <option value="ADDRESS_DES">By Address Des</option>
-              <option value="RAING_ASC">By Rating Asc</option>
-              <option value="RAING_DES">By Rating Des</option>
-            </select>          
-          </div>
+              </div>
+              <div class="form-group col-md-2">
+                <label for="sortSelect">Sort</label>
+                <select class="form-control" id="sortSelect" v-model="searchParams.sort">
+                  <option value="NAME_ASC">By Name Asc</option>
+                  <option value="NAME_DES">By Name Des</option>
+                  <option value="ADDRESS_ASC">By Address Asc</option>
+                  <option value="ADDRESS_DES">By Address Des</option>
+                  <option value="RAING_ASC">By Rating Asc</option>
+                  <option value="RAING_DES">By Rating Des</option>
+                </select>          
+              </div>
 
-      </div>
-      <button type="submit" class="btn btn-primary">Search</button> 
-  </form>
+          </div>
+          <button type="submit" class="btn btn-primary">Search</button> 
+      </form>
 
+    </div>
 
 
   <div class="row">

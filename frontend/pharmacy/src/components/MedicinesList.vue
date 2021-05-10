@@ -2,12 +2,12 @@
 
 	<div class="row mb-3">
 			<div class="col-md-12">
-				<a class="btn btn-primary float-right" data-toggle="collapse" href="#searchCollapse" role="button" aria-expanded="false" aria-controls="searchCollapse">
+				<a class="btn btn-primary float-right" data-toggle="collapse" href="#searchMedCollapse" role="button" aria-expanded="false" aria-controls="searchMedCollapse">
 					Filter
 				</a>
 			</div>
 	</div>
-  <div class="searchForm collapse mb-2 bg-light" id="searchCollapse">
+  <div class="searchForm collapse mb-2 bg-light" id="searchMedCollapse">
     <form v-on:submit.prevent="searchMedicines" class="p-3">
           <h4>Filter</h4>
 

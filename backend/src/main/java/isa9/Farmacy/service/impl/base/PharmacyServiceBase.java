@@ -65,8 +65,8 @@ public abstract class PharmacyServiceBase implements PharmacyService {
         final Map<String, Comparator<Pharmacy>> critMap = new HashMap<String, Comparator<Pharmacy>>();
         critMap.put("NAME_ASC", (o1,o2)->{return o1.getName().trim().compareToIgnoreCase(o2.getName().trim());});
         critMap.put("NAME_DES", (o2,o1)->{return o1.getName().trim().compareToIgnoreCase(o2.getName().trim());});
-        critMap.put("ADDRES_ASC", (o1,o2)->{return o1.getAddress().getStreet().trim().compareToIgnoreCase(o2.getAddress().getStreet().trim());});
-        critMap.put("ADDRES_DES", (o2,o1)->{return o1.getAddress().getStreet().trim().compareToIgnoreCase(o2.getAddress().getStreet().trim());});
+        critMap.put("ADDRESS_ASC", (o1,o2)->{return o1.getAddress().getStreet().trim().compareToIgnoreCase(o2.getAddress().getStreet().trim());});
+        critMap.put("ADDRESS_DES", (o2,o1)->{return o1.getAddress().getStreet().trim().compareToIgnoreCase(o2.getAddress().getStreet().trim());});
         critMap.put("RATING_ASC", Comparator.comparingDouble(Pharmacy::getRating));
         critMap.put("RATING_DES", Comparator.comparingDouble(Pharmacy::getRating).reversed());
         Comparator<Pharmacy> comp = critMap.getOrDefault(pharmacySearchDTO.getSort().toUpperCase().trim(), critMap.values().iterator().next());
