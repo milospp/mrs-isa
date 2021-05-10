@@ -79,6 +79,8 @@ insert into users (address_id, email, enabled, name, password, phone_number, rol
 insert into doctor (id) values (13);
 insert into dermatologist (id) values (13);
 
+
+
 --medicineSpecs
 insert into medicine_specifications (side_effects, daily_intake, structure) values ('Pospanost, naleti raspoloženja','1 pilula na dan','metildopa');
 insert into medicine_specifications (side_effects, daily_intake, structure) values ('Might learn mandarin','2 doses','Structurrrre');
@@ -211,3 +213,13 @@ insert into sys_admin (id) values (18);
 --suppliers
 insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (16, 'milenkotep@maildrop.cc', true, 'Milenko', '$2a$10$0jpTwKzrxhpekj0zDufFvelVsfilpPXk7EX4U65u9gZfb7FTnOIlG', '0632212458', 6, 'Tepić', LOCALTIMESTAMP); --sifra : imamrobu
 insert into supplier (id) values (19);
+
+
+-- New pharmacist
+
+insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (22, 'farm@maildrop.cc', true, 'Miki', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0638895221', 5, 'Milan', LOCALTIMESTAMP);
+insert into doctor (id) values (20);
+insert into dermatologist (id) values (20);
+
+insert into work (doctor_id, start_hour, pharmacy_id, end_hour, salary_per_hour) values (20, '09:09:00', 3, '12:12:00', 300);
+insert into pharmacy_staff (pharmacy_id, staff_id) values (3, 8);
