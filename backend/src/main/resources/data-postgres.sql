@@ -125,10 +125,11 @@ insert into pharmacy_medicines (pharmacy_id, medicines_id) values (1,2);
 -- id 1
 --insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 200, current_timestamp + INTERVAL '3day', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 300, current_timestamp, 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 400, current_timestamp, 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 500, current_timestamp, 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 330, current_timestamp, 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 400, current_timestamp + INTERVAL '1 hour', 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 500, current_timestamp + INTERVAL '2 hours', 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 330, current_timestamp + INTERVAL '3 hours', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 340, current_timestamp, 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, current_timestamp + interval '1 day', 0);
 insert into examination (status, appointment_id, patient_id) values (0, 1, 2);
 insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Migrena', 'Pacijent oseca glavobolju', 1, 2, 1);
 insert into examination (status, appointment_id, patient_id) values (2, 3, 3);

@@ -15,7 +15,6 @@
       ref="calendar"
       :masks="masks"
       :attributes="attributes"
-      disable-page-swipe
       is-expanded
     >
       <template v-slot:day-content="{ day, attributes }">
@@ -29,7 +28,7 @@
               :class="attr.customData.typeForClass"
               v-on:click="a(attr.key)"
             >
-              {{ attr.customData.startTime }} {{ attr.customData.durationInMins}}min - {{ attr.customData.patientName }} {{ attr.customData.patientSurname }}
+              {{ attr.customData.startTime }} {{ attr.customData.durationInMins}}min <span v-if="!attr.customData.typeForClass.includes('free')">- {{ attr.customData.patientName }} {{ attr.customData.patientSurname }} </span>
             </p> <!--appointment-->
           </div>
         </div>
@@ -155,11 +154,15 @@ export default {
   computed: {
   	attributes() {
       return this.appointments.map(t => ({
-        key: `appointment.${t.id}`,
+        key: t.id,
         dates: Date.parse(t.startDate),
         customData: t,
       }));
     }
+  },
+  beforeUnmount: function beforeUnmount() {
+    // this.removeHandlers();
+    return;
   },
   methods: {
       a(id){
@@ -178,7 +181,7 @@ export default {
             //   //alert(JSON.stringify(this.attributes));
             // }
             //this.attributes = response.data;
-            alert(JSON.stringify(this.appointments[1]));
+            //alert(JSON.stringify(this.appointments[1]));
           });
       },
       getPharmacies() {
@@ -210,7 +213,12 @@ export default {
     color: var(--exam-txt);
 }
 
-.held {
+.free .examination {
+    background-color: var(--free-bg);
+    color: var(--free-txt);
+}
+
+.over {
   background-color: #b0b0b0;
   color: var(--free-txt);
 }

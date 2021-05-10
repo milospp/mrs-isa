@@ -38,25 +38,23 @@ public class AppointmentToAppointmentCalendarDTO implements Converter<Appointmen
         dto.setStartDate(appointment.getStartTime().toLocalDate());
         dto.setDurationInMins(appointment.getDurationInMins());
         dto.setPharmacyName(appointment.getPharmacy().getName());
-        if (appointment.getExamination() == null)
-            dto.setTypeForClass("free");
-        else {
-            dto.setTypeForClass("");
-            if (appointment.getExamination().getStatus() == ExaminationStatus.HELD)
-                dto.setTypeForClass(dto.getTypeForClass() + " held");
-        }
-        if (appointment.getType() == TypeOfReview.EXAMINATION){
-            dto.setTypeForClass(dto.getTypeForClass() + " examination");
-        } else {
-            dto.setTypeForClass(dto.getTypeForClass() + " counseling");
-        }
 
-        if (!dto.getTypeForClass().contains("free")) {
-            dto.setPatientName(appointment.getExamination().getPatient().getName());
-            dto.setPatientSurname(appointment.getExamination().getPatient().getSurname());
-        } else {
+        if (appointment.getExamination() == null) {
+            System.out.println("Examination is null");
+            dto.setTypeForClass("free");
             dto.setPatientName("");
             dto.setPatientSurname("");
+        } else {
+            dto.setTypeForClass("");
+            dto.setPatientName(appointment.getExamination().getPatient().getName());
+            dto.setPatientSurname(appointment.getExamination().getPatient().getSurname());
+            if (appointment.getExamination().getStatus() == ExaminationStatus.HELD || appointment.getExamination().getStatus() == ExaminationStatus.NOT_HELD)
+                dto.setTypeForClass(dto.getTypeForClass() + " over");
+        }
+        if (appointment.getType() == TypeOfReview.EXAMINATION && appointment.getExamination() != null){
+            dto.setTypeForClass(dto.getTypeForClass() + " examination");
+        } else if (appointment.getType() == TypeOfReview.COUNSELING && appointment.getExamination() != null) {
+            dto.setTypeForClass(dto.getTypeForClass() + " counseling");
         }
 
         return dto;

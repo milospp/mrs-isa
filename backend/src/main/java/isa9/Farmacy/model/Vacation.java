@@ -12,7 +12,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 
-public class Vacation {private boolean accepted;
+public class Vacation {
+    private boolean accepted;
     private TypeOfRest type;
     private Date startDate;
     private Date endDate;

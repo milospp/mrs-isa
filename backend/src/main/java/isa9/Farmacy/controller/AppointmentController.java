@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -86,6 +87,7 @@ public class AppointmentController {
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
     public ResponseEntity<AppointmentDTO> getAnAppointment(@PathVariable Long id) {
         Appointment appointment = appointmentService.findOne(id);
         if (appointment == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -95,6 +97,7 @@ public class AppointmentController {
     }
 
     @PostMapping("{id}/done")
+    @PreAuthorize("hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
     public ResponseEntity<Boolean> finishAnAppointment(@RequestBody AppointmentDTO appointmentDTO, @PathVariable Long id) {
         Appointment appointment = appointmentService.findOne(id);
         System.out.println(appointmentDTO);
@@ -312,6 +315,7 @@ public class AppointmentController {
     }
 
     @GetMapping("calendar/derm/{dermId}/pharmacy/{pharmaId}")
+    @PreAuthorize("hasAuthority('DERMATOLOGIST')")
     public ResponseEntity<List<AppointmentCalendarDTO>> getDermaPharmaAppointmentsForCalendar(@PathVariable Long dermId, @PathVariable Long pharmaId) {
         List<Appointment> appointments = this.appointmentService.getDermForPharmacyAppointments(dermId, pharmaId);
         List<AppointmentCalendarDTO> resultDTOs = appointmentToAppointmentCalendarDTO.convert(appointments);

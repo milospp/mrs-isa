@@ -200,7 +200,7 @@ export default {
                     therapy: []
                 },
                 startTime: '',
-                pharmacy: '',
+                pharmacy: { name: '' },
                 durationInMins: 0,
                 doctor: {
                         name: '',
@@ -214,7 +214,7 @@ export default {
                 "price": 0,
                 "durationInMins": 0
             },
-            medicines: [{name: 'lek1', code: 1}, {name: 'lek2', code: 2}, {name: 'lek3', code: 3}],
+            medicines: [{medicine: { name: '', code: 1}}, {medicine: { name: '', code: 2}}, {medicine: { name: '', code: 3}}],
             therapyMed: null,
             therapyDays: null,
             reservationDate: null,
