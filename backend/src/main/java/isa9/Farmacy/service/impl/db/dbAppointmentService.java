@@ -3,6 +3,7 @@ package isa9.Farmacy.service.impl.db;
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.ConsultingAppointmentReqDTO;
 import isa9.Farmacy.repository.AppointmentRepository;
+import isa9.Farmacy.repository.ExaminationRepository;
 import isa9.Farmacy.service.AppointmentService;
 import isa9.Farmacy.service.WorkService;
 import isa9.Farmacy.service.impl.base.AppointmentServiceBase;
@@ -24,11 +25,13 @@ import java.util.Set;
 public class dbAppointmentService extends AppointmentServiceBase implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
+    private final ExaminationRepository examinationRepository;
     private final WorkService workService;
 
     @Autowired
-    public dbAppointmentService(AppointmentRepository appointmentRepository, WorkService workService) {
+    public dbAppointmentService(AppointmentRepository appointmentRepository, ExaminationRepository examinationRepository, WorkService workService) {
         this.appointmentRepository = appointmentRepository;
+        this.examinationRepository = examinationRepository;
         this.workService = workService;
     }
 
@@ -66,6 +69,8 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
 
     @Override
     public Set<Work> getFreePharmacist(ConsultingAppointmentReqDTO appointmentReqDTO) {
+        if (appointmentReqDTO.getStartTime().isBefore(LocalDateTime.now())) return new HashSet<>();
+
         LocalDateTime start = appointmentReqDTO.getStartTime();
         LocalDateTime end = appointmentReqDTO.getStartTime().plusMinutes(appointmentReqDTO.getDurationInMins());
         if (start.until(end, ChronoUnit.DAYS) >= 1 ) return new HashSet<>();
@@ -142,4 +147,5 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
             }
         return 0;                           // mozes da menjas
     }
+
 }

@@ -219,7 +219,7 @@ insert into supplier (id) values (19);
 
 insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (22, 'farm@maildrop.cc', true, 'Miki', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0638895221', 5, 'Milan', LOCALTIMESTAMP);
 insert into doctor (id) values (20);
-insert into dermatologist (id) values (20);
+insert into pharmacist (id) values (20);
 
 insert into work (doctor_id, start_hour, pharmacy_id, end_hour, salary_per_hour) values (20, '09:09:00', 3, '12:12:00', 300);
 insert into pharmacy_staff (pharmacy_id, staff_id) values (3, 8);

@@ -210,7 +210,11 @@ public class AppointmentController {
         User user = userService.getLoggedInUser();
         // TODO: CHECK IF PATIENT ALREADY HAVE APPOINTMENT AT THIS TIME
 
-        AppointmentDTO resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.bookConsultingAppointment(appointmentRequest, (Patient) user));
+        Appointment appointment = this.appointmentService.bookConsultingAppointment(appointmentRequest, (Patient) user);
+        if (appointment == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
+        AppointmentDTO resultDTOS = appointmentToAppointmentDTO.convert(appointment);
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
 

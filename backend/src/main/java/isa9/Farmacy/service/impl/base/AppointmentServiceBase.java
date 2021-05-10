@@ -258,6 +258,14 @@ public abstract class AppointmentServiceBase implements AppointmentService {
 
     @Override
     public Appointment bookConsultingAppointment(ConsultingAppointmentReqDTO appointmentReqDTO, Patient patient) {
+//      TODO: Add error message...
+        if (userService.countActivePenalties(patient) > 3) return null;
+        if (appointmentReqDTO.getStartTime().isBefore(LocalDateTime.now())) return null;
+        if (this.isPatientOccupied(
+                appointmentReqDTO.getStartTime(),
+                appointmentReqDTO.getStartTime().plusMinutes(appointmentReqDTO.getDurationInMins()),
+                patient.getId()
+                )) return null;
 
         Set<Work> workSet = getFreePharmacist(appointmentReqDTO);
         Boolean available = workSet.stream().anyMatch(w ->
@@ -341,5 +349,16 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         List<Appointment> allAppointments;
         allAppointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && isInPharmacy(x, pharamcyId) && !isCanceled(x)).collect(Collectors.toList());
         return allAppointments;
+    }
+
+    @Override
+    public Boolean isPatientOccupied(LocalDateTime start, LocalDateTime end, Long patientId) {
+        Collection<Appointment> appointments = this.getAllAppointmentsInInterval(start, end);
+        for (Appointment appointment : appointments){
+            if (appointment.getExamination() == null) continue;
+            if (appointment.getExamination().getPatient().getId() == patientId) return true;
+        }
+        return false;
+
     }
 }
