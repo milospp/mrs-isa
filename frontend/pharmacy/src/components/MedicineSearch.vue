@@ -87,11 +87,10 @@ export default {
     },
     methods: {
         getMedicines() {
-            MedicineDataService.getAllMedicines()
+            MedicineDataService.getMedicinesInStock()
                 .then(response => {
                     this.medicines = response.data;
                     this.results = this.medicines;
-                    console.log(this.medicines);
                 });
                 
         },
@@ -102,8 +101,8 @@ export default {
             this.results = [];
 
             for(var m of this.medicines){
-                if(m.name.startsWith(this.queryParams.name) && m.type.startsWith(this.queryParams.type) &&
-                   m.shape.startsWith(this.queryParams.shape) && m.manufacturer.startsWith(this.queryParams.manufacturer)){
+                if(m.name.includes(this.queryParams.name) && m.type.includes(this.queryParams.type) &&
+                   m.shape.includes(this.queryParams.shape) && m.manufacturer.includes(this.queryParams.manufacturer)){
                     this.results.push(m);
                 }
             }
@@ -113,9 +112,8 @@ export default {
             this.prices = [];
             MedicineDataService.getPricesOfMedicine(medicine).then(response => {
                 this.prices = response.data;
-                console.log(this.prices);
             });
-        }
+        },
     },
     created() {
         this.getMedicines();

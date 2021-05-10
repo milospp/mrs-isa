@@ -4,6 +4,7 @@ import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
 import isa9.Farmacy.model.dto.MedicineSearchDTO;
 import isa9.Farmacy.model.dto.PharmacySearchDTO;
+import isa9.Farmacy.model.dto.PriceInPharmaciesDTO;
 
 import java.util.List;
 import java.util.Set;
@@ -17,4 +18,5 @@ public interface MedicineService extends GenericService<Medicine> {
 
     List<Medicine> filterMedicines(List<Medicine> medicines, MedicineSearchDTO medicineSearchDTO);
 
+    List<PriceInPharmaciesDTO> getPricesOfMedicine(Medicine medicine);
 }

@@ -1,7 +1,7 @@
 <template>
   <NavBar/>
   <div class="container">
-    <h1>Search medicines...</h1> 
+    <h1>Search medicines in stock...</h1> 
     <MedicineSearch/>
   </div>
 </template>

@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class PricesInPharmaciesDTO {
+public class PriceInPharmaciesDTO {
     private double price;
     private String pharmacyName;
 }
