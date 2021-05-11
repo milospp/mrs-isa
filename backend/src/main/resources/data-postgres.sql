@@ -224,3 +224,13 @@ insert into pharmacist (id) values (20);
 
 insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (20, '09:09:00', 3, '12:12:00');
 insert into pharmacy_staff (pharmacy_id, staff_id) values (3, 8);
+
+
+-- Rsservations
+insert into med_reservation (code, last_date, quantity, reservation_date, status, medicine_in_pharmacy_id, patient_id, who_dispenses_id)
+values ('fakecode1', current_timestamp - INTERVAL '1 days', 5, current_timestamp - INTERVAL '2 days', 0, 1, 1, null);
+insert into med_reservation (code, last_date, quantity, reservation_date, status, medicine_in_pharmacy_id, patient_id, who_dispenses_id)
+values ('fakecode2', current_timestamp + INTERVAL '2 days', 5, current_timestamp - INTERVAL '2 days', 0, 1, 1, null);
+
+insert into patient_reservations (patient_id, reservations_id) values (1,1);
+insert into patient_reservations (patient_id, reservations_id) values (1,2);

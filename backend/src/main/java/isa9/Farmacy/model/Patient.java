@@ -18,7 +18,7 @@ public class Patient extends User {
     @Column
     @EqualsAndHashCode.Include
     private int points;
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Penality> penalties;
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Pharmacy> subscriptions;
