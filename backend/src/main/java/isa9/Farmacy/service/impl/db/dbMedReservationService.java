@@ -58,14 +58,17 @@ public class dbMedReservationService extends MedReservationServiceBase implement
     @Override
     @Scheduled(cron="0 0 0 * * ?") // runs every day at midnight
     public void checkForExpiredReservations() {
-        int count = 0;
-        for (MedReservation mr : this.findAll()){
-            if (mr.getLastDate().isBefore(LocalDate.now().minusDays(1)) && mr.getStatus() == MedReservationStatus.PENDING){
-                mr.setStatus(MedReservationStatus.EXPIRED);
-                count++;
-            }
+
+        Collection<MedReservation> outdatedReservations = medReservationRepository.findAllByStatusAndLastDateBefore(MedReservationStatus.PENDING, LocalDate.now());
+
+        for (MedReservation reservation : outdatedReservations){
+            reservation.setStatus(MedReservationStatus.EXPIRED);
+            userService.addPenalty(reservation.getPatient(), "Patient did not pick up reserved medication. #"+reservation.getCode());
         }
-        System.out.println("Number of expired reservations: " + count + " --- on date: " + LocalDate.now());
+
+        saveAll(outdatedReservations);
+
+        System.out.println("Number of expired reservations: " + outdatedReservations.size() + " --- on date: " + LocalDate.now());
     }
 
     @Override
@@ -83,16 +86,4 @@ public class dbMedReservationService extends MedReservationServiceBase implement
         if (medReservation == null) return false;
         else return true;    }
 
-    @Override
-    public void checkForOutDated() {
-        Collection<MedReservation> outdatedReservations = medReservationRepository.findAllByStatusAndLastDateBefore(MedReservationStatus.PENDING, LocalDate.now());
-
-        for (MedReservation reservation : outdatedReservations){
-            reservation.setStatus(MedReservationStatus.EXPIRED);
-            userService.addPenalty(reservation.getPatient(), "Patient did not pick up reserved medication. #"+reservation.getCode());
-        }
-
-        saveAll(outdatedReservations);
-
-    }
 }

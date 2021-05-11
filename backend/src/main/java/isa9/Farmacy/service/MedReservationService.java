@@ -23,8 +23,6 @@ public interface MedReservationService extends GenericService<MedReservation> {
     Boolean patientConsumedMedicine(Patient patient, Medicine medicine);
     Boolean patientConsumedMedInPharmacy(Patient patient, Pharmacy pharmacy);
 
-    void checkForOutDated();
-
 
     void checkForExpiredReservations();
 }
