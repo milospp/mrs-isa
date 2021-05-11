@@ -164,11 +164,12 @@ export default {
     };
   },
   mounted(){
-      // this.calendarRef = this.$refs.calendar;
-      // this.currentMonth = this.calendarRef.month;
-      //this.doctor = AuthService.getCurrentUser();
       this.getPharmacies();
-      this.setAttributes(0);
+      if (this.doctor.role === "PHARMACIST") {
+        this.setAttributesForPharmacist();
+      } else if (this.doctor.role === "DERMATOLOGIST") {
+        this.setAttributes(0);
+      }
   },
   computed: {
   	attributes() {
@@ -190,19 +191,17 @@ export default {
         if (pharmacyIdEvent === 0){ this.appointments = []; return; }
         let pharmacyId = pharmacyIdEvent.target.value;
         if (pharmacyId === "no pharmacy selected") return;
-        if (this.doctor.role === 'DERMATOLOGIST') {
           AppointmentDataService.getDermAppFromPharmacy(this.doctor.id, pharmacyId)
           .then(response => {
             this.appointments = response.data;
           });
-        } 
-        // else if (this.doctor.role === 'PHARMACIST') {
-        //   AppointmentDataService.getPharmAppForCalendar(this.doctor.id)
-        //   .then(response => {
-        //     this.appointments = response.data;
-        //   });
-        // }
-        
+      },
+      setAttributesForPharmacist() {
+        AppointmentDataService.getPharmAppForCalendar(this.doctor.id)
+          .then(response => {
+            this.appointments = response.data;
+            console.log(this.appointments);
+          });
       },
       getPharmacies() {
         if (this.doctor){
@@ -299,7 +298,7 @@ export default {
   --held-bg: #eeeeee;
   --free-bg: #cecece;
   --exam-bg: #0d6efd;
-  --coun-bg: #e7aa26;
+  --coun-bg: #ffa600;
     border-radius: 1;
     border-width: 2px;
     height: 100%;

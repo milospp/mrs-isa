@@ -151,9 +151,9 @@ insert into patient_my_examinations (patient_id, my_examinations_id) values (2, 
 insert into patient_my_examinations (patient_id, my_examinations_id) values (3, 5);
 
 --appointments for pharmacist
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (12, 30, null, 1, 300, current_timestamp, 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (12, 30, null, 1, 300, current_timestamp + INTERVAL '1 hour', 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (12, 30, null, 1, 300, current_timestamp + INTERVAL '2 hours', 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (12, 30, null, 1, 300, current_timestamp, 1);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (12, 30, null, 1, 300, current_timestamp + INTERVAL '1 hour', 1);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (12, 30, null, 1, 300, current_timestamp + INTERVAL '2 hours', 1);
 insert into examination (status, appointment_id, patient_id) values (0, 7, 2);
 insert into examination (status, appointment_id, patient_id) values (0, 8, 1);
 --insert into examination (status, appointment_id, patient_id) values (0, 9, 3); -- one free appointment
