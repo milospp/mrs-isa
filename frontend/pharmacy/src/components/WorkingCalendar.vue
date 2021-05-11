@@ -1,15 +1,30 @@
 <template>
-
-  <h2 class="h2 mb-3">Monthly Calendar</h2>
-  <div v-if="jobs">
-    <div :key="w.pharmacyDTO.id" v-for="w in jobs">
-      <button class="btn btn-primary d-inline" @click="setAttributes(w.id)">{{w.pharmacyDTO.name}}</button>
+  <div class="container">
+    <h2 class="h2 mb-3 text-center">Working Calendar</h2>
+    <p class="text-lg font-medium text-gray-600 mb-4 text-center">
+      <span v-if="calendarDetail === 'month'">Month</span>
+      <span v-else-if="calendarDetail === 'year'">Year</span>
+      <span v-else>Week</span>ly preview of appointments, examinations, absences and vacations
+    </p>
+    <div class="row">
+    <div v-if="jobs" class="form-group col">
+        <label for="pharmacySelect">Pharmacy</label>
+        <select name="pharmacySelect" id="pharmacySelect" class="form-control" v-on:change="setAttributes($event)">
+          <option value="no pharmacy selected">--- Choose a pharmacy ---</option>
+          <option :key="w.pharmacyDTO.id" v-for="w in jobs" :value="w.pharmacyDTO.id">{{w.pharmacyDTO.name}}</option>
+          <!-- <button class="btn btn-primary d-inline"></button> -->
+        </select>
     </div>
-  </div>
-  <div class="text-center section" v-if="appointments">
-    <!-- <p class="text-lg font-medium text-gray-600 mb-6">
-      Monthly appointments and examinations
-    </p> -->
+    <div class="form-group col">
+      <label for="calendarSelect">Calendar</label>
+      <select name="calendarSelect" id="calendarSelect" class="form-control" v-model="calendarDetail">
+        <option value="week">Week</option>
+        <option value="month">Month</option>
+        <option value="year">Year</option>
+      </select>
+    </div>
+    </div>
+  <div class="text-center section" v-if="appointments && calendarDetail === 'month'">
     <Calendar
       class="custom-calendar"
       ref="calendar"
@@ -20,20 +35,23 @@
       <template v-slot:day-content="{ day, attributes }">
         <div class="flex flex-col z-10 overflow-hidden whole-day"> <!--whole day-->
           <span class="day-label text-sm text-gray-900">{{ day.day }}</span> <!--number of a day-->
+          <!-- <div class="day-wrapper"> -->
           <div class="flex-grow overflow-y-auto overflow-x-auto day"> <!--all content of a day-->
             <p
               v-for="attr in attributes"
               :key="attr.key"
-              class="rounded p-0 mt-0 mb-0 mx-1 appointment"
+              class="rounded p-0 mt-0 mb-0 mx-1 appointment lbl"
               :class="attr.customData.typeForClass"
               v-on:click="a(attr.key)"
             >
-              {{ attr.customData.startTime }} {{ attr.customData.durationInMins}}min <span v-if="!attr.customData.typeForClass.includes('free')">- {{ attr.customData.patientName }} {{ attr.customData.patientSurname }} </span>
+              <b>{{ attr.customData.startTime }}</b> <b>{{ attr.customData.durationInMins}}</b>m <span v-if="!attr.customData.typeForClass.includes('free')"> {{ attr.customData.patientName }} {{ attr.customData.patientSurname }} </span>
             </p> <!--appointment-->
           </div>
+          <!-- </div> -->
         </div>
       </template>
     </Calendar>
+  </div>
   </div>
 </template>
 
@@ -55,6 +73,8 @@ export default {
       doctor: null,
       jobs: null,
       appointments: null,
+
+      calendarDetail: 'month',
 
       //
       masks: {
@@ -149,7 +169,7 @@ export default {
       // this.currentMonth = this.calendarRef.month;
       this.doctor = AuthService.getCurrentUser();
       this.getPharmacies();
-      this.setAttributes(1);
+      this.setAttributes(0);
   },
   computed: {
   	attributes() {
@@ -160,15 +180,14 @@ export default {
       }));
     }
   },
-  beforeUnmount: function beforeUnmount() {
-    // this.removeHandlers();
-    return;
-  },
   methods: {
       a(id){
           alert(id);
       },
-      setAttributes(pharmacyId) {
+      setAttributes(pharmacyIdEvent) {
+        if (pharmacyIdEvent === 0){ this.appointments = []; return; }
+        let pharmacyId = pharmacyIdEvent.target.value;
+        if (pharmacyId === "no pharmacy selected") return;
         AppointmentDataService.getDermAppFromPharmacy(this.doctor.id, pharmacyId)
           .then(response => {
             this.appointments = response.data;
@@ -198,9 +217,10 @@ export default {
 <style lang="postcss" scoped>
 .appointment{
     font-size: 12px;
-    font-weight: bold;
+    /* font-weight: bold; */
     padding: 0;
     margin: 0;
+    overflow: hidden;
 }
 
 .free{
@@ -213,14 +233,9 @@ export default {
     color: var(--exam-txt);
 }
 
-.free .examination {
-    background-color: var(--free-bg);
-    color: var(--free-txt);
-}
-
 .over {
-  background-color: #b0b0b0;
-  color: var(--free-txt);
+  background-color: var(--held-bg);
+  color: var(--held-txt);
 }
 
 .counseling{
@@ -228,15 +243,28 @@ export default {
     color: var(--coun-txt);
 }
 
+.day-wrapper {
+    /* height: 100%; */
+    /* width: 100%; */
+    /* border: 1px solid green; */
+    /* overflow: auto; */
+}
+
 .day {
     /* border: #000000 3px solid; */
     height: 100%;
     width: 100%;
-    border-bottom: var(--blue-border);
+    /* border-bottom: var(--blue-border); */
+    
+    /* overflow: hidden; */
+    /* position: relative; */
+    overflow-y: auto;
+    /* padding-right: 17px; */
+    /* overflow: auto; */
 }
 
 .whole-day {
-    height: 120px;
+    height: 150px;
     width: 100%;
     border: var(--blue-border);
 }
@@ -261,11 +289,13 @@ export default {
   --pink-border-highlight: 1px solid #ff00ea;
   --day-width: 10%;
   --day-height: 10%;
-  --free-txt: #000000;
-  --exam-txt: #b1a3ff;
+  --held-txt: #61a0ff;
+  --free-txt: #6d6d6d;
+  --exam-txt: #ffffff;
   --coun-txt: #fff0d0;
-  --free-bg: #7f88b1;
-  --exam-bg: #4625ff;
+  --held-bg: #eeeeee;
+  --free-bg: #cecece;
+  --exam-bg: #0d6efd;
   --coun-bg: #e7aa26;
     border-radius: 1;
     border-width: 2px;

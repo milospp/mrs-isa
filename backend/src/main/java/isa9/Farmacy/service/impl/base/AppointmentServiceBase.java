@@ -49,15 +49,14 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         Examination examination;
         examination = appointment.getExamination();
         if (examination == null) return false;
-        System.out.println(examination.getPatient().getName());
-        if (!examination.getPatient().equals(patient)) return false;
+        if (!examination.getPatient().getId().equals(patient.getId())) return false;
 
         return true;
     }
 
     @Override
     public Boolean isAssignedToDoctor(Appointment appointment, Doctor doctor) {
-        if (!appointment.getDoctor().equals(doctor)) return false;
+        if (!appointment.getDoctor().getId().equals(doctor.getId())) return false;
 
         return true;
     }

@@ -34,7 +34,7 @@
 				</div>
 				<div v-else-if="user.role === 'PHARMACIST'" class="navbar-nav mr-auto mt-2 mt-lg-0">
 
-					<a class="navbar-brand" href="/pharmacist">Navbar</a>
+					<a class="navbar-brand" href="/">Navbar</a>
 
 					<router-link :to="{ name: 'PharmacistHomePage'}" class="nav-item nav-link">Working Calendar</router-link>
 					<router-link :to="{ name: 'Medicines'}" class="nav-item nav-link">Medicines</router-link>
@@ -45,7 +45,7 @@
 				</div>
 				<div v-else-if="user.role === 'DERMATOLOGIST'" class="navbar-nav mr-auto mt-2 mt-lg-0">
 
-					<a class="navbar-brand" href="/dermatologist">Navbar</a>
+					<a class="navbar-brand" href="/">Navbar</a>
 
 					<router-link :to="{ name: 'DermatologistHomePage'}" class="nav-item nav-link">Working Calendar</router-link>
 					<router-link :to="{ name: 'Medicines'}" class="nav-item nav-link">Medicines</router-link>
