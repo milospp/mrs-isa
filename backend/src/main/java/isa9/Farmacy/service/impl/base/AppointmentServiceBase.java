@@ -343,10 +343,18 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     }
 
     @Override
-    public List<Appointment> getDermForPharmacyAppointments(Long dermId, Long pharamcyId) {
+    public List<Appointment> getDermForPharmacyAppointmentsNotCanceled(Long dermId, Long pharamcyId) {
         Doctor d = userService.getDoctorById(dermId);
         List<Appointment> allAppointments;
         allAppointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && isInPharmacy(x, pharamcyId) && !isCanceled(x)).collect(Collectors.toList());
+        return allAppointments;
+    }
+
+    @Override
+    public List<Appointment> getDoctorAppointmentsNotCanceled(Long doctorId) {
+        Doctor d = userService.getDoctorById(doctorId);
+        List<Appointment> allAppointments;
+        allAppointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && !isCanceled(x)).collect(Collectors.toList());
         return allAppointments;
     }
 

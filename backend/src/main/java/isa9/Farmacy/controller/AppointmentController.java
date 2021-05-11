@@ -321,7 +321,16 @@ public class AppointmentController {
     @GetMapping("calendar/derm/{dermId}/pharmacy/{pharmaId}")
     @PreAuthorize("hasAuthority('DERMATOLOGIST')")
     public ResponseEntity<List<AppointmentCalendarDTO>> getDermaPharmaAppointmentsForCalendar(@PathVariable Long dermId, @PathVariable Long pharmaId) {
-        List<Appointment> appointments = this.appointmentService.getDermForPharmacyAppointments(dermId, pharmaId);
+        List<Appointment> appointments = this.appointmentService.getDermForPharmacyAppointmentsNotCanceled(dermId, pharmaId);
+        List<AppointmentCalendarDTO> resultDTOs = appointmentToAppointmentCalendarDTO.convert(appointments);
+
+        return new ResponseEntity<>(resultDTOs, HttpStatus.OK);
+    }
+
+    @GetMapping("calendar/pharm/{pharmId}")
+    @PreAuthorize("hasAuthority('PHARMACIST')")
+    public ResponseEntity<List<AppointmentCalendarDTO>> getDermaPharmaAppointmentsForCalendar(@PathVariable Long pharmId) {
+        List<Appointment> appointments = this.appointmentService.getDoctorAppointmentsNotCanceled(pharmId);
         List<AppointmentCalendarDTO> resultDTOs = appointmentToAppointmentCalendarDTO.convert(appointments);
 
         return new ResponseEntity<>(resultDTOs, HttpStatus.OK);

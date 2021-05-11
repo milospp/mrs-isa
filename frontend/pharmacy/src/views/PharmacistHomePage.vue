@@ -2,7 +2,7 @@
   <NavBar/>
   <h1 class="title">Working Calendar</h1>
   <div class="containter">
-      <WorkingCalendar v-bind:email="email"/>
+      <WorkingCalendar/>
   </div>
 </template>
 
@@ -20,7 +20,7 @@ export default {
   },
   data() {
       return {
-          email: "test#test"
+          
       }
   }
 }

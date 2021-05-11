@@ -89,6 +89,10 @@ class AppointmentDataService {
     return axios.get(`${API_URL}/` + `calendar/derm/`+dermId+`/pharmacy/`+pharmacyId);
   }
 
+  getPharmAppForCalendar(pharmId) {
+    return axios.get(`${API_URL}/` + `calendar/pharm/`+pharmId);
+  }
+
   makeAppointmentPAdmin(pocetak, trajanje, cena, dermatolog, idApoteke) {
     //2021-05-28T16:32  
     pocetak = pocetak.split('T');

@@ -7,7 +7,7 @@
       <span v-else>Week</span>ly preview of appointments, examinations, absences and vacations
     </p>
     <div class="row">
-    <div v-if="jobs" class="form-group col">
+    <div v-if="doctor.role === 'DERMATOLOGIST' && jobs" class="form-group col">
         <label for="pharmacySelect">Pharmacy</label>
         <select name="pharmacySelect" id="pharmacySelect" class="form-control" v-on:change="setAttributes($event)">
           <option value="no pharmacy selected">--- Choose a pharmacy ---</option>
@@ -70,7 +70,6 @@ export default {
       calendarRef: null,
 
       chosenPharmacyId: 1,
-      doctor: null,
       jobs: null,
       appointments: null,
 
@@ -165,11 +164,12 @@ export default {
     };
   },
   mounted(){
-      // this.calendarRef = this.$refs.calendar;
-      // this.currentMonth = this.calendarRef.month;
-      this.doctor = AuthService.getCurrentUser();
       this.getPharmacies();
-      this.setAttributes(0);
+      if (this.doctor.role === "PHARMACIST") {
+        this.setAttributesForPharmacist();
+      } else if (this.doctor.role === "DERMATOLOGIST") {
+        this.setAttributes(0);
+      }
   },
   computed: {
   	attributes() {
@@ -178,6 +178,9 @@ export default {
         dates: Date.parse(t.startDate),
         customData: t,
       }));
+    },
+    doctor() {
+      return AuthService.getCurrentUser();
     }
   },
   methods: {
@@ -188,27 +191,26 @@ export default {
         if (pharmacyIdEvent === 0){ this.appointments = []; return; }
         let pharmacyId = pharmacyIdEvent.target.value;
         if (pharmacyId === "no pharmacy selected") return;
-        AppointmentDataService.getDermAppFromPharmacy(this.doctor.id, pharmacyId)
+          AppointmentDataService.getDermAppFromPharmacy(this.doctor.id, pharmacyId)
           .then(response => {
             this.appointments = response.data;
-            // for (let i = 0; i < response.data.length; i++) {
-            //   this.attributes[i] = {
-            //     key: response.data[i].id,
-            //     customData: response.data[i],
-            //     dates: Date.parse(response.data[i].startDate)
-            //   }
-            //   //alert(JSON.stringify(this.attributes));
-            // }
-            //this.attributes = response.data;
-            //alert(JSON.stringify(this.appointments[1]));
+          });
+      },
+      setAttributesForPharmacist() {
+        AppointmentDataService.getPharmAppForCalendar(this.doctor.id)
+          .then(response => {
+            this.appointments = response.data;
+            console.log(this.appointments);
           });
       },
       getPharmacies() {
-        PharmacyDataService.getDoctorsJobs(this.doctor.id)
-          .then(response => {
-            this.jobs = response.data;
-            //alert(JSON.stringify(this.jobs[0]));
-          });
+        if (this.doctor){
+          PharmacyDataService.getDoctorsJobs(this.doctor.id)
+            .then(response => {
+              this.jobs = response.data;
+              //alert(JSON.stringify(this.jobs[0]));
+            });
+          }
       }
   }
 };
@@ -296,7 +298,7 @@ export default {
   --held-bg: #eeeeee;
   --free-bg: #cecece;
   --exam-bg: #0d6efd;
-  --coun-bg: #e7aa26;
+  --coun-bg: #ffa600;
     border-radius: 1;
     border-width: 2px;
     height: 100%;

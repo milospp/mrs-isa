@@ -150,6 +150,19 @@ insert into patient_my_examinations (patient_id, my_examinations_id) values (3, 
 insert into patient_my_examinations (patient_id, my_examinations_id) values (2, 4);
 insert into patient_my_examinations (patient_id, my_examinations_id) values (3, 5);
 
+--appointments for pharmacist
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (12, 30, null, 1, 300, current_timestamp, 1);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (12, 30, null, 1, 300, current_timestamp + INTERVAL '1 hour', 1);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (12, 30, null, 1, 300, current_timestamp + INTERVAL '2 hours', 1);
+insert into examination (status, appointment_id, patient_id) values (0, 7, 2);
+insert into examination (status, appointment_id, patient_id) values (0, 8, 1);
+--insert into examination (status, appointment_id, patient_id) values (0, 9, 3); -- one free appointment
+update appointment SET examination_id = 6 WHERE id = 7;
+update appointment SET examination_id = 7 WHERE id = 8;
+--update appointment SET examination_id = 8 WHERE id = 9;
+insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 7);
+insert into patient_my_examinations (patient_id, my_examinations_id) values (2, 6);
+
 
 -- --Therapy
 -- insert into therapy_item (days, medicine_id) values (5, 1);

@@ -47,7 +47,9 @@ public interface AppointmentService extends GenericService<Appointment>{
 
     List<Appointment> filterPastAppointments(List<Appointment> appointments, AppointmentSearchDTO appointmentSearchDTO);
 
-    List<Appointment> getDermForPharmacyAppointments(Long dermId, Long pharamcyId);
+    List<Appointment> getDermForPharmacyAppointmentsNotCanceled(Long dermId, Long pharamcyId);
+    List<Appointment> getDoctorAppointmentsNotCanceled(Long doctorId);
+
     Boolean isDermatologistFree(Long id, Long idDoktora, LocalDateTime start, int duration);
     void deleteApponitment(Long id);
     int canEditDelete(Long id);
