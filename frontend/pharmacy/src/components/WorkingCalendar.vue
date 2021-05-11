@@ -7,7 +7,7 @@
       <span v-else>Week</span>ly preview of appointments, examinations, absences and vacations
     </p>
     <div class="row">
-    <div v-if="jobs" class="form-group col">
+    <div v-if="doctor.role === 'DERMATOLOGIST' && jobs" class="form-group col">
         <label for="pharmacySelect">Pharmacy</label>
         <select name="pharmacySelect" id="pharmacySelect" class="form-control" v-on:change="setAttributes($event)">
           <option value="no pharmacy selected">--- Choose a pharmacy ---</option>
@@ -70,7 +70,6 @@ export default {
       calendarRef: null,
 
       chosenPharmacyId: 1,
-      doctor: null,
       jobs: null,
       appointments: null,
 
@@ -167,7 +166,7 @@ export default {
   mounted(){
       // this.calendarRef = this.$refs.calendar;
       // this.currentMonth = this.calendarRef.month;
-      this.doctor = AuthService.getCurrentUser();
+      //this.doctor = AuthService.getCurrentUser();
       this.getPharmacies();
       this.setAttributes(0);
   },
@@ -178,6 +177,9 @@ export default {
         dates: Date.parse(t.startDate),
         customData: t,
       }));
+    },
+    doctor() {
+      return AuthService.getCurrentUser();
     }
   },
   methods: {
@@ -188,27 +190,28 @@ export default {
         if (pharmacyIdEvent === 0){ this.appointments = []; return; }
         let pharmacyId = pharmacyIdEvent.target.value;
         if (pharmacyId === "no pharmacy selected") return;
-        AppointmentDataService.getDermAppFromPharmacy(this.doctor.id, pharmacyId)
+        if (this.doctor.role === 'DERMATOLOGIST') {
+          AppointmentDataService.getDermAppFromPharmacy(this.doctor.id, pharmacyId)
           .then(response => {
             this.appointments = response.data;
-            // for (let i = 0; i < response.data.length; i++) {
-            //   this.attributes[i] = {
-            //     key: response.data[i].id,
-            //     customData: response.data[i],
-            //     dates: Date.parse(response.data[i].startDate)
-            //   }
-            //   //alert(JSON.stringify(this.attributes));
-            // }
-            //this.attributes = response.data;
-            //alert(JSON.stringify(this.appointments[1]));
           });
+        } 
+        // else if (this.doctor.role === 'PHARMACIST') {
+        //   AppointmentDataService.getPharmAppForCalendar(this.doctor.id)
+        //   .then(response => {
+        //     this.appointments = response.data;
+        //   });
+        // }
+        
       },
       getPharmacies() {
-        PharmacyDataService.getDoctorsJobs(this.doctor.id)
-          .then(response => {
-            this.jobs = response.data;
-            //alert(JSON.stringify(this.jobs[0]));
-          });
+        if (this.doctor){
+          PharmacyDataService.getDoctorsJobs(this.doctor.id)
+            .then(response => {
+              this.jobs = response.data;
+              //alert(JSON.stringify(this.jobs[0]));
+            });
+          }
       }
   }
 };
