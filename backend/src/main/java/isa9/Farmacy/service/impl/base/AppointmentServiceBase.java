@@ -213,7 +213,8 @@ public abstract class AppointmentServiceBase implements AppointmentService {
                 .therapy(new HashSet<>())
                 .build();
         appointment.setExamination(examination);
-        save(appointment);
+        appointment = save(appointment);
+        mailService.sendAppointmentInfo(appointment);
 
         return appointment;
     }
@@ -302,8 +303,10 @@ public abstract class AppointmentServiceBase implements AppointmentService {
                 .appointment(appointment).build();
         appointment.setExamination(examination);
 
-        mailService.sendMail(patient, "Appointment info", "Id: " + appointment.getId());
-        return save(appointment);
+        appointment = save(appointment);
+        mailService.sendAppointmentInfo(appointment);
+
+        return appointment;
 
     }
 
