@@ -38,7 +38,7 @@
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Dermatologists</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu3">Examination</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu4">Orders</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu5">Invalid receipts</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu5">Invalid inquiries</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu6">Map</a></li>
           </ul>
         
@@ -229,23 +229,26 @@
 
 
             <div id="menu5" class="tab-pane fade">
-              <h3>All invalid receipts</h3>
+              <h3>All invalid inquiry</h3>
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Receipt</th>
+                    <th>Medicine code</th>
+                    <th>Medidicne name</th>
+                    <th>Doctor</th>
+                    <th>Doctor phone</th>
+                    <th>Date and time</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Doctor 1</td>
-                    <td>Receipt 1</td>
-                  </tr>
-                  <tr>
-                    <td>Doctior 2</td>
-                    <td>Receipt 2</td>
-                  </tr>
+                    <tr :key="u.name" v-for="u in this.upitiZaLek">
+                      <td>{{u.medicine.code}}</td>
+                      <td>{{u.medicine.name}}</td>
+                      <td>{{u.doctor.name}} {{u.doctor.surname}}</td>
+                      <td>{{u.doctor.phoneNumber}}</td>
+                      <td>{{u.inquiryDate[1] < 10 ? "0" + u.inquiryDate[1] : u.inquiryDate[1]}}/{{u.inquiryDate[2] < 10 ? "0" + u.inquiryDate[2] : u.inquiryDate[2]}}/{{u.inquiryDate[0]}}  
+                      {{u.inquiryDate[3] < 10 ? "0" + u.inquiryDate[3] : u.inquiryDate[3]}}:{{u.inquiryDate[4] < 10 ? "0" + u.inquiryDate[4] : u.inquiryDate[4]}}</td>
+                    </tr>
                 </tbody>
               </table>
             </div>
@@ -575,6 +578,7 @@ export default {
             filterOrder: 0, narudzbenica: null, sveNarudzbenice: [], narudzbeniceZaIspis: [],
             pregledStartuje:null, pregledTraje: 0, pregledKosta: 0,  pregledDoktor: null,
             sviPreglediDermatologa: [], izabraniPregled: null, menjaPregled: false,
+            upitiZaLek: [], 
         };
     },
     created() {
@@ -586,6 +590,7 @@ export default {
           this.pharmacyDesc = this.pharmacy.description;
           this.pharmacyConsulting = this.pharmacy.pricePerHour;
           this.osveziPreglede();
+          this.osveziUpite();
         });
       this.osveziFarmaceute();
       this.osveziDermatologe();
@@ -628,6 +633,12 @@ export default {
           this.sviPreglediDermatologa = response.data;
           this.izmeniDatume();
           });   
+      },
+      osveziUpite() {
+        PharmacyDataService.inquiriesPharmacy(this.pharmacy.id)
+        .then(response => {
+          this.upitiZaLek = response.data;
+        });
       },
 
       inicijalizujPoruku(pk) { this.poruka = pk; },

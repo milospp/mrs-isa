@@ -5,6 +5,7 @@ import isa9.Farmacy.model.dto.*;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.RatingService;
 import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.support.InquiryMedtoInquiryMedDTO;
 import isa9.Farmacy.support.PharmacyToPharmacyDTO;
 import isa9.Farmacy.support.RatingToRatingDTO;
 import isa9.Farmacy.support.WorkToWorkDTO;
@@ -128,6 +129,15 @@ public class PharmacyController {
         apoteka.setDescription(apoteka.getDescription());
         this.pharmacyService.save(apoteka);
         return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @GetMapping("/inquiries/{id}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<List<InquiryMedicineDTO>> inquiriesPhaarmacy(@PathVariable Long id) {
+        Pharmacy apoteka = this.pharmacyService.findOne(id);
+        InquiryMedtoInquiryMedDTO konverter = new InquiryMedtoInquiryMedDTO();
+        List<InquiryMedicineDTO> povratna = konverter.convert(apoteka.getInquiryMedicines());
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
     @GetMapping("{id}/rating")
