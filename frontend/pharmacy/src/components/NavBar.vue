@@ -60,6 +60,7 @@
 					<a class="navbar-brand" href="/">Navbar</a>
 
 					<router-link :to="{ name: 'HomePagePharmacyAdmin'}" class="nav-item nav-link">Dashboard</router-link>
+					<router-link :to="{ name: 'PAMoreInfo'}" class="nav-item nav-link">More info</router-link>
 					<router-link :to="{ name: 'CartPharmacyAdmin'}" class="nav-item nav-link">Cart</router-link>
 					
 				</div>
