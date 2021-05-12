@@ -33,17 +33,18 @@ public abstract class PharmacyServiceBase implements PharmacyService {
     }
 
     @Override
-    public boolean reduceQuantity(Pharmacy pharmacy, Medicine medicine, int resQuantity) {
+    public int reduceQuantity(Pharmacy pharmacy, Medicine medicine, int resQuantity) {
         MedicineInPharmacy mip = pharmacy.getMedicines().stream().filter(m -> m.getMedicine().equals(medicine)).findFirst().get();
         int quantity = mip.getInStock();
-        if (quantity < resQuantity) return false;
+        if(quantity == 0) return 1;                 // nema ga na stanju
+        if (quantity < resQuantity) return -1;      // manje ga je na stanju nego sto je poruceno
 
         quantity -= resQuantity;
         mip.setInStock(quantity);
 
         save(pharmacy);
 
-        return true;
+        return 0;                                   // sve je okej
     }
 
     @Override

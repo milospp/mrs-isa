@@ -10,9 +10,9 @@ import java.util.Collection;
 
 public interface MedReservationService extends GenericService<MedReservation> {
 
-    Collection<MedReservation> saveAll(Collection<MedReservation> entity);
+    MedReservation reserveMedicine(MedReservationFormDTO reservationFormDTO, Long doctorId);
 
-    MedReservation reserveMedicine(MedReservationFormDTO reservationFormDTO);
+    Collection<MedReservation> saveAll(Collection<MedReservation> entity);
 
     Boolean isCancelable(MedReservation medReservation);
     MedReservation cancel(Long medReservationId);

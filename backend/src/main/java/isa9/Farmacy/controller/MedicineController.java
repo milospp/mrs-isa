@@ -49,8 +49,9 @@ public class MedicineController {
 
     }
 
-    @PostMapping("{medId}/pharmacy/{pharmacyId}/reserve")
-    public ResponseEntity<MedReservationDTO> reserveMedicine(@PathVariable Long medId, @PathVariable Long pharmacyId, @RequestBody MedReservationFormDTO form){
+    @PostMapping("{medId}/pharmacy/{pharmacyId}/reserve/{doctorId}")
+    public ResponseEntity<MedReservationDTO> reserveMedicine(@PathVariable Long medId, @PathVariable Long pharmacyId,
+                 @PathVariable Long doctorId, @RequestBody MedReservationFormDTO form){
         // TODO: Get patient from session
         User user = userService.getLoggedInUser();
 
@@ -60,7 +61,7 @@ public class MedicineController {
 
         form.setMedicineId(medId);
         form.setPharmacyId(pharmacyId);
-        MedReservation medReservation = medReservationService.reserveMedicine(form);
+        MedReservation medReservation = medReservationService.reserveMedicine(form, doctorId);
 
         if (medReservation == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
