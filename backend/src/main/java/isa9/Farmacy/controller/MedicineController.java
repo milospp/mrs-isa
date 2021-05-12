@@ -254,8 +254,6 @@ public class MedicineController {
             // TODO: Move everything into this method
             medReservationService.dispenseMedicine(reservation);
 
-
-
             return new ResponseEntity<>(true, HttpStatus.OK);
         }
         return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
