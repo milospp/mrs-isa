@@ -7,6 +7,7 @@ import isa9.Farmacy.service.AppointmentService;
 import isa9.Farmacy.service.ExaminationService;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.utils.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     protected ExaminationService examinationService;
     protected UserService userService;
     protected PharmacyService pharmacyService;
+    protected MailService mailService;
 
     public AppointmentServiceBase() {
     }
@@ -34,6 +36,11 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     @Autowired
     public final void setPharmacyService(PharmacyService pharmacyService) {
         this.pharmacyService = pharmacyService;
+    }
+
+    @Autowired
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
     }
 
     @Override
@@ -205,7 +212,8 @@ public abstract class AppointmentServiceBase implements AppointmentService {
                 .therapy(new HashSet<>())
                 .build();
         appointment.setExamination(examination);
-        save(appointment);
+        appointment = save(appointment);
+        mailService.sendAppointmentInfo(appointment);
 
         return appointment;
     }
@@ -294,7 +302,10 @@ public abstract class AppointmentServiceBase implements AppointmentService {
                 .appointment(appointment).build();
         appointment.setExamination(examination);
 
-        return save(appointment);
+        appointment = save(appointment);
+        mailService.sendAppointmentInfo(appointment);
+
+        return appointment;
 
     }
 
