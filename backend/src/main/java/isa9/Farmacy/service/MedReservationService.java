@@ -6,8 +6,13 @@ import isa9.Farmacy.model.Patient;
 import isa9.Farmacy.model.Pharmacy;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
 
+import java.util.Collection;
+
 public interface MedReservationService extends GenericService<MedReservation> {
+
     MedReservation reserveMedicine(MedReservationFormDTO reservationFormDTO, Long doctorId);
+
+    Collection<MedReservation> saveAll(Collection<MedReservation> entity);
 
     Boolean isCancelable(MedReservation medReservation);
     MedReservation cancel(Long medReservationId);

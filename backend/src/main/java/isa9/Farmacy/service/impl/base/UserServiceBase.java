@@ -180,4 +180,15 @@ public abstract class UserServiceBase implements UserService {
         this.save(user);
         return true;
     }
+
+    @Override
+    public Penality addPenalty(Patient patient, String reason) {
+        Penality penality = new Penality();
+        penality.setDate(LocalDate.now());
+        penality.setReason(reason);
+        patient.getPenalties().add(penality);
+
+        save(patient);
+        return penality;
+    }
 }
