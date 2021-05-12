@@ -44,15 +44,7 @@ public class MedicineController {
 
     @GetMapping("tmp-test")
     public ResponseEntity<Boolean> debug(){
-        Pharmacy pharmacy = pharmacyService.findOne(1L);
-        Medicine medicine = medicineService.findOne(1L);
-
-        MedicineInPharmacy mip = new MedicineInPharmacy(1L,null , medicine,20, pharmacy);
-        MedPrice mp1 = new MedPrice(1L, LocalDateTime.now(), 20.0, mip);
-        mip.setCurrentPrice(mp1);
-
-        pharmacy.getMedicines().add(mip);
-        pharmacyService.save(pharmacy);
+        medReservationService.checkForExpiredReservations();
         return new ResponseEntity<>(true, HttpStatus.OK);
 
     }
