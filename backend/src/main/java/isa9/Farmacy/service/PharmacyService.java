@@ -8,7 +8,7 @@ import java.util.List;
 public interface PharmacyService extends GenericService<Pharmacy> {
 
     boolean pharmacyExists(Pharmacy p);
-    boolean reduceQuantity(Pharmacy pharmacy, Medicine medicine, int resQuantity);
+    int reduceQuantity(Pharmacy pharmacy, Medicine medicine, int resQuantity);
 
 
     MedicineInPharmacy gedMedicineInPharmacy(Pharmacy pharmacy, Medicine medicine);

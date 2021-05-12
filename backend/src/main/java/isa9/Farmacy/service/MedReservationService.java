@@ -7,7 +7,7 @@ import isa9.Farmacy.model.Pharmacy;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
 
 public interface MedReservationService extends GenericService<MedReservation> {
-    MedReservation reserveMedicine(MedReservationFormDTO reservationFormDTO);
+    MedReservation reserveMedicine(MedReservationFormDTO reservationFormDTO, Long doctorId);
 
     Boolean isCancelable(MedReservation medReservation);
     MedReservation cancel(Long medReservationId);

@@ -62,10 +62,10 @@ class MedicineDataService {
     return axios.get(API_URL + "/pharmacy/" + idApoteke);
   }
 
-  reserveMedicine(reserveData){
+  reserveMedicine(reserveData, idDoktora){
     return axios({
       method: 'post',
-      url: `${API_URL}/` + reserveData.medicineId + `/pharmacy/` + reserveData.pharmacyId + `/reserve`,
+      url: `${API_URL}/` + reserveData.medicineId + `/pharmacy/` + reserveData.pharmacyId + `/reserve/` + idDoktora,
       data: reserveData
     });
   }
