@@ -32,11 +32,42 @@
         
           <div class="tab-content">
             <div id="tab-medicines" class="tab-pane in fade active in">
-              <h3>Pricelist</h3>
+              <h3>Last editing of pricelist: {{this.cenovnik?.lastEditing[1] < 10 ? "0" + this.cenovnik?.lastEditing[1] : this.cenovnik?.lastEditing[1]}}/{{this.cenovnik?.lastEditing[2] < 10 ? "0" + this.cenovnik?.lastEditing[2] : this.cenovnik?.lastEditing[2]}}/{{this.cenovnik?.lastEditing[0]}}
+                  {{this.cenovnik?.lastEditing[3] < 10 ? "0" + this.cenovnik?.lastEditing[3] : this.cenovnik?.lastEditing[3]}}:{{this.cenovnik?.lastEditing[4] < 10 ? "0" + this.cenovnik?.lastEditing[4] : this.cenovnik?.lastEditing[4]}}
+              </h3>
+              <div v-if="this.postojiPromena == true">
+                <table>
+                  <tr>
+                    <td> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+                      <td> <form v-on:click.prevent="sacuvajCenovnik()"> <button type="button" class="btn btn-primary"
+                          data-toggle="modal" data-target="#obavestenje">Save changes</button></form></td>
+                  </tr>
+                  <tr>
+                    <td> &emsp; </td>
+                  </tr>
+                </table>
+              </div>
+              
               <table class="table table-striped">
-                 <thead class="card-header">
+                <thead class="card-header">
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Price</th>
                 </thead>
                 <tbody>
+                  <tr :key="l" v-for="l in this.cenovnik?.medicines">
+                    <td>{{l.medicine.code}}</td>
+                    <td>{{l.medicine.name}}</td>
+                    <td>{{l.medicine.type}}</td>
+                    <td><input type="number" min="1" v-on:change="promenaCene()" v-model="l.currentPrice"/></td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -178,6 +209,7 @@
 <script>
 import PharmacyDataService from '../service/PharmacyDataService.js';
 import OrderDataService from '../service/OrderDataService.js';
+import MedicineDataService from '../service/MedicineDataService.js';
 import AuthService from "../service/AuthService.js";
 
 export default {
@@ -188,7 +220,7 @@ export default {
             pharmacyName: null, pharmacyDesc: null, pharmacyConsulting: null,
             poruka: "Wait... Your require is in processing", 
             filterOrder: 0, narudzbenica: null, sveNarudzbenice: [], narudzbeniceZaIspis: [],
-            upitiZaLek: [], 
+            upitiZaLek: [], postojiPromena:false, cenovnik: null, 
         };
       
     },
@@ -203,6 +235,7 @@ export default {
           this.osveziUpite();
         });
       this.osveziPorudzbine();
+      this.osveziCenovnik();
     },
     mounted() {  
     },
@@ -218,6 +251,12 @@ export default {
         PharmacyDataService.inquiriesPharmacy(this.pharmacy.id)
         .then(response => {
           this.upitiZaLek = response.data;
+        });
+      },
+      osveziCenovnik() {
+        MedicineDataService.getPricelistForPharmacyAdmin(this.id)
+        .then(response => {
+          this.cenovnik = response.data;
         });
       },
 
@@ -303,6 +342,8 @@ export default {
           if (por.startDate[4] < 10) por.startDate[4] = "0" + por.startDate[4]; 
         }
       },
+      sacuvajCenovnik() {},
+      promenaCene() {this.postojiPromena = true;}
     }
 }
 </script>
