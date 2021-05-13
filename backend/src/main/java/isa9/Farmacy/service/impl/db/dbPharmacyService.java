@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +58,36 @@ public class dbPharmacyService extends PharmacyServiceBase implements PharmacySe
     @Override
     public List<Work> findDoctorsWork(Doctor doctor) {
         return workRepository.findAllByDoctor(doctor);
+    }
+
+    @Override
+    public void checkMedicineInPharmacy(Pharmacy pharmacy, List<MedicineQuantity> medicines) {
+        boolean nadjen;
+        for (MedicineQuantity mq : medicines) {
+            nadjen = false;
+            for (MedicineInPharmacy uApoteci : pharmacy.getMedicines()) {
+                System.out.println(mq.getMedicine().getName());
+                System.out.println(uApoteci.getMedicine().getName());
+                if (mq.getMedicine().getId() == uApoteci.getMedicine().getId()) {
+                    nadjen = true;
+                    break;
+                }
+
+            }
+            if (!nadjen) {
+                MedicineInPharmacy noviLek = new MedicineInPharmacy();
+                noviLek.setInStock(0);
+                MedPrice cena = new MedPrice();
+                cena.setMedicineInPharmacy(noviLek);
+                cena.setStartDate(LocalDateTime.now());
+                cena.setPrice(77);
+                noviLek.setCurrentPrice(cena);
+                noviLek.setPharmacy(pharmacy);
+                noviLek.setMedicine(mq.getMedicine());
+                pharmacy.getMedicines().add(noviLek);
+                save(pharmacy);
+            }
+        }
     }
 
     @Override

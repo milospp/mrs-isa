@@ -18,4 +18,6 @@ public interface PharmacyService extends GenericService<Pharmacy> {
     Pharmacy updatePharmacyRating(Pharmacy pharmacy);
 
     List<Pharmacy> filterPharmacies(List<Pharmacy> pharmacies, PharmacySearchDTO pharmacySearchDTO);
+
+    void checkMedicineInPharmacy(Pharmacy pharmacy, List<MedicineQuantity> medicines);
 }

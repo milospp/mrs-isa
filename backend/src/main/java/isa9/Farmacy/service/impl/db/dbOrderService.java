@@ -1,5 +1,6 @@
 package isa9.Farmacy.service.impl.db;
 
+import isa9.Farmacy.model.MedicineInPharmacy;
 import isa9.Farmacy.model.MedicineOrder;
 import isa9.Farmacy.model.Offer;
 import isa9.Farmacy.model.OfferStatus;
