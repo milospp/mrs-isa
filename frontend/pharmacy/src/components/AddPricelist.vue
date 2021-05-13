@@ -86,6 +86,8 @@ export default {
     },
     methods : {
       inicijalizujPoruku(pk) { this.poruka = pk; },
+      promenaCene() { this.postojiPromena = true; },
+      promeniProzor() { window.location.href = "/homePagePharmacyAdmin"; },
 
       sacuvajCenovnik() {
         for (var med of this.cenovnik.medicines) {
@@ -100,8 +102,6 @@ export default {
             this.porukaOk = true;
           });
       },
-      promenaCene() {this.postojiPromena = true; },
-      promeniProzor() {window.location.href = "/homePagePharmacyAdmin";},
     }
 }
 </script>
