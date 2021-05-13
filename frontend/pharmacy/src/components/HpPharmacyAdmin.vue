@@ -850,8 +850,6 @@ export default {
             this.osveziPreglede();
             return;
           });
-          
-          
         },
     }
 }

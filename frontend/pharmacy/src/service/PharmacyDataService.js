@@ -101,6 +101,21 @@ class PharmacyDataService {
   });
   }
 
+  savePricelist(idAdminaApoteke, cenovnik) {
+    return axios({
+      method: 'post',
+      url: API_URL + "/savePricelist/" + idAdminaApoteke,
+      data: cenovnik
+    }).catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("Error");
+      console.log(error.config);
+  });
+  }
 
 }
 
