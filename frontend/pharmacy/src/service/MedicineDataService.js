@@ -21,6 +21,10 @@ class MedicineDataService {
     return axios.get(API_URL + "/pharmacyAdmin/" + idAdminaApoteke);
   }
 
+  getPricelistForPharmacyAdmin(idAdminaApoteke) {
+    return axios.get(API_URL + "/pricelist/" + idAdminaApoteke);
+  }
+
   editMedicinePharmacyAdmin(idAdminaApoteke, lek) {
     return axios({
       method: 'post',

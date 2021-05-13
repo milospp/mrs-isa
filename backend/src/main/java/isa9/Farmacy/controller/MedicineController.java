@@ -101,6 +101,26 @@ public class MedicineController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
+    @GetMapping("/pricelist/{id}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<PricelistDTO> getPricelistPharmacyAdmin(@PathVariable Long id) {
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
+        LocalDateTime datum = LocalDateTime.now();
+        List<MedInPharmaDTO> listaLekova = new ArrayList<>();
+        int broj = 0;
+        for (MedicineInPharmacy mp : admin.getPharmacy().getMedicines()) {
+            listaLekova.add(medicineInPharmacyToMedInPharmaDTO.convert(mp));
+            if (broj == 0) {
+                broj++;
+                datum = mp.getCurrentPrice().getStartDate(); }
+            else {
+                if (datum.isBefore(mp.getCurrentPrice().getStartDate()))
+                    datum = mp.getCurrentPrice().getStartDate(); }
+        }
+        PricelistDTO povratna = new PricelistDTO(datum , listaLekova);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
     @PostMapping("/edit/pharmacyAdmin/{id}")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<Integer> editMedicinePharmacyAdmin(@PathVariable Long id, @RequestBody MedInPharmaDTO lek) {
@@ -212,7 +232,10 @@ public class MedicineController {
     @GetMapping("/pharmacy/{id}")
     public ResponseEntity<List<MedInPharmaDTO>> getAllMedicinePharmacy(@PathVariable Long id) {
         Pharmacy apoteka = pharmacyService.findOne(id);
-        List<MedInPharmaDTO> povratna = medicineInPharmacyToMedInPharmaDTO.convert(apoteka.getMedicines());
+        List<MedInPharmaDTO> povratna = new ArrayList<>();
+        for (MedicineInPharmacy mp : apoteka.getMedicines()) {     // ne vracamo one kojih ima 0
+            if (mp.getInStock() > 0) povratna.add( medicineInPharmacyToMedInPharmaDTO.convert(mp));
+        }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 

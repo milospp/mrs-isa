@@ -7,6 +7,7 @@ import isa9.Farmacy.model.dto.MedicineQuantityDTO;
 import isa9.Farmacy.model.dto.OfferDTO;
 import isa9.Farmacy.service.MedicineService;
 import isa9.Farmacy.service.OrderService;
+import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +28,15 @@ public class OrderController {
     private final OrderService orderService;
     private final MedicineService medicineService;
     private final UserService userService;
+    private final PharmacyService pharmacyService;
 
     @Autowired
-    public OrderController(OrderService orderService, MedicineService medicineService, UserService userService) {
+    public OrderController(OrderService orderService, MedicineService medicineService, UserService userService,
+                           PharmacyService pharmacyService) {
         this.orderService = orderService;
         this.medicineService = medicineService;
         this.userService = userService;
+        this.pharmacyService = pharmacyService;
     }
 
     @PostMapping("/add/{idAdmina}")
@@ -50,6 +54,7 @@ public class OrderController {
 
         MedQuantityDTOtoMedQuantity konverter = new MedQuantityDTOtoMedQuantity(this.medicineService);
         List<MedicineQuantity> listaLekova = konverter.convert(pomocna.getMedicines());
+        this.pharmacyService.checkMedicineInPharmacy(admin.getPharmacy(), listaLekova);
 
         MedicineOrder porudzbina = new MedicineOrder();
         porudzbina.setPharmacy(admin.getPharmacy());
