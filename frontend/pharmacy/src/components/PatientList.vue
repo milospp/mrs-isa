@@ -4,15 +4,26 @@
             <div class="container" style="padding: 0px;">
                 <form v-on:submit.prevent="searchPatients(event)" style="float: right;">
                     <div class="form-row form-inline mb-2" >
-                        <div class="form-group col-auto">
-                            <input type="text" class="form-control" id="nameInput" placeholder="First Name">
-                        </div>
-                        <div class="form-group col-auto">
-                            <input type="text" class="form-control" id="surnameInput" placeholder="Last Name">
-                        </div>
-                        <div class="col-auto">
-                            <button type="submit" class="btn btn-primary">Search</button>
-                        </div>
+                      <div class="form-group col-auto">
+                        <label for="sortSelect">Sort</label>
+                        <select class="form-control" id="sortSelect" v-model="sortParams" @change="sort()">
+                          <option :value="{ sortBy: 'name', ascending: true }">By First Name Asc</option>
+                          <option :value="{ sortBy: 'name', ascending: false }">By First Name Des</option>
+                          <option :value="{ sortBy: 'surname', ascending: true }">By Last Name Asc</option>
+                          <option :value="{ sortBy: 'surname', ascending: false }">By Last Name Des</option>
+                          <!-- <option value="date" v-on:click="setAsc('date')">By Last Appointment Asc</option>
+                          <option value="date" v-on:click="setDesc('date')">By Last Appointment Des</option> -->
+                        </select>       
+                      </div>
+                      <div class="form-group col-auto">
+                          <input type="text" class="form-control" id="nameInput" placeholder="First Name">
+                      </div>
+                      <div class="form-group col-auto">
+                          <input type="text" class="form-control" id="surnameInput" placeholder="Last Name">
+                      </div>
+                      <div class="col-auto">
+                          <button type="submit" class="btn btn-primary">Search</button>
+                      </div>
                     </div>
                 </form>
             </div>
@@ -24,30 +35,15 @@
                       <tr>
                         <th id="name" >
                           First name
-                          <button style="border: none; background-color: inherit;" v-on:click="changeOrder('name')">
-                            <span v-if="refreshData.ascending">△</span>
-                            <span v-if="!refreshData.ascending">▽</span>
-                          </button>
                         </th> <!--data-type="string" data-field="name" data-sortable="true" ;;; data-field="name" data-sortable="true"-->
                         <th id="surname">
                           Last name
-                          <button style="border: none; background-color: inherit;" v-on:click="changeOrder('surname')">
-                            <span v-if="refreshData.ascending">△</span>
-                            <span v-if="!refreshData.ascending">▽</span>
-                          </button>
                         </th>
-                        <!-- <th id="surname">
-                          Last appointment
-                          <button style="border: none; background-color: inherit;" v-on:click="changeOrder('name')"> temporarily until the authorisation is implemented
-                            <span v-if="refreshData.ascending">△</span>
-                            <span v-if="!refreshData.ascending">▽</span>
-                          </button>
-                        </th> -->
                         <th id="address">Address</th>
                         <th>Phone number</th>
                         <th></th>
                         <th></th>
-                        </tr>
+                      </tr>
                     </thead>
                     <tbody>
                         <tr :key="p.id" v-for="p in patients" v-on:dblclick="patientInfo(Object.values(p))" class="clickable" data-index="{{p.id}}">
@@ -74,15 +70,15 @@
                   <div class="col-sm">
                   <label for="pageSizeSelect" class="mt-2 mr-2">Show per page:</label>
                   <select id="pageSizeSelect" v-model="refreshData.pageSize" class="form-select mr-5" aria-label="Default select example" @change="onChange($event)">
-                    <option selected value="2">2</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20">20</option>
+                    <option selected :value="2">2</option>
+                    <option :value="5">5</option>
+                    <option :value="10">10</option>
+                    <option :value="15">15</option>
+                    <option :value="20">20</option>
                   </select>
                   </div>
                   <div class="col-xl">
-                  <pagination v-model="refreshData.pageNo" :records="totalPatients" :per-page="refreshData.pageSize" @paginate="refreshPatients($event)"/>
+                  <pagination v-model="refreshData.pageNo" :records="totalPatients" :per-page="refreshData.pageSize" @paginate="refreshPatients()"/>
                   </div>
                 </div>
                 
@@ -179,21 +175,6 @@
                   </button>
                 </div>
                 <div class="modal-body">
-
-                    <!-- <div class="radio-container">
-                      <div class="form-check form-check-inline btn-info">
-                        <input v-model="historyFilter" type="radio" name="inlineRadioOptions" id="examinations" value="EXAMINATION">
-                        <label class="form-check-label" for="examinations">Examinations</label>
-                      </div>
-                      <div class="form-check form-check-inline btn-info">
-                        <input v-model="historyFilter" type="radio" name="inlineRadioOptions" id="counseling" value="COUNSELING">
-                        <label class="form-check-label" for="counseling">Counseling</label>
-                      </div>
-                      <div class="form-check form-check-inline btn-info">
-                        <input v-model="historyFilter" type="radio" name="inlineRadioOptions" id="all" value="all" checked>
-                        <label class="form-check-label" for="all">All</label>
-                      </div>
-                    </div> -->
                   <table class="table table-striped">
 
                     <thead>
@@ -280,14 +261,17 @@ export default {
               },
               ascending: true
             },
-            //appointmentDate: "2021-04-23 16:03:00",
+            sortParams: {
+              sortBy: 'id',
+              ascending: true
+            },
 
         };
     },
     methods: {
-        refreshPatients(e) {
+        refreshPatients() {
           this.refreshData.doctorId = AuthService.getCurrentUser().id;
-          console.log("page size: ",this.refreshData.pageSize);
+          console.log("page size: ", this.refreshData.pageSize);
           if (!this.refreshData.pageNo) this.refreshData.pageNo = 1;
           console.log(this.refreshData.pageNo);
             PatientDataService.retrieveAllPatients(this.refreshData) // HARDCODED
@@ -332,6 +316,7 @@ export default {
                 });
         },
         onChange(e){
+          this.refreshData.pageNo = 1;
           this.refreshPatients(e);
         },
 
@@ -358,10 +343,31 @@ export default {
           return filteredList;
         },
 
-        changeOrder(sort) {
-          if (this.refreshData.ascending) {this.refreshData.ascending = false}
-          else {this.refreshData.ascending = true}
-          this.refreshData.sortBy = sort;
+        // changeOrder(sort) {
+        //   if (this.refreshData.ascending) {this.refreshData.ascending = false}
+        //   else {this.refreshData.ascending = true}
+        //   this.refreshData.sortBy = sort;
+        //   this.refreshData.pageNo = 1;
+        //   this.refreshPatients();
+        // },
+
+        // setAsc(sort) {
+        //   this.refreshData.ascending = true;
+        //   this.refreshData.sortBy = sort;
+        //   this.refreshData.pageNo = 1;
+        //   this.refreshPatients();
+        // },
+
+        // setDesc(sort) {
+        //   this.refreshData.ascending = false;
+        //   this.refreshData.sortBy = sort;
+        //   this.refreshData.pageNo = 1;
+        //   this.refreshPatients();
+        // },
+
+        sort() {
+          this.refreshData.ascending = this.sortParams.ascending;
+          this.refreshData.sortBy = this.sortParams.sortBy;
           this.refreshData.pageNo = 1;
           this.refreshPatients();
         },
