@@ -8,7 +8,7 @@
  <table>
         <tr>
              <td align="left"> <form v-on:submit.prevent="">
-                    <input type="submit" class="btn btn-primary" value="Make pricelist"></form> </td>
+                    <input type="submit" class="btn btn-primary" v-on:click.prevent="kreirajCenovnik()" value="Make pricelist"></form> </td>
             <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
            <td align="left"> <form v-on:submit.prevent="">
                     <input type="submit" class="btn btn-primary" value="Make action and promotion"></form> </td>
@@ -66,7 +66,7 @@
                     <td>{{l.medicine.code}}</td>
                     <td>{{l.medicine.name}}</td>
                     <td>{{l.medicine.type}}</td>
-                    <td><input type="number" min="1" v-on:change="promenaCene()" v-model="l.currentPrice"/></td>
+                    <td><input type="number" min="1" v-on:change="promenaCene(l.currentPrice, l.code)" v-model="l.currentPrice"/></td>
                   </tr>
                 </tbody>
               </table>
@@ -220,7 +220,7 @@ export default {
             pharmacyName: null, pharmacyDesc: null, pharmacyConsulting: null,
             poruka: "Wait... Your require is in processing", 
             filterOrder: 0, narudzbenica: null, sveNarudzbenice: [], narudzbeniceZaIspis: [],
-            upitiZaLek: [], postojiPromena:false, cenovnik: null, 
+            upitiZaLek: [], postojiPromena:false, cenovnik: null,
         };
       
     },
@@ -342,8 +342,24 @@ export default {
           if (por.startDate[4] < 10) por.startDate[4] = "0" + por.startDate[4]; 
         }
       },
-      sacuvajCenovnik() {},
-      promenaCene() {this.postojiPromena = true;}
+      sacuvajCenovnik() {
+        for (var med of this.cenovnik.medicines) {
+          if (med.currentPrice <= 0) {
+            this.poruka = "All prices must be positive numbers."
+            return;
+          }
+        }
+        PharmacyDataService.savePricelist(this.id, this.cenovnik)
+          .then(response => {
+            this.poruka = "Pricelist is successfully edited";
+            this.osveziCenovnik();
+          });
+      },
+      promenaCene() {this.postojiPromena = true; },
+      kreirajCenovnik() {
+         window.location.href = "/addPricelist";
+         this.osveziCenovnik();
+      },
     }
 }
 </script>

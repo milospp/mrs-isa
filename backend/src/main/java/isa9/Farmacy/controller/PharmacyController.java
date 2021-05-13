@@ -15,8 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,6 +140,28 @@ public class PharmacyController {
         InquiryMedtoInquiryMedDTO konverter = new InquiryMedtoInquiryMedDTO();
         List<InquiryMedicineDTO> povratna = konverter.convert(apoteka.getInquiryMedicines());
         return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @PostMapping("/savePricelist/{idAdmina}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<Boolean> savePricelist(@PathVariable Long idAdmina, @RequestBody PricelistDTO cenovnik) {
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(idAdmina);
+        for (MedicineInPharmacy stariLek : admin.getPharmacy().getMedicines()) {
+            for (MedInPharmaDTO noviLek : cenovnik.getMedicines()) {
+                if (stariLek.getMedicine().getId() == noviLek.getMedicine().getId()) {
+                    if (stariLek.getCurrentPrice().getPrice() != noviLek.getCurrentPrice()) {
+                        MedPrice novaCena = new MedPrice();
+                        novaCena.setPrice(noviLek.getCurrentPrice());
+                        novaCena.setStartDate(LocalDateTime.now());
+                        novaCena.setMedicineInPharmacy(stariLek);
+                        stariLek.setCurrentPrice(novaCena);
+                    }
+                    break;
+                }
+            }
+        }
+        pharmacyService.save(admin.getPharmacy());
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
     @GetMapping("{id}/rating")

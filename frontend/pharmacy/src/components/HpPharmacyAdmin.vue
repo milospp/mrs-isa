@@ -435,7 +435,6 @@ import DermatologistDataService from '../service/DermatologistDataService.js';
 import PharmacistDataService from '../service/PharmacistDataService.js';
 import PharmacyDataService from '../service/PharmacyDataService.js';
 import MedicineDataService from '../service/MedicineDataService.js';
-import OrderDataService from '../service/OrderDataService.js';
 import AppointmentDataService from '../service/AppointmentDataService.js';
 import Mapa from "../components/Maps.vue";
 import AuthService from "../service/AuthService.js";
@@ -850,8 +849,6 @@ export default {
             this.osveziPreglede();
             return;
           });
-          
-          
         },
     }
 }

@@ -11,6 +11,7 @@ import CartPharmacyAdmin from '@/views/CartPharmacyAdmin.vue'
 import PAMoreInfo from '@/views/PAMoreInfo.vue'
 import ChangingOrder from '@/views/ChangingOrder.vue'
 import HireDermatologist from '@/views/HireDermatologist.vue'
+import AddNewPricelist from '@/views/AddNewPricelist.vue'
 import AddPharmacy from '@/views/AddPharmacy.vue'
 import AddPharmacyAdmin from '@/views/AddPharmacyAdmin.vue'
 import PharmacistHomePage from '@/views/PharmacistHomePage.vue'
@@ -97,6 +98,11 @@ const routes = [
     path: '/paMoreInfo',
     name: 'PAMoreInfo',
     component: PAMoreInfo    // view je komponenta
+  },
+  {
+    path: '/addPricelist',
+    name: 'AddNewPricelist',
+    component: AddNewPricelist    // view je komponenta
   },
   {
     path: '/addPharmacy',
