@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class AppointmentServiceBase implements AppointmentService {
     protected ExaminationService examinationService;
@@ -346,7 +347,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     public List<Appointment> getDermForPharmacyAppointmentsNotCanceled(Long dermId, Long pharamcyId) {
         Doctor d = userService.getDoctorById(dermId);
         List<Appointment> allAppointments;
-        allAppointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && isInPharmacy(x, pharamcyId) && !isCanceled(x)).collect(Collectors.toList());
+        allAppointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && isInPharmacy(x, pharamcyId) && !isCanceled(x)).sorted(Comparator.comparing(Appointment::getStartTime)).collect(Collectors.toList());
         return allAppointments;
     }
 
@@ -354,7 +355,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     public List<Appointment> getDoctorAppointmentsNotCanceled(Long doctorId) {
         Doctor d = userService.getDoctorById(doctorId);
         List<Appointment> allAppointments;
-        allAppointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && !isCanceled(x)).collect(Collectors.toList());
+        allAppointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && !isCanceled(x)).sorted(Comparator.comparing(Appointment::getStartTime)).collect(Collectors.toList());
         return allAppointments;
     }
 

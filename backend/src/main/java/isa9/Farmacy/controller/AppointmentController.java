@@ -100,15 +100,12 @@ public class AppointmentController {
     @PreAuthorize("hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
     public ResponseEntity<Boolean> finishAnAppointment(@RequestBody AppointmentDTO appointmentDTO, @PathVariable Long id) {
         Appointment appointment = appointmentService.findOne(id);
-        System.out.println(appointmentDTO);
+
         if (appointment == null) return new ResponseEntity<>(false, HttpStatus.OK);
 
         if (appointmentDTO == null) {
-            System.out.println("Empty dto sent");
             return new ResponseEntity<>(false, HttpStatus.OK);
         }
-
-        System.out.println(appointmentDTO.getExamination().getTherapy());
 
         appointment.getExamination().setExaminationInfo(appointmentDTO.getExamination().getExaminationInfo());
         appointment.getExamination().setDiagnose(appointmentDTO.getExamination().getDiagnose());
@@ -255,6 +252,8 @@ public class AppointmentController {
         List<Appointment> patientAppointments = appointmentService.getPatientUpcomingAppointments(patient.getId());
         List<Appointment> doctorAppointments = appointmentService.getDoctorUpcomingAppointments(doctor.getId());
 
+        //TODO: all this logic place in appointment service or repository
+
         List<Work> works = pharmacyService.findDoctorsWork(doctor);
         for (Work work : works){
             for (Appointment a : doctorAppointments){
@@ -322,6 +321,7 @@ public class AppointmentController {
     @PreAuthorize("hasAuthority('DERMATOLOGIST')")
     public ResponseEntity<List<AppointmentCalendarDTO>> getDermaPharmaAppointmentsForCalendar(@PathVariable Long dermId, @PathVariable Long pharmaId) {
         List<Appointment> appointments = this.appointmentService.getDermForPharmacyAppointmentsNotCanceled(dermId, pharmaId);
+
         List<AppointmentCalendarDTO> resultDTOs = appointmentToAppointmentCalendarDTO.convert(appointments);
 
         return new ResponseEntity<>(resultDTOs, HttpStatus.OK);
@@ -329,8 +329,9 @@ public class AppointmentController {
 
     @GetMapping("calendar/pharm/{pharmId}")
     @PreAuthorize("hasAuthority('PHARMACIST')")
-    public ResponseEntity<List<AppointmentCalendarDTO>> getDermaPharmaAppointmentsForCalendar(@PathVariable Long pharmId) {
+    public ResponseEntity<List<AppointmentCalendarDTO>> getPharmaAppointmentsForCalendar(@PathVariable Long pharmId) {
         List<Appointment> appointments = this.appointmentService.getDoctorAppointmentsNotCanceled(pharmId);
+
         List<AppointmentCalendarDTO> resultDTOs = appointmentToAppointmentCalendarDTO.convert(appointments);
 
         return new ResponseEntity<>(resultDTOs, HttpStatus.OK);
