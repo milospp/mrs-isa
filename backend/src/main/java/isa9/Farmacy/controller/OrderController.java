@@ -27,12 +27,23 @@ public class OrderController {
     private final OrderService orderService;
     private final MedicineService medicineService;
     private final UserService userService;
+    private final MedOrderToMedOrderDTO medOrderToMedOrderDTO;
 
     @Autowired
-    public OrderController(OrderService orderService, MedicineService medicineService, UserService userService) {
+    public OrderController(OrderService orderService, MedicineService medicineService, UserService userService, MedOrderToMedOrderDTO medOrderToMedOrderDTO) {
         this.orderService = orderService;
         this.medicineService = medicineService;
         this.userService = userService;
+        this.medOrderToMedOrderDTO = medOrderToMedOrderDTO;
+    }
+
+    @GetMapping("/availableOrders")
+    @PreAuthorize("hasAuthority('SUPPLIER')")
+    public ResponseEntity<List<MedicineOrderDTO>> getAllAvailableOrders(){
+        List<MedicineOrder> availableOrders = this.orderService.getAvailableOrders();
+        System.out.println(availableOrders);
+
+        return new ResponseEntity<>(medOrderToMedOrderDTO.convert(availableOrders), HttpStatus.OK);
     }
 
     @PostMapping("/add/{idAdmina}")

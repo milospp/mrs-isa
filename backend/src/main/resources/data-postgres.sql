@@ -85,12 +85,17 @@ insert into dermatologist (id) values (13);
 insert into medicine_specifications (side_effects, daily_intake, structure) values ('Pospanost, naleti raspoloženja','1 pilula na dan','metildopa');
 insert into medicine_specifications (side_effects, daily_intake, structure) values ('Might learn mandarin','2 doses','Structurrrre');
 insert into medicine_specifications (side_effects, daily_intake, structure) values ('Krvarenje, žutica','2 tablete na dan','varfarin');
+insert into medicine_specifications (side_effects, daily_intake, structure) values ('Alergijska reakcija','12 tableta u podeljenim dozama','acetilsalicilna kiselina');
+insert into medicine_specifications (side_effects, daily_intake, structure) values ('Teška vrtoglavica ili nesvestica, Bronhospazam','Jedna tableta','perindopril,amlodipin,indapamid');
+insert into medicine_specifications (side_effects, daily_intake, structure) values ('Sistemska alergija, lokalna alergija, Lipodistrofija','Doktor daje instrukcije za dozu','insulin');
 
 --medicine
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('AZ45', 'Hemofarm', 'Methyldopa', 'Može uzrokovati pospanost', 0, 3, 'pills', 1, 'Alfa-adrenergicki agonist');
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('BZ55', 'Kinezi', 'Sinopharm', 'vakcina', 0, 5, 'pills', 2, 'some type idl');
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('FAR-123', 'Galenika','Farin','Piti isključivo prema receptu',0,2,'tablets',3,'antikoagulans');
-
+insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('ANB-001', 'Galenika', 'Anbol', 'Ne uzimati ako uzimate lekove protiv zgrušavanja krvi npr. varfarin', 0, 1, 'tablets', 4, 'NSAIL');
+insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('C784','TAD PHARMA GMBH','Co-Amlessa','Čuvati na temperaturi do 30°C, u originalnom pakovanju radi zaštite od svetlosti i vlage',0,2,'tablets',5,'perindopril');
+insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('HUM010','ELI LILLY ITALIA S.P.A.','Humulin','Uložak od 3 mL se primenjuje samo u pen aplikatoru od 3 mL. Nije namenjen za primenu u penaplikatoru od 1,5 mL.',0,4,'saline',6,'insulini');
 
 --pharmacies
 insert into pharmacy (description, name, address_id, price_per_hour) values ('Otvoreni smo non-stop', 'Prima', 1, 40);
@@ -223,10 +228,18 @@ insert into users (address_id, email, enabled, name, password, phone_number, rol
 insert into sys_admin (id) values (18);
 
 
-
 --suppliers
 insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (16, 'milenkotep@maildrop.cc', true, 'Milenko', '$2a$10$0jpTwKzrxhpekj0zDufFvelVsfilpPXk7EX4U65u9gZfb7FTnOIlG', '0632212458', 6, 'Tepić', LOCALTIMESTAMP); --sifra : imamrobu
 insert into supplier (id) values (19);
+
+--MedQuantities (for orders)
+insert into medicine_quantity(quantity, medicine_id) values (250, 1);
+insert into medicine_quantity(quantity, medicine_id) values (500, 2);
+
+--Orders
+insert into medicine_order (end_date, start_date, author_id, chosen_offer_id, pharmacy_id) values (LOCALTIMESTAMP + interval '4' day, LOCALTIMESTAMP, 14, null, 1);
+insert into medicine_order_all_medicines(medicine_order_id, all_medicines_id) values (1, 1);
+insert into medicine_order_all_medicines(medicine_order_id, all_medicines_id) values (1, 2);
 
 
 -- New pharmacist
@@ -239,7 +252,7 @@ insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (20, '09:
 insert into pharmacy_staff (pharmacy_id, staff_id) values (3, 8);
 
 
--- Rsservations
+-- Reservations
 insert into med_reservation (code, last_date, quantity, reservation_date, status, medicine_in_pharmacy_id, patient_id, who_dispenses_id)
 values ('fakecode1', current_timestamp - INTERVAL '1 days', 5, current_timestamp - INTERVAL '2 days', 0, 1, 1, null);
 insert into med_reservation (code, last_date, quantity, reservation_date, status, medicine_in_pharmacy_id, patient_id, who_dispenses_id)

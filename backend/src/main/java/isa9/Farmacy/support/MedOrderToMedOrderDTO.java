@@ -4,10 +4,12 @@ import isa9.Farmacy.model.MedicineOrder;
 import isa9.Farmacy.model.dto.MedicineOrderDTO;
 import isa9.Farmacy.model.dto.MedicineQuantityDTO;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class MedOrderToMedOrderDTO implements Converter<MedicineOrder, MedicineOrderDTO> {
 
     @Override
