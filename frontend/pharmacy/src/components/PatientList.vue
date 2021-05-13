@@ -343,28 +343,6 @@ export default {
           return filteredList;
         },
 
-        // changeOrder(sort) {
-        //   if (this.refreshData.ascending) {this.refreshData.ascending = false}
-        //   else {this.refreshData.ascending = true}
-        //   this.refreshData.sortBy = sort;
-        //   this.refreshData.pageNo = 1;
-        //   this.refreshPatients();
-        // },
-
-        // setAsc(sort) {
-        //   this.refreshData.ascending = true;
-        //   this.refreshData.sortBy = sort;
-        //   this.refreshData.pageNo = 1;
-        //   this.refreshPatients();
-        // },
-
-        // setDesc(sort) {
-        //   this.refreshData.ascending = false;
-        //   this.refreshData.sortBy = sort;
-        //   this.refreshData.pageNo = 1;
-        //   this.refreshPatients();
-        // },
-
         sort() {
           this.refreshData.ascending = this.sortParams.ascending;
           this.refreshData.sortBy = this.sortParams.sortBy;
