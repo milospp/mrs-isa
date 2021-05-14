@@ -17,6 +17,7 @@ public class MedOrderToMedOrderDTO implements Converter<MedicineOrder, MedicineO
         MedicineOrderDTO povratna = new MedicineOrderDTO();
         povratna.setStartDate(medicineOrder.getStartDate());
         povratna.setEndDate(medicineOrder.getEndDate());
+        povratna.setId(medicineOrder.getId());
 
         MedicineQuantityToMedicineQuantityDTO medQuantity = new MedicineQuantityToMedicineQuantityDTO();
         List<MedicineQuantityDTO> mqPomocno = new ArrayList<>();

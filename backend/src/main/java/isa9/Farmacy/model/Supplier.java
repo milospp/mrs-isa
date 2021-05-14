@@ -11,7 +11,7 @@ import lombok.*;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"medicinesInStock", "allOffer"})
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +19,7 @@ import lombok.*;
 
 @Entity
 public class Supplier extends User{
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Offer> allOffer;
 
     @OneToMany(fetch = FetchType.EAGER)

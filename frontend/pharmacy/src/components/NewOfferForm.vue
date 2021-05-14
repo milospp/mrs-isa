@@ -63,14 +63,15 @@
                     </button>
             </div>
             <div>
-                <form v-on:submit="">
+                <form>
                     <table class="table table-striped">
                         <tbody>
                             <tr>
-                                <td>Select delivery time: </td><td><input type="datetime-local" class="form-control" id="startTime" v-model="newOffer.end_date" @change="" v-bind:max="this.orderExpires"></td>
+                                <td>Select delivery time: </td><td><input type="datetime-local" class="form-control" id="startTime" v-model="newOffer.endDate" 
+                                @change="setDeliveryDate()" v-bind:max="this.orderExpires" v-bind:min="(new Date()).toISOString().substring(0, 16)"></td>
                             </tr>
                             <tr>
-                                <td>Description: </td><td><textarea v-model="newOffer.offer_description" rows="3" style="width : 100%;"></textarea></td>
+                                <td>Description: </td><td><textarea v-model="newOffer.offerDescription" rows="3" style="width : 100%;"></textarea></td>
                             </tr>
                         </tbody>
                     </table>
@@ -79,7 +80,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 <div class="form-group">
-                    <button class="btn btn-primary" type="submit">Confirm offer</button>
+                    <button class="btn btn-primary" type="submit" v-on:click="placeNewOffer()" data-dismiss="modal">Confirm offer</button>
                 </div>
             </div>
         </div>
@@ -92,14 +93,20 @@
 
 <script>
 import OrderDataService from '../service/OrderDataService.js';
+import AuthService from '@/service/AuthService.js';
+import MedicineDataService from '@/service/MedicineDataService.js';
+import OfferDataService from '@/service/OfferDataService.js';
 
 export default {
     name: 'NewOfferForm',
     data(){
         return{
+            id: "",
             availableOrders: [],
             medicinesInOrder: [],
-            newOffer: {end_date: [], offer_description: "", price: 0, start_date: [], status: 0, order_id: 0, supplier_id: 0},
+            suppliersMedicines: [],
+            currentOrder: [],
+            newOffer: {id: 0, endDate: [], offerDescription: "", price: 0, startDate: [], status: 0, order: 0, supplier: 0},
             orderExpires: [],
         };
     },
@@ -116,14 +123,58 @@ export default {
         },
         selectedOrder(order){
             this.orderExpires = this.formatDateForPicker(order.endDate);
-            console.log(this.orderExpires);
+            this.currentOrder = order;
+            console.log(this.currentOrder);
         },
         formatDateForPicker(date){
             return date[0]+"-"+('0' + date[1]).slice(-2)+"-"+('0' + date[2]).slice(-2)+"T"+('0' + date[3]).slice(-2)+":"+('0' + date[4]).slice(-2);
+        },
+        placeNewOffer(){
+            this.newOffer.supplier = AuthService.getCurrentUser();
+            this.newOffer.order = this.currentOrder.id;
+
+            if(this.newOffer.endDate.length == 0){
+                alert("You have not picked a delivery date!");
+                return;
+            }
+
+            if(!this.hasEnoughMeds(this.currentOrder)){
+                alert("You do not have enough medicines at your disposal for this transaction!");
+                return;
+            }
+
+            this.newOffer.price = this.calculateOfferPrice(this.currentOrder);
+
+            OfferDataService.sendOffer(this.newOffer);
+            
+        },
+        setDeliveryDate(){
+            console.log(this.newOffer.endDate);
+        },
+        hasEnoughMeds(order){
+            for(var item of order.allMedicines){
+                if(item.quantity > this.suppliersMedicines[item.medicine.code]){
+                    return false;
+                }
+            }
+
+            return true;
+        },
+        calculateOfferPrice(order){
+            let total = 0;
+            for(var item of order.allMedicines){
+                total += this.suppliersMedicines[item.medicine.code].currentPrice*item.quantity;
+            }
+
+            return total;
         }
     },
     created(){
         this.getAvailableOrders();
+        this.id = AuthService.getCurrentUser().id;
+        MedicineDataService.getSuppliersMedicines(this.id).then(response => {
+            this.suppliersMedicines = response.data;
+        });
     },
 }
 </script>

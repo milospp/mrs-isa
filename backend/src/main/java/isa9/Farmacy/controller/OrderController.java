@@ -125,10 +125,10 @@ public class OrderController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
-    @PostMapping("/choose")
-    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
-    public ResponseEntity<Integer> chooseOrder(@RequestBody OfferDTO ponuda) {
-        int povratna = this.orderService.chooseOffer(ponuda);
-        return new ResponseEntity<>(povratna, HttpStatus.OK);
-    }
+//    @PostMapping("/choose")
+//    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+//    public ResponseEntity<Integer> chooseOrder(@RequestBody OfferDTO ponuda) {
+//        int povratna = this.orderService.chooseOffer(ponuda);
+//        return new ResponseEntity<>(povratna, HttpStatus.OK);
+//    }
 }

@@ -86,15 +86,16 @@
 
         </div>
     </div>
-
+    <br>
     <h3>My medicines</h3>
-    <div style="height: 300px; overflow-y: scroll;">
+    <div style="height: 250px; overflow-y: scroll;">
     <form v-on:submit.prevent="">
         <table class="table table-striped">
             <thead class="card-header">
                 <th>Code</th>
                 <th>Name</th>
                 <th>Quantity</th>
+                <th>Price</th>
                 <th></th>
                 <th></th>
             </thead>
@@ -102,13 +103,18 @@
                 <tr v-for="(item, key, index) in this.myMedicines">
                     <td>{{key}}</td>
                     <td>{{item.medicine.name}}</td>
-                    <td>{{item.quantity}}</td>
-                    <td><form v-on:click.prevent=""><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">View medicines</button></form></td>
-                    <td><form v-on:click.prevent=""><button type="button" class="btn btn-primary">Select</button></form></td>
+                    <td>{{item.inStock}}</td>
+                    <td>{{item.currentPrice}}</td>
+                    <td><form v-on:click.prevent=""><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">Edit</button></form></td>
+                    <td><form v-on:click.prevent=""><button type="button" class="btn btn-danger">Delete</button></form></td>
                 </tr>
             </tbody>
         </table>
     </form>
+    </div>
+
+    <div>
+        <button type="button" class="btn btn-primary">Add medicine</button>
     </div>
 
 </template>

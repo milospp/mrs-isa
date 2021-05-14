@@ -7,6 +7,5 @@ import java.util.List;
 
 public interface MedQuantityService extends GenericService<MedicineQuantity> {
     void delete(MedicineQuantity medicineQuantity);
-
-
+    void reduceQuantity(MedicineQuantity medicineQuantity, int quantity);
 }

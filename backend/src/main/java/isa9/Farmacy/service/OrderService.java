@@ -10,6 +10,6 @@ public interface OrderService extends GenericService<MedicineOrder>  {
 
     List<MedicineOrder> getAdminOrders(Long idAdmina);
     void delete(MedicineOrder zaBrisanje);
-    int chooseOffer(OfferDTO offerDTO);
+//    int chooseOffer(OfferDTO offerDTO);
     List<MedicineOrder> getAvailableOrders();
 }

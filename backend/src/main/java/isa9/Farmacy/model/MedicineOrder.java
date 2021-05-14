@@ -4,6 +4,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 @Getter
 @Setter
@@ -25,6 +27,7 @@ public class MedicineOrder {
     @OneToOne
     private Offer chosenOffer;
     @OneToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Offer> allOffer;
     @ManyToOne
     private Pharmacy pharmacy;

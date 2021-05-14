@@ -321,7 +321,6 @@ public class MedicineController {
     @PreAuthorize("hasAuthority('SUPPLIER')")
     public ResponseEntity<Map<String, MedAtSupplierDTO>> getSuppliersMedicines(@PathVariable Long id){
         Set<MedicineAtSupplier> medicineAtSupplierSet = this.medicineAtSupplierService.medicinesOfSupplier(id);
-
         return new ResponseEntity<>(this.medicineAtSupplierToMedAtSupplierDTO.setToMap(medicineAtSupplierSet), HttpStatus.OK);
     }
 }

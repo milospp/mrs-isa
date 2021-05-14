@@ -35,7 +35,7 @@ public class MedicineAtSupplierToMedAtSupplierDTO implements Converter<MedicineA
         masDTO.setSupplier(this.supplierToSupplierDTO.convert(medicineAtSupplier.getSupplier()));
         masDTO.setId(medicineAtSupplier.getId());
         masDTO.setInStock(medicineAtSupplier.getQuantity().getQuantity());
-        masDTO.setCurrentPrice(medicineAtSupplier.getCurrentPrice().getPrice());
+        masDTO.setCurrentPrice(medicineAtSupplier.getSupplierPrice().getPrice());
 
         return masDTO;
     }

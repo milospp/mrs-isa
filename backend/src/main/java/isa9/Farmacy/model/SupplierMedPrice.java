@@ -9,7 +9,7 @@ import lombok.*;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"medicineAtSupplier"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

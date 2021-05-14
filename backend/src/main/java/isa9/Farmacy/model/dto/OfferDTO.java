@@ -3,6 +3,7 @@ package isa9.Farmacy.model.dto;
 import isa9.Farmacy.model.OfferStatus;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -14,10 +15,11 @@ import java.util.Date;
 @Builder
 public class OfferDTO {
     private double price;
-    private Date startDate;
-    private Date endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private String offerDescription;
     private SupplierDTO supplier;
     private Long order;             // da ne bude petlja
     private OfferStatus status;
+    private Long id;
 }

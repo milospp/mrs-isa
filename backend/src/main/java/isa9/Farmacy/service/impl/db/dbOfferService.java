@@ -36,15 +36,11 @@ public class dbOfferService extends OfferServiceBase implements OfferService {
 
     @Override
     public Offer save(Offer entity) {
-        return this.save(entity);
+        return this.offerRepository.save(entity);
     }
 
     @Override
     public List<Offer> getOffers(Long orderId) {
-        List<Offer> povratna = new ArrayList<>();
-        for (Offer o : this.offerRepository.findAll())
-            if (o.getOrder().getId() == orderId)
-                povratna.add(o);
-        return povratna;
+        return this.offerRepository.findAll();
     }
 }

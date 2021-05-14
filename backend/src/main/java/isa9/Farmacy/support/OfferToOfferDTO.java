@@ -5,11 +5,14 @@ import isa9.Farmacy.model.dto.OfferDTO;
 import isa9.Farmacy.model.dto.SupplierDTO;
 import isa9.Farmacy.model.dto.UserDTO;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class OfferToOfferDTO implements Converter<Offer, OfferDTO> {
+
     @Override
     public OfferDTO convert(Offer offer) {
         OfferDTO povratna = new OfferDTO();
@@ -19,6 +22,7 @@ public class OfferToOfferDTO implements Converter<Offer, OfferDTO> {
         povratna.setPrice(offer.getPrice());
         povratna.setEndDate(offer.getEndDate());
         povratna.setStartDate(offer.getStartDate());
+        povratna.setId(offer.getId());
 
         UserToUserDTO konverter = new UserToUserDTO();
         UserDTO pomocna = konverter.convert(offer.getSupplier());

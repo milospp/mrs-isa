@@ -245,7 +245,7 @@ insert into medicine_order_all_medicines(medicine_order_id, all_medicines_id) va
 
 --MedQuantities (for suppliers)
 insert into medicine_quantity(quantity, medicine_id) values (450, 1);
-insert into medicine_quantity(quantity, medicine_id) values (370, 2);
+insert into medicine_quantity(quantity, medicine_id) values (500, 2);
 
 --Suppliers' medicines in stock
 insert into medicine_at_supplier(quantity_id, supplier_id) values (3, 19);
@@ -255,9 +255,9 @@ insert into supplier_medicines_in_stock(supplier_id, medicines_in_stock_id) valu
 
 --Suppliers' prices
 insert into supplier_med_price(price, start_date, medicine_at_supplier_id) values (175, LOCALTIMESTAMP, 1);
-update medicine_at_supplier SET current_price_id = 3 WHERE id = 1;
+update medicine_at_supplier SET supplier_price_id = 1 WHERE id = 1;
 insert into supplier_med_price(price, start_date, medicine_at_supplier_id) values (85, LOCALTIMESTAMP, 2);
-update medicine_at_supplier SET current_price_id = 4 WHERE id = 2;
+update medicine_at_supplier SET supplier_price_id = 2 WHERE id = 2;
 
 
 
