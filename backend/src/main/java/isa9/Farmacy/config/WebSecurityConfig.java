@@ -86,7 +86,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/users/derm/filter/pharmacy/**").permitAll()
 				.antMatchers("/api/medicines/pharmacy/**").permitAll()
 				.antMatchers("/api/pharmacies/**").permitAll()
-				.antMatchers("/api/users/patients").permitAll()
+				.antMatchers("/api/users/patients/**").permitAll()
 				.antMatchers("/api/appointments/**").permitAll()	// DELETE THIS LINE (DEVELOP PURPOSES MilosPP)
 				.antMatchers("/api/appointments/calendar/derm/**/pharmacy/**").permitAll()
 
@@ -115,7 +115,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 															"/api/users/pharm/filter/pharmacy/**",
 															"/api/users/derm/filter/pharmacy/**",
 															"/api/medicines/pharmacy/**",
-															"/api/users/patients",
 															"/api/medicines/prices/**");  // <-- svi korisnici mogu da udju na ove stranice
 		web.ignoring().antMatchers(HttpMethod.GET, "/", "/webjars/**", "/*.html", "/favicon.ico", "/**/*.html","/**/*.css", "/**/*.js");
 	}

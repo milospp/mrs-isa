@@ -21,7 +21,6 @@ import lombok.*;
 
 public class AppointmentDTO {
     private Long id;
-    //@DateTimeFormat(pattern = "dd-MM-yyyy")
     @JsonFormat(pattern="yyyy-M-d HH:mm:ss")
     private LocalDateTime startTime;
     private double price;

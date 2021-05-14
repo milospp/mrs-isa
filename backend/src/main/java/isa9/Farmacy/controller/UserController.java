@@ -12,22 +12,18 @@ import isa9.Farmacy.service.*;
 
 import isa9.Farmacy.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.sql.Timestamp;
-
-import javax.persistence.PostRemove;
-
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin("*")
@@ -44,6 +40,7 @@ public class UserController {
 
     private final RatingService ratingService;
     private final ExaminationService examinationService;
+    private final AppointmentService appointmentService;
 
     private final PatientToPatientDTO patientToPatientDTO;
     private final MedicineToMedicineDTO medicineToMedicineDTO;
@@ -61,7 +58,7 @@ public class UserController {
 
     @Autowired
 
-    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, RatingService ratingService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO, AppointmentToAppointmentDTO appointmentToAppointmentDTO, DoctorToDoctorDTO doctorToDoctorDTO, UserToUserDTO userToUserDTO, RatingToRatingDTO ratingToRatingDTO, UserDTOToUser userDTOToUser, ExaminationService examinationService, UserRoleService urs, PasswordEncoder pe) {
+    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, RatingService ratingService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO, AppointmentToAppointmentDTO appointmentToAppointmentDTO, DoctorToDoctorDTO doctorToDoctorDTO, UserToUserDTO userToUserDTO, RatingToRatingDTO ratingToRatingDTO, UserDTOToUser userDTOToUser, ExaminationService examinationService, UserRoleService urs, PasswordEncoder pe, AppointmentService appointmentService) {
         this.userService = userService;
         this.pharmacyService = pharmacyService;
         this.medReservationService = medReservationService;
@@ -83,6 +80,7 @@ public class UserController {
         this.userDTOToUser = userDTOToUser;
         this.examinationService = examinationService;
 
+        this.appointmentService = appointmentService;
     }
 
     @GetMapping("tmp-test")
@@ -135,18 +133,9 @@ public class UserController {
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id){
         User user = userService.findOne(id);
 
-//        UserDTO userDTO = new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress().toString(), user.getPhoneNumber(), user.getRole());
         UserDTO dto;
-//        if (user.getRole() == UserRole.PATIENT){
-//            dto = (UserDTO) patientToPatientDTO.convert((Patient) user);
-//        } else if (user.getRole() == UserRole.PHARMACIST){
-//            dto = (UserDTO) pharmacistToPharmacistDTO.convert((Pharmacist) user);
-//            System.out.println(user.getEmail());
-//        } else {
-//            dto = new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), user.getRole(), user.getEmail());
         dto = userToUserDTO.convert(user);
         System.out.println(user.getEmail());
-//        }
         return new ResponseEntity<>(dto, HttpStatus.OK);
 
     }
@@ -309,41 +298,21 @@ public class UserController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
-    //@RequestMapping(value="/patients", produces="application/json", consumes="application/json")
     @PostMapping("/patients")
-    //@PreAuthorize("hasAuthority('DERMATOLOGIST')")
+    @PreAuthorize("hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
     public ResponseEntity<PatientsPagesDTO> getAllPatients(@RequestBody PaginationSortSearchDTO pssDTO) {
 
         System.out.println(pssDTO.getPageNo() + pssDTO.getPageSize() + pssDTO.getSortBy()
                 + pssDTO.getSearchParams().get("doctorId") + pssDTO.isAscending()
                 + pssDTO.getSearchParams().get("name") + pssDTO.getSearchParams().get("surname"));
 
-        List<Patient> list = userService.getAllMyPatientsPaged(pssDTO);
-
-        List<PatientDTO> convertedList = patientToPatientDTO.convert(list);
-
-        long totalCount = userService.getAllMyPatientsTotalCount(pssDTO);
-
-        List<Appointment> lastAppointments = new ArrayList<>();
-        for (Patient p : list){
-            if (p.getMyExaminations().isEmpty()){System.out.println("prazan pacijent " + p.getName());}
-            else{
-                System.out.println("nije prazan pacijent " + p.getName());
-                Examination last = p.getMyExaminations().stream().iterator().next();
-                for (Examination e : p.getMyExaminations()){
-                    if (e.getAppointment().getDoctor().getId().equals(Long.valueOf(pssDTO.getSearchParams().get("doctorId")))){
-                        if (last.getAppointment().getStartTime().isAfter(e.getAppointment().getStartTime())){
-                            last = e;
-                        }
-                    }
-                }
-                lastAppointments.add(last.getAppointment());
-            }
+        PatientsPagesDTO response = userService.getPatientLastAppointmentDTOsSortedSearched(pssDTO);
+        for (PatientLastAppointmentDTO pladto : response.getPatients()){
+            Appointment last = appointmentService.findByStartTime(pladto.getLast());
+            pladto.setAid(last.getId());
+            pladto.setStatus(last.getExamination().getStatus());
         }
-
-        List<AppointmentDTO> convertedAppointments = appointmentToAppointmentDTO.convert(lastAppointments);
-
-        return new ResponseEntity<>(new PatientsPagesDTO(totalCount, convertedList, convertedAppointments), HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("all-patients")
@@ -354,7 +323,6 @@ public class UserController {
             if (us.getClass()!= Patient.class) continue;
             Patient patient = (Patient) us;
             resultDTOS.add(patientToPatientDTO.convert(patient));
-//            resultDTOS.add(new PatientDTO(patient.getId(), patient.getName(), patient.getSurname(), patient.getAddress(), patient.getPhoneNumber()));
         }
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
 

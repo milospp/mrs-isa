@@ -51,33 +51,6 @@ public class AppointmentController {
         this.appointmentToAppointmentCalendarDTO = appointmentToAppointmentCalendarDTO;
     }
 
-//    @GetMapping("tmp-test")
-//    public ResponseEntity<Boolean> debug(){
-//        Pharmacy pharmacy = pharmacyService.findOne(1L);
-//        Patient p = (Patient) userService.findOne(1L);
-//        Dermatologist derma = (Dermatologist) userService.findOne(7L);
-//        //Appointment a1 = new Appointment(1L, LocalDateTime.now(), 200.0, 30, TypeOfReview.EXAMINATION, derma, pharmacy, null);
-//        Appointment a1 = appointmentService.findOne(1L);
-//
-//        Medicine m1 = medicineService.findOne(1L);
-//        TherapyItem ti1 = new TherapyItem(1L, m1, 10);
-//        Set<TherapyItem> therapy = new HashSet<>();
-//        therapy.add(ti1);
-//        Medicine m2 = medicineService.findOne(2L);
-//        TherapyItem ti2 = new TherapyItem(2L, m2, 10);
-//        therapy.add(ti2);
-//
-//        Examination e1 = new Examination(1L, p, a1, ExaminationStatus.HELD, "bolela ga je glava", "hipohondar", therapy);
-//
-//        a1.setExamination(e1);
-//        appointmentService.save(a1);
-//        p.getMyExaminations().add(e1);
-//        userService.save(p);
-//        return new ResponseEntity<>(true, HttpStatus.OK);
-//
-//    }
-
-
     @GetMapping("")
     public ResponseEntity<List<AppointmentDTO>> getAllAppointments() {
         List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.findAll());

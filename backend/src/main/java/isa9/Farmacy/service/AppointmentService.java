@@ -4,6 +4,7 @@ import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.AppointmentSearchDTO;
 import isa9.Farmacy.model.dto.ConsultingAppointmentReqDTO;
 
+import javax.net.ssl.SSLSession;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -50,9 +51,15 @@ public interface AppointmentService extends GenericService<Appointment>{
     List<Appointment> getDermForPharmacyAppointmentsNotCanceled(Long dermId, Long pharamcyId);
     List<Appointment> getDoctorAppointmentsNotCanceled(Long doctorId);
 
+    List<Appointment> getPatientDoctorNotCanceledAppointments(Long patientId, Long doctorId);
+    List<User> getDoctorNotCanceledAppointmentsPatients(Long doctorId);
+    Appointment getPatientDoctorNotCanceledAppointmentLast(Long patientId, Long doctorId);
+
     Boolean isDermatologistFree(Long id, Long idDoktora, LocalDateTime start, int duration);
     void deleteApponitment(Long id);
     int canEditDelete(Long id);
 
     Boolean isPatientOccupied(LocalDateTime start, LocalDateTime end, Long patientId);
+
+    Appointment findByStartTime(LocalDateTime last);
 }
