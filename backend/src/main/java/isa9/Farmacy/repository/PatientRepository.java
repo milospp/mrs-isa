@@ -28,16 +28,6 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
     long countByNameIgnoreCaseContainingAndSurnameIgnoreCaseContaining(String name, String surname);
 
-//    @Query(value = "select pap.* from " +
-//            "(select distinct p.*, max(a.start_time) as last " +
-//            "from users p, appointment a, examination e " +
-//            "where p.id = e.patient_id and e.appointment_id = a.id " +
-//            "and a.doctor_id = :doctorId and e.status != 3 " +
-//            "and LOWER(p.name) like CONCAT('%',LOWER(:name),'%') " +
-//            "and LOWER(p.surname) like CONCAT('%',LOWER(:surname),'%') "+
-//            "group by p.id order by last desc) as pap", nativeQuery = true)
-//    Page<PatientLastAppointmentDTO> findSortedByDateDesc(@Param("doctorId") Long doctorId, @Param("name") String name, @Param("surname") String surname, Pageable paging);
-
     @Query(value = "select id, last FROM " +
             "(select distinct users.*, max(appointment.start_time) as last " +
             "FROM users, appointment, examination " +

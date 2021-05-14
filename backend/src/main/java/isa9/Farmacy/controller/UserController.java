@@ -133,18 +133,9 @@ public class UserController {
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id){
         User user = userService.findOne(id);
 
-//        UserDTO userDTO = new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress().toString(), user.getPhoneNumber(), user.getRole());
         UserDTO dto;
-//        if (user.getRole() == UserRole.PATIENT){
-//            dto = (UserDTO) patientToPatientDTO.convert((Patient) user);
-//        } else if (user.getRole() == UserRole.PHARMACIST){
-//            dto = (UserDTO) pharmacistToPharmacistDTO.convert((Pharmacist) user);
-//            System.out.println(user.getEmail());
-//        } else {
-//            dto = new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), user.getRole(), user.getEmail());
         dto = userToUserDTO.convert(user);
         System.out.println(user.getEmail());
-//        }
         return new ResponseEntity<>(dto, HttpStatus.OK);
 
     }
@@ -322,71 +313,6 @@ public class UserController {
             pladto.setStatus(last.getExamination().getStatus());
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
-
-        //if (pssDTO.getSortBy().equals("date")) {
-            /*List<Patient> list = userService.getPatientsByDoctorIdAndSearchAndSortByDateAsc(pssDTO);
-
-                List<PatientDTO> convertedList = patientToPatientDTO.convert(list);
-
-                long totalCount = userService.getAllMyPatientsTotalCount(pssDTO);
-
-                List<Appointment> lastAppointments = new ArrayList<>();
-                //        List<Appointment> notCanceled = appointmentService.getPatientDoctorNotCanceledAppointments()
-                for (Patient p : list){
-                    List<Appointment> notCanceled = appointmentService.getPatientDoctorNotCanceledAppointments(p.getId(), Long.valueOf(pssDTO.getSearchParams().get("doctorId")));
-                    if (notCanceled.isEmpty()){
-                        System.out.println("prazan pacijent " + p.getName());
-                        //
-                    }
-                    else {
-                        System.out.println("nije prazan pacijent " + p.getName());
-                        Examination last = p.getMyExaminations().stream().iterator().next();
-                        for (Examination e : p.getMyExaminations()){
-                            if (e.getAppointment().getDoctor().getId().equals(Long.valueOf(pssDTO.getSearchParams().get("doctorId")))){
-                                if (last.getAppointment().getStartTime().isAfter(e.getAppointment().getStartTime())){
-                                    last = e;
-                                }
-                            }
-                        }
-                        lastAppointments.add(last.getAppointment());
-                    }
-            }
-
-            List<AppointmentDTO> convertedAppointments = appointmentToAppointmentDTO.convert(lastAppointments).stream().sorted(Comparator.comparing(AppointmentDTO::getStartTime)).collect(Collectors.toList());
-            return new ResponseEntity<>(new PatientsPagesDTO(totalCount, convertedList, convertedAppointments), HttpStatus.OK);*/
-        //}
-        //else { // sorted by name and surname
-            /*List<Patient> list = userService.getAllMyPatientsPaged(pssDTO);
-
-            List<PatientDTO> convertedList = patientToPatientDTO.convert(list);
-
-            long totalCount = userService.getAllMyPatientsTotalCount(pssDTO);
-
-            List<Appointment> lastAppointments = new ArrayList<>();
-    //        List<Appointment> notCanceled = appointmentService.getPatientDoctorNotCanceledAppointments()
-            for (Patient p : list){
-                List<Appointment> notCanceled = appointmentService.getPatientDoctorNotCanceledAppointments(p.getId(), Long.valueOf(pssDTO.getSearchParams().get("doctorId")));
-                if (notCanceled.isEmpty()){
-                    System.out.println("prazan pacijent " + p.getName());
-                    //
-                }
-                else {
-                    System.out.println("nije prazan pacijent " + p.getName());
-                    Examination last = p.getMyExaminations().stream().iterator().next();
-                    for (Examination e : p.getMyExaminations()){
-                        if (e.getAppointment().getDoctor().getId().equals(Long.valueOf(pssDTO.getSearchParams().get("doctorId")))){
-                            if (last.getAppointment().getStartTime().isAfter(e.getAppointment().getStartTime())){
-                                last = e;
-                            }
-                        }
-                    }
-                    lastAppointments.add(last.getAppointment());
-                }
-            }
-
-            List<AppointmentDTO> convertedAppointments = appointmentToAppointmentDTO.convert(lastAppointments);
-            return new ResponseEntity<>(new PatientsPagesDTO(totalCount, convertedList, convertedAppointments), HttpStatus.OK);*/
-        //}
     }
 
     @GetMapping("all-patients")
@@ -397,7 +323,6 @@ public class UserController {
             if (us.getClass()!= Patient.class) continue;
             Patient patient = (Patient) us;
             resultDTOS.add(patientToPatientDTO.convert(patient));
-//            resultDTOS.add(new PatientDTO(patient.getId(), patient.getName(), patient.getSurname(), patient.getAddress(), patient.getPhoneNumber()));
         }
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
 

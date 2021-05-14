@@ -171,15 +171,6 @@ public class dbUserService extends UserServiceBase implements UserService, UserD
         if(pagedResult.hasContent()) {
             tuples = pagedResult.getContent();
             for (PatientIdLastDateDTO t : tuples) {
-//                if (t.getElements() != null) {
-//                    System.out.println(t.getElements().get(0).toString());
-//                    System.out.println(t.getElements().get(1).toString());
-//                    Long id = (Long) t.get(0);
-//                    LocalDateTime last = (LocalDateTime) t.get(1);
-//                    Patient patient = (Patient) this.findOne(id);
-//
-//                    patientLastAppointmentDTOS.add(new PatientLastAppointmentDTO(patient, last));
-//                }
                 System.out.println(t.getId());
                 System.out.println(t.getLast());
                 Patient patient = (Patient) this.findOne(t.getId());
