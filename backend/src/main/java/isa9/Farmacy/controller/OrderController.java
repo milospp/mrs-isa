@@ -41,8 +41,6 @@ public class OrderController {
     @PreAuthorize("hasAuthority('SUPPLIER')")
     public ResponseEntity<List<MedicineOrderDTO>> getAllAvailableOrders(){
         List<MedicineOrder> availableOrders = this.orderService.getAvailableOrders();
-        System.out.println(availableOrders);
-
         return new ResponseEntity<>(medOrderToMedOrderDTO.convert(availableOrders), HttpStatus.OK);
     }
 

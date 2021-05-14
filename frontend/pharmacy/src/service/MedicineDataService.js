@@ -108,6 +108,10 @@ class MedicineDataService {
   getMedicinesInStock(){
     return axios.get(`${API_URL}/medicinesInStock`);
   }
+
+  getSuppliersMedicines(supplier_id){
+    return axios.get(`${API_URL}/suppliersMedicines/`+supplier_id);
+  }
 }
 
 export default new MedicineDataService();

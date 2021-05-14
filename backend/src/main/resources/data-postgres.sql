@@ -232,6 +232,7 @@ insert into sys_admin (id) values (18);
 insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (16, 'milenkotep@maildrop.cc', true, 'Milenko', '$2a$10$0jpTwKzrxhpekj0zDufFvelVsfilpPXk7EX4U65u9gZfb7FTnOIlG', '0632212458', 6, 'Tepić', LOCALTIMESTAMP); --sifra : imamrobu
 insert into supplier (id) values (19);
 
+
 --MedQuantities (for orders)
 insert into medicine_quantity(quantity, medicine_id) values (250, 1);
 insert into medicine_quantity(quantity, medicine_id) values (500, 2);
@@ -240,6 +241,25 @@ insert into medicine_quantity(quantity, medicine_id) values (500, 2);
 insert into medicine_order (end_date, start_date, author_id, chosen_offer_id, pharmacy_id) values (LOCALTIMESTAMP + interval '4' day, LOCALTIMESTAMP, 14, null, 1);
 insert into medicine_order_all_medicines(medicine_order_id, all_medicines_id) values (1, 1);
 insert into medicine_order_all_medicines(medicine_order_id, all_medicines_id) values (1, 2);
+
+
+--MedQuantities (for suppliers)
+insert into medicine_quantity(quantity, medicine_id) values (450, 1);
+insert into medicine_quantity(quantity, medicine_id) values (370, 2);
+
+--Suppliers' medicines in stock
+insert into medicine_at_supplier(quantity_id, supplier_id) values (3, 19);
+insert into supplier_medicines_in_stock(supplier_id, medicines_in_stock_id) values (19, 1);
+insert into medicine_at_supplier(quantity_id, supplier_id) values (4, 19);
+insert into supplier_medicines_in_stock(supplier_id, medicines_in_stock_id) values (19, 2);
+
+--Suppliers' prices
+insert into supplier_med_price(price, start_date, medicine_at_supplier_id) values (175, LOCALTIMESTAMP, 1);
+update medicine_at_supplier SET current_price_id = 3 WHERE id = 1;
+insert into supplier_med_price(price, start_date, medicine_at_supplier_id) values (85, LOCALTIMESTAMP, 2);
+update medicine_at_supplier SET current_price_id = 4 WHERE id = 2;
+
+
 
 
 -- New pharmacist

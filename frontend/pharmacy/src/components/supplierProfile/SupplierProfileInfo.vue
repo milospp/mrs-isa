@@ -2,18 +2,17 @@
 
     <div v-if="supplier" class="row">
       <div class="col-md-12">
-        <h2>{{supplier.name}} {{supplier.surname}}</h2>
-        <!-- <p class="rating">Rating: <span>5</span></p> -->
+        <h2>{{supplier.name+" "+supplier.surname}}</h2>
 
         <p>Address: {{UtilService.AddressToString(supplier.address)}}</p>
         <p>Phone: {{supplier.phoneNumber}}</p>
       </div>
       
-      <div class="col-md-12">
-        <div class="d-inline-flex">
-            <button class="btn btn-block btn-warning" v-on:click="showModal()">Edit</button>
+        <div class="col-md-12">
+            <div class="d-inline-flex">
+                <button class="btn btn-block btn-warning" v-on:click="showModal()">Edit</button>
         </div>
-      </div>
+    </div>
 
 <!-- MODAL -->
 
@@ -30,7 +29,6 @@
                 <div class="modal-body">
 
                     <div id="update-data">
-                    <!-- <h1>Edit Personal Data</h1> -->
 
                         <div class="form-group">
                             <label name="product_name">First name</label>
@@ -83,11 +81,35 @@
                     </div>
                 </div>
             </form>
-        </div>      
+                </div>      
+            </div>
+
+        </div>
     </div>
 
+    <h3>My medicines</h3>
+    <div style="height: 300px; overflow-y: scroll;">
+    <form v-on:submit.prevent="">
+        <table class="table table-striped">
+            <thead class="card-header">
+                <th>Code</th>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th></th>
+                <th></th>
+            </thead>
+            <tbody>
+                <tr v-for="(item, key, index) in this.myMedicines">
+                    <td>{{key}}</td>
+                    <td>{{item.medicine.name}}</td>
+                    <td>{{item.quantity}}</td>
+                    <td><form v-on:click.prevent=""><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">View medicines</button></form></td>
+                    <td><form v-on:click.prevent=""><button type="button" class="btn btn-primary">Select</button></form></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
     </div>
-</div>
 
 </template>
 
@@ -95,6 +117,7 @@
 import DataService from '@/service/SupplierDataService.js';
 import UtilService from '@/service/UtilService.js';
 import AuthService from '@/service/AuthService.js';
+import MedicineDataService from '@/service/MedicineDataService.js';
 
 // import DermatologistDataService from '../../service/DermatologistDataService';
 
@@ -107,13 +130,14 @@ export default {
 
 	data: function () {
 		return {
-            supplier: null
+            supplier: null,
+            myMedicines: [],
 		}
 	},
     methods: {
         loadSupplierData() {
 
-            DataService.getSupplier(this.id) // HARDCODED this.id
+            DataService.getSupplier(this.id)
                 .then(response => {
                     console.log(this.id);
                     this.supplier = response.data;
@@ -125,17 +149,6 @@ export default {
         },
         editPersonalData: function()
         {
-            // Validation
-            // var price = parseFloat(this.product.price);
-            // if(isNaN(price))
-            // {
-            //     this.notifications.push({
-            //         type: 'danger',
-            //         message: 'Price must be a number'
-            //     });
-            //     return false;
-            // }
-
             DataService.editPersonalData(this.supplier)
             .then((response) => {
                 if (response.data)
@@ -148,7 +161,11 @@ export default {
         this.loadSupplierData();
     },
 	created() {
-		  this.id = AuthService.getCurrentUser().id;
+		this.id = AuthService.getCurrentUser().id;
+        MedicineDataService.getSuppliersMedicines(this.id).then(response => {
+            this.myMedicines = response.data;
+            console.log(this.myMedicines);
+        });
 	}
 }
 </script>

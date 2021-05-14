@@ -6,10 +6,12 @@ import isa9.Farmacy.model.dto.MedicineQuantityDTO;
 import isa9.Farmacy.service.MedicineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class MedQuantityDTOtoMedQuantity  implements Converter<MedicineQuantityDTO, MedicineQuantity> {
     private MedicineService medicineService;
 

@@ -2,7 +2,7 @@ package isa9.Farmacy.model;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Objects;
+
 import lombok.*;
 
 @Getter
@@ -43,7 +43,7 @@ public class Offer {
         this.endDate = endDate;
         this.offerDescription = offerDescription;
         this.supplier = sup;
-        this.status = OfferStatus.IDEFINITELY;
+        this.status = OfferStatus.INDEFINITELY;
     }
 
 
