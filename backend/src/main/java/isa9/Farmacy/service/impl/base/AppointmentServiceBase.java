@@ -371,6 +371,29 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     }
 
     @Override
+    public List<Appointment> getPatientDoctorNotCanceledAppointments(Long patientId, Long doctorId) {
+        Doctor d = userService.getDoctorById(doctorId);
+        Patient p = userService.getPatientById(patientId);
+        List<Appointment> appointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && isAssignedToPatient(x, p) && !isCanceled(x)).collect(Collectors.toList());
+        return appointments;
+    }
+
+    @Override
+    public List<User> getDoctorNotCanceledAppointmentsPatients(Long doctorId) {
+        Doctor d = userService.getDoctorById(doctorId);
+        List<User> patients = userService.findAll().stream().filter(x -> !getPatientDoctorNotCanceledAppointments(x.getId(), d.getId()).isEmpty()).collect(Collectors.toList());
+        return patients;
+    }
+
+    @Override
+    public Appointment getPatientDoctorNotCanceledAppointmentLast(Long patientId, Long doctorId) {
+        Doctor d = userService.getDoctorById(doctorId);
+        Patient p = userService.getPatientById(patientId);
+        Appointment appointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && isAssignedToPatient(x, p) && !isCanceled(x)).sorted(Comparator.comparing(Appointment::getStartTime).reversed()).collect(Collectors.toList()).get(0);
+        return appointments;
+    }
+
+    @Override
     public Boolean isPatientOccupied(LocalDateTime start, LocalDateTime end, Long patientId) {
         Collection<Appointment> appointments = this.getAllAppointmentsInInterval(start, end);
         for (Appointment appointment : appointments){

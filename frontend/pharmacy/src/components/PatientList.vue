@@ -5,15 +5,12 @@
                 <form v-on:submit.prevent="searchPatients(event)" style="float: right;">
                     <div class="form-row form-inline mb-2" >
                       <div class="form-group col-auto">
-                        <label for="sortSelect">Sort</label>
+                        <label for="sortSelect" class="mx-4">Sort</label>
                         <select class="form-control" id="sortSelect" v-model="sortParams" @change="sort()">
-                          <option :value="{ sortBy: 'name', ascending: true }">By First Name Asc</option>
-                          <option :value="{ sortBy: 'name', ascending: false }">By First Name Des</option>
-                          <option :value="{ sortBy: 'surname', ascending: true }">By Last Name Asc</option>
-                          <option :value="{ sortBy: 'surname', ascending: false }">By Last Name Des</option>
-                          <!-- <option value="date" v-on:click="setAsc('date')">By Last Appointment Asc</option>
-                          <option value="date" v-on:click="setDesc('date')">By Last Appointment Des</option> -->
+                          <option :key="sortOption.desc" :value="sortOption"  v-for="sortOption in sortOptions">{{sortOption.desc}}</option>
                         </select>       
+                      </div>
+                      <div class="form-group col-auto">
                       </div>
                       <div class="form-group col-auto">
                           <input type="text" class="form-control" id="nameInput" placeholder="First Name">
@@ -41,6 +38,7 @@
                         </th>
                         <th id="address">Address</th>
                         <th>Phone number</th>
+                        <th>Last Appointment</th>
                         <th></th>
                         <th></th>
                       </tr>
@@ -53,11 +51,12 @@
                             <!-- <td>{{UtilService.formatDateTime(p.lastAppointmentDate)}}</td> -->
                             <td>{{UtilService.AddressToString(p.address)}}</td>
                             <td>{{p.phoneNumber}}</td>
+                            <td>{{p.last}}</td>
                             <td>
                                 <button class="btn btn-secondary" v-on:click="showModal(p)">Examination history</button>
                             </td>
                             <td> <!-- UtilService.isTimeForAppointment(p.lastDate.startTime, p.lastDate.durationInMins) && -->
-                                <button v-if="p.lastDate.examination.status == 'PENDING'" class="btn btn-primary" v-on:click="startAppointment(p.lastDate)">Start 
+                                <button v-if="p.status == 'PENDING'" class="btn btn-primary" v-on:click="startAppointment(p.aid)">Start 
                                   <span >Examination</span>
                                 <!-- <span v-else>Counseling</span> v-if="this.role == 'DERMATOLOGIST'"-->
                                 </button>
@@ -261,10 +260,17 @@ export default {
               },
               ascending: true
             },
-            sortParams: {
-              sortBy: 'id',
-              ascending: true
-            },
+            sortParams: { sortBy: 'id', ascending: true, desc: 'By Default' },
+
+            sortOptions: [
+              { sortBy: 'id', ascending: true, desc: 'By Default' },
+              { sortBy: 'name', ascending: true, desc: 'By First Name Asc' },
+              { sortBy: 'name', ascending: false, desc: 'By First Name Desc' },
+              { sortBy: 'surname', ascending: true, desc: 'By Last Name Asc' },
+              { sortBy: 'surname', ascending: false, desc: 'By Last Name Desc' },
+              { sortBy: 'last', ascending: true, desc: 'By Last Appointment Asc' },
+              { sortBy: 'last', ascending: false, desc: 'By Last Appointment Desc' }
+            ],
 
         };
     },
@@ -273,13 +279,16 @@ export default {
           this.refreshData.doctorId = AuthService.getCurrentUser().id;
           console.log("page size: ", this.refreshData.pageSize);
           if (!this.refreshData.pageNo) this.refreshData.pageNo = 1;
+
+          console.log(this.sortParams.sortBy);
+        
           console.log(this.refreshData.pageNo);
             PatientDataService.retrieveAllPatients(this.refreshData) // HARDCODED
                 .then(response => {
                     this.patients = response.data.patients;
-                    this.lastAppointments = response.data.lastAppointmentsByDoctor;
+                    //this.lastAppointments = response.data.lastAppointmentsByDoctor;
                     this.totalPatients = response.data.count;
-                    this.addDatesToPatients();
+                    //this.addDatesToPatients();
                     console.log(response.data);
                 });
         },
@@ -350,8 +359,8 @@ export default {
           this.refreshPatients();
         },
 
-        startAppointment(lastAppointment){
-          this.$router.push('/appointment/'+lastAppointment.id);
+        startAppointment(lastAppointmentId){
+          this.$router.push('/appointment/'+lastAppointmentId);
         }
       },
 

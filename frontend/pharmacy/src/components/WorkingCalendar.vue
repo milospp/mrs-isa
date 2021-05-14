@@ -78,14 +78,7 @@ import AppointmentDataService from '@/service/AppointmentDataService.js';
 import PharmacyDataService from '@/service/PharmacyDataService.js';
 import AuthService from '../service/AuthService.js';
 
-const todos = [
-  {
-    description: 'Take Noah to basketball practice.',
-    isComplete: false,
-    dates: { weekdays: 6 }, // Every Friday
-    color: '#ff8080',       // Red
-  },
-];
+console.warn = () => {};
 
 export default {
   data() {

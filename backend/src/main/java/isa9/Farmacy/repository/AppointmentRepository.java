@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -18,4 +19,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "or (ap.start_time <= cast(?2 AS timestamp) and ap.start_time + (interval '1 minute' * ap.duration_in_mins) >= cast(?2 AS timestamp))" +
             "or (ap.start_time >= cast(?1 AS timestamp) and ap.start_time + (interval '1 minute' * ap.duration_in_mins) <= cast(?2 AS timestamp))", nativeQuery = true)
     List<Appointment> getAppointmentsInInterval(String start, String end);
+
+    Appointment findByStartTime(LocalDateTime last);
 }

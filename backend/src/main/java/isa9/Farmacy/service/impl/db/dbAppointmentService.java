@@ -146,4 +146,9 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
         return 0;                           // mozes da menjas
     }
 
+
+    @Override
+    public Appointment findByStartTime(LocalDateTime last) {
+        return appointmentRepository.findByStartTime(last);
+    }
 }
