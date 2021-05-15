@@ -145,6 +145,7 @@ export default {
 
             this.newOffer.price = this.calculateOfferPrice(this.currentOrder);
 
+            console.log(this.newOffer);
             OfferDataService.sendOffer(this.newOffer);
             
         },
@@ -153,7 +154,7 @@ export default {
         },
         hasEnoughMeds(order){
             for(var item of order.allMedicines){
-                if(item.quantity > this.suppliersMedicines[item.medicine.code]){
+                if(item.quantity > this.suppliersMedicines[item.medicine.code].inStock){
                     return false;
                 }
             }
@@ -174,6 +175,7 @@ export default {
         this.id = AuthService.getCurrentUser().id;
         MedicineDataService.getSuppliersMedicines(this.id).then(response => {
             this.suppliersMedicines = response.data;
+            console.log(this.suppliersMedicines);
         });
     },
 }

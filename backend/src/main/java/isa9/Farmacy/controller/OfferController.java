@@ -41,9 +41,7 @@ public class OfferController {
     @PostMapping("/newOffer")
     @PreAuthorize("hasAuthority('SUPPLIER')")
     public ResponseEntity<Integer> createOffer(@RequestBody OfferDTO offerDTO){
-        System.out.println(this.orderService.findOne(offerDTO.getOrder()).getAllMedicines().size());
         Offer newOffer = offerDTOtoOffer.convert(offerDTO);
-        System.out.println(newOffer.getOrder().getAllMedicines().size());
         this.offerService.saveNewOffer(newOffer);
         return new ResponseEntity<>(0, HttpStatus.OK);
     }

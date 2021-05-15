@@ -31,7 +31,8 @@ public class MedicineOrder {
     private List<Offer> allOffer;
     @ManyToOne
     private Pharmacy pharmacy;
-    @OneToMany(cascade =  CascadeType.ALL, fetch = FetchType.EAGER)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(cascade =  CascadeType.ALL)
     private List<MedicineQuantity> allMedicines;
     @ManyToOne
     private PharmacyAdmin author; // jer ponudu za neku narudzbenicu sme da prihvati samo admin koji je napravio narudzbenicu
