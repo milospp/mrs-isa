@@ -9,11 +9,13 @@ import isa9.Farmacy.repository.OrderRepository;
 import isa9.Farmacy.service.OrderService;
 import isa9.Farmacy.service.impl.base.OrderServiceBase;
 import isa9.Farmacy.support.OfferDTOtoOffer;
+import isa9.Farmacy.support.OfferToOfferDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,10 +27,12 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
 
     private final OrderRepository orderRepository;
 
+
     @Autowired
     public dbOrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
+
 
     @Override
     public List<MedicineOrder> findAll() {
@@ -43,11 +47,7 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
 
     @Override
     public MedicineOrder findOne(Long id) {
-        MedicineOrder povratna = this.orderRepository.findById(id).orElse(null);
-        if (povratna == null) return povratna;
-        List<Offer> ponude = this.offerService.getOffers(povratna.getId());
-        povratna.setAllOffer(ponude);
-        return povratna;
+        return this.orderRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -72,19 +72,18 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
         this.orderRepository.delete(zaBrisanje);
     }
 
-    @Override
-    public int chooseOffer(OfferDTO offerDTO) {
-        int povratna = -1;
-        OfferDTOtoOffer konverter = new OfferDTOtoOffer(this.offerService);
-        Offer ponuda = konverter.convert(offerDTO);
-        MedicineOrder narudzbenica = this.orderRepository.findById(offerDTO.getOrder()).orElse(null);
-
-        if (ponuda.getEndDate().before(new Date())) return povratna;
-        povratna = 0;
-        narudzbenica.setChosenOffer(ponuda);
-        ponuda.setStatus(OfferStatus.ACCEPTED);
-        for (Offer o : narudzbenica.getAllOffer()) if (o.getId() != ponuda.getId()) o.setStatus(OfferStatus.REJECTED);
-        this.orderRepository.save(narudzbenica);
-        return povratna;
-    }
+//    @Override
+//    public int chooseOffer(OfferDTO offerDTO) {
+//        int povratna = -1;
+//        Offer ponuda = this.offerDTOtoOffer.convert(offerDTO);
+//        MedicineOrder narudzbenica = this.orderRepository.findById(offerDTO.getOrder()).orElse(null);
+//
+//        if (ponuda.getEndDate().isBefore(LocalDateTime.now())) return povratna;
+//        povratna = 0;
+//        narudzbenica.setChosenOffer(ponuda);
+//        ponuda.setStatus(OfferStatus.ACCEPTED);
+//        for (Offer o : narudzbenica.getAllOffer()) if (o.getId() != ponuda.getId()) o.setStatus(OfferStatus.REJECTED);
+//        this.orderRepository.save(narudzbenica);
+//        return povratna;
+//    }
 }

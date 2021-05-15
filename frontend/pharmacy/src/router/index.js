@@ -34,6 +34,8 @@ import SupplierProfile from '@/views/SupplierProfile.vue'
 import CounselingPage from '@/views/CounselingPage.vue'
 import MedicineSearchPage from '@/views/MedicineSearchPage.vue'
 import FirstLogin from '@/views/FirstLogin.vue'
+import SuppliersOffersPage from '@/views/SuppliersOffersPage.vue'
+import AddNewOffer from '@/views/AddNewOffer.vue'
 
 
 const routes = [
@@ -214,6 +216,16 @@ const routes = [
     path: '/firstLogin',
     name: 'FirstLogin',
     component: FirstLogin
+  },
+  {
+    path: '/addNewOffer',
+    name: 'AddNewOffer',
+    component: AddNewOffer
+  },
+  {
+    path: '/SuppliersOffers',
+    name: 'SuppliersOffersPage',
+    component: SuppliersOffersPage
   },
   {
     path: '/counseling',

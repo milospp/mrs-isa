@@ -79,6 +79,8 @@
 				<div v-else-if="user.role === 'SUPPLIER'" class="navbar-nav mr-auto mt-2 mt-lg-0">
 
 					<a class="navbar-brand" href="/">Navbar</a>
+					<router-link :to="{ name: 'AddNewOffer'}" class="nav-item nav-link">New offer</router-link>
+					<router-link :to="{ name: 'SuppliersOffersPage'}" class="nav-item nav-link">My offers</router-link>
 
 				</div>
 

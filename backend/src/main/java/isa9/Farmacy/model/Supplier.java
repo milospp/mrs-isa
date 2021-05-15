@@ -1,18 +1,17 @@
 package isa9.Farmacy.model;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.*;
 
-import java.util.List;
-import java.util.Objects;
 import lombok.*;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"medicinesInStock", "allOffer"})
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,11 +19,11 @@ import lombok.*;
 
 @Entity
 public class Supplier extends User{
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Offer> allOffer;
 
-    @OneToMany
-    private List<MedicineQuantity> quantityOnState;
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<MedicineAtSupplier> medicinesInStock;
 
 
 
@@ -32,7 +31,7 @@ public class Supplier extends User{
                     Address address, String phoneNumber, UserRole role, Timestamp t) {
         super(id, name, surname, email, password, address, phoneNumber, role, true, t);
         this.allOffer = new ArrayList<Offer>();
-        this.quantityOnState = new ArrayList<MedicineQuantity>();
+        this.medicinesInStock = new HashSet<MedicineAtSupplier>();
     }
 
 

@@ -28,16 +28,24 @@ public class OrderController {
     private final OrderService orderService;
     private final MedicineService medicineService;
     private final UserService userService;
+    private final MedOrderToMedOrderDTO medOrderToMedOrderDTO;
     private final PharmacyService pharmacyService;
 
     @Autowired
-    public OrderController(OrderService orderService, MedicineService medicineService, UserService userService,
-                           PharmacyService pharmacyService) {
+    public OrderController(OrderService orderService, MedicineService medicineService, UserService userService, MedOrderToMedOrderDTO medOrderToMedOrderDTO, PharmacyService pharmacyService) {
         this.orderService = orderService;
         this.medicineService = medicineService;
         this.userService = userService;
+        this.medOrderToMedOrderDTO = medOrderToMedOrderDTO;
         this.pharmacyService = pharmacyService;
     }
+
+    @GetMapping("/availableOrders")
+    @PreAuthorize("hasAuthority('SUPPLIER')")
+    public ResponseEntity<List<MedicineOrderDTO>> getAllAvailableOrders(){
+        List<MedicineOrder> availableOrders = this.orderService.getAvailableOrders();
+        return new ResponseEntity<>(medOrderToMedOrderDTO.convert(availableOrders), HttpStatus.OK);
+
 
     @PostMapping("/add/{idAdmina}")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
@@ -121,10 +129,10 @@ public class OrderController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
-    @PostMapping("/choose")
-    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
-    public ResponseEntity<Integer> chooseOrder(@RequestBody OfferDTO ponuda) {
-        int povratna = this.orderService.chooseOffer(ponuda);
-        return new ResponseEntity<>(povratna, HttpStatus.OK);
-    }
+//    @PostMapping("/choose")
+//    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+//    public ResponseEntity<Integer> chooseOrder(@RequestBody OfferDTO ponuda) {
+//        int povratna = this.orderService.chooseOffer(ponuda);
+//        return new ResponseEntity<>(povratna, HttpStatus.OK);
+//    }
 }

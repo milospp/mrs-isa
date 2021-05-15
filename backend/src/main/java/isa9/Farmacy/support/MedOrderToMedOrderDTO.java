@@ -4,10 +4,12 @@ import isa9.Farmacy.model.MedicineOrder;
 import isa9.Farmacy.model.dto.MedicineOrderDTO;
 import isa9.Farmacy.model.dto.MedicineQuantityDTO;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class MedOrderToMedOrderDTO implements Converter<MedicineOrder, MedicineOrderDTO> {
 
     @Override
@@ -15,6 +17,7 @@ public class MedOrderToMedOrderDTO implements Converter<MedicineOrder, MedicineO
         MedicineOrderDTO povratna = new MedicineOrderDTO();
         povratna.setStartDate(medicineOrder.getStartDate());
         povratna.setEndDate(medicineOrder.getEndDate());
+        povratna.setId(medicineOrder.getId());
 
         MedicineQuantityToMedicineQuantityDTO medQuantity = new MedicineQuantityToMedicineQuantityDTO();
         List<MedicineQuantityDTO> mqPomocno = new ArrayList<>();

@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class MedicineController {
 
     private final MedicineService medicineService;
+    private final MedQuantityService medQuantityService;
     private final UserService userService;
     private final PharmacyService pharmacyService;
     private final RatingService ratingService;
@@ -28,9 +29,12 @@ public class MedicineController {
     private final MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO;
     private final MedicineToMedicineDTO medicineToMedicineDTO;
     private final RatingToRatingDTO ratingToRatingDTO;
+    private final MedicineQuantityToMedicineQuantityDTO medicineQuantityToMedicineQuantityDTO;
+    private final MedicineAtSupplierService medicineAtSupplierService;
+    private final MedicineAtSupplierToMedAtSupplierDTO medicineAtSupplierToMedAtSupplierDTO;
 
     @Autowired
-    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, RatingService ratingService, MedReservationService medReservationService, MedReservationToMedReservationDTO medReservationToMedReservationDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedicineToMedicineDTO medicineToMedicineDTO, RatingToRatingDTO ratingToRatingDTO) {
+    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, RatingService ratingService, MedReservationService medReservationService, MedReservationToMedReservationDTO medReservationToMedReservationDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedicineToMedicineDTO medicineToMedicineDTO, RatingToRatingDTO ratingToRatingDTO, MedQuantityService medQuantityService, MedicineQuantityToMedicineQuantityDTO medicineQuantityToMedicineQuantityDTO, MedicineAtSupplierService medicineAtSupplierService, MedicineAtSupplierToMedAtSupplierDTO medicineAtSupplierToMedAtSupplierDTO) {
         this.medicineService = medicineService;
         this.userService = userService;
         this.pharmacyService = pharmacyService;
@@ -40,6 +44,10 @@ public class MedicineController {
         this.medicineInPharmacyToMedInPharmaDTO = medicineInPharmacyToMedInPharmaDTO;
         this.medicineToMedicineDTO = medicineToMedicineDTO;
         this.ratingToRatingDTO = ratingToRatingDTO;
+        this.medQuantityService = medQuantityService;
+        this.medicineQuantityToMedicineQuantityDTO = medicineQuantityToMedicineQuantityDTO;
+        this.medicineAtSupplierService = medicineAtSupplierService;
+        this.medicineAtSupplierToMedAtSupplierDTO = medicineAtSupplierToMedAtSupplierDTO;
     }
 
     @GetMapping("tmp-test")
@@ -329,5 +337,12 @@ public class MedicineController {
         }
 
         return new ResponseEntity<List<MedicineDTO>>(inStock, HttpStatus.OK);
+    }
+
+    @GetMapping("/suppliersMedicines/{id}")
+    @PreAuthorize("hasAuthority('SUPPLIER')")
+    public ResponseEntity<Map<String, MedAtSupplierDTO>> getSuppliersMedicines(@PathVariable Long id){
+        Set<MedicineAtSupplier> medicineAtSupplierSet = this.medicineAtSupplierService.medicinesOfSupplier(id);
+        return new ResponseEntity<>(this.medicineAtSupplierToMedAtSupplierDTO.setToMap(medicineAtSupplierSet), HttpStatus.OK);
     }
 }

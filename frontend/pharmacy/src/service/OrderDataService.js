@@ -1,11 +1,11 @@
 import axios from "axios";
 
 
-const API_URL = "http://localhost:8080/api";
+const API_URL = "http://localhost:8080/api/orders";
 
 class OrderDataService {
     getOrders(idAdmina) {
-        return axios.get(API_URL + "/orders/" + idAdmina)
+        return axios.get(API_URL + "/" + idAdmina)
         .catch(function (error) {
           if (error.response) {
             console.log(error.response.data);
@@ -17,10 +17,14 @@ class OrderDataService {
       });
     }
 
+    getAvailableOrders(){
+      return axios.get(`${API_URL}/availableOrders`);
+    }
+
     addOrder(idAdminaApoteke, lekovi, kraj) {
       return axios({
         method: 'post',
-        url: API_URL + "/orders/add/" + idAdminaApoteke,
+        url: API_URL + "/add/" + idAdminaApoteke,
         data: {"medicines": lekovi, "endDate": kraj}
       }).catch(function (error) {
         if (error.response) {
@@ -36,7 +40,7 @@ class OrderDataService {
     deleteOrder(narudzbina) {
       return axios({
           method: 'post',
-          url: API_URL + "/orders/delete",
+          url: API_URL + "/delete",
           data: narudzbina
       }).catch(function (error) {
           if (error.response) {
@@ -52,7 +56,7 @@ class OrderDataService {
   findOneOrder(order) {
     return axios({
         method: 'post',
-        url: API_URL + "/orders/findOne",
+        url: API_URL + "/findOne",
         data: order
     }).catch(function (error) {
         if (error.response) {
@@ -68,7 +72,7 @@ class OrderDataService {
   editOrder(order) {
     return axios({
         method: 'post',
-        url: API_URL + "/orders/edit",
+        url: API_URL + "/edit",
         data: order
     }).catch(function (error) {
         if (error.response) {
@@ -84,7 +88,7 @@ class OrderDataService {
   chooseOffer(offer) {
     return axios({
         method: 'post',
-        url: API_URL + "/orders/choose",
+        url: API_URL + "/choose",
         data: offer
     }).catch(function (error) {
         if (error.response) {
