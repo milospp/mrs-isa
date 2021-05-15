@@ -15,9 +15,13 @@ import java.util.List;
 public abstract class OfferServiceBase implements OfferService {
 
     protected MedQuantityService medQuantityService;
+    protected UserService userService;
 
     @Autowired
     public final void setMedQuantityService(MedQuantityService medQuantityService){ this.medQuantityService = medQuantityService;}
+
+    @Autowired
+    public final void setUserService(UserService userService){ this.userService = userService; }
 
     @Override
     public void saveNewOffer(Offer offer) {
@@ -41,5 +45,11 @@ public abstract class OfferServiceBase implements OfferService {
         System.out.println(offer);
 
         this.save(offer);
+    }
+
+    @Override
+    public List<Offer> getOffersOfSupplier(Long supplierId) {
+        Supplier supplier = (Supplier) this.userService.findOne(supplierId);
+        return supplier.getAllOffer();
     }
 }

@@ -42,10 +42,10 @@ public class OrderController {
 
     @GetMapping("/availableOrders")
     @PreAuthorize("hasAuthority('SUPPLIER')")
-    public ResponseEntity<List<MedicineOrderDTO>> getAllAvailableOrders(){
+    public ResponseEntity<List<MedicineOrderDTO>> getAllAvailableOrders() {
         List<MedicineOrder> availableOrders = this.orderService.getAvailableOrders();
         return new ResponseEntity<>(medOrderToMedOrderDTO.convert(availableOrders), HttpStatus.OK);
-
+    }
 
     @PostMapping("/add/{idAdmina}")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")

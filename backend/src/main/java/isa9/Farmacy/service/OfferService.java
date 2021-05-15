@@ -7,6 +7,7 @@ import java.util.List;
 public interface OfferService extends GenericService<Offer> {
 
     List<Offer> getOffers(Long odrerId);
+    List<Offer> getOffersOfSupplier(Long supplierId);
 
     void saveNewOffer(Offer offer);
 }

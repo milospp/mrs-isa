@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api/offers")
@@ -44,5 +46,12 @@ public class OfferController {
         Offer newOffer = offerDTOtoOffer.convert(offerDTO);
         this.offerService.saveNewOffer(newOffer);
         return new ResponseEntity<>(0, HttpStatus.OK);
+    }
+
+    @GetMapping("/offersOfSupplier/{id}")
+    @PreAuthorize("hasAuthority('SUPPLIER')")
+    public ResponseEntity<List<OfferDTO>> getAllOffers(@PathVariable Long id){
+        List<Offer> offersOfSupplier = this.offerService.getOffersOfSupplier(id);
+        return new ResponseEntity<>(this.offerToOfferDTO.convert(offersOfSupplier), HttpStatus.OK);
     }
 }
