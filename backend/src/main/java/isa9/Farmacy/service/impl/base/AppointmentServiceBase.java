@@ -7,16 +7,19 @@ import isa9.Farmacy.service.AppointmentService;
 import isa9.Farmacy.service.ExaminationService;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.utils.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class AppointmentServiceBase implements AppointmentService {
     protected ExaminationService examinationService;
     protected UserService userService;
     protected PharmacyService pharmacyService;
+    protected MailService mailService;
 
     public AppointmentServiceBase() {
     }
@@ -34,6 +37,11 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     @Autowired
     public final void setPharmacyService(PharmacyService pharmacyService) {
         this.pharmacyService = pharmacyService;
+    }
+
+    @Autowired
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
     }
 
     @Override
@@ -205,7 +213,8 @@ public abstract class AppointmentServiceBase implements AppointmentService {
                 .therapy(new HashSet<>())
                 .build();
         appointment.setExamination(examination);
-        save(appointment);
+        appointment = save(appointment);
+        mailService.sendAppointmentInfo(appointment);
 
         return appointment;
     }
@@ -294,7 +303,10 @@ public abstract class AppointmentServiceBase implements AppointmentService {
                 .appointment(appointment).build();
         appointment.setExamination(examination);
 
-        return save(appointment);
+        appointment = save(appointment);
+        mailService.sendAppointmentInfo(appointment);
+
+        return appointment;
 
     }
 
@@ -346,7 +358,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     public List<Appointment> getDermForPharmacyAppointmentsNotCanceled(Long dermId, Long pharamcyId) {
         Doctor d = userService.getDoctorById(dermId);
         List<Appointment> allAppointments;
-        allAppointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && isInPharmacy(x, pharamcyId) && !isCanceled(x)).collect(Collectors.toList());
+        allAppointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && isInPharmacy(x, pharamcyId) && !isCanceled(x)).sorted(Comparator.comparing(Appointment::getStartTime)).collect(Collectors.toList());
         return allAppointments;
     }
 
@@ -354,8 +366,31 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     public List<Appointment> getDoctorAppointmentsNotCanceled(Long doctorId) {
         Doctor d = userService.getDoctorById(doctorId);
         List<Appointment> allAppointments;
-        allAppointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && !isCanceled(x)).collect(Collectors.toList());
+        allAppointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && !isCanceled(x)).sorted(Comparator.comparing(Appointment::getStartTime)).collect(Collectors.toList());
         return allAppointments;
+    }
+
+    @Override
+    public List<Appointment> getPatientDoctorNotCanceledAppointments(Long patientId, Long doctorId) {
+        Doctor d = userService.getDoctorById(doctorId);
+        Patient p = userService.getPatientById(patientId);
+        List<Appointment> appointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && isAssignedToPatient(x, p) && !isCanceled(x)).collect(Collectors.toList());
+        return appointments;
+    }
+
+    @Override
+    public List<User> getDoctorNotCanceledAppointmentsPatients(Long doctorId) {
+        Doctor d = userService.getDoctorById(doctorId);
+        List<User> patients = userService.findAll().stream().filter(x -> !getPatientDoctorNotCanceledAppointments(x.getId(), d.getId()).isEmpty()).collect(Collectors.toList());
+        return patients;
+    }
+
+    @Override
+    public Appointment getPatientDoctorNotCanceledAppointmentLast(Long patientId, Long doctorId) {
+        Doctor d = userService.getDoctorById(doctorId);
+        Patient p = userService.getPatientById(patientId);
+        Appointment appointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && isAssignedToPatient(x, p) && !isCanceled(x)).sorted(Comparator.comparing(Appointment::getStartTime).reversed()).collect(Collectors.toList()).get(0);
+        return appointments;
     }
 
     @Override

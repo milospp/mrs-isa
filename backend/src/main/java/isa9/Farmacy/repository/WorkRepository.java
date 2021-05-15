@@ -10,7 +10,9 @@ import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface WorkRepository extends JpaRepository<Work, Long> {
 
     List<Work> findAllByDoctor(Doctor doctor);

@@ -109,7 +109,12 @@
         </div>
         <div class="modal-body" align="left"><label>{{this.poruka}}</label></div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="inicijalizujPoruku('Wait... Your require is in processing')">OK</button>
+            <div v-if="this.porukaOk == true">
+                 <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="promeniProzor()">OK</button>
+            </div>
+            <div v-else>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="inicijalizujPoruku('Wait... Your require is in processing')">OK</button>
+            </div>
         </div>
       </div>
     </div>
@@ -142,15 +147,16 @@ export default {
                 endHour: "12:00",
             },
             poruka: "Wait... Your require is in processing", 
+            porukaOk: false,
         };
     },
     created() {
         this.id = this.$route.params.id; 
     },
     methods: {
-        inicijalizujPoruku(pk) { 
-            this.poruka = pk;
-        },
+        inicijalizujPoruku(pk) { this.poruka = pk; },
+        promeniProzor() { window.location.href = "/homePagePharmacyAdmin"; },
+
         proveraForme(e) {
             if (!this.provera_vremena()) {
                 this.poruka = "Start hour must be smaller than end hour";
@@ -160,6 +166,7 @@ export default {
             .then(response => {
                 if (response.data == 0) { 
                     this.poruka = "You successfully hired a pharmacist"; 
+                    this.porukaOk = true;
                     return true;
                 } 
                 this.poruka = "Email is not unique!";

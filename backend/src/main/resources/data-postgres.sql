@@ -116,8 +116,8 @@ insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (11, '11:
 insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 3);
 
 --med price
-insert into med_price(price) values (200);
-insert into med_price(price) values (100);
+insert into med_price(price, start_date) values (200, current_timestamp - INTERVAL '10 days');
+insert into med_price(price, start_date) values (100, current_timestamp - INTERVAL '10 days');
 
 --med catalog in pharmacy
 insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (5000, 1,1,1);
@@ -128,20 +128,21 @@ insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharm
 update med_price SET medicine_in_pharmacy_id = 2 WHERE id = 2;
 insert into pharmacy_medicines (pharmacy_id, medicines_id) values (1,2);
 
+set timezone = 'Europe/Belgrade';
 --appointments
 -- id 1
 --insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 200, current_timestamp + INTERVAL '3day', 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 300, current_timestamp, 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 400, current_timestamp + INTERVAL '1 hour', 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 500, current_timestamp + INTERVAL '2 hours', 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 330, current_timestamp + INTERVAL '3 hours', 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 340, current_timestamp, 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, current_timestamp + interval '1 day', 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 300, '2021-06-01 08:00:00'::timestamp, 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 400, '2021-06-03 08:00:00'::timestamp + INTERVAL '1 hour', 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 500, '2021-06-04 08:00:00'::timestamp + INTERVAL '2 hours', 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 330, '2021-06-01 08:00:00'::timestamp + INTERVAL '3 hours', 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 340, '2021-06-17 08:00:00'::timestamp + INTERVAL '4 hours', 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-05-17 08:00:00'::timestamp + INTERVAL '5 hours', 0);
 insert into examination (status, appointment_id, patient_id) values (0, 1, 2);
-insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Migrena', 'Pacijent oseca glavobolju', 1, 2, 1);
-insert into examination (status, appointment_id, patient_id) values (2, 3, 3);
+insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Migrena', 'Pacijent oseca glavobolju', 1, 5, 1);
+insert into examination (status, appointment_id, patient_id) values (0, 3, 3);
 insert into examination (status, appointment_id, patient_id) values (3, 4, 2);
-insert into examination (status, appointment_id, patient_id) values (3, 5, 3);
+insert into examination (status, appointment_id, patient_id) values (0, 2, 1);
 update appointment SET examination_id = 1 WHERE id = 1;
 update appointment SET examination_id = 2 WHERE id = 2;
 update appointment SET examination_id = 3 WHERE id = 3;
@@ -153,7 +154,7 @@ insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 
 insert into patient_my_examinations (patient_id, my_examinations_id) values (2, 1);
 insert into patient_my_examinations (patient_id, my_examinations_id) values (3, 3);
 insert into patient_my_examinations (patient_id, my_examinations_id) values (2, 4);
-insert into patient_my_examinations (patient_id, my_examinations_id) values (3, 5);
+insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 5);
 
 --appointments for pharmacist
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (12, 30, null, 1, 300, current_timestamp, 1);

@@ -1,12 +1,15 @@
 package isa9.Farmacy.service.impl.db;
 
 import isa9.Farmacy.model.*;
+import isa9.Farmacy.model.dto.PatientIdLastDateDTO;
+import isa9.Farmacy.model.dto.PatientLastAppointmentDTO;
 import isa9.Farmacy.repository.DoctorRepository;
 import isa9.Farmacy.repository.PatientRepository;
 import isa9.Farmacy.repository.UserRepository;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.impl.base.UserServiceBase;
 import isa9.Farmacy.support.PaginationSortSearchDTO;
+import isa9.Farmacy.support.PatientsPagesDTO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.cfg.NotYetImplementedException;
@@ -17,6 +20,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.data.util.Pair;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -28,6 +33,8 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
+import javax.persistence.TupleElement;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.List;
@@ -135,6 +142,51 @@ public class dbUserService extends UserServiceBase implements UserService, UserD
     public long getAllMyPatientsTotalCount(PaginationSortSearchDTO pssDTO) {
         return patientRepository.countFoundPatientsByDoctorIdAndSearch(Long.valueOf(pssDTO.getSearchParams().get("doctorId")), pssDTO.getSearchParams().get("name"),
                 pssDTO.getSearchParams().get("surname"));
+    }
+
+    @Override
+    public List<Patient> getPatientsByDoctorIdAndSearchAndSortByDateAsc(PaginationSortSearchDTO pssDTO) {
+        Pageable p = PageRequest.of(pssDTO.getPageNo() - 1, pssDTO.getPageSize());
+        return patientRepository.findAll();
+    }
+
+    @Override
+    public PatientsPagesDTO getPatientLastAppointmentDTOsSortedSearched(PaginationSortSearchDTO pssDTO) {
+        Sort.Direction d;
+        if (pssDTO.isAscending()) d = Sort.Direction.ASC;
+        else d = Sort.Direction.DESC;
+        Pageable p = PageRequest.of(pssDTO.getPageNo() - 1, pssDTO.getPageSize(), d, pssDTO.getSortBy());
+        Page<PatientIdLastDateDTO> pagedResult = patientRepository.findNotSorted(
+                Long.valueOf(pssDTO.getSearchParams().get("doctorId")),
+                pssDTO.getSearchParams().get("name"),
+                pssDTO.getSearchParams().get("surname"),
+                p
+        );
+
+
+
+
+        List<PatientLastAppointmentDTO> patientLastAppointmentDTOS = new ArrayList<PatientLastAppointmentDTO>();
+        List<PatientIdLastDateDTO> tuples;
+        if(pagedResult.hasContent()) {
+            tuples = pagedResult.getContent();
+            for (PatientIdLastDateDTO t : tuples) {
+                System.out.println(t.getId());
+                System.out.println(t.getLast());
+                Patient patient = (Patient) this.findOne(t.getId());
+                patientLastAppointmentDTOS.add(new PatientLastAppointmentDTO(patient, t.getLast()));
+
+            }
+
+        } else {
+            patientLastAppointmentDTOS = new ArrayList<PatientLastAppointmentDTO>();
+        }
+        long count = patientRepository.findNotSortedCount(
+                Long.valueOf(pssDTO.getSearchParams().get("doctorId")),
+                pssDTO.getSearchParams().get("name"),
+                pssDTO.getSearchParams().get("surname"));
+        System.out.println("count: " + count);
+        return new PatientsPagesDTO(count, patientLastAppointmentDTOS);
     }
 
     @Override

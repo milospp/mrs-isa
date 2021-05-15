@@ -2,6 +2,7 @@ package isa9.Farmacy.support;
 
 import isa9.Farmacy.model.dto.AppointmentDTO;
 import isa9.Farmacy.model.dto.PatientDTO;
+import isa9.Farmacy.model.dto.PatientLastAppointmentDTO;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,5 @@ import java.util.List;
 @Builder
 public class PatientsPagesDTO {
     private long count;
-    private List<PatientDTO> patients;
-    private List<AppointmentDTO> lastAppointmentsByDoctor;
+    private List<PatientLastAppointmentDTO> patients;
 }

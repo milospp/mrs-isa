@@ -50,6 +50,9 @@ public class Pharmacy {
     @NotNull
     private double pricePerHour;
 
+    @OneToMany
+    private List<InquiryMedicine> inquiryMedicines;
+
 
     public Pharmacy(String name, Address address, String description, Long id) {
         super();
@@ -60,6 +63,7 @@ public class Pharmacy {
         this.staff = new HashSet<>();
         this.orders = new HashSet<>();
         this.medicines = new HashSet<>();
+        this.inquiryMedicines = new ArrayList<>();
     }
 
     public Pharmacy(String name, Address address, String description, Long id, Set<Work> staff, Set<MedicineOrder> orders, Set<MedicineInPharmacy> medicines) {
@@ -70,6 +74,7 @@ public class Pharmacy {
         this.staff = staff;
         this.orders = orders;
         this.medicines = medicines;
+        this.inquiryMedicines = new ArrayList<>();
     }
 
 

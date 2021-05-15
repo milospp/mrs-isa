@@ -87,6 +87,36 @@ class PharmacyDataService {
   canUserRate(patientId, pharmacyId) {
     return axios.get(`${API_URL}/` + pharmacyId + `/rating/user/` + patientId + `/can-rate`);
   }
+
+  inquiriesPharmacy(idApoteke) {
+    return axios.get(API_URL + "/inquiries/" + idApoteke)
+    .catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("Error");
+      console.log(error.config);
+  });
+  }
+
+  savePricelist(idAdminaApoteke, cenovnik) {
+    return axios({
+      method: 'post',
+      url: API_URL + "/savePricelist/" + idAdminaApoteke,
+      data: cenovnik
+    }).catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("Error");
+      console.log(error.config);
+  });
+  }
+
 }
 
 

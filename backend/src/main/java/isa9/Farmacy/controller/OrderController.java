@@ -7,6 +7,7 @@ import isa9.Farmacy.model.dto.MedicineQuantityDTO;
 import isa9.Farmacy.model.dto.OfferDTO;
 import isa9.Farmacy.service.MedicineService;
 import isa9.Farmacy.service.OrderService;
+import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +29,15 @@ public class OrderController {
     private final MedicineService medicineService;
     private final UserService userService;
     private final MedOrderToMedOrderDTO medOrderToMedOrderDTO;
+    private final PharmacyService pharmacyService;
 
     @Autowired
-    public OrderController(OrderService orderService, MedicineService medicineService, UserService userService, MedOrderToMedOrderDTO medOrderToMedOrderDTO) {
+    public OrderController(OrderService orderService, MedicineService medicineService, UserService userService, MedOrderToMedOrderDTO medOrderToMedOrderDTO, PharmacyService pharmacyService) {
         this.orderService = orderService;
         this.medicineService = medicineService;
         this.userService = userService;
         this.medOrderToMedOrderDTO = medOrderToMedOrderDTO;
+        this.pharmacyService = pharmacyService;
     }
 
     @GetMapping("/availableOrders")
@@ -42,7 +45,7 @@ public class OrderController {
     public ResponseEntity<List<MedicineOrderDTO>> getAllAvailableOrders(){
         List<MedicineOrder> availableOrders = this.orderService.getAvailableOrders();
         return new ResponseEntity<>(medOrderToMedOrderDTO.convert(availableOrders), HttpStatus.OK);
-    }
+
 
     @PostMapping("/add/{idAdmina}")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
@@ -59,6 +62,7 @@ public class OrderController {
 
         MedQuantityDTOtoMedQuantity konverter = new MedQuantityDTOtoMedQuantity(this.medicineService);
         List<MedicineQuantity> listaLekova = konverter.convert(pomocna.getMedicines());
+        this.pharmacyService.checkMedicineInPharmacy(admin.getPharmacy(), listaLekova);
 
         MedicineOrder porudzbina = new MedicineOrder();
         porudzbina.setPharmacy(admin.getPharmacy());

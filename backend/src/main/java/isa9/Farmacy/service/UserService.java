@@ -2,7 +2,10 @@ package isa9.Farmacy.service;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.PatientDTO;
+import isa9.Farmacy.model.dto.PatientLastAppointmentDTO;
 import isa9.Farmacy.support.PaginationSortSearchDTO;
+import isa9.Farmacy.support.PatientsPagesDTO;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Set;
@@ -34,6 +37,9 @@ public interface UserService extends GenericService<User> {
 
     List<Patient> getAllMyPatientsPaged(PaginationSortSearchDTO pssDTO);
     long getAllMyPatientsTotalCount(PaginationSortSearchDTO pssDTO);
+    List<Patient> getPatientsByDoctorIdAndSearchAndSortByDateAsc(PaginationSortSearchDTO pssDTO);
+
+    PatientsPagesDTO getPatientLastAppointmentDTOsSortedSearched(PaginationSortSearchDTO pssDTO);
 
     Doctor getDoctorById(Long id);
     Patient getPatientById(Long id);

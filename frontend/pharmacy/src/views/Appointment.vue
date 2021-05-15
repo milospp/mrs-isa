@@ -174,6 +174,7 @@ import UtilService from '../service/UtilService.js';
 import $ from 'jquery';
 import MedicineDataService from '../service/MedicineDataService.js';
 import PatientDataService from '../service/PatientDataService.js';
+import AuthService from "../service/AuthService.js";
 
 // @ is an alias to /src
 export default {
@@ -292,8 +293,7 @@ export default {
                     quantity: 1,
                     expirityDate: this.reservationDate
                 };
-
-                MedicineDataService.reserveMedicine(reserve_form)
+                MedicineDataService.reserveMedicine(reserve_form, AuthService.getCurrentUser().id)
                     .then(response => {
                         if (response.data){
                             alert('Medicine successfuly reserved');

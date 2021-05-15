@@ -1,32 +1,27 @@
 <template>
+  <h3>{{this.pharmacy?.name}}</h3>
+  <h5> Address: {{this.pharmacy?.address.state}}, {{this.pharmacy?.address.city}} ,
+        {{this.pharmacy?.address.street}}, {{this.pharmacy?.address.number}} <br />
+   Rating: {{this.pharmacy?.rating}} <br />
+   Description: {{this.pharmacy?.description}} <br />
+   Price per hour: {{this.pharmacy?.pricePerHour}}</h5>
     <table>
-        <tr>
-            <td align="left"> <form v-on:submit.prevent="">
-                    <input type="submit" class="btn btn-primary" data-toggle="modal" data-target="#napraviPregled" 
-                      v-on:click.prevent="osveziDermatologe()" value="Make appointment"></form> </td>
-            <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
-             <td align="left"> <form v-on:submit.prevent="">
-                    <input type="submit" class="btn btn-primary" value="Make pricelist"></form> </td>
-            <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
-           <td align="left"> <form v-on:submit.prevent="">
-                    <input type="submit" class="btn btn-primary" value="Make action and promotion"></form> </td>
-        </tr>
         <tr>
             <td align="left"> <form v-on:submit.prevent="DodajFarmaceuta()">
                     <input type="submit" class="btn btn-primary" value="Add pharmacist"></form> </td>
             <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+
             <td align="left"> <form v-on:submit.prevent="ZaposliDermatologa()">
                     <input type="submit" class="btn btn-primary" value="Hire a dermatologist"></form></td>
             <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+
             <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dodajLek">Add medicine</button></td>
-        </tr>
-        <tr> 
-            <td align="left"> <form v-on:submit.prevent="">
-                    <input type="submit" class="btn btn-primary" value="Get report"></form> </td>
             <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
-            <td align="left"><button type="button" class="btn btn-primary" data-toggle="modal" 
-                data-target="#pharmacy">See pharmacy</button></td>
-        </tr>
+            
+            <td align="left"> <form v-on:submit.prevent="">
+                    <input type="submit" class="btn btn-primary" data-toggle="modal" data-target="#napraviPregled" 
+                      v-on:click.prevent="osveziDermatologe()" value="Make appointment"></form> </td>
+        </tr> 
     </table> 
     <!-- Tabela sa podacima -->
     <div class="row">
@@ -37,9 +32,7 @@
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Pharmacists</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Dermatologists</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu3">Examination</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu4">Orders</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu5">Invalid receipts</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu6">Map</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu4">Map</a></li>
           </ul>
         
           <div class="tab-content">
@@ -182,102 +175,14 @@
               </table>
             </div>
 
-            <div id="menu4" class="tab-pane fade">
-              <h3>Orders</h3>
-              <table>
-                <tr>
-                  <td> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                       &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
-                    <td> <select id="filterOrder" style="width: 100%;" v-on:change="filterNarudzbenica()" v-model="filterOrder" required="required">
-                      <option>In process</option>
-                      <option>Processed</option>
-                    </select> </td>
-                </tr>
-                <tr>
-                  <td> &emsp; </td>
-                </tr>
-              </table>
-                <table class="table table-striped">
-                  <thead class="card-header">
-                  <th>Start date</th>
-                  <th>End date</th>
-                  <th>Number of items</th>
-                  <th>Chosen offer</th>
-                  <th>Number of offer</th>
-                  <th>&emsp;</th>
-                  <th>&emsp;</th>
-                </thead>
-                <tbody>
-                    <tr :key="n.name" v-for="n in this.narudzbeniceZaIspis">
-                      <td>{{n.startDate[1]}}/{{n.startDate[2]}}/{{n.startDate[0]}} {{n.startDate[3]}}:{{n.startDate[4]}}</td>
-                      <td>{{n.endDate[1]}}/{{n.endDate[2]}}/{{n.endDate[0]}} {{n.startDate[3]}}:{{n.startDate[4]}}</td>
-                      <td>{{n.allMedicines.length}}</td>
-                      <td>{{n.chosenOffer?.supplier?.name}} {{n.chosenOffer?.supplier.surname}}</td>
-                      <td>{{n.allOffer?.length}}</td>
-                      <td><form v-on:click.prevent="izmeniNarudzbenicu(n)"><button type="button" class="btn btn-primary">View</button></form></td>
-                      <td><div v-if="n.allOffer?.length == 0"><form v-on:click.prevent="postaviNarudzbenicu(n)">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obrisiNar">Delete</button>
-                        </form></div></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-
-            <div id="menu5" class="tab-pane fade">
-              <h3>All invalid receipts</h3>
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Receipt</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Doctor 1</td>
-                    <td>Receipt 1</td>
-                  </tr>
-                  <tr>
-                    <td>Doctior 2</td>
-                    <td>Receipt 2</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
             <!-- mora na kraj jer inace ne radi kako valja -->
-            <div id="menu6" class="tab-pane fade active">
+            <div id="menu4" class="tab-pane fade active">
 					          <Mapa/>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Info o apoteci -->
-  <div class="modal fade" id="pharmacy" tabindex="-1" role="dialog" aria-labelledby="Pharmacy info" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="PharmacyInfo">Pharmacy information</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body" align="left">Name: <input type="text" v-model="pharmacyName" placeholder=pharmacyName/></div>
-        <div class="modal-body" align="left">Description: <input type="text" v-model="pharmacyDesc" placeholder=pharmacyDesc/></div>
-        <div class="modal-body" align="left">Consulting Price: <input type="text" v-model="pharmacyConsulting" placeholder=pharmacyDesc/></div>
-         <div class="modal-footer">
-          <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#odavestenje" data-dismiss="modal" v-on:click.prevent="proveraApoteka()">Save changes</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- Info o leku -->
   <div class="modal fade" id="podaci" tabindex="-1" role="dialog" aria-labelledby="About medicine" aria-hidden="true">
@@ -389,24 +294,6 @@
         </div>
          <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="izbrisiLek()" data-dismiss="modal">Yes</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- obrisi narudzbenicu -->
-  <div class="modal fade" id="obrisiNar" tabindex="-1" role="dialog" aria-labelledby="ObrisiNarudzbenicu" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="ObrisiNar">Are you sure you want to delete order?</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="obrisiNarudzbenicu()" data-dismiss="modal">Yes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -548,7 +435,6 @@ import DermatologistDataService from '../service/DermatologistDataService.js';
 import PharmacistDataService from '../service/PharmacistDataService.js';
 import PharmacyDataService from '../service/PharmacyDataService.js';
 import MedicineDataService from '../service/MedicineDataService.js';
-import OrderDataService from '../service/OrderDataService.js';
 import AppointmentDataService from '../service/AppointmentDataService.js';
 import Mapa from "../components/Maps.vue";
 import AuthService from "../service/AuthService.js";
@@ -575,6 +461,7 @@ export default {
             filterOrder: 0, narudzbenica: null, sveNarudzbenice: [], narudzbeniceZaIspis: [],
             pregledStartuje:null, pregledTraje: 0, pregledKosta: 0,  pregledDoktor: null,
             sviPreglediDermatologa: [], izabraniPregled: null, menjaPregled: false,
+            upitiZaLek: [], 
         };
     },
     created() {
@@ -594,7 +481,6 @@ export default {
       .then(response => {
           this.sviLekovi = response.data;
       });
-      this.osveziPorudzbine();
 
     },
     mounted() {
@@ -615,13 +501,6 @@ export default {
         MedicineDataService.getMedicineForPharmacyAdmin(this.id)
         .then(response => { this.lekovi = response.data;});        
       },
-      osveziPorudzbine() {
-        OrderDataService.getOrders(this.id)
-        .then(response => {
-          this.sveNarudzbenice = response.data;
-          this.podesiDatume();          // da bude lepsi prikaz datuma
-          this.narudzbeniceZaIspis = this.sveNarudzbenice;});   
-      },
       osveziPreglede() {
         AppointmentDataService.getAppointmentApoteka(this.pharmacy.id)
         .then(response => {
@@ -632,7 +511,6 @@ export default {
 
       inicijalizujPoruku(pk) { this.poruka = pk; },
       podesi(farm_der, jesteFar) { this.otpustiRadnika = farm_der; this.jesteFarmaceut = jesteFar;},
-      postaviNarudzbenicu(p) { this.narudzbenica = p; },  // prelazak na drugu formu
       podesiPregled(p, zaIzmenu) { 
         if (zaIzmenu) {
           AppointmentDataService.canEditAppointment(p.id)
@@ -739,17 +617,6 @@ export default {
       ZaposliDermatologa() {
          window.location.href = "/hireDermatologist/" + this.id;
          this.osveziFarmaceute();
-      },
-      proveraApoteka() {
-        if (this.pharmacyName.length == 0 || this.pharmacyDesc.length == 0 || this.pharmacyConsulting.length == 0) {
-          this.poruka = "Name, description and price can't be empty.";
-          return false;
-        }
-        this.pharmacy.name = this.pharmacyName;
-        this.pharmacy.description = this.pharmacyDesc;
-        this.pharmacy.pricePerHour = this.pharmacyConsulting;
-        PharmacyDataService.setPharmacy(this.pharmacy)
-          .then(response => {this.poruka = "You successfaly changed pharmacy info.";});
       },
       funkcija(l, samoLek) {
         this.originalLeka = l;
@@ -907,74 +774,6 @@ export default {
               this.poruka = "Something goes wrong";
               return false;});
       },
-      filterNarudzbenica() {
-        this.narudzbeniceZaIspis = [];
-        var brojac = 0;
-        if (this.filterOrder == "In process")
-          for (var pon of this.sveNarudzbenice) 
-            if (pon.chosenOffer == null) {
-              this.narudzbeniceZaIspis[brojac] = pon;
-              brojac++;
-            }
-        else 
-          for (var pon of this.sveNarudzbenice) 
-            if (pon.chosenOffer != null) {
-              this.narudzbeniceZaIspis[brojac] = pon;
-              brojac++;
-            }
-      },
-      obrisiNarudzbenicu() {
-        OrderDataService.deleteOrder(this.narudzbenica)
-        .then(response => {
-          this.poruka = "You successfully deleted order.";
-          this.osveziPorudzbine();
-          });
-      },
-      izmeniNarudzbenicu(n) {
-        // prvo za lekoveNarudzbenice
-        var stringic = '[';
-          for (var lek of n.allMedicines) {
-            stringic += '{"medicine": "';
-            stringic += lek.medicine.code;
-            stringic += '", "quantity": "';
-            stringic += lek.quantity;
-            stringic += '"}'
-            if (lek != n.allMedicines[n.allMedicines.length -1]) stringic += ", ";
-          }
-        stringic += "]";
-        localStorage.setItem("lekoviNarudzbenice", stringic);
-
-        // vrati datum da bude int[]
-        n.endDate[1] = parseInt(n.endDate[1]);
-        n.endDate[2] = parseInt(n.endDate[2]);
-        n.endDate[3] = parseInt(n.endDate[3]);
-        n.endDate[4] = parseInt(n.endDate[4]);
-        n.startDate[1] = parseInt(n.startDate[1]);
-        n.startDate[2] = parseInt(n.startDate[2]);
-        n.startDate[3] = parseInt(n.startDate[3]);
-        n.startDate[4] = parseInt(n.startDate[4]);
-        
-        var stringNarudzbenice = "{";
-        stringNarudzbenice += '"startDate": [' + n.startDate + "], ";
-        stringNarudzbenice += '"endDate": [' + n.endDate + "], ";
-        stringNarudzbenice += '"author": {"name": "' + n.author.name + '", "surname": "' + n.author.surname + '"}';
-        stringNarudzbenice += "}";
-        localStorage.setItem("narudzbenica", stringNarudzbenice);
-        window.location.href = "/changeOrder";
-      },
-      podesiDatume() {
-        for (var por of this.sveNarudzbenice) {
-          if (por.endDate[1] < 10) por.endDate[1] = "0" + por.endDate[1];
-          if (por.endDate[2] < 10) por.endDate[2] = "0" + por.endDate[2];
-          if (por.endDate[3] < 10) por.endDate[3] = "0" + por.endDate[3];
-          if (por.endDate[4] < 10) por.endDate[4] = "0" + por.endDate[4];
-
-          if (por.startDate[1] < 10) por.startDate[1] = "0" + por.startDate[1];
-          if (por.startDate[2] < 10) por.startDate[2] = "0" + por.startDate[2];
-          if (por.startDate[3] < 10) por.startDate[3] = "0" + por.startDate[3];
-          if (por.startDate[4] < 10) por.startDate[4] = "0" + por.startDate[4]; 
-        }
-      },
       izmeniDatume() {
         for (var pregled of this.sviPreglediDermatologa) {
           var split1 = pregled.startTime.split(' ');
@@ -1050,8 +849,6 @@ export default {
             this.osveziPreglede();
             return;
           });
-          
-          
         },
     }
 }

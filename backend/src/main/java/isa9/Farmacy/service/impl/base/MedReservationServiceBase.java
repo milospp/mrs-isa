@@ -1,21 +1,21 @@
 package isa9.Farmacy.service.impl.base;
 
 import isa9.Farmacy.model.*;
+import isa9.Farmacy.model.dto.MedInPharmaDTO;
 import isa9.Farmacy.model.dto.MedReservationDTO;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
-import isa9.Farmacy.service.MedReservationService;
-import isa9.Farmacy.service.MedicineService;
-import isa9.Farmacy.service.PharmacyService;
-import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Random;
 
 public abstract class MedReservationServiceBase implements MedReservationService {
     protected PharmacyService pharmacyService;
     protected MedicineService medicineService;
     protected UserService userService;
+    protected InquiryService inquiryService;
 
     @Autowired
     public void setMedicineService(MedicineService medicineService) {
@@ -31,6 +31,9 @@ public abstract class MedReservationServiceBase implements MedReservationService
     public void setPharmacyService(PharmacyService pharmacyService) {
         this.pharmacyService = pharmacyService;
     }
+
+    @Autowired
+    public void setInquiryService(InquiryService inquiryService) { this.inquiryService = inquiryService; }
 
     @Override
     public MedReservation dispenseMedicine(MedReservation medReservation) {
@@ -126,7 +129,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
     }
 
     @Override
-    public MedReservation reserveMedicine(MedReservationFormDTO reservationFormDTO) {
+    public MedReservation reserveMedicine(MedReservationFormDTO reservationFormDTO, Long doctorId) {
         if (!isDateAfter(reservationFormDTO)) return null;
         if (reservationFormDTO.getQuantity() < 1) return null;
 
@@ -154,10 +157,27 @@ public abstract class MedReservationServiceBase implements MedReservationService
                 .build();
 
         patient.getReservations().add(medReservation);
-        boolean inStock = pharmacyService.reduceQuantity(pharmacy, medicine, reservationFormDTO.getQuantity());
+        int inStock = pharmacyService.reduceQuantity(pharmacy, medicine, reservationFormDTO.getQuantity());
 
-        if (!inStock) return null;
+        if (inStock == -1) return null;         // na stanju < poruceno
+        if (inStock == 1) {                     // na stanju == 0
+            User korisnik = userService.findOne(doctorId);
+            if (korisnik.getClass() != Pharmacist.class && korisnik.getClass() != Dermatologist.class)
+                return null;
+            Pharmacy apoteka = pharmacyService.findOne(reservationFormDTO.getPharmacyId());
+            Medicine lek = medicineService.findOne(reservationFormDTO.getMedicineId());
 
+            InquiryMedicine upitZaLek = new InquiryMedicine();
+            upitZaLek.setMedicine(lek);
+            upitZaLek.setInquiryDate(LocalDateTime.now());
+            upitZaLek.setDoctor((Doctor) korisnik);
+            upitZaLek.setPharmacyId(reservationFormDTO.getPharmacyId());
+            this.inquiryService.save(upitZaLek);
+            apoteka.getInquiryMedicines().add(upitZaLek);
+            pharmacyService.save(apoteka);
+            return null;
+        }
+                                                // na stanju > poruceno
         userService.save(patient);
         return medReservation;
 

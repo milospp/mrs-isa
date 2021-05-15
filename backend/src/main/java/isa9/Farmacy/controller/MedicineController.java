@@ -57,8 +57,9 @@ public class MedicineController {
 
     }
 
-    @PostMapping("{medId}/pharmacy/{pharmacyId}/reserve")
-    public ResponseEntity<MedReservationDTO> reserveMedicine(@PathVariable Long medId, @PathVariable Long pharmacyId, @RequestBody MedReservationFormDTO form){
+    @PostMapping("{medId}/pharmacy/{pharmacyId}/reserve/{doctorId}")
+    public ResponseEntity<MedReservationDTO> reserveMedicine(@PathVariable Long medId, @PathVariable Long pharmacyId,
+                 @PathVariable Long doctorId, @RequestBody MedReservationFormDTO form){
         // TODO: Get patient from session
         User user = userService.getLoggedInUser();
 
@@ -68,7 +69,7 @@ public class MedicineController {
 
         form.setMedicineId(medId);
         form.setPharmacyId(pharmacyId);
-        MedReservation medReservation = medReservationService.reserveMedicine(form);
+        MedReservation medReservation = medReservationService.reserveMedicine(form, doctorId);
 
         if (medReservation == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -105,6 +106,26 @@ public class MedicineController {
         if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         Set<MedicineInPharmacy> sviLekovi = ((PharmacyAdmin) user).getPharmacy().getMedicines();
         List<MedInPharmaDTO> povratna = medicineInPharmacyToMedInPharmaDTO.convert(sviLekovi);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @GetMapping("/pricelist/{id}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<PricelistDTO> getPricelistPharmacyAdmin(@PathVariable Long id) {
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
+        LocalDateTime datum = LocalDateTime.now();
+        List<MedInPharmaDTO> listaLekova = new ArrayList<>();
+        int broj = 0;
+        for (MedicineInPharmacy mp : admin.getPharmacy().getMedicines()) {
+            listaLekova.add(medicineInPharmacyToMedInPharmaDTO.convert(mp));
+            if (broj == 0) {
+                broj++;
+                datum = mp.getCurrentPrice().getStartDate(); }
+            else {
+                if (datum.isBefore(mp.getCurrentPrice().getStartDate()))
+                    datum = mp.getCurrentPrice().getStartDate(); }
+        }
+        PricelistDTO povratna = new PricelistDTO(datum , listaLekova);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
@@ -219,7 +240,10 @@ public class MedicineController {
     @GetMapping("/pharmacy/{id}")
     public ResponseEntity<List<MedInPharmaDTO>> getAllMedicinePharmacy(@PathVariable Long id) {
         Pharmacy apoteka = pharmacyService.findOne(id);
-        List<MedInPharmaDTO> povratna = medicineInPharmacyToMedInPharmaDTO.convert(apoteka.getMedicines());
+        List<MedInPharmaDTO> povratna = new ArrayList<>();
+        for (MedicineInPharmacy mp : apoteka.getMedicines()) {     // ne vracamo one kojih ima 0
+            if (mp.getInStock() > 0) povratna.add( medicineInPharmacyToMedInPharmaDTO.convert(mp));
+        }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
@@ -261,8 +285,6 @@ public class MedicineController {
         if (reservation != null && reservation.getStatus() == MedReservationStatus.PENDING){
             // TODO: Move everything into this method
             medReservationService.dispenseMedicine(reservation);
-
-
 
             return new ResponseEntity<>(true, HttpStatus.OK);
         }
