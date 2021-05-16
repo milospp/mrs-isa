@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 
 @Component
@@ -38,4 +39,9 @@ public class dbMedInPharmacyService extends MedInPharmaServiceBase implements Me
 
     @Override
     public MedicineInPharmacy save(MedicineInPharmacy entity) { return this.medInPharmaRepository.save(entity); }
+
+    @Override
+    public Collection<MedicineInPharmacy> findAllMedicinesInPharmacy(Long medicineId) {
+        return medInPharmaRepository.findAllByMedicineId(medicineId);
+    }
 }

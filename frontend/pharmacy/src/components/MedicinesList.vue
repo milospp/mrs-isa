@@ -118,6 +118,8 @@
         </div>
     </div>
 
+  <reserve-med-modal modalId="reserve-med-modal" v-model="selectedMed" :patientId="userId.id" @rated="reserveMedicine"></reserve-med-modal>
+
 
   <div class="row">
 
@@ -136,7 +138,8 @@
           
           <div class="d-flex justify-content-between align-items-center">
             <!-- <router-link class="btn btn-block btn-primary" :to="{ name: 'MedicinePage', params: { id: m.id  }}">View</router-link> -->
-            <button type="button" class="btn btn-block btn-primary" v-on:click="fetchMedicine(m)" data-toggle="modal" data-target="#specsView">View specification</button>
+            <button type="button" class="btn btn-primary" v-on:click="fetchMedicine(m)" data-toggle="modal" data-target="#specsView">View specification</button>
+            <button v-if="userId" type="button" class="btn btn-primary" v-on:click="openReservationModal(m)" data-toggle="modal" data-target="#reserve-med-modal">Reserve</button>
           </div>
           
         </div>
@@ -147,9 +150,16 @@
 
 <script>
 import MedicineDataService from '../service/MedicineDataService.js';
+import AuthService from '../service/AuthService.js';
+import ReserveMedModal from '@/components/ReserveMedModal.vue';
+
+
 
 export default {
     name: 'MedicinesList',
+    components: {
+      ReserveMedModal
+    },
     data() {
         return {
             medicines: [],
@@ -159,7 +169,9 @@ export default {
               maxPoints: 999,
               minRating: 0,
               maxRating: 5,
+              userId: null,
             },
+            selectedMed: null,
             viewedMedicine: { specification: {structure:"", dailyIntake:"", sideEffects:""}},
             // limit: 0,
         };
@@ -189,11 +201,16 @@ export default {
           this.viewedMedicine = medicine;
         },
 
+        openReservationModal(med){
+          this.selectedMed = med;
+        }
+
     },
     mounted() {
         this.getMedicines();
     },
     created() {
+        this.userId = AuthService.getCurrentUser();
     }
 }
 </script>
