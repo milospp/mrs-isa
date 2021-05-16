@@ -14,7 +14,7 @@
         <div class="form-row">
             <div class="form-group col-md-4">
               <label for="inputDesc">Description</label>
-              <input type="text" class="form-control" id="inputName" v-model="searchParams.name">
+              <input type="text" class="form-control" id="inputName" v-model="searchParams.description">
             </div>
 
             <div class="form-group col-md-2">
@@ -31,22 +31,22 @@
 
               <div class="input-group">
 
-                  <input type="number" class="form-control" id="inputPrice" min="0" v-model="searchParams.minPrice">
+                  <input type="number" class="form-control" id="inputPrice" min="0" v-model="searchParams.minPrice" size="7">
 
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroupPrepend2">-</span>
                   </div>
-                  <input type="number" class="form-control" id="inputPrice" :min="Math.max(0,searchParams.minPoints)" v-model="searchParams.maxPrice">
+                  <input type="number" class="form-control" id="inputPrice" :min="Math.max(0,searchParams.minPoints)" v-model="searchParams.maxPrice" size="7">
               </div>
             </div>
 
             <div class="form-group col-md-2">
-                <label for="inputMinRating">Start date</label>
+                <label for="inputMinRating">Start date from</label>
                 <input type="datetime-local" class="form-control" id="startTime" v-model="searchParams.startDate" @change="">
             </div>
 
             <div class="form-group col-md-2">
-                <label for="inputMinRating">Delivery date</label>
+                <label for="inputMinRating">Start date to</label>
                 <input type="datetime-local" class="form-control" id="startTime" v-model="searchParams.endDate" @change="">
             </div>
 
@@ -61,7 +61,7 @@
                 <option value="PRICE_ASC">By price asc.</option>
                 <option value="PRICE_DES">By price des.</option>
                 <option value="SDATE_ASC">By start date asc.</option>
-                <option value="SDATE_DES">By start des.</option>
+                <option value="SDATE_DES">By start date des.</option>
                 <option value="EDATE_ASC">By end date asc.</option>
                 <option value="EDATE_DES">By end date des.</option>
               </select>          
@@ -111,7 +111,7 @@ export default {
         return {
             id:"",
             suppliersOffers: [],
-            searchParams: {description:"", status:"", minPrice: 0, maxPrice: 0, startDate: [], endDate: []},
+            searchParams: {description:"", status:"", minPrice: 0, maxPrice: Number.MAX_SAFE_INTEGER, startDate: new Date().toISOString().substring(0, 16), endDate: new Date().toISOString().substring(0, 16)},
         };   
     },
     methods: {
@@ -130,7 +130,11 @@ export default {
             }
         },
         searchOffers(){
-
+            OfferDataService.searchOffers(this.searchParams)
+                .then(response => {
+                    this.suppliersOffers = response.data;
+                    console.log(response.data);
+            });
         }
     },
     created(){
