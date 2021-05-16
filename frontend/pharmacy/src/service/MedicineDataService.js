@@ -74,6 +74,14 @@ class MedicineDataService {
     });
   }
 
+  reserveMedicineAsPatient(reserveData){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/` + reserveData.medicineId + `/pharmacy/` + reserveData.pharmacyId + `/reserve/`,
+      data: reserveData
+    });
+  }
+
   sendMedicine(newMedicine){
     return axios({
       method: 'post',

@@ -176,7 +176,7 @@
         <div class="modal-body" align="left">Points: {{lek_za_prikaz?.medicine.points}}</div>
         <div class="modal-body" align="left">Type: {{lek_za_prikaz?.medicine.type}}</div>
         <div class="modal-body" align="left">Price: {{lek_za_prikaz?.currentPrice}}</div>
-        <div class="modal-body" align="left">Quantity: <input type="text" v-model="kolicina"/> (max = {{lek_za_prikaz?.inStock}})</div>
+        <div class="modal-body" align="left">Quantity: <input type="text" v-model="test"/> (max = {{lek_za_prikaz?.inStock}})</div>
         <div class="modal-body" align="left">Expiry date: <input type="date" v-model="datum"/></div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" data-dismiss="modal" v-on:click.prevent="provera(lek_za_prikaz)">Reserve</button>
@@ -281,6 +281,7 @@ export default {
 
 	data: function () {
 		return {
+            test: null,
             pharmacy: null,
             sviZaposleniFarmaceuti : [] ,
             sviZaposleniDermatolozi : [],
@@ -412,7 +413,7 @@ export default {
 
         console.log(reserve_form);
 
-        MedicineDataService.reserveMedicine(reserve_form)
+        MedicineDataService.reserveMedicineAsPatient(reserve_form)
         .then(response => {
           console.log("reserved");
           MedicineDataService.getMedicineForPharmacy(this.id)
@@ -454,7 +455,10 @@ export default {
         },
 
         getMyVote(p){
-          console.log(this.userId);
+          // TODO: check if this works...
+          if (p.voted == undefined) {p.voted = null; return};
+          
+          if (p.voted) alert("ee");
           PharmacyDataService.getUserRating(this.userId, p.id).then(response => {
             if (response.data) {
               p.voted = response.data.rating

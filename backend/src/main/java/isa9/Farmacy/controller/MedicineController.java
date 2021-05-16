@@ -25,6 +25,7 @@ public class MedicineController {
     private final PharmacyService pharmacyService;
     private final RatingService ratingService;
     private final MedReservationService medReservationService;
+    private final MedInPharmaService medInPharmaService;
     private final MedReservationToMedReservationDTO medReservationToMedReservationDTO;
     private final MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO;
     private final MedicineToMedicineDTO medicineToMedicineDTO;
@@ -34,12 +35,13 @@ public class MedicineController {
     private final MedicineAtSupplierToMedAtSupplierDTO medicineAtSupplierToMedAtSupplierDTO;
 
     @Autowired
-    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, RatingService ratingService, MedReservationService medReservationService, MedReservationToMedReservationDTO medReservationToMedReservationDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedicineToMedicineDTO medicineToMedicineDTO, RatingToRatingDTO ratingToRatingDTO, MedQuantityService medQuantityService, MedicineQuantityToMedicineQuantityDTO medicineQuantityToMedicineQuantityDTO, MedicineAtSupplierService medicineAtSupplierService, MedicineAtSupplierToMedAtSupplierDTO medicineAtSupplierToMedAtSupplierDTO) {
+    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, RatingService ratingService, MedReservationService medReservationService, MedInPharmaService medInPharmaService, MedReservationToMedReservationDTO medReservationToMedReservationDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedicineToMedicineDTO medicineToMedicineDTO, RatingToRatingDTO ratingToRatingDTO, MedQuantityService medQuantityService, MedicineQuantityToMedicineQuantityDTO medicineQuantityToMedicineQuantityDTO, MedicineAtSupplierService medicineAtSupplierService, MedicineAtSupplierToMedAtSupplierDTO medicineAtSupplierToMedAtSupplierDTO) {
         this.medicineService = medicineService;
         this.userService = userService;
         this.pharmacyService = pharmacyService;
         this.ratingService = ratingService;
         this.medReservationService = medReservationService;
+        this.medInPharmaService = medInPharmaService;
         this.medReservationToMedReservationDTO = medReservationToMedReservationDTO;
         this.medicineInPharmacyToMedInPharmaDTO = medicineInPharmacyToMedInPharmaDTO;
         this.medicineToMedicineDTO = medicineToMedicineDTO;
@@ -70,6 +72,31 @@ public class MedicineController {
         form.setMedicineId(medId);
         form.setPharmacyId(pharmacyId);
         MedReservation medReservation = medReservationService.reserveMedicine(form, doctorId);
+
+        if (medReservation == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
+        MedReservation reservationWithId = medReservationService.getByCode(medReservation.getCode());
+
+        MedReservationDTO dto = medReservationToMedReservationDTO.convert(reservationWithId);
+        System.out.println("Id rezervacije: " + dto.getId());
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @PostMapping("{medId}/pharmacy/{pharmacyId}/reserve")
+    public ResponseEntity<MedReservationDTO> reserveMedicineAsPatient(@PathVariable Long medId, @PathVariable Long pharmacyId,
+                                                             @RequestBody MedReservationFormDTO form){
+        // TODO: Get patient from session
+        User user = userService.getLoggedInUser();
+
+        if (!form.getPatientId().equals(user.getId()) && !user.getRole().getName().equals("DERMATOLOGIST") && !user.getRole().getName().equals("PHARMACIST")){
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
+
+        form.setMedicineId(medId);
+        form.setPharmacyId(pharmacyId);
+        MedReservation medReservation = medReservationService.reserveMedicine(form);
 
         if (medReservation == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -245,6 +272,12 @@ public class MedicineController {
             if (mp.getInStock() > 0) povratna.add( medicineInPharmacyToMedInPharmaDTO.convert(mp));
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @GetMapping("/{medicineId}/pharmacies")
+    public ResponseEntity<Collection<MedInPharmaDTO>> getAllMedicinePharmacies(@PathVariable Long medicineId) {
+        Collection<MedicineInPharmacy> medicineInPharmacies = medInPharmaService.findAllMedicinesInPharmacy(medicineId);
+        return new ResponseEntity<>(medicineInPharmacyToMedInPharmaDTO.convert(medicineInPharmacies), HttpStatus.OK);
     }
 
     @PostMapping("/newMedicine")

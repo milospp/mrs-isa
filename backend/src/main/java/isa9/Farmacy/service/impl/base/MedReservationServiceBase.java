@@ -160,7 +160,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
         int inStock = pharmacyService.reduceQuantity(pharmacy, medicine, reservationFormDTO.getQuantity());
 
         if (inStock == -1) return null;         // na stanju < poruceno
-        if (inStock == 1) {                     // na stanju == 0
+        if (doctorId != null && inStock == 1) {                     // na stanju == 0
             User korisnik = userService.findOne(doctorId);
             if (korisnik.getClass() != Pharmacist.class && korisnik.getClass() != Dermatologist.class)
                 return null;
@@ -182,4 +182,11 @@ public abstract class MedReservationServiceBase implements MedReservationService
         return medReservation;
 
     }
+
+
+    @Override
+    public MedReservation reserveMedicine(MedReservationFormDTO reservationFormDTO) {
+        return this.reserveMedicine(reservationFormDTO, null);
+    }
+
 }
