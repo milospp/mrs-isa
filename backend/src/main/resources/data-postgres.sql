@@ -235,8 +235,8 @@ insert into supplier (id) values (19);
 
 
 --MedQuantities (for orders)
-insert into medicine_quantity(quantity, medicine_id) values (250, 1);
-insert into medicine_quantity(quantity, medicine_id) values (500, 2);
+insert into medicine_quantity(quantity, medicine_id) values (20, 1);
+insert into medicine_quantity(quantity, medicine_id) values (30, 2);
 
 --Orders
 insert into medicine_order (end_date, start_date, author_id, chosen_offer_id, pharmacy_id) values (LOCALTIMESTAMP + interval '4' day, LOCALTIMESTAMP, 14, null, 1);

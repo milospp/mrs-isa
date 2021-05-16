@@ -18,6 +18,20 @@ class OfferDataService{
             console.log(error.config);
         });
     }
+
+    getOffersOfSupplier(supplierId){
+        return axios.get(`${API_URL}/offersOfSupplier/${supplierId}`);
+    }
+
+    searchOffers(searchParams) {
+      console.log(searchParams);
+
+      return axios({
+        method: 'post',
+        url: `${API_URL}/search`,
+        data: searchParams
+      })
+    }
 }
 
 export default new OfferDataService();

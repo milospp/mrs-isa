@@ -3,7 +3,11 @@ package isa9.Farmacy.controller;
 import isa9.Farmacy.model.MedicineQuantity;
 import isa9.Farmacy.model.Offer;
 import isa9.Farmacy.model.OfferStatus;
+import isa9.Farmacy.model.Pharmacy;
 import isa9.Farmacy.model.dto.OfferDTO;
+import isa9.Farmacy.model.dto.OfferSearchDTO;
+import isa9.Farmacy.model.dto.PharmacyDTO;
+import isa9.Farmacy.model.dto.PharmacySearchDTO;
 import isa9.Farmacy.service.MedicineAtSupplierService;
 import isa9.Farmacy.service.MedicineService;
 import isa9.Farmacy.service.OfferService;
@@ -15,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin("*")
@@ -44,5 +50,21 @@ public class OfferController {
         Offer newOffer = offerDTOtoOffer.convert(offerDTO);
         this.offerService.saveNewOffer(newOffer);
         return new ResponseEntity<>(0, HttpStatus.OK);
+    }
+
+    @GetMapping("/offersOfSupplier/{id}")
+    @PreAuthorize("hasAuthority('SUPPLIER')")
+    public ResponseEntity<List<OfferDTO>> getAllOffers(@PathVariable Long id){
+        List<Offer> offersOfSupplier = this.offerService.getOffersOfSupplier(id);
+        return new ResponseEntity<>(this.offerToOfferDTO.convert(offersOfSupplier), HttpStatus.OK);
+    }
+
+    @PostMapping("search")
+    @PreAuthorize("hasAuthority('SUPPLIER')")
+    public ResponseEntity<List<OfferDTO>> SearchPharmacies(@RequestBody(required=false) OfferSearchDTO offerSearchDTO) {
+        List<Offer> offers = this.offerService.findAll();
+        offers = offerService.filterOffers(offers, offerSearchDTO);
+        List<OfferDTO> resultDTOS = offerToOfferDTO.convert(offers);
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
     }
 }
