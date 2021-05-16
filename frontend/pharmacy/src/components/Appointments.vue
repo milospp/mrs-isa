@@ -62,7 +62,7 @@
     </div>
     <div class="row">
       <!-- <div class="col-md-4" v-for="a in appointments"> -->
-      <div class="w-100" v-for="a in appointments">
+      <div v-if="appointments" class="w-100" v-for="a in appointments">
         <div class="appointment card mb-4" v-if="!filterPharmacyId || a.pharmacy.id == filterPharmacyId">
           <div class="card-header">
             <h5>
@@ -126,6 +126,10 @@
           </div>
         </div>
       </div>
+      <div v-else class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <h4 v-if="appointments && appointments.length == 0">No appointments available</h4>
     </div>
   </div>
 </template>
@@ -142,7 +146,7 @@ export default {
     name: 'Appointments',
     data() {
         return {
-            appointments: [],
+            appointments: null,
             selectedAppointment: null,
             // limit: 0,
         };
