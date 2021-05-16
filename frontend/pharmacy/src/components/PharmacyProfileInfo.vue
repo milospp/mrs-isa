@@ -147,31 +147,8 @@
             </div>
             <div id="menu3" class="tab-pane in fade">
 
-              <h3>Appointments</h3>
-
-              <div class="appointment card mb-4">
-                <div class="card-header">
-                  <h5>Free apointment at 08:00 (30min)</h5>
-                </div>
-                <div class="card-body text-left">
-                  <div class="row">
-                    <div class="col-sm-6 h4">
-                      <table>
-                        <tr><td>Pharmacist: </td><td class="pl-5"><strong>Dr.Mr.Phill</strong></td></tr>
-                        <tr><td>Pharmacy: </td><td class="pl-5"><strong>Phara</strong></td></tr>
-                        <tr><td>Price per hour: </td><td class="pl-5"><strong>$20.00 USD</strong></td></tr>
-                      </table>
-                    </div>
-                    <div class="col-sm-6 h5">
-                      <table>
-                        <tr><td>Starting at: </td><td class="pl-5"><strong>20/5/2021 08:00</strong></td></tr>
-                      </table>
-                      <br>
-                      <button class="btn btn-block btn-primary">Book a appointment</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <Appointments class="col-md-12 mt-3" :filterPharmacyId="id" />
+              
             </div>
             <div id="menu4" class="tab-pane fade active">
 					          <Mapa/>
@@ -289,11 +266,14 @@
     import MedicineDataService from '../service/MedicineDataService.js';
     import RatingModal from '@/components/RatingModal.vue';
     import Mapa from "../components/Maps.vue";
+    import Appointments from '@/components/Appointments'
+
 
 export default {
   components: {
     RatingModal,
     Mapa,
+    Appointments,
   },
     setup() {
       return { UtilService}
