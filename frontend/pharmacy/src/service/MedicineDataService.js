@@ -66,6 +66,11 @@ class MedicineDataService {
     return axios.get(API_URL + "/pharmacy/" + idApoteke);
   }
 
+  
+  getMedicineInPharmacies(medicineId) {
+    return axios.get(API_URL + "/" + medicineId + "/pharmacies/");
+  }
+
   reserveMedicine(reserveData, idDoktora){
     return axios({
       method: 'post',

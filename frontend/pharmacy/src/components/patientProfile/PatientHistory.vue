@@ -104,15 +104,15 @@
 <div class="row mb-3 mt-5">
     <div class="radio-container col-md-6">
     <div class="form-check form-check-inline btn-info">
-      <input v-model="historyFilter" type="radio" name="inlineRadioOptions" id="examinations" value="EXAMINATION">
+      <input class="hidden-cb" v-model="historyFilter" type="radio" name="inlineRadioOptions" id="examinations" value="EXAMINATION">
       <label class="form-check-label" for="examinations">Examinations</label>
     </div>
     <div class="form-check form-check-inline btn-info">
-      <input v-model="historyFilter" type="radio" name="inlineRadioOptions" id="counseling" value="COUNSELING">
+      <input class="hidden-cb" v-model="historyFilter" type="radio" name="inlineRadioOptions" id="counseling" value="COUNSELING">
       <label class="form-check-label" for="counseling">Counseling</label>
     </div>
     <div class="form-check form-check-inline btn-info">
-      <input v-model="historyFilter" type="radio" name="inlineRadioOptions" id="all" value="all" checked>
+      <input class="hidden-cb" v-model="historyFilter" type="radio" name="inlineRadioOptions" id="all" value="all" checked>
       <label class="form-check-label" for="all">All</label>
     </div>
   </div>
@@ -249,10 +249,10 @@
 </div>
 </template>
 <style>
-  [type="checkbox"]:checked, 
-  [type="checkbox"]:not(:checked), 
-  [type="radio"]:checked, 
-  [type="radio"]:not(:checked) {
+  .hidden-cb [type="checkbox"]:checked, 
+  .hidden-cb [type="checkbox"]:not(:checked), 
+  .hidden-cb [type="radio"]:checked, 
+  .hidden-cb [type="radio"]:not(:checked) {
     position: absolute;
     left: -9999px;
     width: 0;
