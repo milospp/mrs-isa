@@ -18,7 +18,6 @@
 					<router-link :to="{ name: 'Pharmacies'}" class="nav-item nav-link">Pharmacies</router-link>
 					<router-link :to="{ name: 'Medicines'}" class="nav-item nav-link">Medicines</router-link>
 					<router-link :to="{ name: 'MedicineSearchPage'}" class="nav-item nav-link">Search medicines</router-link>
-					<!-- <router-link :to="{ name: 'DermAppointments'}" class="nav-item nav-link">Derm. Appointments</router-link> -->
 
 
 				</div>
@@ -30,6 +29,8 @@
 					<router-link :to="{ name: 'Pharmacies'}" class="nav-item nav-link">Pharmacies</router-link>
 					<router-link :to="{ name: 'Medicines'}" class="nav-item nav-link">Medicines</router-link>
 					<router-link :to="{ name: 'Counseling'}" class="nav-item nav-link">Counseling</router-link>
+					<router-link :to="{ name: 'DermAppointments'}" class="nav-item nav-link">Derm Appointments</router-link>
+
 					
 				</div>
 				<div v-else-if="user.role === 'PHARMACIST'" class="navbar-nav mr-auto mt-2 mt-lg-0">

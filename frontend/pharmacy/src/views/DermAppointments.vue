@@ -2,7 +2,6 @@
   <div>
     <NavBar/>
     <div class="container">
-      <h1>Appointments</h1>
       <Appointments/>
     </div>
   </div>
