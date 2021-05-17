@@ -378,4 +378,12 @@ public class MedicineController {
         Set<MedicineAtSupplier> medicineAtSupplierSet = this.medicineAtSupplierService.medicinesOfSupplier(id);
         return new ResponseEntity<>(this.medicineAtSupplierToMedAtSupplierDTO.setToMap(medicineAtSupplierSet), HttpStatus.OK);
     }
+
+    @PostMapping("/updateSuppliersMedicine")
+    @PreAuthorize("hasAuthority('SUPPLIER')")
+    public ResponseEntity<Boolean> updateMedicineAtSupplier(@RequestBody MedAtSupplierDTO medAtSupplierDTO){
+        MedicineAtSupplier toBeUpdated = this.medicineAtSupplierService.findOne(medAtSupplierDTO.getId());
+        this.medicineAtSupplierService.updateMedicineAtSupplier(toBeUpdated, medAtSupplierDTO.getCurrentPrice(), medAtSupplierDTO.getInStock());
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
 }

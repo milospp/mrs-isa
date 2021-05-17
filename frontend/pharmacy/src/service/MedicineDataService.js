@@ -129,6 +129,14 @@ class MedicineDataService {
   getSuppliersMedicines(supplier_id){
     return axios.get(`${API_URL}/suppliersMedicines/`+supplier_id);
   }
+
+  updateSuppliersMedicine(medicine){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/updateSuppliersMedicine`,
+      data: medicine
+    });
+  }
 }
 
 export default new MedicineDataService();

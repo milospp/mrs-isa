@@ -8,4 +8,5 @@ import java.util.Set;
 public interface MedicineAtSupplierService extends GenericService<MedicineAtSupplier>{
 
     public Set<MedicineAtSupplier> medicinesOfSupplier(long id);
+    public void updateMedicineAtSupplier(MedicineAtSupplier mas, double newPrice, int newQuantity);
 }

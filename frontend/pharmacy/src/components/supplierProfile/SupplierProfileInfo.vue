@@ -89,7 +89,7 @@
     <br>
     <h3>My medicines</h3>
     <div style="height: 250px; overflow-y: scroll;">
-    <form v-on:submit.prevent="">
+    <form>
         <table class="table table-striped">
             <thead class="card-header">
                 <th>Code</th>
@@ -105,13 +105,46 @@
                     <td>{{item.medicine.name}}</td>
                     <td>{{item.inStock}}</td>
                     <td>{{item.currentPrice}}</td>
-                    <td><form v-on:click.prevent=""><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">Edit</button></form></td>
+                    <td><form v-on:click.prevent="setEdittedMedicine(item)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editMedicineModal">Edit</button></form></td>
                     <td><form v-on:click.prevent=""><button type="button" class="btn btn-danger">Delete</button></form></td>
                 </tr>
             </tbody>
         </table>
     </form>
     </div>
+
+    <div class="modal fade" id="editMedicineModal" tabindex="-1" role="dialog" aria-labelledby="editMedicineModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Potvrdica">{{this.edittedMedicine.medicine.name}} </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div>
+                <form>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <td>Price: </td>
+                                <td><input type="number" class="form-control" id="edittedPrice" v-model="edittedMedicine.currentPrice" v-bind:min="0"></td>
+                                <td>Quantity: </td>
+                                <td><input type="number" class="form-control" id="edittedQuantity" v-model="edittedMedicine.inStock" v-bind:min="0"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit" v-on:click="updateMedicine(this.edittedMedicine)" data-dismiss="modal">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
     <div>
         <button type="button" class="btn btn-primary">Add medicine</button>
@@ -138,6 +171,7 @@ export default {
 		return {
             supplier: null,
             myMedicines: [],
+            edittedMedicine: {medicine: {name:""}},
 		}
 	},
     methods: {
@@ -162,6 +196,14 @@ export default {
             });
             $('#editDataModal').modal('hide');
         },
+        setEdittedMedicine(medicine){
+            this.edittedMedicine = medicine;
+            console.log(this.edittedMedicine);
+        },
+        updateMedicine(medicine){
+            MedicineDataService.updateSuppliersMedicine(medicine);
+        }
+       
     },
     mounted() {
         this.loadSupplierData();
