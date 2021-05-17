@@ -13,33 +13,33 @@
 
         <div class="form-row">
             <div class="form-group col-md-4">
-              <label for="inputEmail4">Name</label>
-              <input type="text" class="form-control" id="inputName" v-model="searchParams.name">
+              <label for="inputMedName">Name</label>
+              <input type="text" class="form-control" id="inputMedName" v-model="searchParams.name">
             </div>
             <div class="form-group col-md-4">
-              <label for="inputStructure">Structure</label>
-              <input type="text" class="form-control" id="inputStructure" v-model="searchParams.structure">
+              <label for="inputMedStructure">Structure</label>
+              <input type="text" class="form-control" id="inputMedStructure" v-model="searchParams.structure">
             </div>
             <div class="form-group col-md-4">
-              <label for="inputManufacturer">Manufacturer</label>
-              <input type="text" class="form-control" id="inputAddress" v-model="searchParams.manufacturer">
+              <label for="inputMedManufacturer">Manufacturer</label>
+              <input type="text" class="form-control" id="inputMedManufacturer" v-model="searchParams.manufacturer">
             </div>
 
             <div class="form-group col-md-3">
-              <label for="inputShape">Shape</label>
-              <input type="text" class="form-control" id="inputShape" v-model="searchParams.shape">
+              <label for="inputMedShape">Shape</label>
+              <input type="text" class="form-control" id="inputMedShape" v-model="searchParams.shape">
             </div>
 
 
 
             <div class="form-group col-md-3">
-              <label for="inputType">Type</label>
-              <input type="text" class="form-control" id="inputType" v-model="searchParams.type">
+              <label for="inputMedType">Type</label>
+              <input type="text" class="form-control" id="inputMedType" v-model="searchParams.type">
             </div>
 
             <div class="form-group col-md-2">
-              <label for="inputPerscription">Perscription</label>
-              <select class="form-control" id="inputPerscription" v-model="searchParams.perscription">
+              <label for="inputMedPerscription">Perscription</label>
+              <select class="form-control" id="inputMedPerscription" v-model="searchParams.perscription">
                 <option value="ALL">All</option>
                 <option value="WITH_RECEIPT">With Receipt</option>
                 <option value="WITHOUT_RECEIPT">Without Receipt</option>
@@ -47,37 +47,37 @@
             </div>
 
             <div class="form-group col-md-2">
-              <label for="inputPoints">Points</label>
+              <label for="inputMedPointsMin">Points</label>
 
               <div class="input-group">
 
-                  <input type="number" class="form-control" id="inputShape" min="0" :max="Math.min(999,searchParams.maxPoints)" v-model="searchParams.minPoints">
+                  <input type="number" class="form-control" id="inputMedPointsMin" min="0" :max="Math.min(999,searchParams.maxPoints)" v-model="searchParams.minPoints">
 
                   <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputGroupPrepend2">-</span>
+                    <span class="input-group-text" id="inputMedPointsMax">-</span>
                   </div>
-                  <input type="number" class="form-control" id="inputShape" :min="Math.max(0,searchParams.minPoints)" max="999" v-model="searchParams.maxPoints">
+                  <input type="number" class="form-control" id="inputMedPointsMax" :min="Math.max(0,searchParams.minPoints)" max="999" v-model="searchParams.maxPoints">
               </div>
             </div>
 
             <div class="form-group col-md-2">
-              <label for="inputMinRating">Rating</label>
+              <label for="inputMedMinRating">Rating</label>
 
               <div class="input-group">
 
-                  <input type="number" class="form-control" id="inputMinRating" min="0" :max="Math.min(5,searchParams.maxRating)" v-model="searchParams.minRating">
+                  <input type="number" class="form-control" id="inputMedMinRating" min="0" :max="Math.min(5,searchParams.maxRating)" v-model="searchParams.minRating">
 
                   <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputMaxRating">-</span>
+                    <span class="input-group-text" id="inputMedMaxRating">-</span>
                   </div>
-                  <input type="number" class="form-control" id="inputMaxRating" :min="Math.max(0,searchParams.minRating)" max="5" v-model="searchParams.maxRating">
+                  <input type="number" class="form-control" id="inputMedMaxRating" :min="Math.max(0,searchParams.minRating)" max="5" v-model="searchParams.maxRating">
               </div>
             </div>
 
 
             <div class="form-group col-md-2">
-              <label for="sortSelect">Sort</label>
-              <select class="form-control" id="sortSelect" v-model="searchParams.sort">
+              <label for="sortMedSelect">Sort</label>
+              <select class="form-control" id="sortMedSelect" v-model="searchParams.sort">
                 <option value="NAME_ASC">By Name Asc</option>
                 <option value="NAME_DES">By Name Des</option>
                 <option value="SHAPE_ASC">By Shape Asc</option>
