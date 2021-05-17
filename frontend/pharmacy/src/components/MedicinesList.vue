@@ -118,7 +118,7 @@
         </div>
     </div>
 
-  <reserve-med-modal modalId="reserve-med-modal" v-model="selectedMed" :patientId="userId.id" @rated="reserveMedicine"></reserve-med-modal>
+  <reserve-med-modal v-if="userId && userId.role == 'PATIENT'" modalId="reserve-med-modal" v-model="selectedMed" :patientId="userId.id" @rated="reserveMedicine"></reserve-med-modal>
 
 
   <div class="row">
@@ -139,7 +139,7 @@
           <div class="d-flex justify-content-between align-items-center">
             <!-- <router-link class="btn btn-block btn-primary" :to="{ name: 'MedicinePage', params: { id: m.id  }}">View</router-link> -->
             <button type="button" class="btn btn-primary" v-on:click="fetchMedicine(m)" data-toggle="modal" data-target="#specsView">View specification</button>
-            <button v-if="userId" type="button" class="btn btn-primary" v-on:click="openReservationModal(m)" data-toggle="modal" data-target="#reserve-med-modal">Reserve</button>
+            <button v-if="userId && userId.role == 'PATIENT'" type="button" class="btn btn-primary" v-on:click="openReservationModal(m)" data-toggle="modal" data-target="#reserve-med-modal">Reserve</button>
           </div>
           
         </div>
