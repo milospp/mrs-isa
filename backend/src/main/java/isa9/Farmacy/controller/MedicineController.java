@@ -265,12 +265,18 @@ public class MedicineController {
     }
 
     @GetMapping("/pharmacy/{id}")
-    public ResponseEntity<List<MedInPharmaDTO>> getAllMedicinePharmacy(@PathVariable Long id) {
+    public ResponseEntity<List<MedInPharmaDTO>> getMedicinePharmacy(@PathVariable Long id) {
         Pharmacy apoteka = pharmacyService.findOne(id);
         List<MedInPharmaDTO> povratna = new ArrayList<>();
         for (MedicineInPharmacy mp : apoteka.getMedicines()) {     // ne vracamo one kojih ima 0
             if (mp.getInStock() > 0) povratna.add( medicineInPharmacyToMedInPharmaDTO.convert(mp));
         }
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+    @GetMapping("/all/pharmacy/{id}")
+    public ResponseEntity<List<MedInPharmaDTO>> getAllMedicinePharmacy(@PathVariable Long id) {
+        Pharmacy apoteka = pharmacyService.findOne(id);
+        List<MedInPharmaDTO> povratna = medicineInPharmacyToMedInPharmaDTO.convert(apoteka.getMedicines());
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 

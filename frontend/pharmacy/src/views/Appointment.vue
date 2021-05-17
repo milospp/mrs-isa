@@ -230,7 +230,7 @@ export default {
                     this.appointment = response.data;
                     this.status = this.appointment.examination.status;
                     console.log(response.data);
-                    MedicineDataService.getMedicineForPharmacy(this.appointment.pharmacy.id)
+                    MedicineDataService.getAllMedicineForPharmacy(this.appointment.pharmacy.id)
                     .then(response =>
                             {
                                 this.medicines = response.data;
