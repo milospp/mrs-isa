@@ -113,6 +113,8 @@
     </form>
     </div>
 
+    <button class="btn btn-primary" data-toggle="modal" data-target="#newMedModal">Add a new medicine</button>
+
     <div class="modal fade" id="editMedicineModal" tabindex="-1" role="dialog" aria-labelledby="editMedicineModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -146,11 +148,10 @@
     </div>
 </div>
 
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Potvrdica">{{this.edittedMedicine.medicine.name}} </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -176,6 +177,47 @@
     </div>
 </div>
 
+<div class="modal fade" id="newMedModal" tabindex="-1" role="dialog" aria-labelledby="newMedModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Potvrdica">Add a new medicine</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div>
+                <form>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <td colspan="2">Select a medicine: </td>
+                                <td colspan="2">
+                                    <select id="newMedicineSelect" style="width: 100%;" v-model="newMedicine">
+                                    <option v-for="(item, key, index) in this.otherMedicines" v-bind:value="item">{{item.medicine.name}}</option>
+                                    </select>   
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Price: </td>
+                                <td><input type="number" class="form-control" id="newPrice" v-model="newMedicine.currentPrice" v-bind:min="0"></td>
+                                <td>Quantity: </td>
+                                <td><input type="number" class="form-control" id="newQuantity" v-model="newMedicine.inStock" v-bind:min="0"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit" v-on:click="addMedicine(this.edittedMedicine)" data-dismiss="modal">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 </template>
 
@@ -185,11 +227,8 @@ import UtilService from '@/service/UtilService.js';
 import AuthService from '@/service/AuthService.js';
 import MedicineDataService from '@/service/MedicineDataService.js';
 
-// import DermatologistDataService from '../../service/DermatologistDataService';
-
 export default {
     name: "SupplierProfileInfo",
-    //props: ['id'],
     setup() {
       return { UtilService }
     },
@@ -198,7 +237,9 @@ export default {
 		return {
             supplier: null,
             myMedicines: [],
+            otherMedicines: [], //as in, not in supplier's list right now
             edittedMedicine: {medicine: {name:""}},
+            newMedicine: {},
 		}
 	},
     methods: {
@@ -234,6 +275,29 @@ export default {
             MedicineDataService.removeMedicineOfSupplier(medicine).then(response => {
                this.$router.go("/supplier/profile"); 
             });
+        },
+        getOtherMedicines(){
+            MedicineDataService.getAllMedicines().then(response => {
+                this.otherMedicines = {};
+                for(var med of response.data){
+                    if(this.myMedicines.[med.code]){
+                        continue;
+                    }
+                    this.otherMedicines[med.code] = {id: 0, currentPrice: 0, medicine: med, inStock: 0, supplier: {}};
+                }
+
+                console.log("OTHER MEDS");
+                console.log(this.otherMedicines);
+            });
+        },
+        addMedicine(medicine){
+            this.newMedicine.currentPrice = parseFloat(this.newMedicine.currentPrice);
+            this.newMedicine.inStock = parseInt(this.newMedicine.inStock);
+            this.newMedicine.supplier = this.supplier;
+            console.log(this.newMedicine);
+            MedicineDataService.addMedicineToSupplier(medicine).then(response => {
+               this.$router.go("/supplier/profile"); 
+            }); 
         }
        
     },
@@ -241,11 +305,14 @@ export default {
         this.loadSupplierData();
     },
 	created() {
+        this.loadSupplierData();
 		this.id = AuthService.getCurrentUser().id;
         MedicineDataService.getSuppliersMedicines(this.id).then(response => {
             this.myMedicines = response.data;
             console.log(this.myMedicines);
+            this.getOtherMedicines();
         });
+        
 	}
 }
 </script>

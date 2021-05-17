@@ -55,7 +55,6 @@ public class dbMedAtSupplierService extends MedicineAtSupplierServiceBase implem
         }
         this.userService.save(supplier);
 
-
         this.medAtSupplierRepository.delete(entity);
     }
 }

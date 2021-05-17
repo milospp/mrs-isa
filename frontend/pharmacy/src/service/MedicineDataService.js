@@ -145,6 +145,14 @@ class MedicineDataService {
       data: medicine
     });
   }
+
+  addMedicineToSupplier(medicine){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/addSuppliersMedicine`,
+      data: medicine
+    });
+  }
 }
 
 export default new MedicineDataService();

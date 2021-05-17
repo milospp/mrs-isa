@@ -75,7 +75,7 @@ public abstract class OfferServiceBase implements OfferService {
                 .filter(o -> offerSearchDTO.getDescription().isEmpty() || o.getOfferDescription().toLowerCase().contains(offerSearchDTO.getDescription().toLowerCase()))
                 .filter(o -> offerSearchDTO.getStatus().equalsIgnoreCase("INDEFINITELY") || o.getStatus().toString().equalsIgnoreCase(offerSearchDTO.getStatus()))
                 .filter(o -> o.getPrice() >= offerSearchDTO.getMinPrice() && o.getPrice() <= offerSearchDTO.getMaxPrice())
-                .filter(o -> o.getStartDate().isAfter(offerSearchDTO.getStartDate()) && o.getStartDate().isBefore(o.getEndDate()))
+                .filter(o -> offerSearchDTO.getStartDate().isBefore(o.getStartDate()) && o.getStartDate().isBefore(o.getEndDate()))
                 .sorted(comp).collect(Collectors.toList());
     }
 }
