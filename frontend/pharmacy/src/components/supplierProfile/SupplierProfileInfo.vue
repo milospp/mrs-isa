@@ -106,7 +106,7 @@
                     <td>{{item.inStock}}</td>
                     <td>{{item.currentPrice}}</td>
                     <td><form v-on:click.prevent="setEdittedMedicine(item)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editMedicineModal">Edit</button></form></td>
-                    <td><form v-on:click.prevent=""><button type="button" class="btn btn-danger">Delete</button></form></td>
+                    <td><form v-on:click.prevent="setEdittedMedicine(item)"><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button></form></td>
                 </tr>
             </tbody>
         </table>
@@ -146,9 +146,36 @@
     </div>
 </div>
 
-    <div>
-        <button type="button" class="btn btn-primary">Add medicine</button>
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Potvrdica">{{this.edittedMedicine.medicine.name}} </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div>
+                <form>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <td>Are you sure you wish to delete {{this.edittedMedicine.medicine.name}}?</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit" v-on:click="removeMedicine(this.edittedMedicine)" data-dismiss="modal">Confirm</button>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
+
 
 </template>
 
@@ -202,6 +229,11 @@ export default {
         },
         updateMedicine(medicine){
             MedicineDataService.updateSuppliersMedicine(medicine);
+        },
+        removeMedicine(medicine){
+            MedicineDataService.removeMedicineOfSupplier(medicine).then(response => {
+               this.$router.go("/supplier/profile"); 
+            });
         }
        
     },

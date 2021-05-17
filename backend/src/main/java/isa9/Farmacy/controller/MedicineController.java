@@ -386,4 +386,12 @@ public class MedicineController {
         this.medicineAtSupplierService.updateMedicineAtSupplier(toBeUpdated, medAtSupplierDTO.getCurrentPrice(), medAtSupplierDTO.getInStock());
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
+
+    @PostMapping("/removeSuppliersMedicine")
+    @PreAuthorize("hasAuthority('SUPPLIER')")
+    public ResponseEntity<Boolean> removeMedicineAtSupplier(@RequestBody MedAtSupplierDTO medAtSupplierDTO){
+        MedicineAtSupplier toBeRemoved = this.medicineAtSupplierService.findOne(medAtSupplierDTO.getId());
+        this.medicineAtSupplierService.delete(toBeRemoved);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
 }

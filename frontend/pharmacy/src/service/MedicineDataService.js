@@ -137,6 +137,14 @@ class MedicineDataService {
       data: medicine
     });
   }
+
+  removeMedicineOfSupplier(medicine){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/removeSuppliersMedicine`,
+      data: medicine
+    });
+  }
 }
 
 export default new MedicineDataService();
