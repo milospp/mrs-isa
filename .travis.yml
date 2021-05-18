@@ -17,4 +17,4 @@ dist: trusty
 deploy:
   provider: heroku
   api_key: $HEROKU_API_KEY
-  app: mrs-isa
+  app: pharmacy-tim9
