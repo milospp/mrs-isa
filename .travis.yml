@@ -6,10 +6,11 @@ services:
   - postgresql
 
 before_install:
+  - cd backend
   - chmod +x mvnw
 
 script:
-  - ./backend/mvnw clean install -DskipTests=false -B
+  - ./mvnw clean install -DskipTests=false -B
 
 dist: trusty
 
