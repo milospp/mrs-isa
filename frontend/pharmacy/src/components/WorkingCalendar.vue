@@ -168,7 +168,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.appointment{
+.appointment {
     font-size: 12px;
     /* font-weight: bold; */
     padding: 0;
@@ -176,24 +176,24 @@ export default {
     overflow: hidden;
 }
 
-.free{
+.free {
     background-color: var(--free-bg);
     color: var(--free-txt);
 }
 
-.examination{
+.examination {
     background-color: var(--exam-bg);
     color: var(--exam-txt);
+}
+
+.counseling {
+    background-color: var(--coun-bg);
+    color: var(--coun-txt);
 }
 
 .over {
   background-color: var(--held-bg);
   color: var(--held-txt);
-}
-
-.counseling{
-    background-color: var(--coun-bg);
-    color: var(--coun-txt);
 }
 
 .day-wrapper {
