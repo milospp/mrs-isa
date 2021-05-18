@@ -9,7 +9,7 @@ before_install:
   - chmod +x mvnw
 
 script:
-  - ./mvnw clean install -DskipTests=false -B
+  - ./backend/mvnw clean install -DskipTests=false -B
 
 dist: trusty
 
