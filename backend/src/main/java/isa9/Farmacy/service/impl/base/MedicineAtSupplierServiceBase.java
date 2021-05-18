@@ -3,6 +3,7 @@ package isa9.Farmacy.service.impl.base;
 import isa9.Farmacy.model.Medicine;
 import isa9.Farmacy.model.MedicineAtSupplier;
 import isa9.Farmacy.model.Supplier;
+import isa9.Farmacy.model.SupplierMedPrice;
 import isa9.Farmacy.service.MedicineAtSupplierService;
 import isa9.Farmacy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,8 @@ public abstract class MedicineAtSupplierServiceBase implements MedicineAtSupplie
     public void addMedicineAtSupplier(MedicineAtSupplier mas) {
         Supplier supplier = mas.getSupplier();
         supplier.getMedicinesInStock().add(mas);
-
-        this.userService.save(supplier);
+        mas.getSupplierPrice().getMedicineAtSupplier().setId(mas.getId());
         this.save(mas);
+
     }
 }

@@ -402,7 +402,14 @@ public class MedicineController {
     public ResponseEntity<Boolean> addMedicineToSupplier(@RequestBody MedAtSupplierDTO medAtSupplierDTO){
         System.out.println(medAtSupplierDTO);
         MedicineAtSupplier toBeAdded = this.medAtSupplierDTOtoMedAtSupplier.convert(medAtSupplierDTO);
+        SupplierMedPrice price = toBeAdded.getSupplierPrice();
+        toBeAdded.setSupplierPrice(null);
+        toBeAdded = this.medicineAtSupplierService.save(toBeAdded);
+
+        price.setMedicineAtSupplier(toBeAdded);
+        toBeAdded.setSupplierPrice(price);
         this.medicineAtSupplierService.addMedicineAtSupplier(toBeAdded);
+
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 }

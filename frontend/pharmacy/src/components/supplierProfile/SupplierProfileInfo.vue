@@ -211,7 +211,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 <div class="form-group">
-                    <button class="btn btn-primary" type="submit" v-on:click="addMedicine(this.edittedMedicine)" data-dismiss="modal">Confirm</button>
+                    <button class="btn btn-primary" type="submit" v-on:click="addMedicine(this.newMedicine)" data-dismiss="modal">Confirm</button>
                 </div>
             </div>
         </div>
@@ -285,9 +285,6 @@ export default {
                     }
                     this.otherMedicines[med.code] = {id: 0, currentPrice: 0, medicine: med, inStock: 0, supplier: {}};
                 }
-
-                console.log("OTHER MEDS");
-                console.log(this.otherMedicines);
             });
         },
         addMedicine(medicine){
@@ -305,7 +302,6 @@ export default {
         this.loadSupplierData();
     },
 	created() {
-        this.loadSupplierData();
 		this.id = AuthService.getCurrentUser().id;
         MedicineDataService.getSuppliersMedicines(this.id).then(response => {
             this.myMedicines = response.data;
