@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = {"id"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

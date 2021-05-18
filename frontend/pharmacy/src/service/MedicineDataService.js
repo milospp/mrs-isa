@@ -132,6 +132,30 @@ class MedicineDataService {
   getSuppliersMedicines(supplier_id){
     return axios.get(`${API_URL}/suppliersMedicines/`+supplier_id);
   }
+
+  updateSuppliersMedicine(medicine){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/updateSuppliersMedicine`,
+      data: medicine
+    });
+  }
+
+  removeMedicineOfSupplier(medicine){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/removeSuppliersMedicine`,
+      data: medicine
+    });
+  }
+
+  addMedicineToSupplier(medicine, id){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/addSuppliersMedicine/`+id,
+      data: medicine
+    });
+  }
 }
 
 export default new MedicineDataService();

@@ -17,7 +17,7 @@ public class MedicineAtSupplier {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne(cascade = CascadeType.ALL)
-    private SupplierMedPrice supplierPrice;
+    private SupplierMedPrice supplierPrice; //current price
     @OneToOne(cascade = CascadeType.ALL)
     private MedicineQuantity quantity;
     @ManyToOne

@@ -89,7 +89,7 @@
     <br>
     <h3>My medicines</h3>
     <div style="height: 250px; overflow-y: scroll;">
-    <form v-on:submit.prevent="">
+    <form>
         <table class="table table-striped">
             <thead class="card-header">
                 <th>Code</th>
@@ -105,17 +105,119 @@
                     <td>{{item.medicine.name}}</td>
                     <td>{{item.inStock}}</td>
                     <td>{{item.currentPrice}}</td>
-                    <td><form v-on:click.prevent=""><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">Edit</button></form></td>
-                    <td><form v-on:click.prevent=""><button type="button" class="btn btn-danger">Delete</button></form></td>
+                    <td><form v-on:click.prevent="setEdittedMedicine(item)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editMedicineModal">Edit</button></form></td>
+                    <td><form v-on:click.prevent="setEdittedMedicine(item)"><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button></form></td>
                 </tr>
             </tbody>
         </table>
     </form>
     </div>
 
-    <div>
-        <button type="button" class="btn btn-primary">Add medicine</button>
+    <button class="btn btn-primary" data-toggle="modal" data-target="#newMedModal">Add a new medicine</button>
+
+    <div class="modal fade" id="editMedicineModal" tabindex="-1" role="dialog" aria-labelledby="editMedicineModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Potvrdica">{{this.edittedMedicine.medicine.name}} </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div>
+                <form>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <td>Price: </td>
+                                <td><input type="number" class="form-control" id="edittedPrice" v-model="edittedMedicine.currentPrice" v-bind:min="0"></td>
+                                <td>Quantity: </td>
+                                <td><input type="number" class="form-control" id="edittedQuantity" v-model="edittedMedicine.inStock" v-bind:min="0"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit" v-on:click="updateMedicine(this.edittedMedicine)" data-dismiss="modal">Save changes</button>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div>
+                <form>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <td>Are you sure you wish to delete {{this.edittedMedicine.medicine.name}}?</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit" v-on:click="removeMedicine(this.edittedMedicine)" data-dismiss="modal">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="newMedModal" tabindex="-1" role="dialog" aria-labelledby="newMedModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Potvrdica">Add a new medicine</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div>
+                <form>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <td colspan="2">Select a medicine: </td>
+                                <td colspan="2">
+                                    <select id="newMedicineSelect" style="width: 100%;" v-model="newMedicine">
+                                    <option v-for="(item, key, index) in this.otherMedicines" v-bind:value="item">{{item.medicine.name}}</option>
+                                    </select>   
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Price: </td>
+                                <td><input type="number" class="form-control" id="newPrice" v-model="newMedicine.currentPrice" v-bind:min="0"></td>
+                                <td>Quantity: </td>
+                                <td><input type="number" class="form-control" id="newQuantity" v-model="newMedicine.inStock" v-bind:min="0"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit" v-on:click="addMedicine(this.newMedicine)" data-dismiss="modal">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 </template>
 
@@ -124,12 +226,10 @@ import DataService from '@/service/SupplierDataService.js';
 import UtilService from '@/service/UtilService.js';
 import AuthService from '@/service/AuthService.js';
 import MedicineDataService from '@/service/MedicineDataService.js';
-
-// import DermatologistDataService from '../../service/DermatologistDataService';
+import SupplierDataService from '@/service/SupplierDataService.js';
 
 export default {
     name: "SupplierProfileInfo",
-    //props: ['id'],
     setup() {
       return { UtilService }
     },
@@ -138,6 +238,9 @@ export default {
 		return {
             supplier: null,
             myMedicines: [],
+            otherMedicines: [], //as in, not in supplier's list right now
+            edittedMedicine: {medicine: {name:""}},
+            newMedicine: {},
 		}
 	},
     methods: {
@@ -162,6 +265,39 @@ export default {
             });
             $('#editDataModal').modal('hide');
         },
+        setEdittedMedicine(medicine){
+            this.edittedMedicine = medicine;
+            console.log(this.edittedMedicine);
+        },
+        updateMedicine(medicine){
+            MedicineDataService.updateSuppliersMedicine(medicine);
+        },
+        removeMedicine(medicine){
+            MedicineDataService.removeMedicineOfSupplier(medicine).then(response => {
+               this.$router.go("/supplier/profile"); 
+            });
+        },
+        getOtherMedicines(){
+            MedicineDataService.getAllMedicines().then(response => {
+                this.otherMedicines = {};
+                for(var med of response.data){
+                    if(this.myMedicines.[med.code]){
+                        continue;
+                    }
+                    this.otherMedicines[med.code] = {id: 0, currentPrice: 0, medicine: med, inStock: 0, supplier: {}};
+                }
+            });
+        },
+        addMedicine(medicine){
+            this.newMedicine.currentPrice = parseFloat(this.newMedicine.currentPrice);
+            this.newMedicine.inStock = parseInt(this.newMedicine.inStock);
+            this.newMedicine.supplier = this.edittedMedicine.supplier;
+            console.log(this.newMedicine);
+            MedicineDataService.addMedicineToSupplier(medicine, this.id).then(response => {
+               this.$router.go("/supplier/profile"); 
+            }); 
+        }
+       
     },
     mounted() {
         this.loadSupplierData();
@@ -171,7 +307,9 @@ export default {
         MedicineDataService.getSuppliersMedicines(this.id).then(response => {
             this.myMedicines = response.data;
             console.log(this.myMedicines);
+            this.getOtherMedicines();
         });
+        
 	}
 }
 </script>

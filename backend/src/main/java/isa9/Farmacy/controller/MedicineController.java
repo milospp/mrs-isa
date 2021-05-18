@@ -33,9 +33,10 @@ public class MedicineController {
     private final MedicineQuantityToMedicineQuantityDTO medicineQuantityToMedicineQuantityDTO;
     private final MedicineAtSupplierService medicineAtSupplierService;
     private final MedicineAtSupplierToMedAtSupplierDTO medicineAtSupplierToMedAtSupplierDTO;
+    private final MedAtSupplierDTOtoMedAtSupplier medAtSupplierDTOtoMedAtSupplier;
 
     @Autowired
-    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, RatingService ratingService, MedReservationService medReservationService, MedInPharmaService medInPharmaService, MedReservationToMedReservationDTO medReservationToMedReservationDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedicineToMedicineDTO medicineToMedicineDTO, RatingToRatingDTO ratingToRatingDTO, MedQuantityService medQuantityService, MedicineQuantityToMedicineQuantityDTO medicineQuantityToMedicineQuantityDTO, MedicineAtSupplierService medicineAtSupplierService, MedicineAtSupplierToMedAtSupplierDTO medicineAtSupplierToMedAtSupplierDTO) {
+    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, RatingService ratingService, MedReservationService medReservationService, MedInPharmaService medInPharmaService, MedReservationToMedReservationDTO medReservationToMedReservationDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedicineToMedicineDTO medicineToMedicineDTO, RatingToRatingDTO ratingToRatingDTO, MedQuantityService medQuantityService, MedicineQuantityToMedicineQuantityDTO medicineQuantityToMedicineQuantityDTO, MedicineAtSupplierService medicineAtSupplierService, MedicineAtSupplierToMedAtSupplierDTO medicineAtSupplierToMedAtSupplierDTO, MedAtSupplierDTOtoMedAtSupplier medAtSupplierDTOtoMedAtSupplier) {
         this.medicineService = medicineService;
         this.userService = userService;
         this.pharmacyService = pharmacyService;
@@ -50,6 +51,7 @@ public class MedicineController {
         this.medicineQuantityToMedicineQuantityDTO = medicineQuantityToMedicineQuantityDTO;
         this.medicineAtSupplierService = medicineAtSupplierService;
         this.medicineAtSupplierToMedAtSupplierDTO = medicineAtSupplierToMedAtSupplierDTO;
+        this.medAtSupplierDTOtoMedAtSupplier = medAtSupplierDTOtoMedAtSupplier;
     }
 
     @GetMapping("tmp-test")
@@ -383,5 +385,38 @@ public class MedicineController {
     public ResponseEntity<Map<String, MedAtSupplierDTO>> getSuppliersMedicines(@PathVariable Long id){
         Set<MedicineAtSupplier> medicineAtSupplierSet = this.medicineAtSupplierService.medicinesOfSupplier(id);
         return new ResponseEntity<>(this.medicineAtSupplierToMedAtSupplierDTO.setToMap(medicineAtSupplierSet), HttpStatus.OK);
+    }
+
+    @PostMapping("/updateSuppliersMedicine")
+    @PreAuthorize("hasAuthority('SUPPLIER')")
+    public ResponseEntity<Boolean> updateMedicineAtSupplier(@RequestBody MedAtSupplierDTO medAtSupplierDTO){
+        MedicineAtSupplier toBeUpdated = this.medicineAtSupplierService.findOne(medAtSupplierDTO.getId());
+        this.medicineAtSupplierService.updateMedicineAtSupplier(toBeUpdated, medAtSupplierDTO.getCurrentPrice(), medAtSupplierDTO.getInStock());
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @PostMapping("/removeSuppliersMedicine")
+    @PreAuthorize("hasAuthority('SUPPLIER')")
+    public ResponseEntity<Boolean> removeMedicineAtSupplier(@RequestBody MedAtSupplierDTO medAtSupplierDTO){
+        MedicineAtSupplier toBeRemoved = this.medicineAtSupplierService.findOne(medAtSupplierDTO.getId());
+        this.medicineAtSupplierService.delete(toBeRemoved);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @PostMapping("/addSuppliersMedicine/{id}")
+    @PreAuthorize("hasAuthority('SUPPLIER')")
+    public ResponseEntity<Boolean> addMedicineToSupplier(@RequestBody MedAtSupplierDTO medAtSupplierDTO, @PathVariable Long id){
+        Supplier supplier = (Supplier) this.userService.findOne(id);
+        MedicineAtSupplier toBeAdded = this.medAtSupplierDTOtoMedAtSupplier.convert(medAtSupplierDTO);
+        SupplierMedPrice price = toBeAdded.getSupplierPrice();
+        toBeAdded.setSupplierPrice(null);
+        toBeAdded.setSupplier(supplier);
+        toBeAdded = this.medicineAtSupplierService.save(toBeAdded);
+
+        price.setMedicineAtSupplier(toBeAdded);
+        toBeAdded.setSupplierPrice(price);
+        this.medicineAtSupplierService.addMedicineAtSupplier(toBeAdded);
+
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 }
