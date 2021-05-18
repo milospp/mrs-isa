@@ -43,6 +43,8 @@ public abstract class MedicineAtSupplierServiceBase implements MedicineAtSupplie
     public void addMedicineAtSupplier(MedicineAtSupplier mas) {
         Supplier supplier = mas.getSupplier();
         supplier.getMedicinesInStock().add(mas);
+        this.userService.save(supplier);
+
         mas.getSupplierPrice().getMedicineAtSupplier().setId(mas.getId());
         this.save(mas);
 

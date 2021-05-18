@@ -226,6 +226,7 @@ import DataService from '@/service/SupplierDataService.js';
 import UtilService from '@/service/UtilService.js';
 import AuthService from '@/service/AuthService.js';
 import MedicineDataService from '@/service/MedicineDataService.js';
+import SupplierDataService from '@/service/SupplierDataService.js';
 
 export default {
     name: "SupplierProfileInfo",
@@ -290,9 +291,9 @@ export default {
         addMedicine(medicine){
             this.newMedicine.currentPrice = parseFloat(this.newMedicine.currentPrice);
             this.newMedicine.inStock = parseInt(this.newMedicine.inStock);
-            this.newMedicine.supplier = this.supplier;
+            this.newMedicine.supplier = this.edittedMedicine.supplier;
             console.log(this.newMedicine);
-            MedicineDataService.addMedicineToSupplier(medicine).then(response => {
+            MedicineDataService.addMedicineToSupplier(medicine, this.id).then(response => {
                this.$router.go("/supplier/profile"); 
             }); 
         }

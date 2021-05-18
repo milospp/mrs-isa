@@ -397,13 +397,14 @@ public class MedicineController {
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
-    @PostMapping("/addSuppliersMedicine")
+    @PostMapping("/addSuppliersMedicine/{id}")
     @PreAuthorize("hasAuthority('SUPPLIER')")
-    public ResponseEntity<Boolean> addMedicineToSupplier(@RequestBody MedAtSupplierDTO medAtSupplierDTO){
-        System.out.println(medAtSupplierDTO);
+    public ResponseEntity<Boolean> addMedicineToSupplier(@RequestBody MedAtSupplierDTO medAtSupplierDTO, @PathVariable Long id){
+        Supplier supplier = (Supplier) this.userService.findOne(id);
         MedicineAtSupplier toBeAdded = this.medAtSupplierDTOtoMedAtSupplier.convert(medAtSupplierDTO);
         SupplierMedPrice price = toBeAdded.getSupplierPrice();
         toBeAdded.setSupplierPrice(null);
+        toBeAdded.setSupplier(supplier);
         toBeAdded = this.medicineAtSupplierService.save(toBeAdded);
 
         price.setMedicineAtSupplier(toBeAdded);

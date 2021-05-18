@@ -30,7 +30,7 @@ public class MedAtSupplierDTOtoMedAtSupplier implements Converter<MedAtSupplierD
     public MedicineAtSupplier convert(MedAtSupplierDTO medAtSupplierDTO) {
         MedicineAtSupplier medicineAtSupplier = new MedicineAtSupplier();
 
-        medicineAtSupplier.setSupplier((Supplier) userService.findOne(medAtSupplierDTO.getSupplier().getId()));
+//        medicineAtSupplier.setSupplier((Supplier) userService.findOne(medAtSupplierDTO.getSupplier().getId()));
         medicineAtSupplier.setId(medAtSupplierDTO.getId());
         medicineAtSupplier.setQuantity(new MedicineQuantity(
                 0L, this.medicineService.findOne(medAtSupplierDTO.getMedicine().getId()), medAtSupplierDTO.getInStock()));

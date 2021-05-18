@@ -146,10 +146,10 @@ class MedicineDataService {
     });
   }
 
-  addMedicineToSupplier(medicine){
+  addMedicineToSupplier(medicine, id){
     return axios({
       method: 'post',
-      url: `${API_URL}/addSuppliersMedicine`,
+      url: `${API_URL}/addSuppliersMedicine/`+id,
       data: medicine
     });
   }
