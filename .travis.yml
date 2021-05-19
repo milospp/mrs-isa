@@ -1,60 +1,45 @@
-# sudo: required
-# language: java
-# jdk: oraclejdk11
+dist: xenial
+sudo: false
+install: true
 
-# services:
-#   - postgresql
+matrix:
+  include:
+    - language: java
+      jdk: oraclejdk11
+      services:
+        - postgresql
 
-# before_install:
-#   - cd backend
-#   - chmod +x mvnw
+      before_install:
+        - cd backend
+        - chmod +x mvnw
 
-# script:
-#   - ./mvnw clean install -DskipTests=false -B
+      script:
+        - ./mvnw clean install -DskipTests=false -B
 
-# dist: trusty
+      dist: trusty
 
-# deploy:
-#   provider: heroku
-#   api_key: $HEROKU_API_KEY
-#   on:
-#     all_branches: true
-#   app: pharmacy-tim9
-
-language: node_js
-node_js:
- - "node"
-
-
-before_install:
-  - cd frontend/pharmacy
-
-cache: npm
-
-script: npm run build
-
-deploy:
-  provider: heroku
-  api_key: $HEROKU_API_KEY
-  on:
-    all_branches: true
-  app: pharmacy9
+      deploy:
+        provider: heroku
+        api_key: $HEROKU_API_KEY
+        on:
+          all_branches: true
+        app: pharmacy-tim9
+        
+    - language: node_js
+      node_js:
+      - "node"
 
 
+      before_install:
+        - cd frontend/pharmacy
 
+      cache: npm
 
-# sudo: required
-# language: vue_js
+      script: npm run build
 
-# script:
-#   - cd frontend/pharmacy
-
-# dist: trusty
-
-
-# deploy:
-#   provider: heroku
-#   api_key: $HEROKU_API_KEY
-#   on:
-#     all_branches: true
-#   app: pharmacy9
+      deploy:
+        provider: heroku
+        api_key: $HEROKU_API_KEY
+        on:
+          all_branches: true
+        app: pharmacy9
