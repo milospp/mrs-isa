@@ -45,7 +45,7 @@
                 :key="attr.key"
                 class="rounded p-0 mt-0 mb-0 mx-1 appointment lbl"
                 :class="attr.customData.typeForClass"
-                v-on:click="a(attr.key)"
+                v-on:dblclick="startAppointment(attr)"
               >
                 <b>{{ attr.customData.startTime }}</b> <b>{{ attr.customData.durationInMins}}</b>m <span v-if="!attr.customData.typeForClass.includes('free')"> {{ attr.customData.patientName }} {{ attr.customData.patientSurname }} </span>
               </p> <!--appointment-->
@@ -55,7 +55,7 @@
         </template>
       </Calendar>
     </div>
-    <!-- Y E A R    is-double-paned -->
+    <!-- Y E A R   @dayclick='dayClicked'   is-double-paned -->
     <div class="text-center section" v-else-if="appointments && calendarDetail === 'year'">
       <Calendar
       :attributes="attributes"
@@ -66,9 +66,51 @@
       is-expanded
       >
       <!-- <template v-slot:day-content="{ day, attributes }">
-        
       </template> -->
     </Calendar>
+    </div>
+    <!--MODAL FOR CHOOSING APPOINTMENT TO START IN YEARLY CALENDAR-->
+    <div>
+      <div>
+          <div class="modal fade" id="appointmentsModal" tabindex="-1" role="dialog" aria-labelledby="appointmentsModal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div v-if="selectedAppointment" class="modal-content">
+                <div class="modal-header">
+                  <span v-bind:class="{ 'badge-info': selectedAppointment.type == 'COUNSELING', 'badge-primary': selectedAppointment.type == 'EXAMINATION' }" class="badge">{{selectedAppointment.type}}
+                  <span v-if="false" class="badge badge-danger">CALCELED</span>
+                  </span>
+                  <h5 class="modal-title" id="appointmentsModalLabel">Appointments on this day</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <table class="table">
+                    <thead>
+                      <th>Time</th>
+                      <th>Duration</th>
+                      <th>Patient</th>
+                      <th></th>
+                    </thead>
+                    <tbody>
+                      <tr :key="app" v-for="app in appointmentsOnDay">
+                        <td>{{app.startTime}}</td>
+                        <td>{{app.durationInMins}}</td>
+                        <td>{{app.patientName}} {{app.patientSurname}}</td>
+                        <td v-if="!(app.typeForClass.includes('over') || app.typeForClass.includes('free'))">
+                          <button class="btn btn-primary" @click="startAppointment(app.id)">Start</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
     </div>
   </div>
 </template>
@@ -92,6 +134,7 @@ export default {
       chosenPharmacyId: 1,
       jobs: null,
       appointments: null,
+      appointmentsOnDay: [],
 
       calendarDetail: 'month',
       masks: {
@@ -113,6 +156,7 @@ export default {
         return this.appointments.map(t => ({
           key: t.id,
           dates: Date.parse(t.startDate),
+          //{ start: new Date(2018, 0, 1), end: new Date(2018, 0, 5) } for vacations
           customData: t,
         }));
       } else if (this.calendarDetail === 'year'){
@@ -125,6 +169,7 @@ export default {
           popover: {
             label: t.startTime + ' ' + t.durationInMins + 'm ' + t.patientName + ' ' + t.patientSurname,
             visibility: 'focus',
+            //slot: 'todo-row', // Matches slot from above
           },
         }));
       }
@@ -137,8 +182,35 @@ export default {
   methods: {
       a(id){
           alert(id);
-          this.calendar.move(1);
           //this.calendar.move({ month: 1, year: 2021 });
+      },
+      /*dayClicked(day) {
+        var a = this.attributes;
+        alert(a);
+        for (let attr of a){
+          let date = new Date(attr.dates);
+          let thisDate = new Date(day.date);
+
+          let sameYear = date.getFullYear() === thisDate.getFullYear();
+          let sameMonth = date.getMonth() === thisDate.getMonth();
+          let sameDay = date.getDay() === thisDate.getDay()
+          //alert(date.getFullYear() + ' vs ' + thisDate.getFullYear());
+          if (sameYear && sameMonth && sameDay)
+            //alert('found app on this day');
+            this.appointmentsOnDay.push(this.appointments[1]);
+          console.log(this.appointmentsOnDay);
+          if (this.appointmentsOnDay.length > 0)
+            $('#appointmentsModal').show();
+        }
+        //'<a href="/appointment/'+t.id+'">start</a>'
+      },*/
+      startAppointment(attributeApp) {
+        if (attributeApp.customData.typeForClass.includes('over'))
+          alert("Appointemnt already held.");
+        else if (attributeApp.customData.typeForClass.includes('free'))
+          alert("Appointment not booked yet.");
+        else
+          window.location.href = "/appointment/" + attributeApp.key;
       },
       setAttributes(pharmacyIdEvent) {
         if (pharmacyIdEvent === 0){ this.appointments = []; return; }
@@ -214,6 +286,14 @@ export default {
     overflow-y: auto;
     /* padding-right: 17px; */
     /* overflow: auto; */
+}
+
+.today {
+  color: red;
+}
+
+.not-today {
+  color: black;
 }
 
 .whole-day {
