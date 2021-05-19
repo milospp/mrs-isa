@@ -6,7 +6,6 @@
     "serve": "vue-cli-service serve  --port 3000",
     "build": "vue-cli-service build",
     "start": "vue-cli-service start"
-  }
   },
   "dependencies": {
     "@meforma/vue-toaster": "^1.2.2",
