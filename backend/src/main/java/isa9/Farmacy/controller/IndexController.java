@@ -12,6 +12,6 @@ public class IndexController {
 
         @GetMapping(path="/", produces="application/json")
         public ResponseEntity<String> getAllPatients() {
-            return new ResponseEntity<String>("Deploy test #2", HttpStatus.OK);
+            return new ResponseEntity<String>("Deploy test #5", HttpStatus.OK);
         }
     }
