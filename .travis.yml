@@ -18,3 +18,4 @@ deploy:
   provider: heroku
   api_key: $HEROKU_API_KEY
   app: pharmacy-tim9
+  run: "git subtree push --prefix backend heroku master"
