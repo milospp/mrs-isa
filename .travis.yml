@@ -26,7 +26,7 @@ sudo: required
 language: node_js
 
 script:
-  - cd frontend
+  - cd frontend/pharmacy
 
 deploy:
   provider: heroku
