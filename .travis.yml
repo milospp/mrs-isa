@@ -18,10 +18,7 @@ dist: trusty
 #   - cd ../
 #   - git subtree push --prefix backend heroku master
 
-before_deploy:
-  - echo 'deploy' 
-  - cd backend
-  - pwd
+before_deploy: "cd backend"
 
 deploy:
   provider: heroku
