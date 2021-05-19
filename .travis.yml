@@ -19,4 +19,6 @@ before_deploy: "cd ./backend"
 deploy:
   provider: heroku
   api_key: $HEROKU_API_KEY
+  on:
+    all_branches: true
   app: pharmacy-tim9
