@@ -27,9 +27,7 @@ language: node_js
 
 before_install:
   - cd frontend
-
-dist: trusty
-
+  
 deploy:
   provider: heroku
   api_key: $HEROKU_API_KEY
