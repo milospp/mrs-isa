@@ -14,12 +14,14 @@ script:
 
 dist: trusty
 
-after_success:
-  - cd ../
-  - git subtree push --prefix backend heroku master
+# after_success:
+#   - cd ../
+#   - git subtree push --prefix backend heroku master
 
-# deploy:
-#   provider: heroku
-#   api_key: $HEROKU_API_KEY
-#   app: pharmacy-tim9
-#   run: "git subtree push --prefix backend heroku master"
+deploy:
+  before_deploy: "cd backend"
+  # before_deploy:
+  #   - cd backend
+  provider: heroku
+  api_key: $HEROKU_API_KEY
+  app: pharmacy-tim9
