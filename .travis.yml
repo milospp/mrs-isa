@@ -1,16 +1,32 @@
-sudo: required
-language: java
-jdk: oraclejdk11
+# sudo: required
+# language: java
+# jdk: oraclejdk11
 
-services:
-  - postgresql
+# services:
+#   - postgresql
+
+# before_install:
+#   - cd backend
+#   - chmod +x mvnw
+
+# script:
+#   - ./mvnw clean install -DskipTests=false -B
+
+# dist: trusty
+
+# deploy:
+#   provider: heroku
+#   api_key: $HEROKU_API_KEY
+#   on:
+#     all_branches: true
+#   app: pharmacy-tim9
+
+
+sudo: required
+language: node_js
 
 before_install:
-  - cd backend
-  - chmod +x mvnw
-
-script:
-  - ./mvnw clean install -DskipTests=false -B
+  - cd frontent
 
 dist: trusty
 
@@ -19,4 +35,4 @@ deploy:
   api_key: $HEROKU_API_KEY
   on:
     all_branches: true
-  app: pharmacy-tim9
+  app: pharmacy9
