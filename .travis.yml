@@ -21,12 +21,17 @@
 #     all_branches: true
 #   app: pharmacy-tim9
 
-
-sudo: required
 language: node_js
+node_js:
+ - "node"
 
-script:
+
+before_install:
   - cd frontend/pharmacy
+
+cache: npm
+
+script: npm run build
 
 deploy:
   provider: heroku
@@ -34,3 +39,22 @@ deploy:
   on:
     all_branches: true
   app: pharmacy9
+
+
+
+
+# sudo: required
+# language: vue_js
+
+# script:
+#   - cd frontend/pharmacy
+
+# dist: trusty
+
+
+# deploy:
+#   provider: heroku
+#   api_key: $HEROKU_API_KEY
+#   on:
+#     all_branches: true
+#   app: pharmacy9
