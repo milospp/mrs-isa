@@ -25,9 +25,9 @@
 sudo: required
 language: node_js
 
-before_install:
+script:
   - cd frontend
-  
+
 deploy:
   provider: heroku
   api_key: $HEROKU_API_KEY
