@@ -14,8 +14,6 @@ script:
 
 dist: trusty
 
-before_deploy: "cd ./backend"
-
 deploy:
   provider: heroku
   api_key: $HEROKU_API_KEY
