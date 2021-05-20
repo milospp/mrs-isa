@@ -11,4 +11,5 @@ public interface OfferService extends GenericService<Offer> {
     List<Offer> getOffersOfSupplier(Long supplierId);
     void saveNewOffer(Offer offer);
     List<Offer> filterOffers(List<Offer> offers, OfferSearchDTO offerSearchDTO);
+    void updateOffer(Offer offer);
 }
