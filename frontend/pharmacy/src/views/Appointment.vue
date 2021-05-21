@@ -333,14 +333,10 @@ export default {
             $('#specificationModal').modal();
         },
         getReplacementMedicine(unavailableMedInPharma) {
-            alert('looking for replacements...');
             this.currentReplacements = [];
             for (let m of unavailableMedInPharma.medicine.replacementMedicationIds){
-                //alert('replacement med code' + m);
                 for (let one of this.medicines){
-                    //alert(m + ' vs ' + one.medicine.code);
                     if (one.medicine.code === m){
-                        //alert('replacement med name' + one.medicine.name);
                         this.currentReplacements.push(one);
                     }
                 }
