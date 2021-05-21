@@ -28,6 +28,8 @@ public class Patient extends User {
     private Set<Medicine> allergies;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<MedReservation> reservations;
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Complaint> complaints;
 
 
 
