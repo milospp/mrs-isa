@@ -69,6 +69,10 @@ class OrderDataService {
     });
   }
 
+  findOrderById(id){
+    return axios.get(`${API_URL}/findOrder/`+id);
+  }
+
   editOrder(order) {
     return axios({
         method: 'post',

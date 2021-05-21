@@ -129,6 +129,13 @@ public class OrderController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
+    @GetMapping("/findOrder/{id}")
+    @PreAuthorize("hasAuthority('SUPPLIER')")
+    public ResponseEntity<MedicineOrderDTO> findOrderById(@PathVariable Long id){
+        MedicineOrder order = this.orderService.findOne(id);
+        return new ResponseEntity<>(this.medOrderToMedOrderDTO.convert(order), HttpStatus.OK);
+    }
+
 //    @PostMapping("/choose")
 //    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
 //    public ResponseEntity<Integer> chooseOrder(@RequestBody OfferDTO ponuda) {

@@ -78,4 +78,14 @@ public abstract class OfferServiceBase implements OfferService {
                 .filter(o -> offerSearchDTO.getStartDate().isBefore(o.getStartDate()) && o.getStartDate().isBefore(o.getEndDate()))
                 .sorted(comp).collect(Collectors.toList());
     }
+
+    @Override
+    public void updateOffer(Offer offer) {
+        Offer original = this.findOne(offer.getId());
+
+        original.setOfferDescription(offer.getOfferDescription());
+        original.setEndDate(offer.getEndDate());
+
+        this.save(original);
+    }
 }
