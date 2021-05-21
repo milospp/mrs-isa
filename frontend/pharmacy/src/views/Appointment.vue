@@ -3,7 +3,7 @@
     <NavBar/>
     <div class="container">
         <h1 class="gray" v-if="appointment.type == 'EXAMINATION'">Examination</h1>
-        <h1 class="gray" v-else>Counseling</h1>
+        <h1 class="gray" v-else-if="appointment.type == 'COUNSELING'">Counseling</h1>
         <h3 class="gray">Patient: {{appointment.examination.patient.name}} {{appointment.examination.patient.surname}}</h3>
         <!-- <h3 class="gray">Dermatologist: {{appointment.doctor.name}} {{appointment.doctor.surname}}</h3> -->
         <p class="gray">Appointment: {{UtilService.formatDateTime(appointment.startTime)}}</p>
@@ -150,6 +150,38 @@
         </div>
     </div>
 
+    <!-- MODAL for replacement med reservation -->
+    <div class="modal fade" id="replacementModal" tabindex="-1" role="dialog" aria-labelledby="specificationModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="Potvrdica">Replacement of 
+                        <span v-if="therapyMed">{{therapyMed.medicine.name}}</span>
+                    </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <div>
+                    <table class="table table-striped">
+                        <thead>
+                            <th>Name</th>
+                            <th> </th>
+                        </thead>
+                        <tbody>
+                            <tr :key="med.medicine.code" v-for="med in currentReplacements">
+                                <td>{{med.medicine.name}}</td>
+                                <td>
+                                    <button class="btn btn-primary mr-3" @click="selectReplacementMed(med)" :disabled="!patientAppeared">Select</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL for booking new appointment -->
     <div class="modal" tabindex="-1" role="dialog" id="newAppointmentModal">
         <div class="modal-dialog" role="document">
@@ -253,6 +285,8 @@ export default {
             reservationDate: null,
             reservations: {},
             status: '',
+
+            currentReplacements: null,
         };
     },
     methods: {
@@ -298,6 +332,25 @@ export default {
         showSpecification() {
             $('#specificationModal').modal();
         },
+        getReplacementMedicine(unavailableMedInPharma) {
+            this.currentReplacements = [];
+            for (let m of unavailableMedInPharma.medicine.replacementMedicationIds){
+                for (let one of this.medicines){
+                    if (one.medicine.code === m){
+                        this.currentReplacements.push(one);
+                    }
+                }
+            }
+            $('#replacementModal').modal();
+        },
+        emptyReplacementsAndClosingModal(){
+            $('#replacementModal').modal('hide');
+            this.currentReplacements = null;
+        },
+        selectReplacementMed(med){
+            this.therapyMed = med;
+            this.emptyReplacementsAndClosingModal();
+        },
         addTherapy() {
             if (this.therapyMed && this.therapyDays && this.reservationDate){
                 let unique = true;
@@ -334,6 +387,10 @@ export default {
 
                             this.therapyMed = null; this.therapyDays = null; this.reservationDate = null;
                         }
+                    })
+                    .catch(error => {
+                        alert('Reservation unsuccessful');
+                        this.getReplacementMedicine(this.therapyMed);
                     });
                 
                 

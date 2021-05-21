@@ -97,6 +97,15 @@ insert into medicine (code, manufacturer, name, note, perscription, points, shap
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('C784','TAD PHARMA GMBH','Co-Amlessa','Čuvati na temperaturi do 30°C, u originalnom pakovanju radi zaštite od svetlosti i vlage',0,2,'tablets',5,'perindopril');
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('HUM010','ELI LILLY ITALIA S.P.A.','Humulin','Uložak od 3 mL se primenjuje samo u pen aplikatoru od 3 mL. Nije namenjen za primenu u penaplikatoru od 1,5 mL.',0,4,'saline',6,'insulini');
 
+--replacement medicine
+insert into medicine_replacement_medication (medicine_id, replacement_medication_id) values (1,2);
+insert into medicine_replacement_medication (medicine_id, replacement_medication_id) values (1,3);
+insert into medicine_replacement_medication (medicine_id, replacement_medication_id) values (1,4);
+insert into medicine_replacement_medication (medicine_id, replacement_medication_id) values (2,1);
+insert into medicine_replacement_medication (medicine_id, replacement_medication_id) values (3,1);
+insert into medicine_replacement_medication (medicine_id, replacement_medication_id) values (4,1);
+insert into medicine_replacement_medication (medicine_id, replacement_medication_id) values (2,4);
+
 --pharmacies
 insert into pharmacy (description, name, address_id, price_per_hour) values ('Otvoreni smo non-stop', 'Prima', 1, 40);
 insert into pharmacy (description, name, address_id, price_per_hour) values ('', 'Apoteka Janković', 31, 42);
@@ -118,15 +127,25 @@ insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 3);
 --med price
 insert into med_price(price, start_date) values (200, current_timestamp - INTERVAL '10 days');
 insert into med_price(price, start_date) values (100, current_timestamp - INTERVAL '10 days');
+insert into med_price(price, start_date) values (250, current_timestamp - INTERVAL '10 days');
+insert into med_price(price, start_date) values (150, current_timestamp - INTERVAL '10 days');
 
 --med catalog in pharmacy
-insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (5000, 1,1,1);
+insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (0, 1,1,1);
 update med_price SET medicine_in_pharmacy_id = 1 WHERE id = 1;
 insert into pharmacy_medicines (pharmacy_id, medicines_id) values (1,1);
 --
 insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (10000, 2,2,1);
 update med_price SET medicine_in_pharmacy_id = 2 WHERE id = 2;
 insert into pharmacy_medicines (pharmacy_id, medicines_id) values (1,2);
+--
+insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (300, 3,3,1);
+update med_price SET medicine_in_pharmacy_id = 3 WHERE id = 3;
+insert into pharmacy_medicines (pharmacy_id, medicines_id) values (1,3);
+--
+insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (12000, 4,4,1);
+update med_price SET medicine_in_pharmacy_id = 4 WHERE id = 4;
+insert into pharmacy_medicines (pharmacy_id, medicines_id) values (1,4);
 
 set timezone = 'Europe/Belgrade';
 --appointments
