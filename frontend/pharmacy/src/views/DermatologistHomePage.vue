@@ -1,6 +1,5 @@
 <template>
   <NavBar/>
-  <!-- <h1 class="title">Working Calendar</h1> -->
   <div class="title containter">
       <WorkingCalendar/>
   </div>

@@ -112,7 +112,6 @@ export default {
 	},
     methods: {
         loadDoctorData() {
-
             DataService.getPharmacist(this.id) // HARDCODED this.id
                 .then(response => {
                     console.log(this.id);
@@ -125,16 +124,6 @@ export default {
         },
         editPersonalData: function()
         {
-            // Validation
-            // var price = parseFloat(this.product.price);
-            // if(isNaN(price))
-            // {
-            //     this.notifications.push({
-            //         type: 'danger',
-            //         message: 'Price must be a number'
-            //     });
-            //     return false;
-            // }
             DataService.editPersonalData(this.doctor)
             .then((response) => {
                 if (response.data)
@@ -147,7 +136,7 @@ export default {
         this.loadDoctorData();
     },
 	created() {
-		  this.id = AuthService.getCurrentUser().id;
+		this.id = AuthService.getCurrentUser().id;
 	}
 }
 </script>

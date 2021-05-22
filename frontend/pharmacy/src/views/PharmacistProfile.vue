@@ -9,7 +9,7 @@
     <div class="container pt-5">
         <PharmacistProfileInfo/>
     </div>
-    <PharmacyWorkingCard :doctorId="userId"/> <!-- HARDCODED -->
+    <PharmacyWorkingCard/> <!-- HARDCODED -->
 </template>
 
 <style>
@@ -44,19 +44,19 @@ export default {
         };
     },
 
-    beforeMount() {
-        let user = AuthService.getCurrentUser();
-        if (user == null) {
-            AuthService.logout();
-            this.$router.replace("/login");
-            return;
-        }
+    // beforeMount() {
+    //     let user = AuthService.getCurrentUser();
+    //     if (user == null) {
+    //         AuthService.logout();
+    //         this.$router.replace("/login");
+    //         return;
+    //     }
 
-        if (user.role != "PHARMACY_ADMIN"){
-            this.$router.replace("/");
-        }
+    //     if (user.role != "PHARMACY_ADMIN"){
+    //         this.$router.replace("/");
+    //     }
 
-        this.userId = user.id;
-    }
+    //     this.userId = user.id;
+    // }
 }
 </script>
