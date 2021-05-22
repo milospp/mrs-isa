@@ -12,7 +12,7 @@ const path = require('path');
 
 module.exports = {
     devServer: {
-      proxy: '{API_URL}'
+      proxy: 'https://pharmacy-tim9.herokuapp.com'
     }
   }
 
