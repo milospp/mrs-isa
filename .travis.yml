@@ -24,19 +24,13 @@ matrix:
         on:
           all_branches: true
         app: pharmacy-tim9
-        
+
     - language: node_js
       node_js:
       - "node"
-
-
-      before_install:
-        - cd frontend/pharmacy
-
       cache: npm
-
-      script: npm run build
-
+      script: 
+        - cd frontend/pharmacy
       deploy:
         provider: heroku
         api_key: $HEROKU_API_KEY
