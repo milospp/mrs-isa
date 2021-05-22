@@ -10,7 +10,7 @@
         </tr>
     </table>
 
-    <h4>Pharmacies you bought from: </h4>
+    <h4>Pharmacists you've visited: </h4>
 
     <div style="height: 350px; overflow-y: scroll;">
     <table class="table table-striped">
@@ -80,7 +80,7 @@ export default {
         return {
             author: {},
             complaint: {id: 0, author: 0, pharmacy: 0, doctor: 0, description: "", response: ""},
-            queryParams: {name: "", description: "", address: "", minRating: 0, maxRating: 5},
+            queryParams: {name: "", surname: "", address: "", minRating: 0, maxRating: 5},
             pharmacists: new Map(),
             results: new Map(),
         };
