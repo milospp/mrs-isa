@@ -211,7 +211,7 @@ insert into patient_subscriptions (patient_id, subscriptions_id) values (1,1);
 insert into patient_subscriptions (patient_id, subscriptions_id) values (1,2);
 
 
--- docrot_working
+-- doctor_working
 insert into doctor_working (doctor_id, working_id) values (11, 1);
 insert into doctor_working (doctor_id, working_id) values (12, 2);
 insert into doctor_working (doctor_id, working_id) values (11, 3);

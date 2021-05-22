@@ -45,7 +45,7 @@
                 :key="attr.key"
                 class="rounded p-0 mt-0 mb-0 mx-1 appointment lbl"
                 :class="attr.customData.typeForClass"
-                v-on:click="a(attr.key)"
+                v-on:dblclick="startAppointment(attr)"
               >
                 <b>{{ attr.customData.startTime }}</b> <b>{{ attr.customData.durationInMins}}</b>m <span v-if="!attr.customData.typeForClass.includes('free')"> {{ attr.customData.patientName }} {{ attr.customData.patientSurname }} </span>
               </p> <!--appointment-->
@@ -55,21 +55,54 @@
         </template>
       </Calendar>
     </div>
-    <!-- Y E A R    is-double-paned -->
-    <div class="text-center section" v-else-if="appointments && calendarDetail === 'year'">
+    <!-- Y E A R      is-double-paned -->
+    <div class="text-center section row" v-else-if="appointments && calendarDetail === 'year'">
+      <div class="col">
       <Calendar
       :attributes="attributes"
       :month="1"
       :columns="4" :rows="3"
       :min-date="new Date()"
       ref="calendar"
+      @dayclick='dayClicked'
       is-expanded
       >
-      <!-- <template v-slot:day-content="{ day, attributes }">
-        
-      </template> -->
-    </Calendar>
+      </Calendar>
+      </div>
+      <div class="col">
+        <div class="text-center bg-light my-3">
+          <h3>On selected day...{{UtilService.formatDate(selectedDay)}}</h3>
+          <!-- <div class="container row" :key="app.id" v-for="app in appointmentsOnDay">
+          </div> -->
+          <div v-if="appointmentsOnDay.length > 0">
+            <table style="text-align: left; table-layout: fixed;" class="table table-striped">
+              <thead>
+                <th>Time</th>
+                <th>Duration</th>
+                <th>Patient</th>
+                <th>Start</th>
+              </thead>
+              <tbody>
+                <tr :key="app" v-for="app in appointmentsOnDay">
+                  <td>{{app.customData.startTime}}</td>
+                  <td>{{app.customData.durationInMins}} min</td>
+                  <td>{{app.customData.patientName}} {{app.customData.patientSurname}}</td>
+                  <td>
+                    <button v-if="!(app.customData.typeForClass.includes('free') || app.customData.typeForClass.includes('over'))" class="btn btn-primary" @click="startAppointment(app)">Start</button>
+                    <h4 v-else-if="app.customData.typeForClass.includes('free')"><span class="badge badge-secondary">FREE</span></h4>
+                    <h4 v-else-if="app.customData.typeForClass.includes('over')"><span class="badge">OVER</span></h4>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div v-else>
+            <p>There are no appointments on this day.</p>
+          </div>
+        </div>
+      </div>
     </div>
+    
   </div>
 </template>
 
@@ -77,14 +110,20 @@
 import AppointmentDataService from '@/service/AppointmentDataService.js';
 import PharmacyDataService from '@/service/PharmacyDataService.js';
 import AuthService from '../service/AuthService.js';
+import UtilService from '../service/UtilService.js';
 
 console.warn = () => {};
 
 export default {
+  setup() {
+    return {UtilService}
+  },
   data() {
     const month = new Date().getMonth();
     const january = 1;
     const year = new Date().getFullYear();
+    const todayFull = new Date();
+    const today = new Date(todayFull.getFullYear(), todayFull.getMonth(), todayFull.getDay());
     return {
       // my
       currentMonth: january,
@@ -97,6 +136,7 @@ export default {
       masks: {
         weekdays: 'WWWW',
       },
+      selectedDay: new Date(),
     };
   },
   mounted(){
@@ -113,32 +153,59 @@ export default {
         return this.appointments.map(t => ({
           key: t.id,
           dates: Date.parse(t.startDate),
+          //{ start: new Date(2018, 0, 1), end: new Date(2018, 0, 5) } for vacations
           customData: t,
         }));
       } else if (this.calendarDetail === 'year'){
         return this.appointments.map(t => ({
           dates: Date.parse(t.startDate),
+          customData: t,
           dot: {
-            backgroundColor: '#ff8080',
-            opacity: t.typeForClass.includes('free') ? 0.3 : 1,//t.typeForClass.includes('held') ? 0.5 : 1,//todo.isComplete ? 0.3 : 1,
+            style: {
+              backgroundColor: (Date.parse(t.startDate) < this.today) ? 'gray' : (this.doctor.role === 'DERMATOLOGIST') ? '#007bff' : (this.doctor.role === 'PHARMACIST') ? '#ffc107' : 'gray',//'#ff8080',
+              opacity: t.typeForClass.includes('free') ? 0.5 : t.typeForClass.includes('over') ? 0.3 : 1,//t.typeForClass.includes('held') ? 0.5 : 1,//todo.isComplete ? 0.3 : 1,
+            }
           },
           popover: {
             label: t.startTime + ' ' + t.durationInMins + 'm ' + t.patientName + ' ' + t.patientSurname,
-            visibility: 'focus',
+            visibility: 'hover',
           },
         }));
+        
       }
     },
     doctor() {
       return AuthService.getCurrentUser();
     },
-    calendar() { console.log(this.$refs.calendar); return this.$refs.calendar; }
+    calendar() { console.log(this.$refs.calendar); return this.$refs.calendar; },
+    appointmentsOnDay() {
+      let apps = [];
+      var a = this.attributes;
+      for (let attr of a){
+        let date = new Date(attr.dates);
+        if (date.toDateString() == this.selectedDay.toDateString())
+          apps.push(attr);
+      }
+      return apps;
+      //'<a href="/appointment/'+t.id+'">start</a>'
+    }
   },
   methods: {
       a(id){
           alert(id);
-          this.calendar.move(1);
           //this.calendar.move({ month: 1, year: 2021 });
+      },
+      dayClicked(day) {
+        this.selectedDay = new Date(day.date);
+        console.log('selected day:',this.selectedDay);
+      },
+      startAppointment(attributeApp) {
+        if (attributeApp.customData.typeForClass.includes('over'))
+          alert("Appointemnt already held.");
+        else if (attributeApp.customData.typeForClass.includes('free'))
+          alert("Appointment not booked yet.");
+        else
+          window.location.href = "/appointment/" + attributeApp.customData.id;
       },
       setAttributes(pharmacyIdEvent) {
         if (pharmacyIdEvent === 0){ this.appointments = []; return; }
@@ -214,6 +281,14 @@ export default {
     overflow-y: auto;
     /* padding-right: 17px; */
     /* overflow: auto; */
+}
+
+.today {
+  color: red;
+}
+
+.not-today {
+  color: black;
 }
 
 .whole-day {
