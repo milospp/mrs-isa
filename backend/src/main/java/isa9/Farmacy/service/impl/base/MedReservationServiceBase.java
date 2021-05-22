@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public abstract class MedReservationServiceBase implements MedReservationService {
@@ -189,4 +191,14 @@ public abstract class MedReservationServiceBase implements MedReservationService
         return this.reserveMedicine(reservationFormDTO, null);
     }
 
+    @Override
+    public List<MedReservation> getPatientsPurchases(Patient patient) {
+        List<MedReservation> purchases = new ArrayList<>();
+
+        for(MedReservation mr : patient.getReservations()){
+            if(mr.getStatus().equals(MedReservationStatus.TAKEN)) purchases.add(mr);
+        }
+
+        return purchases;
+    }
 }
