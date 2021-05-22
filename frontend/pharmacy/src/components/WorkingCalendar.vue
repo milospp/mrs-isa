@@ -88,7 +88,7 @@
                   <td>{{app.customData.durationInMins}} min</td>
                   <td>{{app.customData.patientName}} {{app.customData.patientSurname}}</td>
                   <td>
-                    <button v-if="!(app.customData.typeForClass.includes('free') || app.customData.typeForClass.includes('over'))" class="btn btn-primary">Start</button>
+                    <button v-if="!(app.customData.typeForClass.includes('free') || app.customData.typeForClass.includes('over'))" class="btn btn-primary" @click="startAppointment(app)">Start</button>
                     <h4 v-else-if="app.customData.typeForClass.includes('free')"><span class="badge badge-secondary">FREE</span></h4>
                     <h4 v-else-if="app.customData.typeForClass.includes('over')"><span class="badge">OVER</span></h4>
                   </td>
@@ -162,14 +162,13 @@ export default {
           customData: t,
           dot: {
             style: {
-              backgroundColor: (Date.parse(t.startDate) < this.today) ? 'gray' : t.typeForClass.includes('examination') ? '#007bff' : '#ffc107',//'#ff8080',
+              backgroundColor: (Date.parse(t.startDate) < this.today) ? 'gray' : (this.doctor.role === 'DERMATOLOGIST') ? '#007bff' : (this.doctor.role === 'PHARMACIST') ? '#ffc107' : 'gray',//'#ff8080',
               opacity: t.typeForClass.includes('free') ? 0.5 : t.typeForClass.includes('over') ? 0.3 : 1,//t.typeForClass.includes('held') ? 0.5 : 1,//todo.isComplete ? 0.3 : 1,
             }
           },
           popover: {
             label: t.startTime + ' ' + t.durationInMins + 'm ' + t.patientName + ' ' + t.patientSurname,
             visibility: 'hover',
-            //slot: 'todo-row', // Matches slot from above
           },
         }));
         
@@ -206,7 +205,7 @@ export default {
         else if (attributeApp.customData.typeForClass.includes('free'))
           alert("Appointment not booked yet.");
         else
-          window.location.href = "/appointment/" + attributeApp.key;
+          window.location.href = "/appointment/" + attributeApp.customData.id;
       },
       setAttributes(pharmacyIdEvent) {
         if (pharmacyIdEvent === 0){ this.appointments = []; return; }
