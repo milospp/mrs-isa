@@ -30,6 +30,7 @@
 <script>
 import PharmacyDataService from '../../service/PharmacyDataService.js';
 import UtilService from '../../service/UtilService.js';
+import AuthService from '@/service/AuthService.js';
 
 export default {
     setup() {
@@ -42,7 +43,6 @@ export default {
             message: null,
         };
     },
-    props: ['doctorId'],
     methods: {
       getJobs() {
         PharmacyDataService.getDoctorsJobs(this.doctorId) // HARDCODED
@@ -68,6 +68,7 @@ export default {
         this.getPharmacies();
     },
     created() {
+        this.doctorId = AuthService.getCurrentUser().id;
     }
 }
 
