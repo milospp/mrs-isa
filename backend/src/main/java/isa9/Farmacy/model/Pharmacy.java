@@ -50,7 +50,7 @@ public class Pharmacy {
     @NotNull
     private double pricePerHour;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<InquiryMedicine> inquiryMedicines;
 
 

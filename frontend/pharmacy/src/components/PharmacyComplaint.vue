@@ -12,6 +12,7 @@
 
     <h4>Pharmacies you bought from: </h4>
 
+    <div style="height: 350px; overflow-y: scroll;">
     <table class="table table-striped">
         <thead class="card-header">
             <th>Name</th>
@@ -21,21 +22,56 @@
             <th></th>
         </thead>
         <tbody>
-            <tr :key="key" v-for="(value, key) in this.pharmacies">
+            <tr :key="key" v-for="(value, key) in this.results">
                 <td>{{value[1].name}}</td>
                 <td>{{value[1].description}}</td>
                 <td>{{value[1].address.street+" "+value[1].address.number+", "+value[1].address.city}}</td>
                 <td>{{value[1].rating}}</td>
                 <td>
-                    <button class="btn btn-primary" type="submit" data-dismiss="modal" v-on:click="" data-toggle="modal" data-target="#complaintModal">Complaint</button>
+                    <button class="btn btn-primary" type="submit" data-dismiss="modal" v-on:click="this.setPharmacy(value[1])" 
+                    data-toggle="modal" data-target="#complaintModal">Complaint</button>
                 </td>
             </tr>
         </tbody>
     </table>
+    </div>
+
+
+    <div class="modal fade" id="complaintModal" tabindex="-1" role="dialog" aria-labelledby="complaintModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="Potvrdica">Describe your dissatisfaction with {{complaint.pharmacy.name}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <div>
+                    <table class="table table-striped">
+                        <thead class="card-header">
+                            <th>Description</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><textarea v-model="complaint.description" rows="5" style="width : 100%;"></textarea></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <div class="form-group">
+                        <button class="btn btn-primary" type="submit" data-dismiss="modal" v-on:click="sendComplaint()">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </template>
 <script>
 import AuthService from '../service/AuthService.js';
+import ComplaintDataService from '../service/ComplaintDataService.js';
 import PharmacyDataService from '../service/PharmacyDataService.js';
 import DermatologistDataService from '../service/DermatologistDataService.js';
 import PharmacistDataService from '../service/PharmacistDataService.js';
@@ -47,9 +83,10 @@ export default {
     data() {
         return {
             author: {},
-            complaint: {id: 0, author: this.author, pharmacy: {}, doctor: {}, description: "", response: ""},
+            complaint: {id: 0, author: 0, pharmacy: 0, doctor: 0, description: "", response: ""},
             queryParams: {name: "", description: "", address: "", minRating: 0, maxRating: 5},
             pharmacies: new Map(),
+            results: new Map(),
         };
     },
     methods: {
@@ -59,7 +96,26 @@ export default {
                     this.pharmacies.set(reservation.medicineInPharmacy.pharmacy.id.toString(), reservation.medicineInPharmacy.pharmacy);
                 }
 
-                console.log(this.pharmacies);
+                this.results = this.pharmacies;
+            });
+        },
+        filterResults(){
+            this.results = new Map();
+
+            for(let [key, value] of this.pharmacies){
+                if(value.name.includes(this.queryParams.name) && value.description.includes(this.queryParams.description) &&
+                   (value.address.street+" "+value.address.number+", "+value.address.city).includes(this.queryParams.address) && (value.rating <= this.queryParams.maxRating && value.rating >= this.queryParams.minRating)){
+                    this.results.set(value.id, value);
+                }
+            }
+        },
+        setPharmacy(pharmacy){
+            this.complaint.pharmacy = pharmacy.id;
+        },
+        sendComplaint(){
+            this.complaint.author = this.author.id;
+            ComplaintDataService.sendComplaint(this.complaint).then(response => {
+                this.complaint.description = "";
             });
         }
     },

@@ -19,7 +19,7 @@ public class Complaint {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Patient author;
     @OneToOne
     private Pharmacy pharmacy;

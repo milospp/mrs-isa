@@ -3,6 +3,7 @@ package isa9.Farmacy.service.impl.db;
 import isa9.Farmacy.model.Complaint;
 import isa9.Farmacy.repository.ComplaintRepository;
 import isa9.Farmacy.service.ComplaintService;
+import isa9.Farmacy.service.impl.base.ComplaintServiceBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,7 @@ import java.util.List;
 @Component
 @Primary
 @Service
-public class dbComplaintService implements ComplaintService {
+public class dbComplaintService extends ComplaintServiceBase implements ComplaintService {
 
     private final ComplaintRepository complaintRepository;
 
