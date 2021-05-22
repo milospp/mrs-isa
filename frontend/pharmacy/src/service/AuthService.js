@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const API_URL = "http://localhost:8080";
+const API_URL = "api";
 
 class AuthService {
 	login(credentials){
@@ -9,7 +9,7 @@ class AuthService {
 
 		return axios({
 			method: 'post',
-			url: `${API_URL}/api/auth/login`,
+			url: `${API_URL}/auth/login`,
 			data: credentials
 		}).then(response => {
 			if (response.data.accessToken) {
@@ -44,7 +44,7 @@ class AuthService {
 		}
 		console.log(config);
 
-		return axios.get(`${API_URL}/api/auth/getLoggedIn`, config).then(response => {
+		return axios.get(`${API_URL}/auth/getLoggedIn`, config).then(response => {
 			localStorage.setItem('currentUser', JSON.stringify(response.data));
 			return response.data;
 		})
@@ -72,7 +72,7 @@ class AuthService {
 	}
 
 	getPasswordResetDate(id){
-		return axios.get(`${API_URL}/api/auth/getPasswordResetDate/`+id).then(response => {
+		return axios.get(`${API_URL}/auth/getPasswordResetDate/`+id).then(response => {
 			return response.data;
 		})
 	}
@@ -85,7 +85,7 @@ class AuthService {
 	SendNewPassword(id,newPassword) {
 		return axios({
 			method: 'post',
-			url: `${API_URL}/api/auth/changePassword/`+id,
+			url: `${API_URL}/auth/changePassword/`+id,
 			data: newPassword
 		});
 	}

@@ -2,13 +2,13 @@ import axios from "axios";
 
 
 
-const API_URL = "http://localhost:8080";
+const API_URL = "api";
 
 class PharmacistDataService {
   SendPharmacist(idAdmina, promenljiva) {
     return axios({
       method: 'post',
-      url: API_URL + "/api/users/register/pharmacist/" + idAdmina,
+      url: API_URL + "/users/register/pharmacist/" + idAdmina,
       data: promenljiva
     }).catch(function (error) {
       if (error.response) {
@@ -22,19 +22,19 @@ class PharmacistDataService {
   }
   
   getAllPharmacistAdmin(idAdminaApoteke) {
-    return axios.get(API_URL + "/api/users/pharmacists/admin/" + idAdminaApoteke);2
+    return axios.get(API_URL + "/users/pharmacists/admin/" + idAdminaApoteke);2
   }
 
   firePharmacist(adminId, farmaceut) {
     return axios({
       method: 'post',
-      url: API_URL + "/api/users/pharmacist/fire/" + adminId,
+      url: API_URL + "/users/pharmacist/fire/" + adminId,
       data: farmaceut
     });
   }
   
   searchPharmacistAdmin(idAdminaApoteke, search) {
-    return axios.get(API_URL + "/api/users/pharmacists/admin/" + idAdminaApoteke + "/" + search)
+    return axios.get(API_URL + "/users/pharmacists/admin/" + idAdminaApoteke + "/" + search)
     .catch(function (error) {
       if (error.response) {
         console.log(error.response.data);
@@ -60,7 +60,7 @@ class PharmacistDataService {
       "filterAdrD": filterAdrD, "filterAdrG": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
     return axios({
       method: 'post',
-      url: API_URL + "/api/users/pharm/filter/admin/" + idAdminaApoteke,
+      url: API_URL + "/users/pharm/filter/admin/" + idAdminaApoteke,
       data: objekat
     }).catch(function (error) {
       if (error.response) {
@@ -74,7 +74,7 @@ class PharmacistDataService {
   }
   
   getAllPharmacistPharmacy(idApoteke) {
-    return axios.get(API_URL + "/api/users/pharmacists/pharmacy/" + idApoteke);
+    return axios.get(API_URL + "/users/pharmacists/pharmacy/" + idApoteke);
     // .catch(function (error) {
     //   if (error.response) {
     //     console.log(error.response.data);
@@ -87,7 +87,7 @@ class PharmacistDataService {
   }
   
   searchPharmacistPharmacy(idApoteke, search) {
-    return axios.get(API_URL + "/api/users/pharmacists/pharmacy/" + idApoteke + "/" + search)
+    return axios.get(API_URL + "/users/pharmacists/pharmacy/" + idApoteke + "/" + search)
     .catch(function (error) {
       if (error.response) {
         console.log(error.response.data);
@@ -113,7 +113,7 @@ class PharmacistDataService {
   "filterAdrD": filterAdrD, "filterAdrG": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
   return axios({
     method: 'post',
-    url: API_URL + "/api/users/pharm/filter/pharmacy/" + idApoteke,
+    url: API_URL + "/users/pharm/filter/pharmacy/" + idApoteke,
     data: objekat
   }).catch(function (error) {
     if (error.response) {
@@ -133,7 +133,7 @@ class PharmacistDataService {
   editPersonalData(pharmacist){
     return axios({
       method: 'post',
-      url: API_URL + "/api/users/edit/pharmacist",
+      url: API_URL + "/users/edit/pharmacist",
       data: pharmacist
     });
   }

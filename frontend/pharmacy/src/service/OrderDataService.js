@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const API_URL = "http://localhost:8080/api/orders";
+const API_URL = "api/orders";
 
 class OrderDataService {
     getOrders(idAdmina) {

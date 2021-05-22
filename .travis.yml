@@ -11,6 +11,8 @@ matrix:
 
       before_install:
         - cd backend
+        - mv src/main/resources/application.properties src/main/resources/application-local.properties
+        - mv src/main/resources/application-deploy.properties src/main/resources/application.properties
         - chmod +x mvnw
 
       script:
@@ -31,6 +33,8 @@ matrix:
       cache: npm
       script: 
         - cd frontend/pharmacy
+        - mv vue.config.js vue.config-local.js
+        - mv vue.config-deploy.js vue.config.js
       deploy:
         provider: heroku
         api_key: $HEROKU_API_KEY

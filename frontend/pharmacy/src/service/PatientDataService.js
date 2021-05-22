@@ -1,34 +1,34 @@
 import axios from "axios";
 
 
-const API_URL = "http://localhost:8080";
+const API_URL = "api";
 
 class PatientDataService {
   retrieveAllPatients(refreshData) {
     return axios({
       method: 'post',
-      url: `${API_URL}/api/users/patients`,
+      url: `${API_URL}/users/patients`,
       data: refreshData
     });
-    //return axios.get(`${API_URL}/api/users/patients?pageNo=`+ pageNo +`&pageSize=`+ pageSize +`&sortBy=`+ sortBy +`&doctorId=`+ doctorId + `&asc=` + asc);
+    //return axios.get(`${API_URL}/users/patients?pageNo=`+ pageNo +`&pageSize=`+ pageSize +`&sortBy=`+ sortBy +`&doctorId=`+ doctorId + `&asc=` + asc);
   }
 
   searchPatients(name, surname) {
-    return axios.get(`${API_URL}/api/users/all-patients/search?name=` + name + `&surname=` + surname);
+    return axios.get(`${API_URL}/users/all-patients/search?name=` + name + `&surname=` + surname);
   }
 
   getPatient(id){
-    return axios.get(`${API_URL}/api/users/patient/` + id);
+    return axios.get(`${API_URL}/users/patient/` + id);
   }
 
   getPatientAllergies(id){
-    return axios.get(`${API_URL}/api/users/` + id + `/allergies`);
+    return axios.get(`${API_URL}/users/` + id + `/allergies`);
   }
 
   addPatientAllergy(medicine){
     return axios({
       method: 'post',
-      url: `${API_URL}/api/users/id/allergies`,
+      url: `${API_URL}/users/id/allergies`,
       data: medicine
     });
   }
@@ -37,31 +37,31 @@ class PatientDataService {
   deletePatientAllergy(medicine){
     return axios({
       method: 'delete',
-      url: `${API_URL}/api/users/id/allergies`,
+      url: `${API_URL}/users/id/allergies`,
       data: medicine
     });
   }
 
   getPatientSubscriptions(id){
-    return axios.get(`${API_URL}/api/users/` + id + `/subscriptions`);
+    return axios.get(`${API_URL}/users/` + id + `/subscriptions`);
   }
 
   unsubscribePatient(userId, pharmacyId){
-    return axios.delete(`${API_URL}/api/users/` + userId + `/subscriptions/` + pharmacyId);
+    return axios.delete(`${API_URL}/users/` + userId + `/subscriptions/` + pharmacyId);
   }
 
   getPatientPenalities(id){
-    return axios.get(`${API_URL}/api/users/` + id + `/penalties`);
+    return axios.get(`${API_URL}/users/` + id + `/penalties`);
   }
   
   getPatientPenalitiesCount(id){
-    return axios.get(`${API_URL}/api/users/` + id + `/penalties/count`);
+    return axios.get(`${API_URL}/users/` + id + `/penalties/count`);
   }
   
   updatePatientInfo(patient) {
     return axios({
       method: 'post',
-      url: `${API_URL}/api/users/` + patient.id + `/update`,
+      url: `${API_URL}/users/` + patient.id + `/update`,
       data: patient
     });
   }
@@ -69,7 +69,7 @@ class PatientDataService {
   SendPatient(newPatient) {
     return axios({
       method: 'post',
-      url: `${API_URL}/api/users/register/patient`,
+      url: `${API_URL}/users/register/patient`,
       data: newPatient
     }).then(response => {
       if (response.data) {
@@ -82,23 +82,23 @@ class PatientDataService {
   }
 
   getPatientReservations(id) {
-    return axios.get(`${API_URL}/api/users/` + id + `/reservations`);
+    return axios.get(`${API_URL}/users/` + id + `/reservations`);
   }
 
   cancelReservation(id) {
-    return axios.put(`${API_URL}/api/users/reservations/` + id + `/cancel`);
+    return axios.put(`${API_URL}/users/reservations/` + id + `/cancel`);
   }
 
   rateDoctor(doctor, rateObj) {
     return axios({
       method: 'post',
-      url: `${API_URL}/api/users/doctor/` + doctor.id + `/rating`,
+      url: `${API_URL}/users/doctor/` + doctor.id + `/rating`,
       data: rateObj
     });
   }
 
   getUserRating(patient, doctor) {
-    return axios.get(`${API_URL}/api/users/doctor/` + doctor.id + `/rating/user/` + patient.id);
+    return axios.get(`${API_URL}/users/doctor/` + doctor.id + `/rating/user/` + patient.id);
   }
 
 }

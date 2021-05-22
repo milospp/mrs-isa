@@ -1,28 +1,28 @@
 import axios from "axios";
 
 
-const API_URL = "http://localhost:8080";
+const API_URL = "api";
 
 class DermatologistDataService {
   getAllDermatologistAdmin(idAdminaApoteke) {
-    return axios.get(API_URL + "/api/users/dermatologists/admin/" + idAdminaApoteke);
+    return axios.get(API_URL + "/users/dermatologists/admin/" + idAdminaApoteke);
   }
 
   getDermAdminHire(idAdminaApoteke) {
-    return axios.get(API_URL + "/api/users/derm/hire/admin/" + idAdminaApoteke);
+    return axios.get(API_URL + "/users/derm/hire/admin/" + idAdminaApoteke);
   }
 
   hireDermatologist(adminId, dermatolog, startTime, endTime) {
     var objekat = {"registerData": dermatolog, "startHour": startTime, "endHour": endTime}
     return axios({
       method: 'post',
-      url: API_URL + "/api/users/dematologist/hire/" + adminId,
+      url: API_URL + "/users/dematologist/hire/" + adminId,
       data: objekat
     });
   }
 
   searchDermatologistAdmin(idAdminaApoteke, search) {
-    return axios.get(API_URL + "/api/users/dermatologists/admin/" + idAdminaApoteke + "/" + search)
+    return axios.get(API_URL + "/users/dermatologists/admin/" + idAdminaApoteke + "/" + search)
     .catch(function (error) {
       if (error.response) {
         console.log(error.response.data);
@@ -48,7 +48,7 @@ class DermatologistDataService {
     "filterAdrD": filterAdrD, "filterAdrG": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
   return axios({
     method: 'post',
-    url: API_URL + "/api/users/derm/filter/admin/" + idAdminaApoteke,
+    url: API_URL + "/users/derm/filter/admin/" + idAdminaApoteke,
     data: objekat
   }).catch(function (error) {
       if (error.response) {
@@ -75,7 +75,7 @@ class DermatologistDataService {
     "filterAdrD": filterAdrD, "filterAdrG": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
   return axios({
     method: 'post',
-    url: API_URL + "/api/users/derm/filter/pharmacy/" + idApoteke,
+    url: API_URL + "/users/derm/filter/pharmacy/" + idApoteke,
     data: objekat
   }).catch(function (error) {
     if (error.response) {
@@ -90,13 +90,13 @@ class DermatologistDataService {
     }
   
   getAllDermatologistsPharmacy(idApoteke) {
-    return axios.get(API_URL + "/api/users/dermatologists/pharmacy/" + idApoteke);
+    return axios.get(API_URL + "/users/dermatologists/pharmacy/" + idApoteke);
   }
 
   fireDermatologist(adminId, dematolog) {
     return axios({
       method: 'post',
-      url: API_URL + "/api/users/dermatologist/fire/" + adminId,
+      url: API_URL + "/users/dermatologist/fire/" + adminId,
       data: dematolog
     }).catch(function (error) {
         if (error.response) {
@@ -110,7 +110,7 @@ class DermatologistDataService {
   }
 
   searchDermatologistPharmacy(idApoteke, search) {
-    return axios.get(API_URL + "/api/users/dermatologists/pharmacy/" + idApoteke + "/" + search)
+    return axios.get(API_URL + "/users/dermatologists/pharmacy/" + idApoteke + "/" + search)
     .catch(function (error) {
       if (error.response) {
         console.log(error.response.data);
@@ -143,7 +143,7 @@ class DermatologistDataService {
   editPersonalData(dermatologist){
     return axios({
       method: 'post',
-      url: API_URL + "/api/users/edit/dermatologist",
+      url: API_URL + "/users/edit/dermatologist",
       data: dermatologist
     });
   }

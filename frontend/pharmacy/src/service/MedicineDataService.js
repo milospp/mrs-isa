@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const API_URL = "http://localhost:8080/api/medicines";
+const API_URL = "api/medicines";
 
 class MedicineDataService {
   getAllMedicines() {
