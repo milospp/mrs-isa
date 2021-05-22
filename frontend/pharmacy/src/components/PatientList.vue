@@ -25,7 +25,7 @@
                 </form>
             </div>
             <div class="container" style="padding: 0px;">
-                <table id="patientsTable" class="table table-hover table-striped box-shadow"><!-- data-toggle="table" ;;;; table-sortable sortable
+                <table style="text-align: left; table-layout: fixed;" id="patientsTable" class="table table-hover table-striped box-shadow"><!-- data-toggle="table" ;;;; table-sortable sortable
   data-height="460"
   data-url="json/data1.json" -->
                     <thead class="card-header">

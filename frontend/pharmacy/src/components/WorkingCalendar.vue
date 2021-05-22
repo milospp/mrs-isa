@@ -55,63 +55,54 @@
         </template>
       </Calendar>
     </div>
-    <!-- Y E A R   @dayclick='dayClicked'   is-double-paned -->
-    <div class="text-center section" v-else-if="appointments && calendarDetail === 'year'">
+    <!-- Y E A R      is-double-paned -->
+    <div class="text-center section row" v-else-if="appointments && calendarDetail === 'year'">
+      <div class="col">
       <Calendar
       :attributes="attributes"
       :month="1"
       :columns="4" :rows="3"
       :min-date="new Date()"
       ref="calendar"
+      @dayclick='dayClicked'
       is-expanded
       >
-      <!-- <template v-slot:day-content="{ day, attributes }">
-      </template> -->
-    </Calendar>
-    </div>
-    <!--MODAL FOR CHOOSING APPOINTMENT TO START IN YEARLY CALENDAR-->
-    <div>
-      <div>
-          <div class="modal fade" id="appointmentsModal" tabindex="-1" role="dialog" aria-labelledby="appointmentsModal" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div v-if="selectedAppointment" class="modal-content">
-                <div class="modal-header">
-                  <span v-bind:class="{ 'badge-info': selectedAppointment.type == 'COUNSELING', 'badge-primary': selectedAppointment.type == 'EXAMINATION' }" class="badge">{{selectedAppointment.type}}
-                  <span v-if="false" class="badge badge-danger">CALCELED</span>
-                  </span>
-                  <h5 class="modal-title" id="appointmentsModalLabel">Appointments on this day</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <table class="table">
-                    <thead>
-                      <th>Time</th>
-                      <th>Duration</th>
-                      <th>Patient</th>
-                      <th></th>
-                    </thead>
-                    <tbody>
-                      <tr :key="app" v-for="app in appointmentsOnDay">
-                        <td>{{app.startTime}}</td>
-                        <td>{{app.durationInMins}}</td>
-                        <td>{{app.patientName}} {{app.patientSurname}}</td>
-                        <td v-if="!(app.typeForClass.includes('over') || app.typeForClass.includes('free'))">
-                          <button class="btn btn-primary" @click="startAppointment(app.id)">Start</button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-              </div>
-            </div>
+      </Calendar>
+      </div>
+      <div class="col">
+        <div class="text-center bg-light my-3">
+          <h3>On selected day...{{UtilService.formatDate(selectedDay)}}</h3>
+          <!-- <div class="container row" :key="app.id" v-for="app in appointmentsOnDay">
+          </div> -->
+          <div v-if="appointmentsOnDay.length > 0">
+            <table style="text-align: left; table-layout: fixed;" class="table table-striped">
+              <thead>
+                <th>Time</th>
+                <th>Duration</th>
+                <th>Patient</th>
+                <th>Start</th>
+              </thead>
+              <tbody>
+                <tr :key="app" v-for="app in appointmentsOnDay">
+                  <td>{{app.customData.startTime}}</td>
+                  <td>{{app.customData.durationInMins}} min</td>
+                  <td>{{app.customData.patientName}} {{app.customData.patientSurname}}</td>
+                  <td>
+                    <button v-if="!(app.customData.typeForClass.includes('free') || app.customData.typeForClass.includes('over'))" class="btn btn-primary">Start</button>
+                    <h4 v-else-if="app.customData.typeForClass.includes('free')"><span class="badge badge-secondary">FREE</span></h4>
+                    <h4 v-else-if="app.customData.typeForClass.includes('over')"><span class="badge">OVER</span></h4>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
+          <div v-else>
+            <p>There are no appointments on this day.</p>
+          </div>
+        </div>
       </div>
     </div>
+    
   </div>
 </template>
 
@@ -119,14 +110,20 @@
 import AppointmentDataService from '@/service/AppointmentDataService.js';
 import PharmacyDataService from '@/service/PharmacyDataService.js';
 import AuthService from '../service/AuthService.js';
+import UtilService from '../service/UtilService.js';
 
 console.warn = () => {};
 
 export default {
+  setup() {
+    return {UtilService}
+  },
   data() {
     const month = new Date().getMonth();
     const january = 1;
     const year = new Date().getFullYear();
+    const todayFull = new Date();
+    const today = new Date(todayFull.getFullYear(), todayFull.getMonth(), todayFull.getDay());
     return {
       // my
       currentMonth: january,
@@ -134,12 +131,12 @@ export default {
       chosenPharmacyId: 1,
       jobs: null,
       appointments: null,
-      appointmentsOnDay: [],
 
       calendarDetail: 'month',
       masks: {
         weekdays: 'WWWW',
       },
+      selectedDay: new Date(),
     };
   },
   mounted(){
@@ -162,48 +159,47 @@ export default {
       } else if (this.calendarDetail === 'year'){
         return this.appointments.map(t => ({
           dates: Date.parse(t.startDate),
+          customData: t,
           dot: {
-            backgroundColor: '#ff8080',
-            opacity: t.typeForClass.includes('free') ? 0.3 : 1,//t.typeForClass.includes('held') ? 0.5 : 1,//todo.isComplete ? 0.3 : 1,
+            style: {
+              backgroundColor: (Date.parse(t.startDate) < this.today) ? 'gray' : t.typeForClass.includes('examination') ? '#007bff' : '#ffc107',//'#ff8080',
+              opacity: t.typeForClass.includes('free') ? 0.5 : t.typeForClass.includes('over') ? 0.3 : 1,//t.typeForClass.includes('held') ? 0.5 : 1,//todo.isComplete ? 0.3 : 1,
+            }
           },
           popover: {
             label: t.startTime + ' ' + t.durationInMins + 'm ' + t.patientName + ' ' + t.patientSurname,
-            visibility: 'focus',
+            visibility: 'hover',
             //slot: 'todo-row', // Matches slot from above
           },
         }));
+        
       }
     },
     doctor() {
       return AuthService.getCurrentUser();
     },
-    calendar() { console.log(this.$refs.calendar); return this.$refs.calendar; }
+    calendar() { console.log(this.$refs.calendar); return this.$refs.calendar; },
+    appointmentsOnDay() {
+      let apps = [];
+      var a = this.attributes;
+      for (let attr of a){
+        let date = new Date(attr.dates);
+        if (date.toDateString() == this.selectedDay.toDateString())
+          apps.push(attr);
+      }
+      return apps;
+      //'<a href="/appointment/'+t.id+'">start</a>'
+    }
   },
   methods: {
       a(id){
           alert(id);
           //this.calendar.move({ month: 1, year: 2021 });
       },
-      /*dayClicked(day) {
-        var a = this.attributes;
-        alert(a);
-        for (let attr of a){
-          let date = new Date(attr.dates);
-          let thisDate = new Date(day.date);
-
-          let sameYear = date.getFullYear() === thisDate.getFullYear();
-          let sameMonth = date.getMonth() === thisDate.getMonth();
-          let sameDay = date.getDay() === thisDate.getDay()
-          //alert(date.getFullYear() + ' vs ' + thisDate.getFullYear());
-          if (sameYear && sameMonth && sameDay)
-            //alert('found app on this day');
-            this.appointmentsOnDay.push(this.appointments[1]);
-          console.log(this.appointmentsOnDay);
-          if (this.appointmentsOnDay.length > 0)
-            $('#appointmentsModal').show();
-        }
-        //'<a href="/appointment/'+t.id+'">start</a>'
-      },*/
+      dayClicked(day) {
+        this.selectedDay = new Date(day.date);
+        console.log('selected day:',this.selectedDay);
+      },
       startAppointment(attributeApp) {
         if (attributeApp.customData.typeForClass.includes('over'))
           alert("Appointemnt already held.");
