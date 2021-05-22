@@ -73,8 +73,6 @@
 import AuthService from '../service/AuthService.js';
 import ComplaintDataService from '../service/ComplaintDataService.js';
 import PharmacyDataService from '../service/PharmacyDataService.js';
-import DermatologistDataService from '../service/DermatologistDataService.js';
-import PharmacistDataService from '../service/PharmacistDataService.js';
 import MedicineDataService from '../service/MedicineDataService.js';
 
 
@@ -110,10 +108,11 @@ export default {
             }
         },
         setPharmacy(pharmacy){
-            this.complaint.pharmacy = pharmacy.id;
+            this.complaint.pharmacy = pharmacy;
         },
         sendComplaint(){
             this.complaint.author = this.author.id;
+            this.complaint.pharmacy = this.complaint.pharmacy.id;
             ComplaintDataService.sendComplaint(this.complaint).then(response => {
                 this.complaint.description = "";
             });

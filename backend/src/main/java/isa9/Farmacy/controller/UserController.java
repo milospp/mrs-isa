@@ -870,4 +870,13 @@ public class UserController {
         userService.save(supplier);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
+
+    @GetMapping("/visitedDoctors/{id}")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<List<DoctorDTO>> getVisitedDoctors(@PathVariable Long id){
+        Patient patient = (Patient) this.userService.findOne(id);
+        List<Doctor> visitedDoctors = this.userService.getVisitedDoctors(patient);
+
+        return new ResponseEntity<>(this.doctorToDoctorDTO.convert(visitedDoctors), HttpStatus.OK);
+    }
 }

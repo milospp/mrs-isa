@@ -51,4 +51,6 @@ public interface UserService extends GenericService<User> {
     boolean changePassword(Long id, String newPassword);
 
     Penality addPenalty(Patient patient, String reason);
+
+    List<Doctor> getVisitedDoctors(Patient patient);
 }
