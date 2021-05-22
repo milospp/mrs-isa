@@ -156,6 +156,10 @@ class MedicineDataService {
       data: medicine
     });
   }
+
+  getPatientsPurchases(id){
+    return axios.get(`${API_URL}/patientsPurchases/`+id);
+  }
 }
 
 export default new MedicineDataService();
