@@ -13,8 +13,16 @@ matrix:
         - cd backend
         - chmod +x mvnw
 
+      addons:
+        sonarcloud:
+          organization: milospp
+          token: 
+            secure: "J7XWuDO0jeI9kRoyYF/ob4HPXFfAaMvwFHNj7BrF6esJjZQ2kWCBr3qWYzl4gV2B7IcmLmJaasvYIo/b0m9pH3ZVmNKUZgO22k4vNdwZjQowtXFFSpQ3HPnrsbG1eDjoXliXbx7BmhUnC+7PLtc2A0RVcJ3DzN3AVRyleQmZyDxSSB8G1dqTmtoBVDgylMA2tIpLoGKE1IKx8njEVWoAXbKmU9AJNFWEGWfQmaNyHv6cm3OKuqT0QB9yCK7duo78fGcCnhSzXYyFy6NyS8/favPmm6oUxpWK/lBdkIbysmsWm10gMMukBaBvGGBRtFPwVfek1OEkiN0jgqdXCDwAjg6NVCap9tCCgObfeqGmgpN6gnTY6ig5HE+3JmQ1swZCWBSe6SYAPTx1s5uzhMEqShJkq+7Z02VHGuAwdc3S065lVUR8BBke0BouYHRatG0ATT+OqzW05on6BT9ywrxrwtEzZFF6vlN6LPtC2Zj+nLGuZWczTCV0SvIRE0GrPaK9DlI5vFvqnCq8IVqktzbHrWFb2YJmF8qZGFMWl8vc1xoFDFEOqhRUHdm/V7CJlJCiqAapVrmKQ/ooAR9yK0ZC8yCxKSglGH1yD7rlJToQ+aHBlJfEl+hiY3SGNiHXOJ5JxZmgMgQy09lMFAB9GKHmI5rQhpKOX/LJpR20KvW+fmM="
+
       script:
         - ./mvnw clean install -DskipTests=false -B
+        - ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=milospp_mrs-isa
+        # - ./mvnw sonar:sonar -Dsonar.projectKey=$PROJECT_KEY -Dsonar.organization=mrs-isa -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
 
       dist: trusty
 
@@ -22,8 +30,7 @@ matrix:
         provider: heroku
         api_key: $HEROKU_API_KEY
         on:
-          branch: main
-          # all_branches: true
+          all_branches: true
         app: pharmacy-tim9
 
     - language: node_js
@@ -36,6 +43,5 @@ matrix:
         provider: heroku
         api_key: $HEROKU_API_KEY
         on:
-          branch: main
-          # all_branches: true
+          all_branches: true
         app: pharmacy9
