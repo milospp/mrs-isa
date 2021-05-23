@@ -1,7 +1,8 @@
 import axios from "axios";
+import config from "@/config";
 
-
-const API_URL = "api";
+const API_URL = config.apiUrl;
+// const API_URL = "api";
 
 class PharmacyAdminDataService {
     SendPharmacyAdmin(newAdmin) {

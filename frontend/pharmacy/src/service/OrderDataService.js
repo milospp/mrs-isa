@@ -1,7 +1,8 @@
 import axios from "axios";
+import config from "@/config";
 
-
-const API_URL = "api/orders";
+const API_URL = config.apiUrl + "/orders"
+// const API_URL = "api/orders";
 
 class OrderDataService {
     getOrders(idAdmina) {

@@ -1,7 +1,8 @@
 import axios from "axios";
+import config from "@/config";
 
-
-const API_URL = "api/medicines";
+const API_URL = config.apiUrl + "/medicines"
+// const API_URL = "api/medicines";
 
 class MedicineDataService {
   getAllMedicines() {
