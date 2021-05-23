@@ -20,7 +20,7 @@
               <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Subscription</a></li>
               <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Penalities</a></li>
               <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#appointments">Appointments</a></li>
-              <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#history">Hisotry</a></li>
+              <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#history">History</a></li>
               <!-- <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu3">Map</a></li> -->
             </ul>
           

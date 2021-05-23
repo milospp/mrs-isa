@@ -22,7 +22,7 @@ class PharmacistDataService {
   }
   
   getAllPharmacistAdmin(idAdminaApoteke) {
-    return axios.get(API_URL + "/users/pharmacists/admin/" + idAdminaApoteke);2
+    return axios.get(API_URL + "/users/pharmacists/admin/" + idAdminaApoteke);
   }
 
   firePharmacist(adminId, farmaceut) {
@@ -136,6 +136,10 @@ class PharmacistDataService {
       url: API_URL + "/users/edit/pharmacist",
       data: pharmacist
     });
+  }
+
+  getVisitedPharmacists(id){
+    return axios.get(`${API_URL}/api/users/visitedDoctors/` + id);
   }
 }
 

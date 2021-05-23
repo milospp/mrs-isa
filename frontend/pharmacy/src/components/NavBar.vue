@@ -30,6 +30,7 @@
 					<router-link :to="{ name: 'Medicines'}" class="nav-item nav-link">Medicines</router-link>
 					<router-link :to="{ name: 'Counseling'}" class="nav-item nav-link">Counseling</router-link>
 					<router-link :to="{ name: 'DermAppointments'}" class="nav-item nav-link">Derm Appointments</router-link>
+					<router-link :to="{ name: 'ComplaintPage'}" class="nav-item nav-link">File a complaint</router-link>
 
 					
 				</div>

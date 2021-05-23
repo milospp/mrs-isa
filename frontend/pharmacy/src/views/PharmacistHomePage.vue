@@ -1,7 +1,6 @@
 <template>
   <NavBar/>
-  <h1 class="title">Working Calendar</h1>
-  <div class="containter">
+  <div class="title containter">
       <WorkingCalendar/>
   </div>
 </template>
@@ -19,15 +18,17 @@ export default {
     WorkingCalendar
   },
   data() {
-      return {
-          
-      }
+      return {}
   }
 }
 </script>
 
 <style scoped>
 .title {
-    margin: 20px;
+    margin: auto;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    /* width: 70%; */
+    /* height: 90%; */
 }
 </style>
