@@ -13,15 +13,8 @@ matrix:
         - cd backend
         - chmod +x mvnw
 
-      # addons:
-      #   sonarcloud:
-      #     organization: milospp
-      #     token: $SONAR_TOKEN
-
       script:
         - ./mvnw clean install -DskipTests=false -B
-        # - ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=milospp_mrs-isa
-        # - ./mvnw sonar:sonar -Dsonar.projectKey=$PROJECT_KEY -Dsonar.organization=mrs-isa -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
 
       dist: trusty
 
@@ -29,7 +22,8 @@ matrix:
         provider: heroku
         api_key: $HEROKU_API_KEY
         on:
-          all_branches: true
+          branch: main
+          # all_branches: true
         app: pharmacy-tim9
 
     - language: node_js
@@ -42,5 +36,6 @@ matrix:
         provider: heroku
         api_key: $HEROKU_API_KEY
         on:
-          all_branches: true
+          branch: main
+          # all_branches: true
         app: pharmacy9
