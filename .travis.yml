@@ -37,6 +37,7 @@ matrix:
         - mv vue.config-deploy.js vue.config.js
         - mv src/config.js src/config-local.js
         - mv src/config-deploy.js src/config.js
+        - npm run build
       deploy:
         provider: heroku
         api_key: $HEROKU_API_KEY
