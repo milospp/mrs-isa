@@ -22,7 +22,8 @@ matrix:
         provider: heroku
         api_key: $HEROKU_API_KEY
         on:
-          all_branches: true
+          branch: main
+          # all_branches: true
         app: pharmacy-tim9
 
     - language: node_js
@@ -35,5 +36,6 @@ matrix:
         provider: heroku
         api_key: $HEROKU_API_KEY
         on:
-          all_branches: true
+          branch: main
+          # all_branches: true
         app: pharmacy9
