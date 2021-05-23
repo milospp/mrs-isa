@@ -3,7 +3,7 @@
     <NavBar/>
     <div class="container">
         <h1 class="gray" v-if="appointment.type == 'EXAMINATION'">Examination</h1>
-        <h1 class="gray" v-else>Counseling</h1>
+        <h1 class="gray" v-else-if="appointment.type == 'COUNSELING'">Counseling</h1>
         <h3 class="gray">Patient: {{appointment.examination.patient.name}} {{appointment.examination.patient.surname}}</h3>
         <!-- <h3 class="gray">Dermatologist: {{appointment.doctor.name}} {{appointment.doctor.surname}}</h3> -->
         <p class="gray">Appointment: {{UtilService.formatDateTime(appointment.startTime)}}</p>
@@ -39,11 +39,10 @@
         <div class="form-group">
             <label for="selectMed">Therapy</label>
                 <div class="row mb-2">
-                    <!-- <input :disabled="!patientAppeared" type="search" class="form-control col" id="searchMedicine" placeholder="Search Medicine"> -->
-                    
                     <select v-model="therapyMed" :disabled="!patientAppeared" class="form-control col mx-3" id="selectMed">
                         <option :key="m.id" v-for="m in medicines" :value="m">{{m.medicine.name}}</option>
                     </select>
+                    <button class="btn btn-secondary mr-3" :disabled="!patientAppeared || !therapyMed" @click="showSpecification()">View Specification</button>
                     <input type="number" v-model="therapyDays" class="form-control col-2 mr-3" id="days" min="1" :disabled="!patientAppeared">
                     <input type="date" class="form-control col-2 mr-3" v-model="reservationDate" :disabled="!patientAppeared"/>
                     <button class="btn btn-primary mr-3" @click="addTherapy()" :disabled="!patientAppeared">Add</button>
@@ -117,6 +116,72 @@
 
     </div>
 
+    <!-- MODAL for med specification -->
+    <div class="modal fade" id="specificationModal" tabindex="-1" role="dialog" aria-labelledby="specificationModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="Potvrdica">Specification of 
+                        <span v-if="therapyMed">{{therapyMed.medicine.name}}</span>
+                    </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <div>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <td>Structure: </td>
+                                <td><span v-if="therapyMed">{{therapyMed.medicine.specification.structure}}</span></td>
+                            </tr>
+                            <tr>
+                                <td>Daily intake: </td>
+                                <td><span v-if="therapyMed">{{therapyMed.medicine.specification.dailyIntake}}</span></td>
+                            </tr>
+                            <tr>
+                                <td>Side effects: </td>
+                                <td><span v-if="therapyMed">{{therapyMed.medicine.specification.sideEffects}}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL for replacement med reservation -->
+    <div class="modal fade" id="replacementModal" tabindex="-1" role="dialog" aria-labelledby="specificationModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="Potvrdica">Replacement of 
+                        <span v-if="therapyMed">{{therapyMed.medicine.name}}</span>
+                    </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <div>
+                    <table class="table table-striped">
+                        <thead>
+                            <th>Name</th>
+                            <th> </th>
+                        </thead>
+                        <tbody>
+                            <tr :key="med.medicine.code" v-for="med in currentReplacements">
+                                <td>{{med.medicine.name}}</td>
+                                <td>
+                                    <button class="btn btn-primary mr-3" @click="selectReplacementMed(med)" :disabled="!patientAppeared">Select</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL for booking new appointment -->
     <div class="modal" tabindex="-1" role="dialog" id="newAppointmentModal">
         <div class="modal-dialog" role="document">
@@ -176,7 +241,6 @@ import MedicineDataService from '../service/MedicineDataService.js';
 import PatientDataService from '../service/PatientDataService.js';
 import AuthService from "../service/AuthService.js";
 
-// @ is an alias to /src
 export default {
     name: 'Appointment',
     components: {
@@ -215,12 +279,14 @@ export default {
                 "price": 0,
                 "durationInMins": 0
             },
-            medicines: [{medicine: { name: '', code: 1}}, {medicine: { name: '', code: 2}}, {medicine: { name: '', code: 3}}],
+            medicines: [],
             therapyMed: null,
             therapyDays: null,
             reservationDate: null,
             reservations: {},
             status: '',
+
+            currentReplacements: null,
         };
     },
     methods: {
@@ -234,14 +300,10 @@ export default {
                     .then(response =>
                             {
                                 this.medicines = response.data;
-                                for (var m in this.medicines.values){
-                                    //console.log(JSON.stringify(m));
-                                }
                             });
                 });
         },
         finishAppointment(){
-            //console.log(JSON.stringify(this.appointment));
             if (this.appointment.examination.status == 'PENDING'){
                 if (this.patientAppeared != null){
                     if (this.patientAppeared == true)
@@ -253,7 +315,6 @@ export default {
                     }
                 }
             }
-            // alert(this.appointment.examination.examinationInfo);
             for (let r in this.reservations){
                 this.appointment.examination.therapy.push({medInPharma: this.reservations[r].medicineInPharmacy, days: this.reservations[r].days+''});
             }
@@ -267,6 +328,28 @@ export default {
                         this.status = this.appointment.examination.status;
                     }
                 });
+        },
+        showSpecification() {
+            $('#specificationModal').modal();
+        },
+        getReplacementMedicine(unavailableMedInPharma) {
+            this.currentReplacements = [];
+            for (let m of unavailableMedInPharma.medicine.replacementMedicationIds){
+                for (let one of this.medicines){
+                    if (one.medicine.code === m){
+                        this.currentReplacements.push(one);
+                    }
+                }
+            }
+            $('#replacementModal').modal();
+        },
+        emptyReplacementsAndClosingModal(){
+            $('#replacementModal').modal('hide');
+            this.currentReplacements = null;
+        },
+        selectReplacementMed(med){
+            this.therapyMed = med;
+            this.emptyReplacementsAndClosingModal();
         },
         addTherapy() {
             if (this.therapyMed && this.therapyDays && this.reservationDate){
@@ -302,11 +385,12 @@ export default {
                             this.reservations[response.data.id].days = this.therapyDays;
                             console.log("rezervacije!!!\n"+JSON.stringify(this.reservations));
 
-                            //this.appointment.examination.therapy.push({medInPharma: this.therapyMed, days: this.therapyDays+''});
-                            //console.log("terapija!!!\n"+JSON.stringify(this.appointment.examination.therapy));
-                            //$('#therapyRow').append('<tr><td>'+ this.therapyMed.medicine.name + '</td><td>' + this.therapyDays +'</td><td>'+ this.reservationDate +'</td><td><button class="btn btn-danger" onclick="removeTherapy('+ response.data.id +')">Remove</button></td></tr>');
                             this.therapyMed = null; this.therapyDays = null; this.reservationDate = null;
                         }
+                    })
+                    .catch(error => {
+                        alert('Reservation unsuccessful');
+                        this.getReplacementMedicine(this.therapyMed);
                     });
                 
                 
@@ -320,12 +404,6 @@ export default {
                 .then(response => {
                     if (response){
                         
-                        // const index = this.appointment.examination.therapy.indexOf({medInPharma: this.reservations[reservationIndex].medicineInPharmacy, days: this.reservations[reservationIndex].days+''});
-                        // if (index > -1) {
-                        //     this.appointment.examination.therapy.splice(index, 1);
-                        // }
-
-                        // console.log('nakon uklanjanja iz terapije');
                         console.log(JSON.stringify(this.appointment.examination.therapy));
 
                         delete this.reservations[reservationIndex];
@@ -350,46 +428,10 @@ export default {
                 }
             });
         }
-            
-        // }
-        // confirmLeave() {
-        //     return window.confirm('Do you really want to leave? you have unsaved changes!')
-        // },
-
-        // confirmStayInDirtyForm() {
-        //     return this.form_dirty && !this.confirmLeave()
-        // },
-
-        // beforeWindowUnload(e) {
-        //     if (this.confirmStayInDirtyForm()) {
-        //     // Cancel the event
-        //     e.preventDefault();
-        //     // Chrome requires returnValue to be set
-        //     e.returnValue = '';
-        //     }   
-        // },
     },
-    // beforeRouteLeave (to, from, next) {
-    //     // If the form is dirty and the user did not confirm leave,
-    //     // prevent losing unsaved changes by canceling navigation
-    //     if (this.confirmStayInDirtyForm()){
-    //         next(false)
-    //     } else {
-    //         // Navigate to next view
-    //         next()
-    //     }
-    // },
     created() {
-    // window.addEventListener('beforeunload', this.beforeWindowUnload);
         this.appId = this.$route.params.id;
-        // this.id = 3;
         this.getAppointmentData();
-        // this.getMedicineForTherapy();
     },
-
-    // beforeUnmount() {
-    // window.removeEventListener('beforeunload', this.beforeWindowUnload)
-    // },
-
 }
 </script>

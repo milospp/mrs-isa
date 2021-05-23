@@ -14,7 +14,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public abstract class UserServiceBase implements UserService {
@@ -190,5 +192,16 @@ public abstract class UserServiceBase implements UserService {
 
         save(patient);
         return penality;
+    }
+
+    @Override
+    public List<Doctor> getVisitedDoctors(Patient patient) {
+        List<Doctor> visitedDoctors = new ArrayList<>();
+
+        for(Examination e : patient.getMyExaminations()){
+            visitedDoctors.add(e.getAppointment().getDoctor());
+        }
+
+        return visitedDoctors;
     }
 }

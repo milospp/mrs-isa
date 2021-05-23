@@ -34,6 +34,14 @@ class OfferDataService{
         data: searchParams
       })
     }
+
+    updateOffer(offer){
+      return axios({
+        method: 'post',
+        url: `${API_URL}/updateOffer`,
+        data: offer
+      });
+    }
 }
 
 export default new OfferDataService();

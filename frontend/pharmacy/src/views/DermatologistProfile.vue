@@ -9,7 +9,7 @@
     <div class="container pt-5">
         <DermatologistProfileInfo/>
     </div>
-    <PharmacyWorkingCard doctorId="16"/> <!-- HARDCODED -->
+    <PharmacyWorkingCard/> <!-- HARDCODED -->
 </template>
 
 <style>
@@ -35,7 +35,6 @@ export default {
     NavBar,
     DermatologistProfileInfo,
     PharmacyWorkingCard
-    //PharmacyInfo
     },
     data() {
         return {

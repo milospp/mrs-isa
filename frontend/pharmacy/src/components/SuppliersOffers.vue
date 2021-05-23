@@ -31,23 +31,23 @@
 
               <div class="input-group">
 
-                  <input type="number" class="form-control" id="inputPrice" min="0" v-model="searchParams.minPrice" size="7">
+                  <input type="number" class="form-control" id="inputMinPrice" min="0" v-model="searchParams.minPrice" size="7">
 
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroupPrepend2">-</span>
                   </div>
-                  <input type="number" class="form-control" id="inputPrice" :min="Math.max(0,searchParams.minPoints)" v-model="searchParams.maxPrice" size="7">
+                  <input type="number" class="form-control" id="inputMaxPrice" :min="Math.max(0,searchParams.minPoints)" v-model="searchParams.maxPrice" size="7">
               </div>
             </div>
 
             <div class="form-group col-md-2">
                 <label for="inputMinRating">Start date from</label>
-                <input type="datetime-local" class="form-control" id="startTime" v-model="searchParams.startDate" @change="">
+                <input type="datetime-local" class="form-control" id="startTimeFrom" v-model="searchParams.startDate" @change="">
             </div>
 
             <div class="form-group col-md-2">
                 <label for="inputMinRating">Start date to</label>
-                <input type="datetime-local" class="form-control" id="startTime" v-model="searchParams.endDate" @change="">
+                <input type="datetime-local" class="form-control" id="startTimeTo" v-model="searchParams.endDate" @change="">
             </div>
 
 
@@ -82,6 +82,7 @@
             <th>Start Date</th>
             <th>Delivery date</th>
             <th>Status</th>
+            <th></th>
         </thead>
         <tbody>
             <tr :key="offer.id" v-for="offer in this.suppliersOffers">
@@ -90,12 +91,47 @@
                 <td>{{offer.startDate[1]+"/"+offer.startDate[2]+"/"+offer.startDate[0]+" - "+ offer.startDate[3]+":"+offer.startDate[4]}}</td>
                 <td>{{offer.endDate[1]+"/"+offer.endDate[2]+"/"+offer.endDate[0]+" - "+ offer.endDate[3]+":"+offer.endDate[4]}}</td>
                 <td>{{statusNrToTxt(offer.status)}}</td>
+                <td v-if="offer.status == 'INDEFINITELY'"><button type="submit" class="btn btn-primary"
+                v-on:click="this.setEdittedOffer(offer)" data-toggle="modal" data-target="#editOfferModal">Edit</button> </td>
             </tr>
         </tbody>
     </table>
 </form>
 </div>
 
+<div class="modal fade" id="editOfferModal" tabindex="-1" role="dialog" aria-labelledby="editOfferModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Potvrdica">Editing offer: </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div>
+                <table class="table table-striped">
+                    <thead class="card-header">
+                        <th>Description</th>
+                        <th>Delivery date</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><textarea v-model="edittedOffer.offerDescription" rows="3" style="width : 100%;"></textarea></td>
+                            <td><input type="datetime-local" class="form-control" id="endTime" v-model="edittedOffer.endDate" 
+                            v-bind:max="this.orderExpires" v-bind:min="this.formatDateForPicker(this.edittedOffer.startDate)"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit" data-dismiss="modal" v-on:click="this.updateOffer(this.edittedOffer)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 </template>
@@ -103,6 +139,7 @@
 <script>
 
 import OfferDataService from '@/service/OfferDataService.js';
+import OrderDataService from '@/service/OrderDataService.js';
 import AuthService from '@/service/AuthService.js';
 
 export default {
@@ -112,6 +149,8 @@ export default {
             id:"",
             suppliersOffers: [],
             searchParams: {description:"", status:"", minPrice: 0, maxPrice: Number.MAX_SAFE_INTEGER, startDate: new Date().toISOString().substring(0, 16), endDate: new Date().toISOString().substring(0, 16)},
+            edittedOffer: { endDate: [], startDate: []},
+            orderExpires: [],
         };   
     },
     methods: {
@@ -135,7 +174,22 @@ export default {
                     this.suppliersOffers = response.data;
                     console.log(response.data);
             });
-        }
+        },
+        setEdittedOffer(offer){
+            this.edittedOffer = offer;
+            OrderDataService.findOrderById(this.edittedOffer.order).then(response => {
+                this.orderExpires = this.formatDateForPicker(response.data.endDate);
+            });
+        },
+        formatDateForPicker(date){
+            return date[0]+"-"+('0' + date[1]).slice(-2)+"-"+('0' + date[2]).slice(-2)+"T"+('0' + date[3]).slice(-2)+":"+('0' + date[4]).slice(-2);
+        },
+        updateOffer(offer){
+            console.log(offer);
+            offer.supplier.id = this.id;
+            offer.supplier.email = AuthService.getCurrentUser().email;
+            OfferDataService.updateOffer(offer);
+        },
     },
     created(){
         this.id = AuthService.getCurrentUser().id;

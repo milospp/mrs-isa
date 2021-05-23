@@ -7,7 +7,7 @@ import lombok.*;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"complaints", "penalties", "subscriptions", "myExaminations", "allergies", "reservations"})
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,6 +28,8 @@ public class Patient extends User {
     private Set<Medicine> allergies;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<MedReservation> reservations;
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Complaint> complaints;
 
 
 

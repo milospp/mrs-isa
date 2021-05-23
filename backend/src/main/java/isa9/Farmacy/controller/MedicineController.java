@@ -2,6 +2,7 @@ package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.*;
+import isa9.Farmacy.repository.MedicineRepository;
 import isa9.Farmacy.service.*;
 import isa9.Farmacy.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -418,5 +419,13 @@ public class MedicineController {
         this.medicineAtSupplierService.addMedicineAtSupplier(toBeAdded);
 
         return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @GetMapping("/patientsPurchases/{id}")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<List<MedReservationDTO>> getPurchasedMedicines(@PathVariable Long id){
+        List<MedReservation> purchases = this.medReservationService.getPatientsPurchases((Patient) this.userService.findOne(id));
+
+        return new ResponseEntity<>(this.medReservationToMedReservationDTO.convert(purchases), HttpStatus.OK);
     }
 }

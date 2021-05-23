@@ -67,4 +67,12 @@ public class OfferController {
         List<OfferDTO> resultDTOS = offerToOfferDTO.convert(offers);
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
     }
+
+    @PostMapping("/updateOffer")
+    @PreAuthorize("hasAuthority('SUPPLIER')")
+    public ResponseEntity<Integer> updateOffer(@RequestBody OfferDTO offerDTO){
+        Offer toBeUpdated = this.offerDTOtoOffer.convert(offerDTO);
+        this.offerService.updateOffer(toBeUpdated);
+        return new ResponseEntity<>(0, HttpStatus.OK);
+    }
 }

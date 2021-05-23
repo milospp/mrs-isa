@@ -4,6 +4,7 @@ package isa9.Farmacy.support;
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.DoctorDTO;
 import isa9.Farmacy.model.dto.PatientDTO;
+import isa9.Farmacy.model.dto.RolesDTO;
 import isa9.Farmacy.model.dto.WorkDTO;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,11 @@ public class DoctorToDoctorDTO implements Converter<Doctor, DoctorDTO> {
         dto.setPhoneNumber(doctor.getPhoneNumber());
         dto.setEmail(doctor.getEmail());
         dto.setRating(doctor.getRating());
+        if(doctor.getRole().getName().equals("PHARMACIST")){
+            dto.setRole(RolesDTO.PHARMACIST);
+        }else if(doctor.getRole().getName().equals("DERMATOLOGIST")) {
+            dto.setRole(RolesDTO.DERMATOLOGIST);
+        }
         return dto;
     }
 
@@ -48,6 +54,11 @@ public class DoctorToDoctorDTO implements Converter<Doctor, DoctorDTO> {
         dto.setPhoneNumber(doctor.getPhoneNumber());
         dto.setEmail(doctor.getEmail());
         dto.setRating(doctor.getRating());
+        if(doctor.getRole().getName().equals("PHARMACIST")){
+            dto.setRole(RolesDTO.PHARMACIST);
+        }else if(doctor.getRole().getName().equals("DERMATOLOGIST")){
+            dto.setRole(RolesDTO.DERMATOLOGIST);
+        }
 
         WorkDTO posaoUApoteci = new WorkDTO();
         posaoUApoteci.setEndHour(workInPharmacy.getEndHour());
