@@ -6,10 +6,11 @@ MRS-ISA Project
 # Running a project
 TODO
 # Demo
-https://pharmacy9.herokuapp.com/
+https://pharmacy9.herokuapp.com/ 
+
 [backend API url](https://pharmacy9.herokuapp.com/)
 
-> Project is deployed to free Heroku server, and because of that performances are limited.
+> Project is deployed on free Heroku server, and because of that performances are limited.
 > After 30min of inactivity server will be automatically shut downed and it will take some time to wake up on the next request
 
 ## Team
