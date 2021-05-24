@@ -1,7 +1,8 @@
 import axios from "axios";
+import config from "@/config";
 
-
-const API_URL = "http://localhost:8080/api/pharmacies";
+const API_URL = config.apiUrl + "/pharmacies"
+// const API_URL = "api/pharmacies";
 
 class PharmacyDataService {
     getAllPharmacies() {

@@ -1,8 +1,9 @@
 import { variationPlacements } from "@popperjs/core";
 import axios from "axios";
+import config from "@/config";
 
-
-const API_URL = "http://localhost:8080/api/appointments";
+const API_URL = config.apiUrl + "/appointments"
+// const API_URL = "api/appointments";
 
 class AppointmentDataService {
   getAllAppointments(id) {

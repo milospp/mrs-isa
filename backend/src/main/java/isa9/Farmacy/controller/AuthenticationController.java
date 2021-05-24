@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping(value = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
 

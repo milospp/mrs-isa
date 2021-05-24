@@ -1,6 +1,8 @@
 import axios from "axios";
+import config from "@/config";
 
-const API_URL = "http://localhost:8080/api/offers";
+const API_URL = config.apiUrl + "/offers"
+// const API_URL = "api/offers";
 
 class OfferDataService{
     sendOffer(offer){

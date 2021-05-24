@@ -1,7 +1,8 @@
 import axios from "axios";
+import config from "@/config";
 
-
-const API_URL = "http://localhost:8080/api/users";
+const API_URL = config.apiUrl + "/users"
+// const API_URL = "api/users";
 
 class SupplierDataService {
     SendSupplier(newSupplier) {
