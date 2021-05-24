@@ -1,6 +1,6 @@
 package isa9.Farmacy.service.impl.db;
 
-import isa9.Farmacy.model.Offer;
+import isa9.Farmacy.model.*;
 import isa9.Farmacy.repository.OfferRepository;
 import isa9.Farmacy.service.OfferService;
 import isa9.Farmacy.service.impl.base.OfferServiceBase;
@@ -51,5 +51,37 @@ public class dbOfferService extends OfferServiceBase implements OfferService {
             if (o.getOrder().getId() == orderId)
                 povratna.add(o);
         return povratna;
+    }
+
+    @Override
+    public void acceptOffer(Offer o) {
+        o.setStatus(OfferStatus.ACCEPTED);
+        Pharmacy apoteka = o.getOrder().getPharmacy();
+        for (MedicineQuantity mq : o.getOrder().getAllMedicines()) {
+            for (MedicineInPharmacy mp : apoteka.getMedicines()) {
+                if (mq.getMedicine().getCode() == mp.getMedicine().getCode()) {
+                    mp.setInStock(mq.getQuantity() + mp.getInStock());
+                    break;
+                }
+            }
+        }
+        this.pharmacyService.save(apoteka);
+        this.offerRepository.save(o);
+    }
+
+    @Override
+    public void rejectOffer(Offer o) {
+        o.setStatus(OfferStatus.REJECTED);
+        Supplier dobavljac = o.getSupplier();
+        for (MedicineQuantity mq : o.getOrder().getAllMedicines()) {
+            for (MedicineAtSupplier ms : dobavljac.getMedicinesInStock()) {
+                if (mq.getMedicine().getCode() == ms.getQuantity().getMedicine().getCode()) {
+                    ms.getQuantity().setQuantity(mq.getQuantity() + ms.getQuantity().getQuantity());
+                    break;
+                }
+            }
+        }
+        this.userService.save(dobavljac);
+        this.offerRepository.save(o);
     }
 }

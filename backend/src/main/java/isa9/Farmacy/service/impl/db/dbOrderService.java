@@ -86,8 +86,8 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
         if (ponuda.getEndDate().isBefore(LocalDateTime.now())) return povratna;
         povratna = 0;
         narudzbenica.setChosenOffer(ponuda);
-        ponuda.setStatus(OfferStatus.ACCEPTED);
-        for (Offer o : narudzbenica.getAllOffer()) if (o.getId() != ponuda.getId()) o.setStatus(OfferStatus.REJECTED);
+        this.offerService.acceptOffer(ponuda);
+        for (Offer o : narudzbenica.getAllOffer()) if (o.getId() != ponuda.getId()) this.offerService.rejectOffer(o);
         this.orderRepository.save(narudzbenica);
         return povratna;
     }
