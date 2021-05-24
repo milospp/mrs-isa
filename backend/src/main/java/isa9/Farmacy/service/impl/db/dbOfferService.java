@@ -43,4 +43,13 @@ public class dbOfferService extends OfferServiceBase implements OfferService {
     public List<Offer> getOffers(Long orderId) {
         return this.offerRepository.findAll();
     }
+
+    @Override
+    public List<Offer> getOffersForOrder(Long orderId) {
+        List<Offer> povratna = new ArrayList<>();
+        for (Offer o : this.offerRepository.findAll())
+            if (o.getOrder().getId() == orderId)
+                povratna.add(o);
+        return povratna;
+    }
 }

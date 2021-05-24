@@ -7,6 +7,7 @@ import isa9.Farmacy.service.OfferService;
 import isa9.Farmacy.service.OrderService;
 import isa9.Farmacy.support.MedOrderDTOtoMedOrder;
 import isa9.Farmacy.support.MedOrderToMedOrderDTO;
+import isa9.Farmacy.support.OfferDTOtoOffer;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;

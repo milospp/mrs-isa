@@ -291,6 +291,14 @@ export default {
             }
       },
       obrisiNarudzbenicu() {
+        this.narudzbenica.endDate[1] = parseInt(this.narudzbenica.endDate[1]);
+        this.narudzbenica.endDate[2] = parseInt(this.narudzbenica.endDate[2]);
+        this.narudzbenica.endDate[3] = parseInt(this.narudzbenica.endDate[3]);
+        this.narudzbenica.endDate[4] = parseInt(this.narudzbenica.endDate[4]);
+        this.narudzbenica.startDate[1] = parseInt(this.narudzbenica.startDate[1]);
+        this.narudzbenica.startDate[2] = parseInt(this.narudzbenica.startDate[2]);
+        this.narudzbenica.startDate[3] = parseInt(this.narudzbenica.startDate[3]);
+        this.narudzbenica.startDate[4] = parseInt(this.narudzbenica.startDate[4]);
         OrderDataService.deleteOrder(this.narudzbenica)
         .then(response => {
           this.poruka = "You successfully deleted order.";

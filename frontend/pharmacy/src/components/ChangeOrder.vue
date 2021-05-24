@@ -133,10 +133,10 @@
                         <tr :key="o" v-for="o in this.narudzbenica.allOffer">
                         <td>{{o?.supplier.name}} {{o?.supplier.surname}}</td>
                         <td>{{o?.price}}</td>
-                        <td>{{o?.startDate.startDate[1]}}/{{o?.startDate.startDate[2]}}/{{o?.startDate.startDate[0]}} 
-                            {{o?.startDate.startDate[3]}}:{{o?.startDate.startDate[4]}} </td>
-                        <td>{{o?.endDate.endDate[1]}}/{{o?.endDate.endDate[2]}}/{{o?.endDate.endDate[0]}} 
-                            {{o?.endDate.endDate[3]}}:{{o?.endDate.endDate[4]}}</td>
+                        <td>{{o?.startDate[1]}}/{{o?.startDate[2]}}/{{o?.startDate[0]}} 
+                            {{o?.startDate[3]}}:{{o?.startDate[4]}} </td>
+                        <td>{{o?.endDate[1]}}/{{o?.endDate[2]}}/{{o?.endDate[0]}} 
+                            {{o?.endDate[3]}}:{{o?.endDate[4]}}</td>
                         <td><form v-on:click.prevent="postaviPonudu(o)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaciPonude">View</button></form></td>
                     </tr>
                     </tbody>
@@ -269,10 +269,10 @@
         <div class="modal-body" align="left">Supplier address: {{this.odabranaPonuda?.supplier.address.state}} {{this.odabranaPonuda?.supplier.address.city}} 
             {{this.odabranaPonuda?.supplier.address.street}} {{this.odabranaPonuda?.supplier.address.number}}</div>
         <div class="modal-body" align="left">Price: {{this.odabranaPonuda?.price}}</div>
-        <div class="modal-body" align="left">Start date: {{this.odabranaPonuda?.startDate.startDate[1]}}/{{this.odabranaPonuda?.startDate.startDate[2]}}/{{this.odabranaPonuda?.startDate.startDate[0]}} 
-            {{this.odabranaPonuda?.startDate.startDate[3]}}:{{this.odabranaPonuda?.startDate.startDate[4]}}</div>
-        <div class="modal-body" align="left">End date: {{this.odabranaPonuda?.endDate.endDate[1]}}/{{this.odabranaPonuda?.endDate.endDate[2]}}/{{this.odabranaPonuda?.endDate.endDate[0]}} 
-            {{this.odabranaPonuda?.endDate.endDate[3]}}:{{this.odabranaPonuda?.endDate.endDate[4]}}</div>
+        <div class="modal-body" align="left">Start date: {{this.odabranaPonuda?.startDate[1]}}/{{this.odabranaPonuda?.startDate[2]}}/{{this.odabranaPonuda?.startDate[0]}} 
+            {{this.odabranaPonuda?.startDate[3]}}:{{this.odabranaPonuda?.startDate[4]}}</div>
+        <div class="modal-body" align="left">End date: {{this.odabranaPonuda?.endDate[1]}}/{{this.odabranaPonuda?.endDate[2]}}/{{this.odabranaPonuda?.endDate[0]}} 
+            {{this.odabranaPonuda?.endDate[3]}}:{{this.odabranaPonuda?.endDate[4]}}</div>
         <div class="modal-body" align="left">Offer description: {{this.odabranaPonuda?.supplier.offerDescription}}</div>
         <div class="modal-footer">
           <div v-if="this.narudzbenica?.chosenOffer == null">
@@ -285,7 +285,7 @@
   </div>
 
        <!-- potvrda -->
-  <div class="modal fade" id="potvrda" tabindex="-1" role="dialog" aria-labelledby="Potvrda" aria-hidden="true">
+  <div class="modal fade" id="potvrdaPonude" tabindex="-1" role="dialog" aria-labelledby="Potvrda" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -478,14 +478,23 @@ export default {
         },
         postaviPonudu(o) { this.odabranaPonuda = o; },
         odaberiPonudu() {
-            OrderDataService.chooseOffer(this.odabranaPonuda)
-                .then(response => {
-                    if (response.data == 0) {
-                        this.poruka = "You successfully chose offer";
-                        this.procitajNarudzbenicu();
-                    }
-                    else this.poruka = "Offer is not available (end date is passed)";
-                });
+          this.odabranaPonuda.startDate[1] = parseInt(this.odabranaPonuda.startDate[1]);
+          this.odabranaPonuda.startDate[2] = parseInt(this.odabranaPonuda.startDate[2]);
+          this.odabranaPonuda.startDate[3] = parseInt(this.odabranaPonuda.startDate[3]);
+          this.odabranaPonuda.startDate[4] = parseInt(this.odabranaPonuda.startDate[4]);
+
+          this.odabranaPonuda.endDate[1] = parseInt(this.odabranaPonuda.endDate[1]);
+          this.odabranaPonuda.endDate[2] = parseInt(this.odabranaPonuda.endDate[2]);
+          this.odabranaPonuda.endDate[3] = parseInt(this.odabranaPonuda.endDate[3]);
+          this.odabranaPonuda.endDate[4] = parseInt(this.odabranaPonuda.endDate[4]);
+          OrderDataService.chooseOffer(this.odabranaPonuda)
+              .then(response => {
+                  if (response.data == 0) {
+                      this.poruka = "You successfully chose offer";
+                      this.procitajNarudzbenicu();
+                  }
+                  else this.poruka = "Offer is not available (end date is passed)";
+              });
         },
     }
 }
