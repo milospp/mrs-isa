@@ -1,5 +1,5 @@
 var config = {
-    apiUrl: "https://localhost:8080/api"
+    apiUrl: "http://localhost:8080/api"
 }
 
 if (window.location.hostname == "pharmacy9.herokuapp.com"){
