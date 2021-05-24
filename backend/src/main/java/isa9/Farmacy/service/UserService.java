@@ -22,8 +22,9 @@ public interface UserService extends GenericService<User> {
 
     Set<Penality> getPenalties(User user);
     int countActivePenalties(User user);
+    boolean isPatientBlocked(Patient patient);
 
-    PharmacyAdmin findPharmacyAdmin(Long pharmacyId);
+        PharmacyAdmin findPharmacyAdmin(Long pharmacyId);
 
     Patient updatePatient(PatientDTO patientDTO);
 

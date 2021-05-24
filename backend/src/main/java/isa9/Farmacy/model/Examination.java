@@ -25,6 +25,7 @@ public class Examination {
     private Patient patient;
     @OneToOne(fetch = FetchType.EAGER)
     @EqualsAndHashCode.Include
+    @ToString.Exclude
     private Appointment appointment;
     @Enumerated
     @EqualsAndHashCode.Include

@@ -25,6 +25,12 @@ public abstract class UserServiceBase implements UserService {
     protected PharmacyService pharmacyService;
     protected RatingService ratingService;
 
+    @Override
+    public boolean isPatientBlocked(Patient patient) {
+        if (countActivePenalties(patient) >= 3) return true;
+        return false;
+    }
+
     @Autowired
     public void setRatingService(RatingService ratingService) {
         this.ratingService = ratingService;
