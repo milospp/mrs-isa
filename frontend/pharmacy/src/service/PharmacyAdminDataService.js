@@ -1,13 +1,14 @@
 import axios from "axios";
+import config from "@/config";
 
-
-const API_URL = "http://localhost:8080/api/users";
+const API_URL = config.apiUrl;
+// const API_URL = "api";
 
 class PharmacyAdminDataService {
     SendPharmacyAdmin(newAdmin) {
         return axios({
             method: 'post',
-            url: `${API_URL}/register/pharmacyAdmin`,
+            url: `${API_URL}/users/register/pharmacyAdmin`,
             data: newAdmin
         }).then(response => {
             if (response.data) {

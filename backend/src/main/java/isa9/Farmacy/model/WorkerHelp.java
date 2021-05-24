@@ -16,9 +16,6 @@ public class WorkerHelp {
     private String startHour;
     private String endHour ;
 
-
-
-
     @Override
     public int hashCode() {
         return Objects.hash(registerData, startHour, endHour);

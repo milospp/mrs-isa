@@ -6,8 +6,15 @@ import isa9.Farmacy.model.Patient;
 import isa9.Farmacy.model.Pharmacy;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
 
+import java.util.Collection;
+import java.util.List;
+
 public interface MedReservationService extends GenericService<MedReservation> {
+
+    MedReservation reserveMedicine(MedReservationFormDTO reservationFormDTO, Long doctorId);
     MedReservation reserveMedicine(MedReservationFormDTO reservationFormDTO);
+
+    Collection<MedReservation> saveAll(Collection<MedReservation> entity);
 
     Boolean isCancelable(MedReservation medReservation);
     MedReservation cancel(Long medReservationId);
@@ -18,6 +25,7 @@ public interface MedReservationService extends GenericService<MedReservation> {
     Boolean patientConsumedMedicine(Patient patient, Medicine medicine);
     Boolean patientConsumedMedInPharmacy(Patient patient, Pharmacy pharmacy);
 
+    List<MedReservation> getPatientsPurchases(Patient patient);
 
     void checkForExpiredReservations();
 }

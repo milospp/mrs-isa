@@ -1,5 +1,6 @@
 package isa9.Farmacy.model;
 
+import com.sun.istack.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.core.annotation.Order;
@@ -42,7 +43,15 @@ public class Pharmacy {
     private Set<Rating> ratings;
 
     @Column (nullable = false, columnDefinition="Decimal(2,1) default '0.0'")
+    @Builder.Default
     private double rating = 0.0;
+
+    @Column
+    @NotNull
+    private double pricePerHour;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<InquiryMedicine> inquiryMedicines;
 
 
     public Pharmacy(String name, Address address, String description, Long id) {
@@ -54,6 +63,7 @@ public class Pharmacy {
         this.staff = new HashSet<>();
         this.orders = new HashSet<>();
         this.medicines = new HashSet<>();
+        this.inquiryMedicines = new ArrayList<>();
     }
 
     public Pharmacy(String name, Address address, String description, Long id, Set<Work> staff, Set<MedicineOrder> orders, Set<MedicineInPharmacy> medicines) {
@@ -64,6 +74,7 @@ public class Pharmacy {
         this.staff = staff;
         this.orders = orders;
         this.medicines = medicines;
+        this.inquiryMedicines = new ArrayList<>();
     }
 
 

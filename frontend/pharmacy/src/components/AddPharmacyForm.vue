@@ -20,6 +20,10 @@
           <tr><td align="right">Description: </td><td colspan="2"><textarea style="resize: none;width: 400px; height : 200px;"
             id="description" v-model="registerData.description"></textarea>
           </td></tr>
+          <tr><td align="right">Consulting price (hour): </td><td align="left"><input type="number" id="city" v-model="registerData.pricePerHour" 
+            required="required" title="Price must be a number">
+          </td></tr>
+
           <tr><td></td><td align="left"><input  type="submit" value="Register" style="width: 50%;">
           </td></tr>
           
@@ -46,6 +50,7 @@
                   state : "Drzava"
                 },
                 description : "Nema leka bez recepta",
+                pricePerHour: 50,
             }
 
             

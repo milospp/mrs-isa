@@ -4,50 +4,44 @@
             <div class="container" style="padding: 0px;">
                 <form v-on:submit.prevent="searchPatients(event)" style="float: right;">
                     <div class="form-row form-inline mb-2" >
-                        <div class="form-group col-auto">
-                            <input type="text" class="form-control" id="nameInput" placeholder="First Name">
-                        </div>
-                        <div class="form-group col-auto">
-                            <input type="text" class="form-control" id="surnameInput" placeholder="Last Name">
-                        </div>
-                        <div class="col-auto">
-                            <button type="submit" class="btn btn-primary">Search</button>
-                        </div>
+                      <div class="form-group col-auto">
+                        <label for="sortSelect" class="mx-4">Sort</label>
+                        <select class="form-control" id="sortSelect" v-model="sortParams" @change="sort()">
+                          <option :key="sortOption.desc" :value="sortOption"  v-for="sortOption in sortOptions">{{sortOption.desc}}</option>
+                        </select>       
+                      </div>
+                      <div class="form-group col-auto">
+                      </div>
+                      <div class="form-group col-auto">
+                          <input type="text" class="form-control" id="nameInput" placeholder="First Name">
+                      </div>
+                      <div class="form-group col-auto">
+                          <input type="text" class="form-control" id="surnameInput" placeholder="Last Name">
+                      </div>
+                      <div class="col-auto">
+                          <button type="submit" class="btn btn-primary">Search</button>
+                      </div>
                     </div>
                 </form>
             </div>
             <div class="container" style="padding: 0px;">
-                <table id="patientsTable" class="table table-hover table-striped box-shadow"><!-- data-toggle="table" ;;;; table-sortable sortable
+                <table style="text-align: left; table-layout: fixed;" id="patientsTable" class="table table-hover table-striped box-shadow"><!-- data-toggle="table" ;;;; table-sortable sortable
   data-height="460"
   data-url="json/data1.json" -->
                     <thead class="card-header">
                       <tr>
                         <th id="name" >
                           First name
-                          <button style="border: none; background-color: inherit;" v-on:click="changeOrder('name')">
-                            <span v-if="refreshData.ascending">△</span>
-                            <span v-if="!refreshData.ascending">▽</span>
-                          </button>
                         </th> <!--data-type="string" data-field="name" data-sortable="true" ;;; data-field="name" data-sortable="true"-->
                         <th id="surname">
                           Last name
-                          <button style="border: none; background-color: inherit;" v-on:click="changeOrder('surname')">
-                            <span v-if="refreshData.ascending">△</span>
-                            <span v-if="!refreshData.ascending">▽</span>
-                          </button>
                         </th>
-                        <!-- <th id="surname">
-                          Last appointment
-                          <button style="border: none; background-color: inherit;" v-on:click="changeOrder('name')"> temporarily until the authorisation is implemented
-                            <span v-if="refreshData.ascending">△</span>
-                            <span v-if="!refreshData.ascending">▽</span>
-                          </button>
-                        </th> -->
                         <th id="address">Address</th>
                         <th>Phone number</th>
+                        <th>Last Appointment</th>
                         <th></th>
                         <th></th>
-                        </tr>
+                      </tr>
                     </thead>
                     <tbody>
                         <tr :key="p.id" v-for="p in patients" v-on:dblclick="patientInfo(Object.values(p))" class="clickable" data-index="{{p.id}}">
@@ -57,11 +51,12 @@
                             <!-- <td>{{UtilService.formatDateTime(p.lastAppointmentDate)}}</td> -->
                             <td>{{UtilService.AddressToString(p.address)}}</td>
                             <td>{{p.phoneNumber}}</td>
+                            <td>{{p.last}}</td>
                             <td>
                                 <button class="btn btn-secondary" v-on:click="showModal(p)">Examination history</button>
                             </td>
                             <td> <!-- UtilService.isTimeForAppointment(p.lastDate.startTime, p.lastDate.durationInMins) && -->
-                                <button v-if="p.lastDate.examination.status == 'PENDING'" class="btn btn-primary" v-on:click="startAppointment(p.lastDate)">Start 
+                                <button v-if="p.status == 'PENDING'" class="btn btn-primary" v-on:click="startAppointment(p.aid)">Start 
                                   <span >Examination</span>
                                 <!-- <span v-else>Counseling</span> v-if="this.role == 'DERMATOLOGIST'"-->
                                 </button>
@@ -74,15 +69,15 @@
                   <div class="col-sm">
                   <label for="pageSizeSelect" class="mt-2 mr-2">Show per page:</label>
                   <select id="pageSizeSelect" v-model="refreshData.pageSize" class="form-select mr-5" aria-label="Default select example" @change="onChange($event)">
-                    <option selected value="2">2</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20">20</option>
+                    <option selected :value="2">2</option>
+                    <option :value="5">5</option>
+                    <option :value="10">10</option>
+                    <option :value="15">15</option>
+                    <option :value="20">20</option>
                   </select>
                   </div>
                   <div class="col-xl">
-                  <pagination v-model="refreshData.pageNo" :records="totalPatients" :per-page="refreshData.pageSize" @paginate="refreshPatients($event)"/>
+                  <pagination v-model="refreshData.pageNo" :records="totalPatients" :per-page="refreshData.pageSize" @paginate="refreshPatients()"/>
                   </div>
                 </div>
                 
@@ -179,21 +174,6 @@
                   </button>
                 </div>
                 <div class="modal-body">
-
-                    <!-- <div class="radio-container">
-                      <div class="form-check form-check-inline btn-info">
-                        <input v-model="historyFilter" type="radio" name="inlineRadioOptions" id="examinations" value="EXAMINATION">
-                        <label class="form-check-label" for="examinations">Examinations</label>
-                      </div>
-                      <div class="form-check form-check-inline btn-info">
-                        <input v-model="historyFilter" type="radio" name="inlineRadioOptions" id="counseling" value="COUNSELING">
-                        <label class="form-check-label" for="counseling">Counseling</label>
-                      </div>
-                      <div class="form-check form-check-inline btn-info">
-                        <input v-model="historyFilter" type="radio" name="inlineRadioOptions" id="all" value="all" checked>
-                        <label class="form-check-label" for="all">All</label>
-                      </div>
-                    </div> -->
                   <table class="table table-striped">
 
                     <thead>
@@ -280,22 +260,35 @@ export default {
               },
               ascending: true
             },
-            //appointmentDate: "2021-04-23 16:03:00",
+            sortParams: { sortBy: 'id', ascending: true, desc: 'By Default' },
+
+            sortOptions: [
+              { sortBy: 'id', ascending: true, desc: 'By Default' },
+              { sortBy: 'name', ascending: true, desc: 'By First Name Asc' },
+              { sortBy: 'name', ascending: false, desc: 'By First Name Desc' },
+              { sortBy: 'surname', ascending: true, desc: 'By Last Name Asc' },
+              { sortBy: 'surname', ascending: false, desc: 'By Last Name Desc' },
+              { sortBy: 'last', ascending: true, desc: 'By Last Appointment Asc' },
+              { sortBy: 'last', ascending: false, desc: 'By Last Appointment Desc' }
+            ],
 
         };
     },
     methods: {
-        refreshPatients(e) {
+        refreshPatients() {
           this.refreshData.doctorId = AuthService.getCurrentUser().id;
-          console.log("page size: ",this.refreshData.pageSize);
+          console.log("page size: ", this.refreshData.pageSize);
           if (!this.refreshData.pageNo) this.refreshData.pageNo = 1;
+
+          console.log(this.sortParams.sortBy);
+        
           console.log(this.refreshData.pageNo);
             PatientDataService.retrieveAllPatients(this.refreshData) // HARDCODED
                 .then(response => {
                     this.patients = response.data.patients;
-                    this.lastAppointments = response.data.lastAppointmentsByDoctor;
+                    //this.lastAppointments = response.data.lastAppointmentsByDoctor;
                     this.totalPatients = response.data.count;
-                    this.addDatesToPatients();
+                    //this.addDatesToPatients();
                     console.log(response.data);
                 });
         },
@@ -332,6 +325,7 @@ export default {
                 });
         },
         onChange(e){
+          this.refreshData.pageNo = 1;
           this.refreshPatients(e);
         },
 
@@ -358,16 +352,15 @@ export default {
           return filteredList;
         },
 
-        changeOrder(sort) {
-          if (this.refreshData.ascending) {this.refreshData.ascending = false}
-          else {this.refreshData.ascending = true}
-          this.refreshData.sortBy = sort;
+        sort() {
+          this.refreshData.ascending = this.sortParams.ascending;
+          this.refreshData.sortBy = this.sortParams.sortBy;
           this.refreshData.pageNo = 1;
           this.refreshPatients();
         },
 
-        startAppointment(lastAppointment){
-          this.$router.push('/appointment/'+lastAppointment.id);
+        startAppointment(lastAppointmentId){
+          this.$router.push('/appointment/'+lastAppointmentId);
         }
       },
 

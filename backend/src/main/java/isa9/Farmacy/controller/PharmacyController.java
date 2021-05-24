@@ -1,13 +1,11 @@
 package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.*;
-import isa9.Farmacy.model.dto.MedicineDTO;
-import isa9.Farmacy.model.dto.PharmacyDTO;
-import isa9.Farmacy.model.dto.RatingDTO;
-import isa9.Farmacy.model.dto.WorkDTO;
+import isa9.Farmacy.model.dto.*;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.RatingService;
 import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.support.InquiryMedtoInquiryMedDTO;
 import isa9.Farmacy.support.PharmacyToPharmacyDTO;
 import isa9.Farmacy.support.RatingToRatingDTO;
 import isa9.Farmacy.support.WorkToWorkDTO;
@@ -17,8 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +48,14 @@ public class PharmacyController {
     @GetMapping("")
     public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
         List<PharmacyDTO> resultDTOS = pharmacyToPharmacyDTO.convert(this.pharmacyService.findAll());
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+    }
+
+    @PostMapping("search")
+    public ResponseEntity<List<PharmacyDTO>> SearchPharmacies(@RequestBody(required=false) PharmacySearchDTO pharmacySearchDTO) {
+        List<Pharmacy> pharmacies = this.pharmacyService.findAll();
+        pharmacies = pharmacyService.filterPharmacies(pharmacies, pharmacySearchDTO);
+        List<PharmacyDTO> resultDTOS = pharmacyToPharmacyDTO.convert(pharmacies);
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
     }
 
@@ -97,11 +105,13 @@ public class PharmacyController {
     public ResponseEntity<List<WorkDTO>> getPharmacistPharmacy(@PathVariable Long doctorId) {
         Doctor doctor = userService.getDoctorById(doctorId);
         List<Work> work = pharmacyService.findDoctorsWork(doctor);
+
         List<WorkDTO> convertedWork = this.workToWorkDTO.convert(work);
         return new ResponseEntity<>(convertedWork, HttpStatus.OK);
     }
 
     @GetMapping("/admin/{id}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<PharmacyDTO> getPharmacyAdmin(@PathVariable Long id) {
         User user = userService.findOne(id);
         if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -110,24 +120,47 @@ public class PharmacyController {
     }
 
     @PostMapping("/setPharmacyInfo")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<Boolean> setPharmacyInfo(@RequestBody PharmacyDTO apotekaDTO) {
         Pharmacy apoteka = pharmacyService.findOne(apotekaDTO.getId());
-        Pharmacy apoteka2 = null;
-        // inace nepotrebno
-        for (User u : userService.findAll()) {
-            if (u.getClass() != PharmacyAdmin.class) continue;
-            PharmacyAdmin admin = (PharmacyAdmin) u;
-            if (admin.getPharmacy().getId() != apoteka.getId()) continue;
-            apoteka2 = admin.getPharmacy();
-            break;
-        }
-        // kraj inace nepotrebnog koda
         apoteka.setName(apotekaDTO.getName());
         apoteka.setDescription(apoteka.getDescription());
-        if (apoteka2 != null) {
-            apoteka2.setName(apotekaDTO.getName());
-            apoteka2.setDescription(apoteka.getDescription());
+        if (apoteka == null) return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+        if (apotekaDTO.getPricePerHour() != null) apoteka.setPricePerHour(apotekaDTO.getPricePerHour());
+        apoteka.setName(apotekaDTO.getName());
+        apoteka.setDescription(apoteka.getDescription());
+        this.pharmacyService.save(apoteka);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @GetMapping("/inquiries/{id}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<List<InquiryMedicineDTO>> inquiriesPhaarmacy(@PathVariable Long id) {
+        Pharmacy apoteka = this.pharmacyService.findOne(id);
+        InquiryMedtoInquiryMedDTO konverter = new InquiryMedtoInquiryMedDTO();
+        List<InquiryMedicineDTO> povratna = konverter.convert(apoteka.getInquiryMedicines());
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @PostMapping("/savePricelist/{idAdmina}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<Boolean> savePricelist(@PathVariable Long idAdmina, @RequestBody PricelistDTO cenovnik) {
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(idAdmina);
+        for (MedicineInPharmacy stariLek : admin.getPharmacy().getMedicines()) {
+            for (MedInPharmaDTO noviLek : cenovnik.getMedicines()) {
+                if (stariLek.getMedicine().getId() == noviLek.getMedicine().getId()) {
+                    if (stariLek.getCurrentPrice().getPrice() != noviLek.getCurrentPrice()) {
+                        MedPrice novaCena = new MedPrice();
+                        novaCena.setPrice(noviLek.getCurrentPrice());
+                        novaCena.setStartDate(LocalDateTime.now());
+                        novaCena.setMedicineInPharmacy(stariLek);
+                        stariLek.setCurrentPrice(novaCena);
+                    }
+                    break;
+                }
+            }
         }
+        pharmacyService.save(admin.getPharmacy());
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 

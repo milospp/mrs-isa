@@ -1,13 +1,15 @@
 package isa9.Farmacy.model;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.Objects;
+
 import lombok.*;
+import org.apache.tomcat.jni.Local;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"order", "supplier"})
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,14 +23,14 @@ public class Offer {
     @Column
     private double price;
     @Column
-    private Date startDate;
+    private LocalDateTime startDate;
     @Column
-    private Date endDate;
+    private LocalDateTime endDate;
     @Column
     private String offerDescription;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Supplier supplier;
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private MedicineOrder order;
     @Enumerated
     private OfferStatus status;
@@ -36,14 +38,14 @@ public class Offer {
 
 
 
-    public Offer(double price, Date startDate, Date endDate, String offerDescription, Supplier sup) {
+    public Offer(double price, LocalDateTime startDate, LocalDateTime endDate, String offerDescription, Supplier sup) {
         super();
         this.price = price;
         this.startDate = startDate;
         this.endDate = endDate;
         this.offerDescription = offerDescription;
         this.supplier = sup;
-        this.status = OfferStatus.IDEFINITELY;
+        this.status = OfferStatus.INDEFINITELY;
     }
 
 

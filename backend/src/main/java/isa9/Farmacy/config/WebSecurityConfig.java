@@ -73,7 +73,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/auth/**").permitAll()
 				.antMatchers("/h2-console/**").permitAll()
 				.antMatchers("/api/pharmacies").permitAll()
+				.antMatchers("/api/pharmacies/search").permitAll()
 				.antMatchers("/api/medicines").permitAll()
+				.antMatchers("/api/medicines/tmp-test").permitAll()
+				.antMatchers("/api/medicines/search").permitAll()
+				.antMatchers("/api/medicines/prices/**").permitAll()
+				.antMatchers("/api/medicines/medicinesInStock").permitAll()
 				.antMatchers("/api/auth/getLoggedIn").permitAll()
 				.antMatchers("/api/users/dermatologists/pharmacy/**").permitAll()
 				.antMatchers("/api/users/pharmacists/pharmacy/**/**").permitAll()
@@ -81,7 +86,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/users/derm/filter/pharmacy/**").permitAll()
 				.antMatchers("/api/medicines/pharmacy/**").permitAll()
 				.antMatchers("/api/pharmacies/**").permitAll()
-				.antMatchers("/api/users/patients").permitAll()
+				.antMatchers("/api/users/patients/**").permitAll()
+				.antMatchers("/api/appointments/**").permitAll()	// DELETE THIS LINE (DEVELOP PURPOSES MilosPP)
+				.antMatchers("/api/appointments/calendar/derm/**/pharmacy/**").permitAll()
 
 				
 				// za svaki drugi zahtev korisnik mora biti autentifikovan
@@ -106,8 +113,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 															"/api/users/dermatologists/pharmacy/**",
 															"/api/users/pharmacists/pharmacy/**/**",
 															"/api/users/pharm/filter/pharmacy/**",
-				"/api/users/derm/filter/pharmacy/**", "/api/medicines/pharmacy/**",
-				"/api/users/patients");  // <-- svi korisnici mogu da udju na ove stranice
+															"/api/users/derm/filter/pharmacy/**",
+															"/api/medicines/pharmacy/**",
+															"/api/medicines/prices/**");  // <-- svi korisnici mogu da udju na ove stranice
 		web.ignoring().antMatchers(HttpMethod.GET, "/", "/webjars/**", "/*.html", "/favicon.ico", "/**/*.html","/**/*.css", "/**/*.js");
 	}
 

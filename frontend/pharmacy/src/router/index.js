@@ -7,7 +7,11 @@ import Register from '@/views/Register.vue'
 import Patients from '@/views/Patients.vue'
 import AddPharmacist from '@/views/AddPharmacist.vue'
 import HomePagePharmacyAdmin from '@/views/HomePagePharmacyAdmin.vue'
+import CartPharmacyAdmin from '@/views/CartPharmacyAdmin.vue'
+import PAMoreInfo from '@/views/PAMoreInfo.vue'
+import ChangingOrder from '@/views/ChangingOrder.vue'
 import HireDermatologist from '@/views/HireDermatologist.vue'
+import AddNewPricelist from '@/views/AddNewPricelist.vue'
 import AddPharmacy from '@/views/AddPharmacy.vue'
 import AddPharmacyAdmin from '@/views/AddPharmacyAdmin.vue'
 import PharmacistHomePage from '@/views/PharmacistHomePage.vue'
@@ -25,6 +29,14 @@ import AddMedicine from '@/views/AddMedicine.vue'
 import Login from '@/views/Login.vue'
 import LogoutView from '@/views/LogoutView.vue'
 import Appointment from '@/views/Appointment.vue'
+import AddSysAdmin from '@/views/AddSysAdmin.vue'
+import SupplierProfile from '@/views/SupplierProfile.vue'
+import CounselingPage from '@/views/CounselingPage.vue'
+import MedicineSearchPage from '@/views/MedicineSearchPage.vue'
+import FirstLogin from '@/views/FirstLogin.vue'
+import SuppliersOffersPage from '@/views/SuppliersOffersPage.vue'
+import AddNewOffer from '@/views/AddNewOffer.vue'
+import ComplaintPage from '@/views/ComplaintPage.vue'
 
 
 const routes = [
@@ -74,6 +86,26 @@ const routes = [
     path: '/homePagePharmacyAdmin',
     name: 'HomePagePharmacyAdmin',
     component: HomePagePharmacyAdmin    // view je komponenta
+  },
+  {
+    path: '/cartPharmacyAdmin',
+    name: 'CartPharmacyAdmin',
+    component: CartPharmacyAdmin    // view je komponenta
+  },
+  {
+    path: '/changeOrder',
+    name: 'ChangeOrder',
+    component: ChangingOrder    // view je komponenta
+  },
+  {
+    path: '/paMoreInfo',
+    name: 'PAMoreInfo',
+    component: PAMoreInfo    // view je komponenta
+  },
+  {
+    path: '/addPricelist',
+    name: 'AddNewPricelist',
+    component: AddNewPricelist    // view je komponenta
   },
   {
     path: '/addPharmacy',
@@ -162,11 +194,50 @@ const routes = [
     component: AddMedicine
   },
   {
+    path: '/addSysAdmin',
+    name: 'AddSysAdmin',
+    component: AddSysAdmin
+  },
+  {
+    path: '/supplier/profile',
+    name: 'SupplierProfile',
+    component: SupplierProfile    
+  },
+  {
+    path: '/medicineSearch',
+    name: 'MedicineSearchPage',
+    component: MedicineSearchPage
+  },
+  {
     path: '/appointment/:id',
     name: 'Appointment',
     component: Appointment    // view je komponenta
+  },
+  {
+    path: '/firstLogin',
+    name: 'FirstLogin',
+    component: FirstLogin
+  },
+  {
+    path: '/addNewOffer',
+    name: 'AddNewOffer',
+    component: AddNewOffer
+  },
+  {
+    path: '/SuppliersOffers',
+    name: 'SuppliersOffersPage',
+    component: SuppliersOffersPage
+  },
+  {
+    path: '/counseling',
+    name: 'Counseling',
+    component: CounselingPage
+  },
+  {
+    path: '/newComplaint',
+    name: 'ComplaintPage',
+    component: ComplaintPage
   }
-
 
   // {
   //   path: '/about',

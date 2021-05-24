@@ -1,5 +1,6 @@
 package isa9.Farmacy.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import isa9.Farmacy.model.dto.DoctorDTO;
 import isa9.Farmacy.model.dto.ExaminationDTO;
 import isa9.Farmacy.model.dto.PharmacyDTO;
@@ -20,7 +21,7 @@ import lombok.*;
 
 public class AppointmentDTO {
     private Long id;
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern="yyyy-M-d HH:mm:ss")
     private LocalDateTime startTime;
     private double price;
     private int durationInMins;

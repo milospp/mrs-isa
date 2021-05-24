@@ -1,5 +1,6 @@
 <template>
   <NavBar/>
+  <FirstLoginWatcher/>
   <h1 class="title">Home</h1>
   <div class="container">
     <Pharmacies limit="8"/>
@@ -18,6 +19,7 @@ import HelloWorld from '@/components/HelloWorld.vue'
 import NavBar from '@/components/NavBar.vue'
 import Medicines from '@/components/MedicinesList.vue'
 import Pharmacies from '@/components/PharmaciesList'
+import FirstLoginWatcher from '@/components/FirstLoginWatcher.vue'
 
 
 export default {
@@ -25,7 +27,8 @@ export default {
   components: {
     NavBar,
     Pharmacies,
-    Medicines
+    Medicines,
+    FirstLoginWatcher
   }
 }
 </script>

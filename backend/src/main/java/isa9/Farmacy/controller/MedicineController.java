@@ -2,11 +2,9 @@ package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.*;
+import isa9.Farmacy.repository.MedicineRepository;
 import isa9.Farmacy.service.*;
-import isa9.Farmacy.support.MedReservationToMedReservationDTO;
-import isa9.Farmacy.support.MedicineInPharmacyToMedInPharmaDTO;
-import isa9.Farmacy.support.MedicineToMedicineDTO;
-import isa9.Farmacy.support.RatingToRatingDTO;
+import isa9.Farmacy.support.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -26,49 +21,79 @@ import java.util.stream.Collectors;
 public class MedicineController {
 
     private final MedicineService medicineService;
+    private final MedQuantityService medQuantityService;
     private final UserService userService;
     private final PharmacyService pharmacyService;
     private final RatingService ratingService;
     private final MedReservationService medReservationService;
+    private final MedInPharmaService medInPharmaService;
     private final MedReservationToMedReservationDTO medReservationToMedReservationDTO;
     private final MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO;
     private final MedicineToMedicineDTO medicineToMedicineDTO;
     private final RatingToRatingDTO ratingToRatingDTO;
+    private final MedicineQuantityToMedicineQuantityDTO medicineQuantityToMedicineQuantityDTO;
+    private final MedicineAtSupplierService medicineAtSupplierService;
+    private final MedicineAtSupplierToMedAtSupplierDTO medicineAtSupplierToMedAtSupplierDTO;
+    private final MedAtSupplierDTOtoMedAtSupplier medAtSupplierDTOtoMedAtSupplier;
 
     @Autowired
-    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, RatingService ratingService, MedReservationService medReservationService, MedReservationToMedReservationDTO medReservationToMedReservationDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedicineToMedicineDTO medicineToMedicineDTO, RatingToRatingDTO ratingToRatingDTO) {
+    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, RatingService ratingService, MedReservationService medReservationService, MedInPharmaService medInPharmaService, MedReservationToMedReservationDTO medReservationToMedReservationDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedicineToMedicineDTO medicineToMedicineDTO, RatingToRatingDTO ratingToRatingDTO, MedQuantityService medQuantityService, MedicineQuantityToMedicineQuantityDTO medicineQuantityToMedicineQuantityDTO, MedicineAtSupplierService medicineAtSupplierService, MedicineAtSupplierToMedAtSupplierDTO medicineAtSupplierToMedAtSupplierDTO, MedAtSupplierDTOtoMedAtSupplier medAtSupplierDTOtoMedAtSupplier) {
         this.medicineService = medicineService;
         this.userService = userService;
         this.pharmacyService = pharmacyService;
         this.ratingService = ratingService;
         this.medReservationService = medReservationService;
+        this.medInPharmaService = medInPharmaService;
         this.medReservationToMedReservationDTO = medReservationToMedReservationDTO;
         this.medicineInPharmacyToMedInPharmaDTO = medicineInPharmacyToMedInPharmaDTO;
         this.medicineToMedicineDTO = medicineToMedicineDTO;
         this.ratingToRatingDTO = ratingToRatingDTO;
+        this.medQuantityService = medQuantityService;
+        this.medicineQuantityToMedicineQuantityDTO = medicineQuantityToMedicineQuantityDTO;
+        this.medicineAtSupplierService = medicineAtSupplierService;
+        this.medicineAtSupplierToMedAtSupplierDTO = medicineAtSupplierToMedAtSupplierDTO;
+        this.medAtSupplierDTOtoMedAtSupplier = medAtSupplierDTOtoMedAtSupplier;
     }
 
     @GetMapping("tmp-test")
     public ResponseEntity<Boolean> debug(){
-        Pharmacy pharmacy = pharmacyService.findOne(1L);
-        Medicine medicine = medicineService.findOne(1L);
-
-        MedicineInPharmacy mip = new MedicineInPharmacy(1L,null , medicine,20, pharmacy);
-        MedPrice mp1 = new MedPrice(1L, LocalDateTime.now(), 20.0, mip);
-        mip.setCurrentPrice(mp1);
-
-        pharmacy.getMedicines().add(mip);
-        pharmacyService.save(pharmacy);
+        medReservationService.checkForExpiredReservations();
         return new ResponseEntity<>(true, HttpStatus.OK);
 
     }
 
-    @PostMapping("{medId}/pharmacy/{pharmacyId}/reserve")
-    public ResponseEntity<MedReservationDTO> reserveMedicine(@PathVariable Long medId, @PathVariable Long pharmacyId, @RequestBody MedReservationFormDTO form){
+    @PostMapping("{medId}/pharmacy/{pharmacyId}/reserve/{doctorId}")
+    public ResponseEntity<MedReservationDTO> reserveMedicine(@PathVariable Long medId, @PathVariable Long pharmacyId,
+                 @PathVariable Long doctorId, @RequestBody MedReservationFormDTO form){
         // TODO: Get patient from session
         User user = userService.getLoggedInUser();
 
-        if (!form.getPatientId().equals(user.getId())){
+        if (!form.getPatientId().equals(user.getId()) && !user.getRole().getName().equals("DERMATOLOGIST") && !user.getRole().getName().equals("PHARMACIST")){
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
+
+        form.setMedicineId(medId);
+        form.setPharmacyId(pharmacyId);
+        MedReservation medReservation = medReservationService.reserveMedicine(form, doctorId);
+
+        if (medReservation == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
+        MedReservation reservationWithId = medReservationService.getByCode(medReservation.getCode());
+
+        MedReservationDTO dto = medReservationToMedReservationDTO.convert(reservationWithId);
+        System.out.println("Id rezervacije: " + dto.getId());
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @PostMapping("{medId}/pharmacy/{pharmacyId}/reserve")
+    public ResponseEntity<MedReservationDTO> reserveMedicineAsPatient(@PathVariable Long medId, @PathVariable Long pharmacyId,
+                                                             @RequestBody MedReservationFormDTO form){
+        // TODO: Get patient from session
+        User user = userService.getLoggedInUser();
+
+        if (!form.getPatientId().equals(user.getId()) && !user.getRole().getName().equals("DERMATOLOGIST") && !user.getRole().getName().equals("PHARMACIST")){
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
 
@@ -79,37 +104,30 @@ public class MedicineController {
         if (medReservation == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
-        MedReservationDTO dto = medReservationToMedReservationDTO.convert(medReservation);
+        MedReservation reservationWithId = medReservationService.getByCode(medReservation.getCode());
+
+        MedReservationDTO dto = medReservationToMedReservationDTO.convert(reservationWithId);
+        System.out.println("Id rezervacije: " + dto.getId());
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
 
     @GetMapping("")
-    public ResponseEntity<List<MedicineDTO>> test(){
+    public ResponseEntity<List<MedicineDTO>> getMedicines(){
 
         List<MedicineDTO> resultDTOS = medicineToMedicineDTO.convert(this.medicineService.findAll());
-//        for (Medicine medicine : this.medicineService.findAll()) {
-//            resultDTOS.add(new MedicineDTO(
-//                    medicine.getId(),
-//                    medicine.getCode(),
-//                    medicine.getName(),
-//                    medicine.getStructure(),
-//                    medicine.getManufacturer(),
-//                    medicine.getNote(),
-//                    medicine.getPoints(),
-//                    medicine.getShape(),
-//                    medicine.getType(),
-//                    medicine.getPerscription(),
-//                    medicine.getReplacementMedication().stream()
-//                            .map(Medicine::getCode)
-//                            .collect(Collectors.toList())
-//            ));
-//        }
 
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
     }
 
+    @PostMapping("search")
+    public ResponseEntity<List<MedicineDTO>> SearchMedicines(@RequestBody(required=false) MedicineSearchDTO medicineSearchDTO) {
+        List<Medicine> medicines = this.medicineService.findAll();
+        medicines = medicineService.filterMedicines(medicines, medicineSearchDTO);
+        List<MedicineDTO> resultDTOS = medicineToMedicineDTO.convert(medicines);
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+    }
 
     @GetMapping("/pharmacyAdmin/{id}")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
@@ -118,6 +136,26 @@ public class MedicineController {
         if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         Set<MedicineInPharmacy> sviLekovi = ((PharmacyAdmin) user).getPharmacy().getMedicines();
         List<MedInPharmaDTO> povratna = medicineInPharmacyToMedInPharmaDTO.convert(sviLekovi);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @GetMapping("/pricelist/{id}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<PricelistDTO> getPricelistPharmacyAdmin(@PathVariable Long id) {
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(id);
+        LocalDateTime datum = LocalDateTime.now();
+        List<MedInPharmaDTO> listaLekova = new ArrayList<>();
+        int broj = 0;
+        for (MedicineInPharmacy mp : admin.getPharmacy().getMedicines()) {
+            listaLekova.add(medicineInPharmacyToMedInPharmaDTO.convert(mp));
+            if (broj == 0) {
+                broj++;
+                datum = mp.getCurrentPrice().getStartDate(); }
+            else {
+                if (datum.isBefore(mp.getCurrentPrice().getStartDate()))
+                    datum = mp.getCurrentPrice().getStartDate(); }
+        }
+        PricelistDTO povratna = new PricelistDTO(datum , listaLekova);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
@@ -192,7 +230,7 @@ public class MedicineController {
         Medicine novi = new Medicine();
         novi.setCode(lek.getMedicine().getCode());
         novi.setName(lek.getMedicine().getName());
-        novi.setStructure(lek.getMedicine().getStructure());
+        novi.setSpecification(lek.getMedicine().getSpecification());
         novi.setType(lek.getMedicine().getType());
         novi.setShape(lek.getMedicine().getShape());
         novi.setManufacturer(lek.getMedicine().getName());
@@ -211,6 +249,7 @@ public class MedicineController {
                     break;
                 }}}
         novi.setReplacementMedication(zamenski);
+        medicineService.save(novi);
 
         // lek u apoteci
         MedicineInPharmacy noviUApoteci = new MedicineInPharmacy();
@@ -229,17 +268,32 @@ public class MedicineController {
     }
 
     @GetMapping("/pharmacy/{id}")
+    public ResponseEntity<List<MedInPharmaDTO>> getMedicinePharmacy(@PathVariable Long id) {
+        Pharmacy apoteka = pharmacyService.findOne(id);
+        List<MedInPharmaDTO> povratna = new ArrayList<>();
+        for (MedicineInPharmacy mp : apoteka.getMedicines()) {     // ne vracamo one kojih ima 0
+            if (mp.getInStock() > 0) povratna.add( medicineInPharmacyToMedInPharmaDTO.convert(mp));
+        }
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+    @GetMapping("/all/pharmacy/{id}")
     public ResponseEntity<List<MedInPharmaDTO>> getAllMedicinePharmacy(@PathVariable Long id) {
         Pharmacy apoteka = pharmacyService.findOne(id);
         List<MedInPharmaDTO> povratna = medicineInPharmacyToMedInPharmaDTO.convert(apoteka.getMedicines());
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
+    @GetMapping("/{medicineId}/pharmacies")
+    public ResponseEntity<Collection<MedInPharmaDTO>> getAllMedicinePharmacies(@PathVariable Long medicineId) {
+        Collection<MedicineInPharmacy> medicineInPharmacies = medInPharmaService.findAllMedicinesInPharmacy(medicineId);
+        return new ResponseEntity<>(medicineInPharmacyToMedInPharmaDTO.convert(medicineInPharmacies), HttpStatus.OK);
+    }
+
     @PostMapping("/newMedicine")
     @PreAuthorize("hasAuthority('SYS_ADMIN')")
     public ResponseEntity<Integer> addMedicine(@RequestBody MedicineDTO medicineDTO){
         List<Long> replacementMedsIds = medicineDTO.getReplacementMedicationIds().stream().map(Long::parseLong).collect(Collectors.toList());
-        Medicine newMedicine = new Medicine(0L, medicineDTO.getCode(), medicineDTO.getName(), medicineDTO.getStructure(),
+        Medicine newMedicine = new Medicine(0L, medicineDTO.getCode(), medicineDTO.getName(), medicineDTO.getSpecification(),
                 medicineDTO.getManufacturer(), medicineDTO.getNote(), medicineDTO.getPoints(), medicineDTO.getShape(),
                 medicineDTO.getType(), medicineDTO.getPerscription(), medicineService.idsToMedicines(replacementMedsIds));
         boolean checkCode = this.medicineService.isCodeAvailable(newMedicine.getCode());
@@ -274,8 +328,6 @@ public class MedicineController {
             // TODO: Move everything into this method
             medReservationService.dispenseMedicine(reservation);
 
-
-
             return new ResponseEntity<>(true, HttpStatus.OK);
         }
         return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
@@ -306,5 +358,74 @@ public class MedicineController {
 
         RatingDTO dto = ratingToRatingDTO.convert(rating);
         return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping("/prices/{id}")
+    public ResponseEntity<List<PriceInPharmaciesDTO>> getPricesOfMedicine(@PathVariable Long id){
+        Medicine medToLookFor = this.medicineService.findOne(id);
+        List<PriceInPharmaciesDTO> prices = this.medicineService.getPricesOfMedicine(medToLookFor);
+        return new ResponseEntity<List<PriceInPharmaciesDTO>>(prices, HttpStatus.OK);
+    }
+
+    @GetMapping("/medicinesInStock")
+    public ResponseEntity<List<MedicineDTO>> getMedicinesInStock(){
+        List<MedicineDTO> inStock = new ArrayList<MedicineDTO>();
+        List<Medicine> allMeds = this.medicineService.findAll();
+
+        for(Medicine m : allMeds){
+            if(this.medicineService.getPricesOfMedicine(m).isEmpty()) continue;
+
+            inStock.add(medicineToMedicineDTO.convert(m));
+        }
+
+        return new ResponseEntity<List<MedicineDTO>>(inStock, HttpStatus.OK);
+    }
+
+    @GetMapping("/suppliersMedicines/{id}")
+    @PreAuthorize("hasAuthority('SUPPLIER')")
+    public ResponseEntity<Map<String, MedAtSupplierDTO>> getSuppliersMedicines(@PathVariable Long id){
+        Set<MedicineAtSupplier> medicineAtSupplierSet = this.medicineAtSupplierService.medicinesOfSupplier(id);
+        return new ResponseEntity<>(this.medicineAtSupplierToMedAtSupplierDTO.setToMap(medicineAtSupplierSet), HttpStatus.OK);
+    }
+
+    @PostMapping("/updateSuppliersMedicine")
+    @PreAuthorize("hasAuthority('SUPPLIER')")
+    public ResponseEntity<Boolean> updateMedicineAtSupplier(@RequestBody MedAtSupplierDTO medAtSupplierDTO){
+        MedicineAtSupplier toBeUpdated = this.medicineAtSupplierService.findOne(medAtSupplierDTO.getId());
+        this.medicineAtSupplierService.updateMedicineAtSupplier(toBeUpdated, medAtSupplierDTO.getCurrentPrice(), medAtSupplierDTO.getInStock());
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @PostMapping("/removeSuppliersMedicine")
+    @PreAuthorize("hasAuthority('SUPPLIER')")
+    public ResponseEntity<Boolean> removeMedicineAtSupplier(@RequestBody MedAtSupplierDTO medAtSupplierDTO){
+        MedicineAtSupplier toBeRemoved = this.medicineAtSupplierService.findOne(medAtSupplierDTO.getId());
+        this.medicineAtSupplierService.delete(toBeRemoved);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @PostMapping("/addSuppliersMedicine/{id}")
+    @PreAuthorize("hasAuthority('SUPPLIER')")
+    public ResponseEntity<Boolean> addMedicineToSupplier(@RequestBody MedAtSupplierDTO medAtSupplierDTO, @PathVariable Long id){
+        Supplier supplier = (Supplier) this.userService.findOne(id);
+        MedicineAtSupplier toBeAdded = this.medAtSupplierDTOtoMedAtSupplier.convert(medAtSupplierDTO);
+        SupplierMedPrice price = toBeAdded.getSupplierPrice();
+        toBeAdded.setSupplierPrice(null);
+        toBeAdded.setSupplier(supplier);
+        toBeAdded = this.medicineAtSupplierService.save(toBeAdded);
+
+        price.setMedicineAtSupplier(toBeAdded);
+        toBeAdded.setSupplierPrice(price);
+        this.medicineAtSupplierService.addMedicineAtSupplier(toBeAdded);
+
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @GetMapping("/patientsPurchases/{id}")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<List<MedReservationDTO>> getPurchasedMedicines(@PathVariable Long id){
+        List<MedReservation> purchases = this.medReservationService.getPatientsPurchases((Patient) this.userService.findOne(id));
+
+        return new ResponseEntity<>(this.medReservationToMedReservationDTO.convert(purchases), HttpStatus.OK);
     }
 }

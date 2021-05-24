@@ -2,7 +2,6 @@
 <div>
   <RatingModal modalId="rating-modal" v-model="rating" @rated="ratePharmacy"></RatingModal>
 
-
     <div v-if="pharmacy" class="row">
       <div class="col-md-4" align="left">
         <h2>{{pharmacy.name}}</h2>
@@ -79,7 +78,7 @@
                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
                   
                     <td> <input type="text" v-model="pharmaSearch"  size="50"/></td>
-                    <td> <form v-on:click.prevent="pretragaFarm()"> <input type="submit" value="Search"/></form></td>
+                    <td> <form v-on:click.prevent="pretragaFarm()"> <input type="submit" data-toggle="modal" data-target="#obavestenje" value="Search"/></form></td>
                 </tr>
                 <tr>
                   <td> &emsp; </td>
@@ -91,6 +90,8 @@
                   <th>Last name</th>
                   <th>Address</th>
                   <th>Phone number</th>
+                  <th>Start time</th>
+                  <th>End time</th>
                 </thead>
                 <tbody>
                     <tr :key="f.name" v-for="f in this.sviZaposleniFarmaceuti">
@@ -98,6 +99,8 @@
                       <td>{{f.surname}}</td>
                       <td>{{UtilService.AddressToString(f.address)}}</td>
                       <td>{{f.phoneNumber}}</td>
+                      <td>{{(f.pharmacyWork.startHour[0] < 10 ? "0" + f.pharmacyWork.startHour[0] : f.pharmacyWork.startHour[0])}}:{{(f.pharmacyWork.startHour[1] < 10 ? "0" + f.pharmacyWork.startHour[1] : f.pharmacyWork.startHour[1])}}</td>
+                      <td>{{(f.pharmacyWork.endHour[0] < 10 ? "0" + f.pharmacyWork.endHour[0] : f.pharmacyWork.endHour[0])}}:{{(f.pharmacyWork.endHour[1] < 10 ? "0" + f.pharmacyWork.endHour[1] : f.pharmacyWork.endHour[1])}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -115,7 +118,7 @@
                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
                   
                     <td> <input type="text" v-model="dermaSearch"  size="50"/></td>
-                    <td> <form v-on:click.prevent="pretraga()"> <input type="submit" value="Search"/></form></td>
+                    <td> <form v-on:click.prevent="pretraga()"> <input type="submit" data-toggle="modal" data-target="#obavestenje" value="Search"/></form></td>
                 </tr>
                 <tr>
                   <td> &emsp; </td>
@@ -127,6 +130,8 @@
                   <th>Last name</th>
                   <th>Address</th>
                   <th>Phone number</th>
+                  <th>Start time</th>
+                  <th>End time</th>
                 </thead>
                 <tbody>
                     <tr :key="d.name" v-for="d in this.sviZaposleniDermatolozi">
@@ -134,37 +139,16 @@
                       <td>{{d.surname}}</td>
                       <td>{{UtilService.AddressToString(d.address)}}</td>
                       <td>{{d.phoneNumber}}</td>
+                      <td>{{(d.pharmacyWork.startHour[0] < 10 ? "0" + d.pharmacyWork.startHour[0] : d.pharmacyWork.startHour[0])}}:{{(d.pharmacyWork.startHour[1] < 10 ? "0" + d.pharmacyWork.startHour[1] : d.pharmacyWork.startHour[1])}}</td>
+                      <td>{{(d.pharmacyWork.endHour[0] < 10 ? "0" + d.pharmacyWork.endHour[0] : d.pharmacyWork.endHour[0])}}:{{(d.pharmacyWork.endHour[1] < 10 ? "0" + d.pharmacyWork.endHour[1] : d.pharmacyWork.endHour[1])}}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div id="menu3" class="tab-pane in fade">
 
-              <h3>Appointments</h3>
-
-              <div class="appointment card mb-4">
-                <div class="card-header">
-                  <h5>Free apointment at 08:00 (30min)</h5>
-                </div>
-                <div class="card-body text-left">
-                  <div class="row">
-                    <div class="col-sm-6 h4">
-                      <table>
-                        <tr><td>Pharmacist: </td><td class="pl-5"><strong>Dr.Mr.Phill</strong></td></tr>
-                        <tr><td>Pharmacy: </td><td class="pl-5"><strong>Phara</strong></td></tr>
-                        <tr><td>Price per hour: </td><td class="pl-5"><strong>$20.00 USD</strong></td></tr>
-                      </table>
-                    </div>
-                    <div class="col-sm-6 h5">
-                      <table>
-                        <tr><td>Starting at: </td><td class="pl-5"><strong>20/5/2021 08:00</strong></td></tr>
-                      </table>
-                      <br>
-                      <button class="btn btn-block btn-primary">Book a appointment</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <Appointments class="col-md-12 mt-3" :filterPharmacyId="id" />
+              
             </div>
             <div id="menu4" class="tab-pane fade active">
 					          <Mapa/>
@@ -192,10 +176,10 @@
         <div class="modal-body" align="left">Points: {{lek_za_prikaz?.medicine.points}}</div>
         <div class="modal-body" align="left">Type: {{lek_za_prikaz?.medicine.type}}</div>
         <div class="modal-body" align="left">Price: {{lek_za_prikaz?.currentPrice}}</div>
-        <div class="modal-body" align="left">Quantity: <input type="text" v-model="kolicina"/> (max = {{lek_za_prikaz?.inStock}})</div>
+        <div class="modal-body" align="left">Quantity: <input type="text" v-model="test"/> (max = {{lek_za_prikaz?.inStock}})</div>
         <div class="modal-body" align="left">Expiry date: <input type="date" v-model="datum"/></div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="provera(lek_za_prikaz)">Reserve</button>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" data-dismiss="modal" v-on:click.prevent="provera(lek_za_prikaz)">Reserve</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -220,7 +204,7 @@
         <div class="modal-body" align="left">Street: <input type="text" v-model="filterAdrU"/></div>
         <div class="modal-body" align="left">Number: <input type="text" v-model="filterAdrB"/></div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="filter(true)">Seaarch</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="filter(true)">Seaarch</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -245,13 +229,31 @@
         <div class="modal-body" align="left">Street: <input type="text" v-model="filterAdrU"/></div>
         <div class="modal-body" align="left">Number: <input type="text" v-model="filterAdrB"/></div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="filter(false)">Seaarch</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="filter(false)">Seaarch</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+    <!-- obavestenje -->
+  <div class="modal fade" id="obavestenje" tabindex="-1" role="dialog" aria-labelledby="poruka" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="poruka">Message</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" align="left"><label>{{this.poruka}}</label></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click.prevent="inicijalizujPoruku('Wait... Your require is in processing', false)">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </template>
 
@@ -264,11 +266,14 @@
     import MedicineDataService from '../service/MedicineDataService.js';
     import RatingModal from '@/components/RatingModal.vue';
     import Mapa from "../components/Maps.vue";
+    import Appointments from '@/components/Appointments'
+
 
 export default {
   components: {
     RatingModal,
     Mapa,
+    Appointments,
   },
     setup() {
       return { UtilService}
@@ -276,6 +281,7 @@ export default {
 
 	data: function () {
 		return {
+            test: null,
             pharmacy: null,
             sviZaposleniFarmaceuti : [] ,
             sviZaposleniDermatolozi : [],
@@ -295,14 +301,18 @@ export default {
               pharmacy: null,
             },
             userId: 1,
+            poruka: "Wait... Your require is in processing", 
 		}
 	},
   methods: {
+    inicijalizujPoruku(pk) { 
+      this.poruka = pk;
+    },
     filter(filtDermatologa) {
       var suma = this.filterIme.length + this.filterPrez.length + this.filterBroj 
         + this.filterAdrD.length + this.filterAdrG.length + this.filterAdrU.length + this.filterAdrB.length;
       if (suma == 0) {
-        alert("You must enter some parameter for filter");
+        this.poruka = "You must enter some parameter for filter";
         return;
       }
 
@@ -310,24 +320,27 @@ export default {
         DermatologistDataService.filterDermatologistPharmacy(this.id, this.dermaSearch, this.filterIme, this.filterPrez, this.filterBroj, 
           this.filterAdrD, this.filterAdrG, this.filterAdrU, this.filterAdrB,)
           .then(response => {
-            this.sviZaposleniDermatolozi = response.data;});
+            this.sviZaposleniDermatolozi = response.data;
+            this.poruka = "Find " + this.sviZaposleniDermatolozi.length + " results";});
       }
       else {                            // za farmaceute
         PharmacistDataService.filterPharmacistPharmacy(this.id, this.pharmaSearch, this.filterIme, this.filterPrez, this.filterBroj, 
             this.filterAdrD, this.filterAdrG, this.filterAdrU, this.filterAdrB,)
             .then(response => {
-              this.sviZaposleniFarmaceuti = response.data;});
+              this.sviZaposleniFarmaceuti = response.data;
+              this.poruka = "Find " + this.sviZaposleniFarmaceuti.length + " results";});
       }
 
     },
     pretraga() {
         if (this.dermaSearch.length == 0) {
-          alert("Input someting for searching");
+          this.poruka = "Input someting for searching";
           return;
         }
         DermatologistDataService.searchDermatologistPharmacy(this.id, this.dermaSearch)
         .then(response => {
-          this.sviZaposleniDermatolozi = response.data;});
+          this.sviZaposleniDermatolozi = response.data;
+          this.poruka = "Find " + this.sviZaposleniDermatolozi.length + " results";});
       },
       loadPharmacyData() {
           let self = this;
@@ -344,15 +357,13 @@ export default {
       },
       pretragaFarm() {
         if (this.pharmaSearch.length == 0) {
-          alert("Input someting for searching");
+          this.poruka = "Input someting for searching";
           return;
         }
         PharmacistDataService.searchPharmacistPharmacy(this.id, this.pharmaSearch)
         .then(response => {
-          this.sviZaposleniFarmaceuti = response.data;});
-      },
-      DodajFarmaceuta() {
-        window.location.href = "/addPharmacist/" + this.id;
+          this.sviZaposleniFarmaceuti = response.data;
+          this.poruka = "Find " + this.sviZaposleniFarmaceuti.length + " results";});
       },
       funkcija(l) {
         this.lek_za_prikaz = l;
@@ -368,13 +379,13 @@ export default {
       },
       proveri_broj(unos, poruka) {
         if (this.kolicina == null) {
-          alert("You must enter quantity.");
+          this.poruka = "You must enter quantity.";
           return 1;
         }
         for (var karakter of unos) {
           if (this.datum == unos && karakter == '.') continue;
           if (karakter < '0' || karakter > '9') {
-            alert(poruka);
+            this.poruka = poruka;
             return 1;
           }
         }
@@ -383,7 +394,7 @@ export default {
       proveri_kolicinu(unos) {
         var broj = parseInt(unos);
         if (broj < 0 || broj > this.max_kolicina) {
-          alert("Quantity must be in interval [1, " + this.max_kolicina + "].");
+          this.poruka = "Quantity must be in interval [1, " + this.max_kolicina + "].";
           return 1;
         }
         return 0;
@@ -402,7 +413,7 @@ export default {
 
         console.log(reserve_form);
 
-        MedicineDataService.reserveMedicine(reserve_form)
+        MedicineDataService.reserveMedicineAsPatient(reserve_form)
         .then(response => {
           console.log("reserved");
           MedicineDataService.getMedicineForPharmacy(this.id)
@@ -415,7 +426,7 @@ export default {
 
         }).catch(error => {
           // TODO: DODATI OSTALE PROVERE!!!!
-          alert("Pacijent je alergičan");
+          this.poruka = "Pacijent je alergičan";
             });
 
 
@@ -444,7 +455,10 @@ export default {
         },
 
         getMyVote(p){
-          console.log(this.userId);
+          // TODO: check if this works...
+          if (p.voted == undefined) {p.voted = null; return};
+          
+          if (p.voted) alert("ee");
           PharmacyDataService.getUserRating(this.userId, p.id).then(response => {
             if (response.data) {
               p.voted = response.data.rating
@@ -470,7 +484,7 @@ export default {
           let rating = this.rating.ratingValue;
 
           if (rating < 1 || rating > 5) {
-            alert("Wrong rate value");
+            this.poruka = "Wrong rate value";
             return
           }
 
@@ -483,7 +497,7 @@ export default {
             if (response.data) {
               this.loadPharmacyData();
               $("#rating-modal").modal('hide');
-              alert("Successfully voted!");
+              this.poruka = "Successfully voted!";
             }
           });
         },

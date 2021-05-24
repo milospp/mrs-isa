@@ -1,15 +1,29 @@
 import axios from "axios";
+import config from "@/config";
 
-
-const API_URL = "http://localhost:8080/api/medicines";
+const API_URL = config.apiUrl + "/medicines"
+// const API_URL = "api/medicines";
 
 class MedicineDataService {
   getAllMedicines() {
     return axios.get(`${API_URL}`);
   }
+  searchMedicines(searchParams) {
+    console.log(searchParams);
+
+    return axios({
+      method: 'post',
+      url: `${API_URL}/search`,
+      data: JSON.parse(searchParams)
+    })
+  }
 
   getMedicineForPharmacyAdmin(idAdminaApoteke) {
     return axios.get(API_URL + "/pharmacyAdmin/" + idAdminaApoteke);
+  }
+
+  getPricelistForPharmacyAdmin(idAdminaApoteke) {
+    return axios.get(API_URL + "/pricelist/" + idAdminaApoteke);
   }
 
   editMedicinePharmacyAdmin(idAdminaApoteke, lek) {
@@ -52,11 +66,27 @@ class MedicineDataService {
   getMedicineForPharmacy(idApoteke) {
     return axios.get(API_URL + "/pharmacy/" + idApoteke);
   }
+  getAllMedicineForPharmacy(idApoteke) {
+    return axios.get(API_URL + "/all/pharmacy/" + idApoteke);
+  }
 
-  reserveMedicine(reserveData){
+  
+  getMedicineInPharmacies(medicineId) {
+    return axios.get(API_URL + "/" + medicineId + "/pharmacies/");
+  }
+
+  reserveMedicine(reserveData, idDoktora){
     return axios({
       method: 'post',
-      url: `${API_URL}/` + reserveData.medicineId + `/pharmacy/` + reserveData.pharmacyId + `/reserve`,
+      url: `${API_URL}/` + reserveData.medicineId + `/pharmacy/` + reserveData.pharmacyId + `/reserve/` + idDoktora,
+      data: reserveData
+    });
+  }
+
+  reserveMedicineAsPatient(reserveData){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/` + reserveData.medicineId + `/pharmacy/` + reserveData.pharmacyId + `/reserve/`,
       data: reserveData
     });
   }
@@ -92,6 +122,45 @@ class MedicineDataService {
     return axios.get(`${API_URL}/` + medicineId + `/rating/user/` + patientId);
   }
 
+  getPricesOfMedicine(medicine){
+    return axios.get(`${API_URL}/prices/` + medicine.id);
+  }
+
+  getMedicinesInStock(){
+    return axios.get(`${API_URL}/medicinesInStock`);
+  }
+
+  getSuppliersMedicines(supplier_id){
+    return axios.get(`${API_URL}/suppliersMedicines/`+supplier_id);
+  }
+
+  updateSuppliersMedicine(medicine){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/updateSuppliersMedicine`,
+      data: medicine
+    });
+  }
+
+  removeMedicineOfSupplier(medicine){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/removeSuppliersMedicine`,
+      data: medicine
+    });
+  }
+
+  addMedicineToSupplier(medicine, id){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/addSuppliersMedicine/`+id,
+      data: medicine
+    });
+  }
+
+  getPatientsPurchases(id){
+    return axios.get(`${API_URL}/patientsPurchases/`+id);
+  }
 }
 
 export default new MedicineDataService();

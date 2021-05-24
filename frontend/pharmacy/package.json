@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve  --port 3000",
-    "build": "vue-cli-service build"
+    "serve": "vue-cli-service serve --port 3000",
+    "build": "vue-cli-service build",
+    "start": "node server.js"
   },
   "dependencies": {
     "@meforma/vue-toaster": "^1.2.2",
@@ -13,11 +14,15 @@
     "bootstrap": "^4.6.0",
     "choices.js": "^7.0.0",
     "core-js": "^3.6.5",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
     "jquery": "^3.6.0",
     "moment": "^2.29.1",
     "ol": "^6.5.0",
     "popper.js": "^1.16.1",
+    "request": "^2.88.2",
     "select2": "^4.1.0-rc.0",
+    "v-calendar": "^3.0.0-alpha.4",
     "v-pagination-3": "^0.1.2",
     "vue": "^3.0.0",
     "vue-axios": "^3.2.4",

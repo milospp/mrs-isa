@@ -12,8 +12,11 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public abstract class UserServiceBase implements UserService {
@@ -21,6 +24,12 @@ public abstract class UserServiceBase implements UserService {
     protected MedReservationService medReservationService;
     protected PharmacyService pharmacyService;
     protected RatingService ratingService;
+
+    @Override
+    public boolean isPatientBlocked(Patient patient) {
+        if (countActivePenalties(patient) >= 3) return true;
+        return false;
+    }
 
     @Autowired
     public void setRatingService(RatingService ratingService) {
@@ -167,5 +176,38 @@ public abstract class UserServiceBase implements UserService {
 
         User user = (User) authentication.getPrincipal();
         return user;
+    }
+
+    @Override
+    public boolean changePassword(Long id, String newPassword) {
+        User user = this.findOne(id);
+        if(user == null) return false;
+
+        user.setPassword(newPassword);
+        user.setLastPasswordResetDate(new Timestamp(System.currentTimeMillis()));
+        this.save(user);
+        return true;
+    }
+
+    @Override
+    public Penality addPenalty(Patient patient, String reason) {
+        Penality penality = new Penality();
+        penality.setDate(LocalDate.now());
+        penality.setReason(reason);
+        patient.getPenalties().add(penality);
+
+        save(patient);
+        return penality;
+    }
+
+    @Override
+    public List<Doctor> getVisitedDoctors(Patient patient) {
+        List<Doctor> visitedDoctors = new ArrayList<>();
+
+        for(Examination e : patient.getMyExaminations()){
+            visitedDoctors.add(e.getAppointment().getDoctor());
+        }
+
+        return visitedDoctors;
     }
 }

@@ -1,6 +1,5 @@
 <template>
 <div>
-  <h3 class="mt-3">History Appointments</h3>
 
 
     
@@ -99,20 +98,124 @@
 </div>
 
 
-  <div class="radio-container">
+
+
+<!-- FILTER -->
+<div class="row mb-3 mt-5">
+    <div class="radio-container col-md-6">
     <div class="form-check form-check-inline btn-info">
-      <input v-model="historyFilter" type="radio" name="inlineRadioOptions" id="examinations" value="EXAMINATION">
+      <input class="hidden-cb" v-model="historyFilter" type="radio" name="inlineRadioOptions" id="examinations" value="EXAMINATION">
       <label class="form-check-label" for="examinations">Examinations</label>
     </div>
     <div class="form-check form-check-inline btn-info">
-      <input v-model="historyFilter" type="radio" name="inlineRadioOptions" id="counseling" value="COUNSELING">
+      <input class="hidden-cb" v-model="historyFilter" type="radio" name="inlineRadioOptions" id="counseling" value="COUNSELING">
       <label class="form-check-label" for="counseling">Counseling</label>
     </div>
     <div class="form-check form-check-inline btn-info">
-      <input v-model="historyFilter" type="radio" name="inlineRadioOptions" id="all" value="all" checked>
+      <input class="hidden-cb" v-model="historyFilter" type="radio" name="inlineRadioOptions" id="all" value="all" checked>
       <label class="form-check-label" for="all">All</label>
     </div>
   </div>
+			<div class="col-md-6">
+				<a class="btn btn-primary float-right" data-toggle="collapse" href="#searchCollapse" role="button" aria-expanded="false" aria-controls="searchCollapse">
+					Filter
+				</a>
+			</div>
+	</div>
+  <div class="searchForm collapse mb-2 bg-light" id="searchCollapse">
+    <form v-on:submit.prevent="searchPastAppointments" class="p-3">
+          <h4>Filter</h4>
+
+        <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="inputDoctor">Doctor Name</label>
+              <input type="text" class="form-control" id="inputDoctor" v-model="searchParams.doctorName">
+            </div>
+            <div class="form-group col-md-4">
+              <label for="inputPharmacy">Pharmacy Name</label>
+              <input type="text" class="form-control" id="inputPharmacy" v-model="searchParams.pharmacyName">
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="inputPerscription">Status</label>
+              <select class="form-control" id="inputPerscription" v-model="searchParams.status">
+                <option value="ALL">All</option>
+                <option value="HELD">Held</option>
+                <option value="NOT_HELD">Not Held</option>
+                <option value="CANCELED">Canceled</option>
+              </select>          
+            </div>
+
+            <div class="form-group col-md-6">
+              <label for="inputDuration">Start Time</label>
+
+              <div class="input-group">
+
+                  <input type="datetime-local" class="form-control" id="inputShape" min="0" :max="Math.min(9999,searchParams.endTime)" v-model="searchParams.startTime">
+
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroupPrepend2">-</span>
+                  </div>
+                  <input type="datetime-local" class="form-control" id="inputShape" :min="Math.max(0,searchParams.startTime)" max="999" v-model="searchParams.endTime">
+              </div>
+            </div>
+
+
+
+            <div class="form-group col-md-2">
+              <label for="inputDuration">Duration</label>
+
+              <div class="input-group">
+
+                  <input type="number" class="form-control" id="inputDurationMin" min="0" :max="Math.min(9999,searchParams.maxDuration)" v-model="searchParams.minDuration">
+
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputDuration">-</span>
+                  </div>
+                  <input type="number" class="form-control" id="inputDurationMax" :min="Math.max(0,searchParams.minDuration)" max="9999" v-model="searchParams.maxDuration">
+              </div>
+            </div>
+
+            <div class="form-group col-md-2">
+              <label for="inputPrice">Price</label>
+
+              <div class="input-group">
+
+                  <input type="number" class="form-control" id="inputPriceMin" min="0" :max="searchParams.maxPrice" v-model="searchParams.minPrice">
+
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputPrice">-</span>
+                  </div>
+                  <input type="number" class="form-control" id="inputPriceMax" :min="searchParams.minPrice" v-model="searchParams.maxPrice">
+              </div>
+            </div>
+
+
+            <div class="form-group col-md-2">
+              <label for="sortSelect">Sort</label>
+              <select class="form-control" id="sortSelect" v-model="searchParams.sort">
+                <option value="DATE_ASC">By Date Asc</option>
+                <option value="DATE_DES" selected>By Date Des</option>
+                <option value="DOCTOR_ASC">By Doctor Asc</option>
+                <option value="DOCTOR_DES">By Doctor Des</option>
+                <option value="PHARMACY_ASC">By Pharmacy Asc</option>
+                <option value="PHARMACY_DES">By Pharmacy Des</option>
+                <option value="STATUS_ASC">By Status Asc</option>
+                <option value="STATUS_DES">By Status Des</option>
+                <option value="DURATION_ASC">By Duration Asc</option>
+                <option value="DURATION_DES">By Duration Des</option>
+
+                <option value="PRICE_ASC">By Price Asc</option>
+                <option value="PRICE_DES">By Price Des</option>
+              </select>          
+            </div>
+
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button> 
+    </form>
+  </div>
+<!-- END OF FILTER -->
+
   <table class="table table-striped">
     <thead>
       <tr>
@@ -146,10 +249,10 @@
 </div>
 </template>
 <style>
-  [type="checkbox"]:checked, 
-  [type="checkbox"]:not(:checked), 
-  [type="radio"]:checked, 
-  [type="radio"]:not(:checked) {
+  .hidden-cb [type="checkbox"]:checked, 
+  .hidden-cb [type="checkbox"]:not(:checked), 
+  .hidden-cb [type="radio"]:checked, 
+  .hidden-cb [type="radio"]:not(:checked) {
     position: absolute;
     left: -9999px;
     width: 0;
@@ -163,7 +266,7 @@
 
   .radio-container {
     transition: 1s ease-in-out all;
-    margin: 3rem 0;
+    /* margin: 3rem 0; */
     
     font-weight: bold;
   }
@@ -216,6 +319,7 @@ export default {
       appointments: [],
       selectedAppointment: null,
       ratingValue: null,
+      searchParams: {},
 		}
 	},
   methods: {
@@ -275,7 +379,16 @@ export default {
               alert("Successfully voted!");
             }
           });
-        }
+        },
+
+        searchPastAppointments() {
+          AppointmentDataService.searchAllUserPastAppointments(this.id, JSON.stringify(this.searchParams)) // HARDCODED
+                .then(response => {
+                    this.appointments = response.data;
+                });
+        },
+
+
   },
   computed: {
     filteredHistory(){

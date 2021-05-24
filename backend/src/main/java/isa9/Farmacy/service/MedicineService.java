@@ -1,9 +1,10 @@
 package isa9.Farmacy.service;
 
-import isa9.Farmacy.model.Doctor;
-import isa9.Farmacy.model.MedReservation;
-import isa9.Farmacy.model.Medicine;
+import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
+import isa9.Farmacy.model.dto.MedicineSearchDTO;
+import isa9.Farmacy.model.dto.PharmacySearchDTO;
+import isa9.Farmacy.model.dto.PriceInPharmaciesDTO;
 
 import java.util.List;
 import java.util.Set;
@@ -15,4 +16,7 @@ public interface MedicineService extends GenericService<Medicine> {
 
     Medicine updateMedicineRating(Medicine medicine);
 
+    List<Medicine> filterMedicines(List<Medicine> medicines, MedicineSearchDTO medicineSearchDTO);
+
+    List<PriceInPharmaciesDTO> getPricesOfMedicine(Medicine medicine);
 }

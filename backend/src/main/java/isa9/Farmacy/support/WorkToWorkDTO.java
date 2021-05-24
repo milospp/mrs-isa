@@ -1,9 +1,8 @@
 package isa9.Farmacy.support;
 
-import isa9.Farmacy.model.Pharmacist;
 import isa9.Farmacy.model.Work;
-import isa9.Farmacy.model.dto.PharmacistDTO;
 import isa9.Farmacy.model.dto.WorkDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +12,15 @@ import java.util.List;
 
 @Component
 public class WorkToWorkDTO implements Converter<Work, WorkDTO> {
+
+    private final PharmacyToPharmacyDTO pharmacyToPharmacyDTO;
+    private final DoctorToDoctorDTO doctorToDoctorDTO;
+
+    @Autowired
+    public WorkToWorkDTO(PharmacyToPharmacyDTO pharmacyToPharmacyDTO, DoctorToDoctorDTO doctorToDoctorDTO) {
+        this.pharmacyToPharmacyDTO = pharmacyToPharmacyDTO;
+        this.doctorToDoctorDTO = doctorToDoctorDTO;
+    }
 
     @Override
     public WorkDTO convert(Work work) {
@@ -25,6 +33,8 @@ public class WorkToWorkDTO implements Converter<Work, WorkDTO> {
         dto.setPharmacyName(work.getPharmacy().getName());
         dto.setPharmacyAddr(work.getPharmacy().getAddress());
         dto.setPharmacyDesc(work.getPharmacy().getDescription());
+        dto.setPharmacyDTO(pharmacyToPharmacyDTO.convert(work.getPharmacy()));
+        dto.setDoctorDTO(doctorToDoctorDTO.convert(work.getDoctor()));
 
         dto.setStartHour(work.getStartHour());
         dto.setEndHour(work.getEndHour());

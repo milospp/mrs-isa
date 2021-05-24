@@ -10,19 +10,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import isa9.Farmacy.security.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.Timestamp;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping(value = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
 
@@ -33,12 +37,16 @@ public class AuthenticationController {
     private dbUserService userService;
     private final UserToUserDTO userToUserDTO;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    public AuthenticationController(TokenUtils t, AuthenticationManager aM, dbUserService us, UserToUserDTO userToUserDTO){
+    public AuthenticationController(TokenUtils t, AuthenticationManager aM, dbUserService us,
+                                    UserToUserDTO userToUserDTO, PasswordEncoder pe){
         this.tokenUtils = t;
         this.authenticationManager = aM;
         this.userService = us;
         this.userToUserDTO = userToUserDTO;
+        this.passwordEncoder = pe;
     }
 
 
@@ -107,25 +115,21 @@ public class AuthenticationController {
 
         return new ResponseEntity<>(dto,  HttpStatus.OK);
 
-
-
-
-
     }
 
-/*
-    @RequestMapping(value = "/change-password", method = RequestMethod.POST)
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> changePassword(@RequestBody PasswordChanger passwordChanger) {
-        userDetailsService.changePassword(passwordChanger.oldPassword, passwordChanger.newPassword);
-
-        Map<String, String> result = new HashMap<>();
-        result.put("result", "success");
-        return ResponseEntity.accepted().body(result);
+    @GetMapping("/getPasswordResetDate/{id}")
+    public ResponseEntity<Timestamp> getPasswordResetDate(@PathVariable Long id){
+        User user = this.userService.findOne(id);
+        return new ResponseEntity<>(user.getLastPasswordResetDate(), HttpStatus.OK);
     }
 
-    static class PasswordChanger {
-        public String oldPassword;
-        public String newPassword;
-    }*/
+    @PostMapping("/changePassword/{id}")
+    public ResponseEntity<Boolean> changePassword(@PathVariable Long id, @RequestBody String newPassword){
+
+        newPassword = newPassword.substring(0, newPassword.length() - 1);
+
+        return new ResponseEntity<>(this.userService.changePassword(id, passwordEncoder.encode(newPassword)),
+                                    HttpStatus.OK);
+    }
+
 }

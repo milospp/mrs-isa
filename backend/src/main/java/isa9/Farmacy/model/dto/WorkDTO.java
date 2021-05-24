@@ -19,11 +19,12 @@ public class WorkDTO {
     private Long id;
     private Long doctorId;
     private Long pharmacyId;
+    private PharmacyDTO pharmacyDTO;
+    private DoctorDTO doctorDTO;
     private String pharmacyName;
     private Address pharmacyAddr;
     private String pharmacyDesc;
     private LocalTime startHour;
     private LocalTime endHour;
-
 
 }

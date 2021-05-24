@@ -171,6 +171,7 @@ import isa9.Farmacy.model.*;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.impl.base.UserServiceBase;
 import isa9.Farmacy.support.PaginationSortSearchDTO;
+import isa9.Farmacy.support.PatientsPagesDTO;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 
@@ -323,6 +324,16 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
     @Override
     public long getAllMyPatientsTotalCount(PaginationSortSearchDTO pssDTO) {
         return 0;
+    }
+
+    @Override
+    public List<Patient> getPatientsByDoctorIdAndSearchAndSortByDateAsc(PaginationSortSearchDTO pssDTO) {
+        return null;
+    }
+
+    @Override
+    public PatientsPagesDTO getPatientLastAppointmentDTOsSortedSearched(PaginationSortSearchDTO pssDTO) {
+        return null;
     }
 
     @Override

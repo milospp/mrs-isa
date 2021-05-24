@@ -27,9 +27,12 @@ public class Medicine {
     @Column
     @EqualsAndHashCode.Include
     private String name;
-    @Column
-    @EqualsAndHashCode.Include
-    private String structure;
+//    @Column
+//    @EqualsAndHashCode.Include
+//    private String structure;
+    @OneToOne(cascade = CascadeType.ALL)
+    private MedSpecification specification;
+
     @Column
     @EqualsAndHashCode.Include
     private String manufacturer;
@@ -50,16 +53,18 @@ public class Medicine {
     @ManyToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
     private Set<Medicine> replacementMedication;
     @Column (nullable = false, columnDefinition="Decimal(2,1) default '0.0'")
+    @Builder.Default
     private double rating = 0.0;
 
     // TODO Medicine Stock
 
 
-    public Medicine(Long id, String code, String name, String structure, String manufacturer, String note, int points, String shape, String type, DispencingMedicine perscription, Set<Medicine> replacementMedication) {
+    public Medicine(Long id, String code, String name, MedSpecification specification, String manufacturer, String note, int points, String shape, String type, DispencingMedicine perscription, Set<Medicine> replacementMedication) {
         this.id = id;
         this.code = code;
         this.name = name;
-        this.structure = structure;
+//        this.structure = structure;
+        this.specification = specification;
         this.manufacturer = manufacturer;
         this.note = note;
         this.points = points;

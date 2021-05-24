@@ -58,11 +58,12 @@
 
     <div class="row">
       <h3>Appointments</h3>
+      <p>{{filterPharmacyId}}</p>
     </div>
     <div class="row">
       <!-- <div class="col-md-4" v-for="a in appointments"> -->
-      <div class="w-100" v-for="a in appointments">
-        <div class="appointment card mb-4">
+      <div v-if="appointments" class="w-100" v-for="a in appointments">
+        <div class="appointment card mb-4" v-if="!filterPharmacyId || a.pharmacy.id == filterPharmacyId">
           <div class="card-header">
             <h5>
               Free apointment at
@@ -118,13 +119,17 @@
                   v-bind:disabled="a.booked"
                   v-on:click="bookAppointmentModal(a)"
                 >
-                  Book a appointment
+                  Book an appointment
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <div v-else class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <h4 v-if="appointments && appointments.length == 0">No appointments available</h4>
     </div>
   </div>
 </template>
@@ -141,12 +146,12 @@ export default {
     name: 'Appointments',
     data() {
         return {
-            appointments: [],
+            appointments: null,
             selectedAppointment: null,
             // limit: 0,
         };
     },
-    props: ['limit'],
+    props: ['limit', 'filterPharmacyId'],
     computed:{
       // medicinesSlice(){
       //   return this.limit ? this.medicines.slice(0,this.limit) : this.medicines
@@ -170,9 +175,9 @@ export default {
       bookAppointment(a) {
         // TODO: Getloggedin user id
         let userId = 1;
+        a.booked = true;
 
         AppointmentDataService.bookAppointment(a.id, userId).then(response => {
-          a.booked = true;
         });
       }
     },
