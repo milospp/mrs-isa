@@ -1,5 +1,6 @@
 package isa9.Farmacy.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -22,7 +23,7 @@ public class Supplier extends User{
     @OneToMany(fetch = FetchType.EAGER)
     private List<Offer> allOffer;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<MedicineAtSupplier> medicinesInStock;
 
 

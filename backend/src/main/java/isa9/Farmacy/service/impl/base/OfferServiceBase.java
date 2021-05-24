@@ -4,6 +4,7 @@ import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.OfferSearchDTO;
 import isa9.Farmacy.service.MedQuantityService;
 import isa9.Farmacy.service.OfferService;
+import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,12 +17,18 @@ public abstract class OfferServiceBase implements OfferService {
 
     protected MedQuantityService medQuantityService;
     protected UserService userService;
+    protected PharmacyService pharmacyService;
 
     @Autowired
     public final void setMedQuantityService(MedQuantityService medQuantityService){ this.medQuantityService = medQuantityService;}
 
     @Autowired
     public final void setUserService(UserService userService){ this.userService = userService; }
+
+    @Autowired
+    public void setPharmacyService(PharmacyService pharmacyService) {
+        this.pharmacyService = pharmacyService;
+    }
 
     @Override
     public void saveNewOffer(Offer offer) {

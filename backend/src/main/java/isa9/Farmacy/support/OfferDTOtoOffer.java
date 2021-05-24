@@ -44,6 +44,16 @@ public class OfferDTOtoOffer implements Converter<OfferDTO, Offer> {
         return offer;
     }
 
+    public Offer convertOffer(OfferDTO offerDTO) {
+        Offer povratna = null;
+        for (Offer o : this.offerService.findAll())
+            if (o.getOrder().getId() == offerDTO.getOrder() && o.getPrice() == offerDTO.getPrice()) {
+                povratna = o;
+                break;
+            }
+        return povratna;
+    }
+
     public List<Offer> convert(List<OfferDTO> offerDTOS) {
         List<Offer> povratna = new ArrayList<>();
         for (OfferDTO o : offerDTOS) povratna.add(convert(o));

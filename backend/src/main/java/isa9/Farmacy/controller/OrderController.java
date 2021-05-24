@@ -30,14 +30,18 @@ public class OrderController {
     private final UserService userService;
     private final MedOrderToMedOrderDTO medOrderToMedOrderDTO;
     private final PharmacyService pharmacyService;
+    private final OfferDTOtoOffer offerDTOtoOffer;
 
     @Autowired
-    public OrderController(OrderService orderService, MedicineService medicineService, UserService userService, MedOrderToMedOrderDTO medOrderToMedOrderDTO, PharmacyService pharmacyService) {
+    public OrderController(OrderService orderService, MedicineService medicineService, UserService userService,
+                           MedOrderToMedOrderDTO medOrderToMedOrderDTO, PharmacyService pharmacyService,
+                            OfferDTOtoOffer offerDTOtoOffer) {
         this.orderService = orderService;
         this.medicineService = medicineService;
         this.userService = userService;
         this.medOrderToMedOrderDTO = medOrderToMedOrderDTO;
         this.pharmacyService = pharmacyService;
+        this.offerDTOtoOffer = offerDTOtoOffer;
     }
 
     @GetMapping("/availableOrders")
@@ -136,10 +140,11 @@ public class OrderController {
         return new ResponseEntity<>(this.medOrderToMedOrderDTO.convert(order), HttpStatus.OK);
     }
 
-//    @PostMapping("/choose")
-//    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
-//    public ResponseEntity<Integer> chooseOrder(@RequestBody OfferDTO ponuda) {
-//        int povratna = this.orderService.chooseOffer(ponuda);
-//        return new ResponseEntity<>(povratna, HttpStatus.OK);
-//    }
+    @PostMapping("/choose")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<Integer> chooseOrder(@RequestBody OfferDTO ponuda) {
+        Offer ponudica = this.offerDTOtoOffer.convertOffer(ponuda);
+        int povratna = this.orderService.chooseOffer(ponudica, ponuda.getOrder());
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
 }

@@ -47,6 +47,12 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
 
     @Override
     public MedicineOrder findOne(Long id) {
+//        MedicineOrder povratna = this.orderRepository.findById(id).orElse(null);
+//        if (povratna == null) return povratna;
+//        List<Offer> ponude = this.offerService.getOffers(povratna.getId());
+//        povratna.setAllOffer(ponude);
+//        return povratna;
+
         return this.orderRepository.findById(id).orElse(null);
     }
 
@@ -72,18 +78,17 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
         this.orderRepository.delete(zaBrisanje);
     }
 
-//    @Override
-//    public int chooseOffer(OfferDTO offerDTO) {
-//        int povratna = -1;
-//        Offer ponuda = this.offerDTOtoOffer.convert(offerDTO);
-//        MedicineOrder narudzbenica = this.orderRepository.findById(offerDTO.getOrder()).orElse(null);
-//
-//        if (ponuda.getEndDate().isBefore(LocalDateTime.now())) return povratna;
-//        povratna = 0;
-//        narudzbenica.setChosenOffer(ponuda);
-//        ponuda.setStatus(OfferStatus.ACCEPTED);
-//        for (Offer o : narudzbenica.getAllOffer()) if (o.getId() != ponuda.getId()) o.setStatus(OfferStatus.REJECTED);
-//        this.orderRepository.save(narudzbenica);
-//        return povratna;
-//    }
+    @Override
+    public int chooseOffer(Offer ponuda, Long idOrder) {
+        int povratna = -1;
+        MedicineOrder narudzbenica = this.orderRepository.findById(idOrder).orElse(null);
+
+        if (ponuda.getEndDate().isBefore(LocalDateTime.now())) return povratna;
+        povratna = 0;
+        narudzbenica.setChosenOffer(ponuda);
+        this.offerService.acceptOffer(ponuda);
+        for (Offer o : narudzbenica.getAllOffer()) if (o.getId() != ponuda.getId()) this.offerService.rejectOffer(o);
+        this.orderRepository.save(narudzbenica);
+        return povratna;
+    }
 }
