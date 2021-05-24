@@ -10,6 +10,7 @@ public class PharmacyConstants {
         pharmacy.setName("Name1");
         pharmacy.setAddress(new Address("Street", "Number", "City", "State"));
         pharmacy.setDescription("Desc");
+        pharmacy.setPricePerHour(500);
 
         return pharmacy;
     }

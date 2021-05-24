@@ -197,9 +197,9 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     @Override
     public Appointment bookAnAppointment(Long patientId, Long appointmentId) {
         User user = userService.findOne(patientId);
-        if (!user.getRole().getName().equals("PATIENT")) return null;
+        if (user == null || !user.getRole().getName().equals("PATIENT")) return null;
         Patient patient = (Patient) user;
-        if (!isPatientValid(patient)) return null;
+        if (userService.isPatientBlocked(patient)) return null;
 
         Appointment appointment = findOne(appointmentId);
 
@@ -213,7 +213,8 @@ public abstract class AppointmentServiceBase implements AppointmentService {
                 .therapy(new HashSet<>())
                 .build();
         appointment.setExamination(examination);
-        appointment = save(appointment);
+
+        save(appointment);
         mailService.sendAppointmentInfo(appointment);
 
         return appointment;
@@ -267,7 +268,8 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     @Override
     public Appointment bookConsultingAppointment(ConsultingAppointmentReqDTO appointmentReqDTO, Patient patient) {
 //      TODO: Add error message...
-        if (userService.countActivePenalties(patient) > 3) return null;
+        if (userService.isPatientBlocked(patient)) return null;
+        if (appointmentReqDTO.getDurationInMins() <= 0) return null;
         if (appointmentReqDTO.getStartTime().isBefore(LocalDateTime.now())) return null;
         if (this.isPatientOccupied(
                 appointmentReqDTO.getStartTime(),
@@ -303,7 +305,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
                 .appointment(appointment).build();
         appointment.setExamination(examination);
 
-        appointment = save(appointment);
+        save(appointment);
         mailService.sendAppointmentInfo(appointment);
 
         return appointment;

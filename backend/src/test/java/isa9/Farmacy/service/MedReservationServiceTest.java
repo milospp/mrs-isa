@@ -55,12 +55,8 @@ public class MedReservationServiceTest {
 
         List<MedReservation> medReservationList = medReservationService.findAll();
 
-        // 3. Verifikacija: asertacije i/ili verifikacija interakcije sa mock objektima
         assertThat(medReservationList).hasSize(1);
 
-		/*
-		Možemo verifikovati ponašanje mokovanih objekata pozivanjem verify* metoda.
-		 */
         verify(medReservationRepositoryMock, times(1)).findAll();
         verifyNoMoreInteractions(medReservationRepositoryMock);
 
