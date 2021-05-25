@@ -1,5 +1,9 @@
-# Pharmacy Project
 ![enter image description here](https://travis-ci.com/milospp/mrs-isa.svg?token=QFrKDHpi7sZxEk17Xky9&branch=main)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=milospp_mrs-isa&metric=alert_status)](https://sonarcloud.io/dashboard?id=milospp_mrs-isa)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=milospp_mrs-isa&metric=bugs)](https://sonarcloud.io/dashboard?id=milospp_mrs-isa)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=milospp_mrs-isa&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=milospp_mrs-isa)
+
+# Pharmacy Project
 MRS-ISA Project
 
 
