@@ -125,13 +125,13 @@ class DermatologistDataService {
   }
 
   getDermatologist(id){
-    return axios.get(`${API_URL}/api/users/` + id);
+    return axios.get(`${API_URL}/users/` + id);
   }
 
   SendDermatologist(newDermatologist) {
     return axios({
         method: 'post',
-        url: `${API_URL}/api/users/register/dermatologist`,
+        url: `${API_URL}/users/register/dermatologist`,
         data: newDermatologist
     }).then(response => {
 		if (response.data) {
