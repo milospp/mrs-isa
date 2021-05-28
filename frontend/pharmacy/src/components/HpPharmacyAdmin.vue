@@ -61,7 +61,7 @@
                       <td>{{l.inStock}}</td>
                       <!-- popust/akcija -->
                       <td v-if="l.priceType=='NORMAL'"></td>
-                      <td v-else-if="l.priceType=='ACTION'">{{l.currentPrice}} ({{l.currentPrice*100/l.oldPrice}}%)</td>
+                      <td v-else-if="l.priceType=='ACTION'">{{l.currentPrice}} ({{100-l.currentPrice*100/l.oldPrice}}%)</td>
                       <td v-else>{{l.currentPrice}}</td>
                       <!-- Nema promene dok je akcija/promocija i nema brisanja -->
                       <td v-if="l.priceType=='NORMAL'"><form v-on:click.prevent="funkcija(l, false)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">View</button></form></td>
@@ -244,7 +244,7 @@
         <div class="modal-body" align="left">Points: {{this.originalLeka?.medicine.points}}</div>
         <div class="modal-body" align="left">Price: {{this.originalLeka?.currentPrice}}</div>
         <div class="modal-body" align="left">Action/promotion: 
-          <label v-if="originalLeka?.priceType=='ACTION'">Action {{originalLeka?.currentPrice*100/originalLeka?.oldPrice}}% (original price = {{originalLeka?.oldPrice}})</label>
+          <label v-if="originalLeka?.priceType=='ACTION'">Action {{100-originalLeka?.currentPrice*100/originalLeka?.oldPrice}}% (original price = {{originalLeka?.oldPrice}})</label>
           <label v-else>Promotion (original price = {{originalLeka?.oldPrice}})</label></div>
         <div class="modal-body" align="left">Quantity: {{this.originalLeka?.inStock}}</div>
         <div class="modal-body" align="left">With receipt (yes/no): {{this.originalLeka?.medicine.perscription}}</div>

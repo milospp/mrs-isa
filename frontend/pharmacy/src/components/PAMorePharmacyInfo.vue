@@ -7,8 +7,10 @@
    Price per hour: {{this.pharmacy?.pricePerHour}}</h5>
  <table>
         <tr>
-             <td align="left"> <form v-on:submit.prevent="">
+             <td v-if="izmene == true" align="left"> <form>
                     <input type="submit" class="btn btn-primary" v-on:click.prevent="kreirajCenovnik()" value="Make pricelist"></form> </td>
+             <td v-else align="left">
+                    <button type="button" class="btn btn-primary" v-on:click.prevent="inicijalizujPoruku('You can not make pricelist because you have some action or promotion')" data-toggle="modal" data-target="#obavestenje">Make pricelist</button> </td>
             <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
            <td align="left"> <form v-on:submit.prevent="">
                     <input type="submit" class="btn btn-primary" value="Make action and promotion" data-toggle="modal" data-target="#napraviAkciju"></form> </td>
@@ -66,7 +68,9 @@
                     <td>{{l.medicine.code}}</td>
                     <td>{{l.medicine.name}}</td>
                     <td>{{l.medicine.type}}</td>
-                    <td><input type="number" min="1" v-on:change="promenaCene(l.currentPrice, l.code)" v-model="l.currentPrice"/></td>
+                    <td v-if="izmene == true"><input type="number" min="1" v-on:change="promenaCene(l.currentPrice, l.code)" v-model="l.currentPrice"/></td>
+                    <td v-else-if="izmene == false && l.priceType != 'NORMAL'">{{l.oldPrice}}</td>
+                    <td v-else>{{l.currentPrice}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -161,7 +165,7 @@
         <div class="modal-body" align="left">Description: <input type="text" v-model="pharmacyDesc" placeholder=pharmacyDesc/></div>
         <div class="modal-body" align="left">Consulting Price: <input type="text" v-model="pharmacyConsulting" placeholder=pharmacyDesc/></div>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#odavestenje" data-dismiss="modal" v-on:click.prevent="proveraApoteka()">Save changes</button>
+          <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#obavestenje" data-dismiss="modal" v-on:click.prevent="proveraApoteka()">Save changes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -247,7 +251,7 @@ export default {
             poruka: "Wait... Your require is in processing", 
             filterOrder: 0, narudzbenica: null, sveNarudzbenice: [], narudzbeniceZaIspis: [],
             upitiZaLek: [], postojiPromena:false, cenovnik: null, 
-            izabraniLek: null, novaCena: 0, procenti: 0, krajAkcije: null, 
+            izabraniLek: null, novaCena: 0, procenti: 0, krajAkcije: null, izmene: true,
         };
       
     },
@@ -284,6 +288,7 @@ export default {
         MedicineDataService.getPricelistForPharmacyAdmin(this.id)
         .then(response => {
           this.cenovnik = response.data;
+          for (var prom of this.cenovnik.medicines) if (prom.priceType != "NORMAL") { this.izmene = false; break; }
         });
       },
 
@@ -403,8 +408,14 @@ export default {
         if (this.novaCena < 0) { this.poruka = "Price for promotion must be positive number."; return; }
         if (this.procenti == 0 && this.novaCena == 0) { this.poruka = "You must enter action discount or price for promotion."; return; }
         if (this.krajAkcije == null) { this.poruka = "You must choose end date."; return; }
-
-        this.poruka = "Pozvan make.";
+        MedicineDataService.makeActionPromotion(this.id, this.izabraniLek, this.procenti, this.novaCena, this.krajAkcije)
+          .then(response => {
+            if (response.data == -1) { this.poruka = "You don't have right to do this operation."; return; }
+            if (response.data == 0) { this.poruka = "Madicine is not correct."; return; }
+            if (response.data == 1) { this.poruka = "Madicine is already on some action or promotion."; return; }
+            this.poruka = "You successfully made action or promotion.";
+            this.osveziCenovnik();
+          });
       },
     }
 }
