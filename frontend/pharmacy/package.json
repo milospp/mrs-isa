@@ -29,6 +29,7 @@
     "vue-choice": "^0.2.3",
     "vue-multiselect": "^2.1.6",
     "vue-router": "^4.0.0-0",
+    "vue-simple-calendar": "^6.0.1",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
