@@ -1,7 +1,7 @@
 <template>
   <NavBar/>
   <div class="container">
-    <h1>Register</h1>
+    <h1 class="title" align="center">Register</h1>
     <p>
     <AddPatientForm/>
     </p>
@@ -20,3 +20,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.title {
+    margin: 20px;
+}
+</style>

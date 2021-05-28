@@ -54,7 +54,7 @@
     </div>
 
 
-  <div class="row">
+  <div class="row pharmacies-list">
 
     <div class="col-md-3 py-2 card-group" v-for="p in pharmaciesSlice">
       <div class="card">
@@ -175,3 +175,9 @@ export default {
 }
 
 </script>
+
+<style scoped>
+  .pharmacies-list .card:hover {
+    background: #fafafa;
+  }
+</style>

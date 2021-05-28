@@ -123,7 +123,7 @@
   <reserve-med-modal v-if="userId && userId.role == 'PATIENT'" modalId="reserve-med-modal" v-model="selectedMed" :patientId="userId.id" @rated="reserveMedicine"></reserve-med-modal>
 
 
-  <div class="row">
+  <div class="row medicines-list">
 
     <div class="col-6 col-lg-2 col-md-3 py-2 card-group" v-for="m in medicinesSlice">
       <div class="card">
@@ -178,6 +178,13 @@
     
   </div>
 </template>
+
+
+<style>
+.medicines-list .card:hover {
+  background: #fafafa;
+}
+</style>
 
 <script>
 import MedicineDataService from '../service/MedicineDataService.js';
