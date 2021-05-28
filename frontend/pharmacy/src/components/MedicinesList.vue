@@ -102,7 +102,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="Potvrdica">Specification of {{this.viewedMedicine.name}}</h5>
+                    <h5 class="modal-title" id="Potvrdica">Specification of {{this.viewedMedicine.name}} <span class="badge badge badge-dark">{{viewedMedicine.code}}</span></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -113,6 +113,15 @@
                             <tr><td>Structure: </td><td>{{this.viewedMedicine.specification.structure}}</td></tr>
                             <tr><td>Daily intake: </td><td>{{this.viewedMedicine.specification.dailyIntake}}</td></tr>
                             <tr><td>Side effects: </td><td>{{this.viewedMedicine.specification.sideEffects}}</td></tr>
+                            <tr><td>Manufacturer: </td><td>{{this.viewedMedicine.manufacturer}}</td></tr>
+                            <tr><td>Note: </td><td>{{this.viewedMedicine.note}}</td></tr>
+                            <tr><td>Type: </td><td>{{this.viewedMedicine.type}}</td></tr>
+                            <tr><td>Perscription: </td><td>{{this.viewedMedicine.perscription}}</td></tr>
+                            <tr><td>Similar med: </td><td>
+                              <template v-for="replace in viewedMedicine.replacementMedicationIds">
+                                <span class="badge badge-pill badge-dark mr-1">{{replace}}</span>
+                              </template></td></tr>
+                            <tr v-if="viewedMedicine.rating > 0"><td>Rating: </td><td>{{viewedMedicine.rating}}</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -125,7 +134,7 @@
 
   <div class="row medicines-list">
 
-    <div class="col-6 col-lg-2 col-md-3 py-2 card-group" v-for="m in medicinesSlice">
+    <div class="col-6 col-xl-2 col-lg-3 py-2 card-group" v-for="m in medicinesSlice">
       <div class="card">
         <a href="#" v-on:click="fetchMedicine(m)" data-toggle="modal" data-target="#specsView">
           <img class="card-img-top pl-4 pr-4 pt-2" src="@/assets/medicinelogo.png" alt="Card image cap">
@@ -144,7 +153,7 @@
 
         <div class="card-footer">
             <button type="button" class="btn btn-block btn-outline-primary" v-on:click="fetchMedicine(m)" data-toggle="modal" data-target="#specsView">View specification</button>
-            <button v-if="userId && userId.role == 'PATIENT'" type="button" class="btn btn-block btn-outline-primary" v-on:click="openReservationModal(m)" data-toggle="modal" data-target="#reserve-med-modal">Reserve</button>
+            <button v-if="userId && userId.role == 'PATIENT' && m.perscription == 'WITHOUT_RECEIPT'" type="button" class="btn btn-block btn-outline-primary" v-on:click="openReservationModal(m)" data-toggle="modal" data-target="#reserve-med-modal">Reserve</button>
           
         </div>
       </div>

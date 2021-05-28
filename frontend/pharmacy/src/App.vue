@@ -73,8 +73,9 @@ export default {
             return config;        
           }, (error) => {
           if (error.response.status == 401) {
-             alert("You will be redirected to hope page (disabled ATM)");
-            //self.$router.push("/login");
+            //  alert("You will be redirected to hope page (disabled ATM)");
+            AuthService.logout();
+            self.$router.push("/login");
             console.log("send me to login APP");
           }
           return Promise.reject(error);
