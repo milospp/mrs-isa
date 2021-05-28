@@ -2,7 +2,7 @@
 
 		<div class="row mb-3">
 			<div class="col-md-12">
-				<a class="btn btn-primary float-right" data-toggle="collapse" href="#searchCollapse" role="button" aria-expanded="false" aria-controls="searchCollapse">
+				<a class="btn btn-outline-secondary" data-toggle="collapse" href="#searchCollapse" role="button" aria-expanded="false" aria-controls="searchCollapse">
 					Filter
 				</a>
 			</div>
@@ -55,9 +55,32 @@
 
   <div class="row">
 
+    <div class="col-md-3 py-2 card-group" v-for="p in pharmaciesSlice">
+      <div class="card">
+        <router-link :to="{ name: 'PharmacyPage', params: { id: p.id  }}">
+          <img class="card-img-top p-1 pl-5 pr-5" src="@/assets/pharmacylogo.png" alt="Card image cap">
+        </router-link>
+        <div class="card-body">
+          <router-link :to="{ name: 'PharmacyPage', params: { id: p.id  }}">
+            <h5 class="card-title">{{p.name}}</h5>
+          </router-link>
+          <p class="card-text">{{p.description}}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">{{UtilService.AddressToString(p.address)}}</li>
+        
+        </ul>
+
+        <!-- <div class="card-footer">
+          <a href="#" class="card-link">Card link</a>
+          <a href="#" class="card-link">Another link</a>
+        </div> -->
+      </div>
+    </div>
+
 
       
-    <div class="col-md-3 py-2" v-for="p in pharmaciesSlice">
+    <!-- <div class="col-md-3 py-2" v-for="p in pharmaciesSlice">
       <div class="card h-100 box-shadow">
         <div class="card-header">
             <h4 class="my-0 font-weight-normal">{{p.name}}</h4>
@@ -78,7 +101,7 @@
           </div>
         </div>
       </div>
-    </div>      
+    </div>       -->
 
   </div>
 

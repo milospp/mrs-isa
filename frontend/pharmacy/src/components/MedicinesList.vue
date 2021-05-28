@@ -2,7 +2,7 @@
 
 	<div class="row mb-3">
 			<div class="col-md-12">
-				<a class="btn btn-primary float-right" data-toggle="collapse" href="#searchMedCollapse" role="button" aria-expanded="false" aria-controls="searchMedCollapse">
+				<a class="btn btn-outline-secondary" data-toggle="collapse" href="#searchMedCollapse" role="button" aria-expanded="false" aria-controls="searchMedCollapse">
 					Filter
 				</a>
 			</div>
@@ -123,6 +123,31 @@
 
   <div class="row">
 
+    <div class="col-6 col-lg-2 col-md-3 py-2 card-group" v-for="m in medicinesSlice">
+      <div class="card">
+        <a href="#" v-on:click="fetchMedicine(m)" data-toggle="modal" data-target="#specsView">
+          <img class="card-img-top pl-4 pr-4 pt-2" src="@/assets/medicinelogo.png" alt="Card image cap">
+        </a>
+        <div class="card-body">
+          <h5 class="card-title">{{m.name}}</h5>
+          <p class="card-text">{{m.type}}</p>
+        </div>
+        <!-- <ul class="list-group list-group-flush">
+          <li class="list-group-item">{{m.manufacturer}}</li>
+        
+        </ul> -->
+
+        <div class="card-footer">
+            <button type="button" class="btn btn-block btn-outline-primary" v-on:click="fetchMedicine(m)" data-toggle="modal" data-target="#specsView">View specification</button>
+            <button v-if="userId && userId.role == 'PATIENT'" type="button" class="btn btn-block btn-outline-primary" v-on:click="openReservationModal(m)" data-toggle="modal" data-target="#reserve-med-modal">Reserve</button>
+          
+        </div>
+      </div>
+    </div>
+
+
+
+<!-- 
     <div class="col-md-4" v-for="m in medicinesSlice">
       <div class="card mb-4 box-shadow">
         <div class="card-header">
@@ -132,19 +157,20 @@
           <h6>{{m.type}}</h6>
           <h6>{{m.shape}}</h6>
           <h6>{{m.manufacturer}}</h6>
-          <!-- <p class="card-text">
+          <p class="card-text">
             {{m.note}}
-          </p> -->
+          </p> 
           
           <div class="d-flex justify-content-between align-items-center">
-            <!-- <router-link class="btn btn-block btn-primary" :to="{ name: 'MedicinePage', params: { id: m.id  }}">View</router-link> -->
             <button type="button" class="btn btn-primary" v-on:click="fetchMedicine(m)" data-toggle="modal" data-target="#specsView">View specification</button>
             <button v-if="userId && userId.role == 'PATIENT'" type="button" class="btn btn-primary" v-on:click="openReservationModal(m)" data-toggle="modal" data-target="#reserve-med-modal">Reserve</button>
           </div>
           
         </div>
       </div>
-    </div>
+    </div> -->
+
+    
   </div>
 </template>
 
