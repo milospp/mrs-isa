@@ -11,7 +11,7 @@
                     <input type="submit" class="btn btn-primary" v-on:click.prevent="kreirajCenovnik()" value="Make pricelist"></form> </td>
             <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
            <td align="left"> <form v-on:submit.prevent="">
-                    <input type="submit" class="btn btn-primary" value="Make action and promotion"></form> </td>
+                    <input type="submit" class="btn btn-primary" value="Make action and promotion" data-toggle="modal" data-target="#napraviAkciju"></form> </td>
             <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
             <td align="left"> <form v-on:submit.prevent="">
                     <input type="submit" class="btn btn-primary" value="Get report"></form> </td>
@@ -186,7 +186,33 @@
     </div>
   </div>
 
-    <!-- obavestenje -->
+    <!-- Promocija/akcija -->
+  <div class="modal fade" id="napraviAkciju" tabindex="-1" role="dialog" aria-labelledby="poruka" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="poruka">Make action or promotion</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" align="left">Choose medicine: 
+          <select id="izabrani" style="width: 50%;" v-model="izabraniLek" required="required">
+              <option v-for="m in this.cenovnik?.medicines" v-bind:value=m>{{m.medicine?.code}}&emsp;{{m.medicine?.name}}&emsp;{{m?.currentPrice}}USD</option>
+          </select></div>
+          <div class="modal-body" align="left">Old price: {{izabraniLek?.currentPrice}}</div>
+          <div class="modal-body" align="left">New price: <input type="number" min="1" v-on:change="promenaProcenta()" v-model="novaCena"/></div>
+          <div class="modal-body" align="left">Action discount: <input type="number" v-on:change="promenaNoveCene()" min="0" max="100" v-model="procenti"/> %</div>
+          <div class="modal-body" align="left">End date of action/promotion: <input type="date" v-model="krajAkcije"/></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="napraviAkciju()" data-dismiss="modal">Make</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+      <!-- obavestenja -->
   <div class="modal fade" id="obavestenje" tabindex="-1" role="dialog" aria-labelledby="poruka" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -220,7 +246,8 @@ export default {
             pharmacyName: null, pharmacyDesc: null, pharmacyConsulting: null,
             poruka: "Wait... Your require is in processing", 
             filterOrder: 0, narudzbenica: null, sveNarudzbenice: [], narudzbeniceZaIspis: [],
-            upitiZaLek: [], postojiPromena:false, cenovnik: null,
+            upitiZaLek: [], postojiPromena:false, cenovnik: null, 
+            izabraniLek: null, novaCena: 0, procenti: 0, krajAkcije: null, 
         };
       
     },
@@ -367,6 +394,17 @@ export default {
       kreirajCenovnik() {
          window.location.href = "/addPricelist";
          this.osveziCenovnik();
+      },
+      promenaProcenta() { this.procenti = 0; },
+      promenaNoveCene() { this.novaCena = this.izabraniLek?.currentPrice - this.izabraniLek?.currentPrice * this.procenti / 100; },
+      napraviAkciju()  {
+        if (this.izabraniLek == null) { this.poruka = "You must select some medicine."; return; }
+        if (this.procenti < 0) { this.poruka = "Action discount must be positive number."; return; }
+        if (this.novaCena < 0) { this.poruka = "Price for promotion must be positive number."; return; }
+        if (this.procenti == 0 && this.novaCena == 0) { this.poruka = "You must enter action discount or price for promotion."; return; }
+        if (this.krajAkcije == null) { this.poruka = "You must choose end date."; return; }
+
+        this.poruka = "Pozvan make.";
       },
     }
 }
