@@ -48,6 +48,7 @@
 
           </div>
           <button type="submit" class="btn btn-primary">Search</button> 
+          <a v-on:click="resetFormPharmacies" class="ml-3 btn btn-warning">Reset</a> 
       </form>
 
     </div>
@@ -62,8 +63,11 @@
         </router-link>
         <div class="card-body">
           <router-link :to="{ name: 'PharmacyPage', params: { id: p.id  }}">
-            <h5 class="card-title">{{p.name}}</h5>
+            <h5 class="card-title mb-0">{{p.name}}</h5>
           </router-link>
+          <div class="rating mb-3">
+            <span v-for="i in p.rating">★</span>
+          </div>
           <p class="card-text">{{p.description}}</p>
         </div>
         <ul class="list-group list-group-flush">
@@ -72,8 +76,7 @@
         </ul>
 
         <!-- <div class="card-footer">
-          <a href="#" class="card-link">Card link</a>
-          <a href="#" class="card-link">Another link</a>
+          <five-stars v-model="p.rating" v-bind:inputId="modalId" disableEdit/>
         </div> -->
       </div>
     </div>
@@ -109,12 +112,15 @@
 
 <script>
 import PharmacyDataService from '../service/PharmacyDataService.js';
+import FiveStars from "@/components/FiveStars.vue";
 import UtilService from '../service/UtilService.js';
 
 export default {
     setup() {
       return { UtilService }
     },
+
+    components: { FiveStars },
     name: 'PharmaciesList',
     data() {
         return {
@@ -123,6 +129,7 @@ export default {
             searchParams: {
               minRating: 0,
               maxRating: 5,
+              sort: 'NAME_ASC'
             },
         };
     },
@@ -147,6 +154,16 @@ export default {
                     this.pharmacies = response.data;
                     console.log(response.data);
                 });
+        },
+
+        resetFormPharmacies(){
+          this.searchParams = {
+              minRating: 0,
+              maxRating: 5,
+              name: undefined,
+              addressString: undefined,
+              sort: 'NAME_ASC'
+          };
         },
 
     },

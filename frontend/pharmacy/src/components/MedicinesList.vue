@@ -93,6 +93,8 @@
 
         </div>
         <button type="submit" class="btn btn-primary">Search</button> 
+        <a v-on:click="resetFormMedicines" class="ml-3 btn btn-warning">Reset</a> 
+
     </form>
   </div>
   
@@ -129,7 +131,10 @@
           <img class="card-img-top pl-4 pr-4 pt-2" src="@/assets/medicinelogo.png" alt="Card image cap">
         </a>
         <div class="card-body">
-          <h5 class="card-title">{{m.name}}</h5>
+          <h5 class="card-title mb-0">{{m.name}}</h5>
+          <div class="rating mb-3">
+            <span v-for="i in m.rating">★</span>
+          </div>
           <p class="card-text">{{m.type}}</p>
         </div>
         <!-- <ul class="list-group list-group-flush">
@@ -229,7 +234,17 @@ export default {
 
         openReservationModal(med){
           this.selectedMed = med;
-        }
+        },
+
+        resetFormMedicines() {
+          this.searchParams = {
+              minPoints: 0,
+              maxPoints: 999,
+              minRating: 0,
+              maxRating: 5,
+              userId: null,
+          }
+        },
 
     },
     mounted() {
