@@ -13,5 +13,5 @@ import { SetupCalendar, Calendar, DatePicker } from 'v-calendar';
 window.$ = window.jQuery = require('jquery');
 
 const app = createApp(App);
-app.use(store).use(router).use(SetupCalendar, {}).component('Calendar', Calendar).mount('#app');
+app.use(store).use(router).use(SetupCalendar, {}).component('Calendar', Calendar).component('DatePicker', DatePicker).mount('#app');
 app.config.globalProperties.$axios = axios;

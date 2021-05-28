@@ -1,9 +1,7 @@
 package isa9.Farmacy.support;
 
-import isa9.Farmacy.model.Doctor;
 import isa9.Farmacy.model.User;
 import isa9.Farmacy.model.dto.DoctorDTO;
-import isa9.Farmacy.model.dto.RolesDTO;
 import isa9.Farmacy.model.dto.UserDTO;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
