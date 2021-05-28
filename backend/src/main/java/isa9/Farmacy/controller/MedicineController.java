@@ -178,6 +178,7 @@ public class MedicineController {
                 med.getMedicine().setType(lek.getMedicine().getType());
                 med.getMedicine().setPoints(lek.getMedicine().getPoints());
                 MedPrice novacena = new MedPrice();
+                novacena.setPriceType(PriceType.NORMAL);
                 novacena.setPrice(lek.getCurrentPrice());
                 novacena.setStartDate(LocalDateTime.now());
                 novacena.setMedicineInPharmacy(med);
@@ -257,6 +258,7 @@ public class MedicineController {
         noviUApoteci.setPharmacy(apoteka);
         //cena leka
         MedPrice novacena = new MedPrice();
+        novacena.setPriceType(PriceType.NORMAL);
         novacena.setPrice(lek.getCurrentPrice());
         novacena.setStartDate(LocalDateTime.now());
         novacena.setMedicineInPharmacy(noviUApoteci);

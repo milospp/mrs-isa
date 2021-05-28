@@ -47,6 +47,7 @@
                   <th>Type</th>
                   <th>Price</th>
                   <th>Quantity</th>
+                  <th>Action/promotion</th>
                   <th></th>
                 </thead>
                 <tbody>
@@ -57,8 +58,16 @@
                       <td>{{l.medicine.note}}</td>
                       <td>{{l.medicine.points}}</td>
                       <td>{{l.medicine.type}}</td>
-                      <th>{{l.currentPrice}}</th>
+                       <!-- prava cena -->
+                      <td v-if="l.priceType=='NORMAL'">{{l.currentPrice}}</td>
+                      <td v-else>{{l.oldPrice}}</td>
+
                       <td>{{l.inStock}}</td>
+                      <!-- popust/akcija -->
+                      <td v-if="l.priceType=='NORMAL'"></td>
+                      <td v-else-if="l.priceType=='ACTION'">{{l.currentPrice}} ({{l.currentPrice*100/l.oldPrice}}%)</td>
+                      <td v-else>{{l.currentPrice}}</td>
+
                       <td><form v-on:click.prevent="funkcija(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">Reserve</button></form></td>
                   </tr>
                 </tbody>
@@ -170,12 +179,16 @@
           </button>
         </div>
         <div class="modal-body" align="left">Name: {{lek_za_prikaz?.medicine.name}}</div>
-        <div class="modal-body" align="left">Structure: {{lek_za_prikaz?.medicine.structure}}</div>
+        <div class="modal-body" align="left">Structure: {{lek_za_prikaz?.medicine.specification.structure}}</div>
         <div class="modal-body" align="left">Manufacturer: {{lek_za_prikaz?.medicine.manufacturer}}</div>
         <div class="modal-body" align="left">Note: {{lek_za_prikaz?.medicine.note}}</div>
         <div class="modal-body" align="left">Points: {{lek_za_prikaz?.medicine.points}}</div>
         <div class="modal-body" align="left">Type: {{lek_za_prikaz?.medicine.type}}</div>
         <div class="modal-body" align="left">Price: {{lek_za_prikaz?.currentPrice}}</div>
+        <div class="modal-body" align="left">Action/promotion:
+          <label v-if="lek_za_prikaz?.priceType=='NORMAL'">No</label>
+          <label v-else-if="lek_za_prikaz?.priceType=='ACTION'">Action {{lek_za_prikaz?.currentPrice*100/lek_za_prikaz?.oldPrice}}% (original price = {{lek_za_prikaz?.oldPrice}})</label>
+          <label v-else>Promotion (original price = {{lek_za_prikaz?.oldPrice}})</label></div>
         <div class="modal-body" align="left">Quantity: <input type="text" v-model="test"/> (max = {{lek_za_prikaz?.inStock}})</div>
         <div class="modal-body" align="left">Expiry date: <input type="date" v-model="datum"/></div>
         <div class="modal-footer">
