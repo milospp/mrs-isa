@@ -32,7 +32,7 @@
                 <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
                 <div class="col-sm-10">
                 <input 
-                        type="text" class="form-control" id="password" v-model="registerData.password" requiredd
+                        type="password" class="form-control" id="password" v-model="registerData.password" requiredd
                         pattern="[a-zA-Z0-9]{6,}" size="31" title="Password must have minimum 6 symbols" placeholder="Password"
                     >
                 </div>
@@ -199,10 +199,37 @@ export default {
     },
     methods: {     
         proveraForme(e) {
-            console.log("eeee");
-            console.log(this.registerData);
+
+            let _this = this;
             PatientDataService.SendPatient(this.registerData)
+                .then(response => {
+                    if (response.data) {
+                        _this.$toast.show(
+                            "Successfully added patient!",
+                            {
+                                position: "top",
+                            }
+                        );
+                        _this.$router.push({ name: 'Login' })
+
+                        return true;
+                    }
+                    _this.$toast.show(
+                            "This e-mail is already taken!",
+                            {
+                            position: "top",
+                        });
+                    // alert("This e-mail is already taken!");
+                    return false;
+                })
 				.catch(function (error) {
+                    _this.$toast.show(
+                            "Form is not valid!",
+                            {
+                                position: "top",
+                            }
+                    );
+
 					if (error.response) {
 						console.log(error.response.data);
 					} else if (error.request) {

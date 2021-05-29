@@ -67,6 +67,7 @@ export default {
     },
 
     mounted() {
+
         let self = this;
 
         axios.interceptors.response.use((config) => {
