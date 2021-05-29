@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h2 class="h2 mb-3 text-center">Working Calendar</h2>
-    <p class="text-lg font-medium text-gray-600 mb-4 text-center">
+    <p class="text-lg font-medium text-gray-600 text-center">
       <span v-if="calendarDetail === 'month'">Month</span>
       <span v-else-if="calendarDetail === 'year'">Year</span>
       <span v-else>Week</span>ly preview of appointments, examinations, absences and vacations
@@ -12,7 +12,6 @@
           <select name="pharmacySelect" id="pharmacySelect" class="form-control" v-on:change="setAttributes($event)">
             <option value="no pharmacy selected">--- Choose a pharmacy ---</option>
             <option :key="w.pharmacyDTO.id" v-for="w in jobs" :value="w.pharmacyDTO.id">{{w.pharmacyDTO.name}}</option>
-            <!-- <button class="btn btn-primary d-inline"></button> -->
           </select>
       </div>
       <div class="form-group col">
@@ -24,9 +23,43 @@
         </select>
       </div>
     </div>
+    <!-- W E E K -->
+    <div class="text-center section calendar-parent" v-if="appointments && vacations && calendarDetail === 'week'">
+      <calendar-view
+            :items="attributes"
+            :show-date="showDate"
+            :time-format-options="{ hour: 'numeric', minute: '2-digit' }"
+            :enable-drag-drop="false"
+            :disable-past="disablePast"
+            :disable-future="disableFuture"
+            :show-times="showTimes"
+            itemContentHeight="2.4rem"
+            :display-period-uom="displayPeriodUom"
+            :display-period-count="displayPeriodCount"
+            :starting-day-of-week="startingDayOfWeek"
+            :class="themeClasses"
+            :period-changed-callback="periodChanged"
+            :current-period-label="useTodayIcons ? 'icons' : ''"
+            :displayWeekNumbers="displayWeekNumbers"
+            :enable-date-selection="true"
+            :selection-start="selectionStart"
+            :selection-end="selectionEnd"
+            @date-selection-start="setSelection"
+            @date-selection="setSelection"
+            @date-selection-finish="finishSelection"
+            @drop-on-date="onDrop"
+            @click-date="onClickDay"
+            @click-item="onClickItem"
+            >
+            <template #header="{ headerProps }">
+					    <calendar-view-header id="calendar-header-nav" :header-props="headerProps" @input="setShowDate" />
+				    </template>
+
+      </calendar-view>
+    </div>
     <!-- M O N T H     
-        is-double-paned   @dayClick="a('aaa')" -->
-    <div class="text-center section" v-if="appointments && calendarDetail === 'month'">
+        is-double-paned -->
+    <div class="text-center section" v-if="appointments && vacations && calendarDetail === 'month'">
       <Calendar
         class="custom-calendar"
         ref="calendar"
@@ -43,11 +76,11 @@
               <p
                 v-for="attr in attributes"
                 :key="attr.key"
-                class="rounded p-0 mt-0 mb-0 mx-1 appointment lbl"
                 :class="attr.customData.typeForClass"
                 v-on:dblclick="startAppointment(attr)"
               >
-                <b>{{ attr.customData.startTime }}</b> <b>{{ attr.customData.durationInMins}}</b>m <span v-if="!attr.customData.typeForClass.includes('free')"> {{ attr.customData.patientName }} {{ attr.customData.patientSurname }} </span>
+                <span v-if="!attr.customData.typeForClass.includes('vacation')"><b>{{ attr.customData.data.startTime }}</b> <b>{{ attr.customData.data.durationInMins}}</b>m <span v-if="!attr.customData.typeForClass.includes('free')"> {{ attr.customData.data.patientName }} {{ attr.customData.data.patientSurname }} </span></span>
+                <span v-else><b>{{ attr.customData.title }}</b></span>
               </p> <!--appointment-->
             </div>
             <!-- </div> -->
@@ -56,7 +89,7 @@
       </Calendar>
     </div>
     <!-- Y E A R      is-double-paned -->
-    <div class="text-center section row" v-else-if="appointments && calendarDetail === 'year'">
+    <div class="text-center section row" v-else-if="appointments && vacations && calendarDetail === 'year'">
       <div class="col">
       <Calendar
       :attributes="attributes"
@@ -112,9 +145,21 @@ import PharmacyDataService from '@/service/PharmacyDataService.js';
 import AuthService from '../service/AuthService.js';
 import UtilService from '../service/UtilService.js';
 
+import { CalendarView, CalendarViewHeader, CalendarMath } from "vue-simple-calendar"
+import VacationDataService from "@/service/VacationDataService.js";
+	
+import "vue-simple-calendar/dist/style.css"
+// The next two lines are optional themes
+import "vue-simple-calendar/static/css/default.css"
+import "vue-simple-calendar/static/css/holidays-us.css"
+
 console.warn = () => {};
 
 export default {
+  components: {
+		CalendarView,
+		CalendarViewHeader,
+	},
   setup() {
     return {UtilService}
   },
@@ -131,16 +176,35 @@ export default {
       chosenPharmacyId: 1,
       jobs: null,
       appointments: null,
+      vacations: [],
 
       calendarDetail: 'month',
       masks: {
         weekdays: 'WWWW',
       },
       selectedDay: new Date(),
+
+      showDate: new Date(),
+      startingDayOfWeek: 1, // monday is the first day
+      disablePast: false,
+      disableFuture: false,
+      displayPeriodUom: "week",
+      displayPeriodCount: 1,
+      displayWeekNumbers: false,
+      showTimes: false,
+      selectionStart: null,
+      selectionEnd: null,
+      newItemTitle: "",
+      newItemStartDate: "",
+      newItemEndDate: "",
+      useDefaultTheme: false,
+      useHolidayTheme: false,
+      useTodayIcons: false,
     };
   },
   mounted(){
       this.getPharmacies();
+
       if (this.doctor.role === "PHARMACIST") {
         this.setAttributesForPharmacist();
       } else if (this.doctor.role === "DERMATOLOGIST") {
@@ -148,13 +212,33 @@ export default {
       }
   },
   computed: {
-  	attributes() {
+    attributes(){
+      var result = this.attributeAppointments.concat(this.attributeVacations);
+      return result;
+    },
+  	attributeAppointments() {
+      if (this.calendarDetail === 'week') {
+        return this.appointments.map(t => ({
+          id: t.id,
+          startDate: Date.parse(t.startDate),
+          customData: t,
+          title: t.startTime + ' ' + t.durationInMins + 'm<br/>' + t.patientName + ' ' + t.patientSurname,
+          classes: ['appointmentWeek'],
+          style: t.typeForClass.includes('free') ? 'background-color: #cecece; color: #6d6d6d;' : 
+                  t.typeForClass.includes('over') ? 'background-color: #eeeeee; color: #61a0ff;' :
+                   t.typeForClass.includes('examination') ? 'background-color: #0d6efd; color: #ffffff;' :
+                    t.typeForClass.includes('counseling') ? 'background-color: #ffa600; color: #fff0d0;' : '',
+          url: "https://localhost:3000/appoinment/"+t.id,
+        }));
+      }
       if (this.calendarDetail === 'month') {
         return this.appointments.map(t => ({
           key: t.id,
           dates: Date.parse(t.startDate),
-          //{ start: new Date(2018, 0, 1), end: new Date(2018, 0, 5) } for vacations
-          customData: t,
+          customData: {
+            data: t,
+            typeForClass: t.typeForClass + " rounded p-0 mt-0 mb-0 mx-1 appointment lbl",
+          },
         }));
       } else if (this.calendarDetail === 'year'){
         return this.appointments.map(t => ({
@@ -168,6 +252,40 @@ export default {
           },
           popover: {
             label: t.startTime + ' ' + t.durationInMins + 'm ' + t.patientName + ' ' + t.patientSurname,
+            visibility: 'hover',
+          },
+        }));
+        
+      }
+    },
+    attributeVacations(){
+      if (this.calendarDetail === 'week') {
+        return this.vacations.map(t => ({
+          id: t.id,
+          startDate: Date.parse(t.startDate),
+          endDate: Date.parse(t.endDate),
+          custom: t,
+          title: t.type,
+          style: 'background-color: lightgreen; color: darkgreen; height: 96.9%; opacity: 0.6;'
+        }));
+      }
+      if (this.calendarDetail === 'month') {
+        return this.vacations.map(t => ({
+          key: t.id,
+          dates: { start: new Date(t.startDate[0], t.startDate[1] - 1, t.startDate[2]), end: new Date(t.endDate[0], t.endDate[1] - 1, t.endDate[2]) },
+          customData: { 
+            data: t,
+            typeForClass: 'vacation',
+            title: t.type
+          },
+        }));
+      } else if (this.calendarDetail === 'year'){
+        return this.vacations.map(t => ({
+          dates: { start: Date.parse(t.startDate), end: Date.parse(t.endDate) },
+          custom: t,
+          highlight: 'green',
+          popover: {
+            label: t.type,
             visibility: 'hover',
           },
         }));
@@ -188,12 +306,37 @@ export default {
       }
       return apps;
       //'<a href="/appointment/'+t.id+'">start</a>'
-    }
+    },
+    thisWeekNum() {
+      return this.getNumberOfWeek(Date.now()) - 2;
+    },
+    thisWeekStart() {
+      return this.getDateOfISOWeek(this.thisWeekNum, new Date().getFullYear());
+    },
+    thisWeekEnd() {
+      let date = this.getDateOfISOWeek(this.thisWeekNum, new Date().getFullYear());
+      date.setDate(date.getDate() + 7);
+      return date;
+    },
+    /* weekly calendar stuff */
+    userLocale() {
+			return CalendarMath.getDefaultBrowserLocale
+		},
+		dayNames() {
+			return CalendarMath.getFormattedWeekdayNames(this.userLocale, "long", 0)
+		},
+		themeClasses() {
+			return {
+				"theme-default": this.useDefaultTheme,
+				"holiday-us-traditional": this.useHolidayTheme,
+				"holiday-us-official": this.useHolidayTheme,
+			}
+		},
+    /* weekly calendar stuff */
   },
   methods: {
       a(id){
           alert(id);
-          //this.calendar.move({ month: 1, year: 2021 });
       },
       dayClicked(day) {
         this.selectedDay = new Date(day.date);
@@ -207,14 +350,23 @@ export default {
         else
           window.location.href = "/appointment/" + attributeApp.customData.id;
       },
+      startAppointmentFromWeekly(app){
+        if (app.typeForClass.includes('over'))
+          alert("Appointemnt already held.");
+        else if (app.typeForClass.includes('free'))
+          alert("Appointment not booked yet.");
+        else
+          window.location.href = "/appointment/" + app.id;
+      },
       setAttributes(pharmacyIdEvent) {
         if (pharmacyIdEvent === 0){ this.appointments = []; return; }
         let pharmacyId = pharmacyIdEvent.target.value;
         if (pharmacyId === "no pharmacy selected") return;
-          AppointmentDataService.getDermAppFromPharmacy(this.doctor.id, pharmacyId)
-          .then(response => {
-            this.appointments = response.data;
-          });
+        AppointmentDataService.getDermAppFromPharmacy(this.doctor.id, pharmacyId)
+        .then(response => {
+          this.appointments = response.data;
+        });
+        this.getVacations(pharmacyId);
       },
       setAttributesForPharmacist() {
         AppointmentDataService.getPharmAppForCalendar(this.doctor.id)
@@ -229,7 +381,72 @@ export default {
               this.jobs = response.data;
             });
           }
-      }
+      },
+      getVacations(pharmacyId) {
+        let doctorId = this.doctor.id;
+        VacationDataService.getVacationsForDoctorAndPharmacy(doctorId, pharmacyId)
+          .then(response => {
+            if (response.data){
+              this.vacations = response.data;
+              alert(JSON.stringify(this.vacations));
+            }
+          });
+      },
+      getNumberOfWeek(date) {
+        const todayy = new Date(date);
+        const firstDayOfYear = new Date(todayy.getFullYear(), 0, 1);
+        const pastDaysOfYear = (todayy - firstDayOfYear) / 86400000;
+        return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+      },
+      getDateOfISOWeek(w, y) {
+        var simple = new Date(y, 0, 1 + (w - 1) * 7);
+        var dow = simple.getDay();
+        var ISOweekStart = simple;
+        if (dow <= 4)
+            ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
+        else
+            ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
+        return ISOweekStart;
+      },
+      appointmentsByDay(dayInWeek){
+        let mon = [];
+        for (let a of this.appointments) {
+          let date = new Date(Date.parse(a.startDate));
+          let mm = this.getNumberOfWeek(Date.parse(a.startDate));
+          let thisss = this.getNumberOfWeek(Date.now());
+          if (date.getDay() == dayInWeek && date >= this.thisWeekStart && date < this.thisWeekEnd)
+            mon.push(a);
+        }
+        return mon;
+      },
+      /* weekly calendar stuff */
+      thisMonth(d, h, m) {
+        const t = new Date()
+        return new Date(t.getFullYear(), t.getMonth(), d, h || 0, m || 0)
+      },
+      onClickDay(d) {
+        this.selectionStart = null
+        this.selectionEnd = null
+        console.log(`You clicked: ${d.toLocaleDateString()}`);
+      },
+      onClickItem(e) {
+        console.log(`You clicked: ${e.id}`);
+        window.location.href = "/appointment/" + e.id;
+      },
+      setShowDate(d) {
+        this.message = `Changing calendar view to ${d.toLocaleDateString()}`
+        this.showDate = d
+      },
+      clickTestAddItem() {
+        this.items.push({
+          startDate: this.newItemStartDate,
+          endDate: this.newItemEndDate,
+          title: this.newItemTitle,
+          id: "e" + Math.random().toString(36).substr(2, 10),
+        })
+        this.message = "You added a calendar item!"
+      },
+      /* weekly calendar stuff */
   }
 };
 </script>
@@ -243,24 +460,57 @@ export default {
     overflow: hidden;
 }
 
+.vacation {
+  font-size: 12px;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  /* background-color: lightgreen; */
+  color: green;
+}
+
+.appointmentWeek {
+    font-size: 14px;
+    /* font-weight: bold; */
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
 .free {
-    background-color: var(--free-bg);
-    color: var(--free-txt);
+    /* background-color: var(--free-bg);
+    color: var(--free-txt); */
+    background-color: #cecece;
+    color: #6d6d6d;
 }
 
 .examination {
-    background-color: var(--exam-bg);
-    color: var(--exam-txt);
+    /* background-color: var(--exam-bg);
+    color: var(--exam-txt); */
+    background-color: #0d6efd;
+    color: #ffffff;
+}
+
+.cv-item.examination {
+    /* background-color: var(--exam-bg);
+    color: var(--exam-txt); */
+    background-color: #0d6efd;
+    color: #ffffff;
 }
 
 .counseling {
-    background-color: var(--coun-bg);
-    color: var(--coun-txt);
+    /* background-color: var(--coun-bg);
+    color: var(--coun-txt); */
+    background-color: #ffa600;
+    color: #fff0d0;
 }
 
 .over {
-  background-color: var(--held-bg);
-  color: var(--held-txt);
+  /* background-color: var(--held-bg);
+  color: var(--held-txt); */
+  background-color: #eeeeee;
+  color: #61a0ff;
+
 }
 
 .day-wrapper {
@@ -283,36 +533,17 @@ export default {
     /* overflow: auto; */
 }
 
-.today {
-  color: red;
-}
-
-.not-today {
-  color: black;
-}
-
 .whole-day {
     height: 150px;
     width: 100%;
     border: var(--blue-border);
 }
 
-/* .left-top-border {
-    border-left: var(--blue-border);
-    border-top: var(--blue-border);
-} */
-
 .custom-calendar {
     border-width: 2px;
 }
 
-/* ::-webkit-scrollbar {
-  width: 0px;
-}
-::-webkit-scrollbar-track {
-  display: none;
-} */
-.custom-calendar.vc-container {
+.custom-calendar.vc-container, .calendar-parent {
   --blue-border: 1px solid #9bc6f5;
   --pink-border-highlight: 1px solid #ff00ea;
   --day-width: 10%;
@@ -325,44 +556,83 @@ export default {
   --free-bg: #cecece;
   --exam-bg: #0d6efd;
   --coun-bg: #ffa600;
-    border-radius: 1;
+    border-radius: 0.5rem;
     border-width: 2px;
     height: 100%;
-    /* width: 500px; */
   }
-  /* .custom-calendar.vc-container .vc-header {
-    background-color: #e7aa26;
-    padding: 10px 0;
-  }
-  .custom-calendar.vc-container .vc-weeks {
-    padding: 0;
-  }
-  .custom-calendar.vc-container .vc-weekday {
-    background-color: var(--weekday-bg);
-    border-bottom: var(--weekday-border);
-    border-top: var(--weekday-border);
-    padding: 5px 0;
-  }
-  .custom-calendar.vc-container .vc-day {
-    padding: 0 5px 3px 5px;
-    text-align: left;
-    height: var(--day-height);
-    min-width: var(--day-width);
-    background-color: rgb(197, 216, 206);
-  }
-  .custom-calendar.vc-container .weekday-1 .weekday-7 {
-    background-color: #13466d;
-  }
-  .custom-calendar.vc-container :not(.on-bottom) {
-    border-bottom: var(--day-border);
-  }
-  .custom-calendar.vc-container .weekday-1 {
-    border-bottom: var(--day-border-highlight);
-  }
-  .custom-calendar.vc-container :not(.on-right) {
-    border-right: var(--day-border);
-  }
-  .custom-calendar.vc-container .vc-day-dots {
-    margin-bottom: 5px;
-  } */
+
+.calendar-parent {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	overflow-x: hidden;
+	overflow-y: auto;
+  min-height: 800px;
+	max-height: 800px;
+	background-color: white;
+  border: #CBD5E0 solid 2px;
+  border-radius: 0.5rem;
+}
+
+
+/* For long calendars, ensure each week gets sufficient height. The body of the calendar will scroll if needed */
+.cv-week {
+	height: 100%;
+  min-height: 30rem;
+  overflow-x: hidden;
+	overflow-y: hidden;
+}
+
+.cv-header .periodLabel, .cv-header-nav {
+  padding: .4em .6em;
+    font-size: var(--text-lg);
+    color: var(--gray-800);
+    font-weight: 600;
+    line-height: 28px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.cv-wrapper {
+  min-height: 30rem;
+}
+
+div.cv-weekdays {
+  overflow: hidden !important;
+}
+
+.cv-header-nav button {
+  background-color: white;
+}
+/* These styles are optional, to illustrate the flexbility of styling the calendar purely with CSS. */
+/* Add some styling for items tagged with the "birthday" class */
+/* .cv-item.b {
+	background-color: rgb(0, 162, 255);
+	border-color: #73ff73;
+}
+.cv-item.birthday::before {
+	content: "\1F382"; /* Birthday cake */
+	/* margin-right: 10px;
+} */
+
+.cv-item {
+  color: red;
+  background-color: blue;
+}
+
+/* The following classes style the classes computed in myDateClasses and passed to the component's dateClasses prop. */
+/* .cv-day.ides {
+	background-color: blue;
+  color: red;
+} */
+/* .ides .cv-day-number::before {
+	content: "\271D";
+}
+.cv-day.do-you-remember.the-21st .cv-day-number::after {
+	content: "\1F30D\1F32C\1F525";
+} */
 </style>

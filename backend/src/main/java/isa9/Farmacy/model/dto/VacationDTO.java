@@ -1,5 +1,6 @@
 package isa9.Farmacy.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import isa9.Farmacy.model.TypeOfRest;
 import isa9.Farmacy.model.VacationRequestStatus;
 import lombok.*;

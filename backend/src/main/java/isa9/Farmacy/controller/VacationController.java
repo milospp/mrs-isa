@@ -61,7 +61,7 @@ public class VacationController {
         List<Vacation> vacationsPharm = vacationService.getAllForPharmacy(pharmacyId);
         List<Vacation> result = new ArrayList<>();
         for (Vacation v : vacationsDoc){
-            if (vacationsPharm.contains(v)){
+            if (vacationsPharm.contains(v) && v.getStatus().equals(VacationRequestStatus.ACCEPTED)){
                 result.add(v);
             }
         }

@@ -18,7 +18,10 @@ public class VacationToVacationDTO implements Converter<Vacation, VacationDTO> {
         dto.setId(vacation.getId());
         dto.setDoctorId(vacation.getDoctor().getId());
         dto.setPharmacyId(vacation.getPharmacy().getId());
-        dto.setPharmacyAdminId(vacation.getPharmacyAdmin().getId());
+        if (vacation.getPharmacyAdmin() != null)
+            dto.setPharmacyAdminId(vacation.getPharmacyAdmin().getId());
+        else
+            dto.setPharmacyAdminId(null);
         dto.setEndDate(vacation.getEndDate());
         dto.setStartDate(vacation.getStartDate());
         dto.setReason(vacation.getReason());
