@@ -9,6 +9,7 @@ import isa9.Farmacy.service.InquiryService;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.impl.base.PharmacyServiceBase;
+import isa9.Farmacy.utils.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -26,12 +27,15 @@ public class dbPharmacyService extends PharmacyServiceBase implements PharmacySe
     private final PharmacyRepository pharmacyRepository;
     private final WorkRepository workRepository;
     private final InquiryService inquiryService;
+    private final MailService mailService;
 
     @Autowired
-    public dbPharmacyService(PharmacyRepository pharmacyRepository, WorkRepository workRepository, InquiryService inquiryService) {
+    public dbPharmacyService(PharmacyRepository pharmacyRepository, WorkRepository workRepository,
+            InquiryService inquiryService, MailService mailService) {
         this.pharmacyRepository = pharmacyRepository;
         this.workRepository = workRepository;
         this.inquiryService = inquiryService;
+        this.mailService = mailService;
     }
 
     @Override
@@ -88,6 +92,14 @@ public class dbPharmacyService extends PharmacyServiceBase implements PharmacySe
                 save(pharmacy);
             }
         }
+    }
+
+    @Override
+    public void setActionMail(MedPrice actionPromotion) {
+        System.out.println("Nije implementirana metoda za slanje mejla do kraja");
+        Pharmacy apoteka = actionPromotion.getMedicineInPharmacy().getPharmacy();
+        //for (Patient pacijent : apoteka._______)
+        //  this.mailService.sendActionInfo(actionPromotion, pacijent);
     }
 
     @Override

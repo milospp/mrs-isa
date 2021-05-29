@@ -17,7 +17,7 @@ public class MedInPharmaDTO {
     private Long id;
     private double currentPrice;
     private PriceType priceType;    // tip
-    private int oldPrice;           // za akciju i promociju
+    private double oldPrice;           // za akciju i promociju
     private LocalDateTime endDate;  // kraj akcije ili promocije
     private MedicineDTO medicine;
     private int inStock;
