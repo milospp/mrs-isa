@@ -13,7 +13,6 @@
           <select name="pharmacySelect" id="pharmacySelect" class="form-control" v-on:change="setAttributes($event)">
             <option value="no pharmacy selected">--- Choose a pharmacy ---</option>
             <option :key="w.pharmacyDTO.id" v-for="w in jobs" :value="w.pharmacyDTO.id">{{w.pharmacyDTO.name}}</option>
-            <!-- <button class="btn btn-primary d-inline"></button> -->
           </select>
       </div>
       <div class="form-group col">
@@ -25,8 +24,9 @@
         </select>
       </div>
     </div>
-    <!-- :date-classes="myDateClasses" -->
-    <div class="text-center section calendar-parent" v-if="appointments && calendarDetail === 'week'">
+    
+    <!-- W E E K -->
+    <div class="text-center section calendar-parent" v-if="appointments && vacations && calendarDetail === 'week'">
       <calendar-view
             :items="attributes"
             :show-date="showDate"
@@ -60,8 +60,8 @@
       </calendar-view>
     </div>
     <!-- M O N T H     
-        is-double-paned   @dayClick="a('aaa')" -->
-    <div class="text-center section" v-if="appointments && calendarDetail === 'month'">
+        is-double-paned -->
+    <div class="text-center section" v-if="appointments && vacations && calendarDetail === 'month'">
       <Calendar
         class="custom-calendar"
         ref="calendar"
@@ -78,11 +78,11 @@
               <p
                 v-for="attr in attributes"
                 :key="attr.key"
-                class="rounded p-0 mt-0 mb-0 mx-1 appointment lbl"
                 :class="attr.customData.typeForClass"
                 v-on:dblclick="startAppointment(attr)"
               >
-                <b>{{ attr.customData.startTime }}</b> <b>{{ attr.customData.durationInMins}}</b>m <span v-if="!attr.customData.typeForClass.includes('free')"> {{ attr.customData.patientName }} {{ attr.customData.patientSurname }} </span>
+                <span v-if="!attr.customData.typeForClass.includes('vacation')"><b>{{ attr.customData.data.startTime }}</b> <b>{{ attr.customData.data.durationInMins}}</b>m <span v-if="!attr.customData.typeForClass.includes('free')"> {{ attr.customData.data.patientName }} {{ attr.customData.data.patientSurname }} </span></span>
+                <span v-else><b>{{ attr.customData.title }}</b></span>
               </p> <!--appointment-->
             </div>
             <!-- </div> -->
@@ -91,7 +91,7 @@
       </Calendar>
     </div>
     <!-- Y E A R      is-double-paned -->
-    <div class="text-center section row" v-else-if="appointments && calendarDetail === 'year'">
+    <div class="text-center section row" v-else-if="appointments && vacations && calendarDetail === 'year'">
       <div class="col">
       <Calendar
       :attributes="attributes"
@@ -148,6 +148,8 @@ import AuthService from '../service/AuthService.js';
 import UtilService from '../service/UtilService.js';
 
 import { CalendarView, CalendarViewHeader, CalendarMath } from "vue-simple-calendar"
+import VacationDataService from "@/service/VacationDataService.js";
+
 	
 import "vue-simple-calendar/dist/style.css"
 // The next two lines are optional themes
@@ -177,6 +179,7 @@ export default {
       chosenPharmacyId: 1,
       jobs: null,
       appointments: null,
+      vacations: [],
 
       calendarDetail: 'month',
       masks: {
@@ -204,6 +207,7 @@ export default {
   },
   mounted(){
       this.getPharmacies();
+
       if (this.doctor.role === "PHARMACIST") {
         this.setAttributesForPharmacist();
       } else if (this.doctor.role === "DERMATOLOGIST") {
@@ -211,14 +215,16 @@ export default {
       }
   },
   computed: {
-  	attributes() {
+    attributes(){
+      var result = this.attributeAppointments.concat(this.attributeVacations);
+      return result;
+    },
+  	attributeAppointments() {
       if (this.calendarDetail === 'week') {
         return this.appointments.map(t => ({
           id: t.id,
           startDate: Date.parse(t.startDate),
-          //{ start: new Date(2018, 0, 1), end: new Date(2018, 0, 5) } for vacations
           customData: t,
-          //startTime: t.startTime,
           title: t.startTime + ' ' + t.durationInMins + 'm<br/>' + t.patientName + ' ' + t.patientSurname,
           classes: ['appointmentWeek'],
           style: t.typeForClass.includes('free') ? 'background-color: #cecece; color: #6d6d6d;' : 
@@ -232,8 +238,10 @@ export default {
         return this.appointments.map(t => ({
           key: t.id,
           dates: Date.parse(t.startDate),
-          //{ start: new Date(2018, 0, 1), end: new Date(2018, 0, 5) } for vacations
-          customData: t,
+          customData: {
+            data: t,
+            typeForClass: t.typeForClass + " rounded p-0 mt-0 mb-0 mx-1 appointment lbl",
+          },
         }));
       } else if (this.calendarDetail === 'year'){
         return this.appointments.map(t => ({
@@ -247,6 +255,40 @@ export default {
           },
           popover: {
             label: t.startTime + ' ' + t.durationInMins + 'm ' + t.patientName + ' ' + t.patientSurname,
+            visibility: 'hover',
+          },
+        }));
+        
+      }
+    },
+    attributeVacations(){
+      if (this.calendarDetail === 'week') {
+        return this.vacations.map(t => ({
+          id: t.id,
+          startDate: Date.parse(t.startDate),
+          endDate: Date.parse(t.endDate),
+          custom: t,
+          title: t.type,
+          style: 'background-color: lightgreen; color: darkgreen; height: 96.9%; opacity: 0.6;'
+        }));
+      }
+      if (this.calendarDetail === 'month') {
+        return this.vacations.map(t => ({
+          key: t.id,
+          dates: { start: new Date(t.startDate[0], t.startDate[1] - 1, t.startDate[2]), end: new Date(t.endDate[0], t.endDate[1] - 1, t.endDate[2]) },
+          customData: { 
+            data: t,
+            typeForClass: 'vacation',
+            title: t.type
+          },
+        }));
+      } else if (this.calendarDetail === 'year'){
+        return this.vacations.map(t => ({
+          dates: { start: Date.parse(t.startDate), end: Date.parse(t.endDate) },
+          custom: t,
+          highlight: 'green',
+          popover: {
+            label: t.type,
             visibility: 'hover',
           },
         }));
@@ -279,27 +321,6 @@ export default {
       date.setDate(date.getDate() + 7);
       return date;
     },
-    appointments1() {
-      return this.appointmentsByDay(1);
-    },
-    appointments2() {
-      return this.appointmentsByDay(2);
-    },
-    appointments3() {
-      return this.appointmentsByDay(3);
-    },
-    appointments4() {
-      return this.appointmentsByDay(4);
-    },
-    appointments5() {
-      return this.appointmentsByDay(5);
-    },
-    appointments6() {
-      return this.appointmentsByDay(6);
-    },
-    appointments0() {
-      return this.appointmentsByDay(0);
-    },
     /* weekly calendar stuff */
     userLocale() {
 			return CalendarMath.getDefaultBrowserLocale
@@ -314,26 +335,11 @@ export default {
 				"holiday-us-official": this.useHolidayTheme,
 			}
 		},
-		myDateClasses() {
-			// This was added to demonstrate the dateClasses prop. Note in particular that the
-			// keys of the object are `yyyy-mm-dd` ISO date strings (not dates), and the values
-			// for those keys are strings or string arrays. Keep in mind that your CSS to style these
-			// may need to be fairly specific to make it override your theme's styles. See the
-			// CSS at the bottom of this component to see how these are styled.
-			const o = {}
-			const theFirst = this.thisMonth(1)
-			const ides = [2, 4, 6, 9].includes(theFirst.getMonth()) ? 15 : 13
-			const idesDate = this.thisMonth(ides)
-			o[CalendarMath.isoYearMonthDay(idesDate)] = "appointment"
-			o[CalendarMath.isoYearMonthDay(this.thisMonth(21))] = ["exanimation", "over"]
-			return o
-		},
     /* weekly calendar stuff */
   },
   methods: {
       a(id){
           alert(id);
-          //this.calendar.move({ month: 1, year: 2021 });
       },
       dayClicked(day) {
         this.selectedDay = new Date(day.date);
@@ -359,10 +365,11 @@ export default {
         if (pharmacyIdEvent === 0){ this.appointments = []; return; }
         let pharmacyId = pharmacyIdEvent.target.value;
         if (pharmacyId === "no pharmacy selected") return;
-          AppointmentDataService.getDermAppFromPharmacy(this.doctor.id, pharmacyId)
-          .then(response => {
-            this.appointments = response.data;
-          });
+        AppointmentDataService.getDermAppFromPharmacy(this.doctor.id, pharmacyId)
+        .then(response => {
+          this.appointments = response.data;
+        });
+        this.getVacations(pharmacyId);
       },
       setAttributesForPharmacist() {
         AppointmentDataService.getPharmAppForCalendar(this.doctor.id)
@@ -377,6 +384,16 @@ export default {
               this.jobs = response.data;
             });
           }
+      },
+      getVacations(pharmacyId) {
+        let doctorId = this.doctor.id;
+        VacationDataService.getVacationsForDoctorAndPharmacy(doctorId, pharmacyId)
+          .then(response => {
+            if (response.data){
+              this.vacations = response.data;
+              alert(JSON.stringify(this.vacations));
+            }
+          });
       },
       getNumberOfWeek(date) {
         const todayy = new Date(date);
@@ -423,22 +440,6 @@ export default {
         this.message = `Changing calendar view to ${d.toLocaleDateString()}`
         this.showDate = d
       },
-      // setSelection(dateRange) {
-      //   this.selectionEnd = dateRange[1]
-      //   this.selectionStart = dateRange[0]
-      // },
-      // finishSelection(dateRange) {
-      //   this.setSelection(dateRange)
-      //   this.message = `You selected: ${this.selectionStart.toLocaleDateString()} -${this.selectionEnd.toLocaleDateString()}`
-      // },
-      // onDrop(item, date) {
-      //   this.message = `You dropped ${item.id} on ${date.toLocaleDateString()}`
-      //   // Determine the delta between the old start date and the date chosen,
-      //   // and apply that delta to both the start and end date to move the item.
-      //   const eLength = CalendarMath.dayDiff(item.startDate, date)
-      //   item.originalItem.startDate = CalendarMath.addDays(item.startDate, eLength)
-      //   item.originalItem.endDate = CalendarMath.addDays(item.endDate, eLength)
-      // },
       clickTestAddItem() {
         this.items.push({
           startDate: this.newItemStartDate,
@@ -460,6 +461,15 @@ export default {
     padding: 0;
     margin: 0;
     overflow: hidden;
+}
+
+.vacation {
+  font-size: 12px;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  /* background-color: lightgreen; */
+  color: green;
 }
 
 .appointmentWeek {
@@ -526,14 +536,6 @@ export default {
     /* overflow: auto; */
 }
 
-.today {
-  color: red;
-}
-
-.not-today {
-  color: black;
-}
-
 .whole-day {
     height: 150px;
     width: 100%;
@@ -560,7 +562,6 @@ export default {
     border-radius: 0.5rem;
     border-width: 2px;
     height: 100%;
-    /* width: 500px; */
   }
 
 .calendar-parent {
@@ -568,8 +569,9 @@ export default {
 	flex-direction: column;
 	flex-grow: 1;
 	overflow-x: hidden;
-	overflow-y: hidden;
-	max-height: 450px;
+	overflow-y: auto;
+  min-height: 800px;
+	max-height: 800px;
 	background-color: white;
   border: #CBD5E0 solid 2px;
   border-radius: 0.5rem;

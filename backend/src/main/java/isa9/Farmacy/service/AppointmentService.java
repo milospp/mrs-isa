@@ -4,7 +4,6 @@ import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.AppointmentSearchDTO;
 import isa9.Farmacy.model.dto.ConsultingAppointmentReqDTO;
 
-import javax.net.ssl.SSLSession;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
