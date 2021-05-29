@@ -50,8 +50,12 @@ public class VacationController {
                 .status(VacationRequestStatus.WAITING)
                 .type(vacationDTO.getType())
                 .build();
-        vacationService.save(vacation);
-        return new ResponseEntity<>(true, HttpStatus.OK);
+        if (vacationService.testTime(vacation)) {
+            vacationService.save(vacation);
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(false, HttpStatus.OK);
+        }
     }
 
     @GetMapping("/{doctorId}/{pharmacyId}")
@@ -61,7 +65,7 @@ public class VacationController {
         List<Vacation> vacationsPharm = vacationService.getAllForPharmacy(pharmacyId);
         List<Vacation> result = new ArrayList<>();
         for (Vacation v : vacationsDoc){
-            if (vacationsPharm.contains(v) && v.getStatus().equals(VacationRequestStatus.ACCEPTED)){
+            if (vacationsPharm.contains(v) && v.getStatus() == VacationRequestStatus.ACCEPTED){
                 result.add(v);
             }
         }

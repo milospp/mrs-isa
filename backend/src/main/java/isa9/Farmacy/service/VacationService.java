@@ -8,4 +8,6 @@ public interface VacationService extends GenericService<Vacation>{
     List<Vacation> getAllForPharmacy(Long pharmacyId);
     List<Vacation> getAllForPharmacyAdmin(Long pharmacyAdminId);
     List<Vacation> getAllForDoctor(Long doctorId);
+
+    boolean testTime(Vacation vacation);
 }

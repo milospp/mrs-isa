@@ -96,13 +96,16 @@ export default {
   },
   methods: {
     sendRequest(){
-      alert('sending...' + JSON.stringify(this.vacation));
+      //alert('sending...' + JSON.stringify(this.vacation));
       this.vacation.startDate = this.range.start;
       this.vacation.endDate = this.range.end;
       VacationDataService.sendRequest(this.vacation)
         .then(response => {
           if (response.data){
             alert('Vacation request sucessfully sent!')
+          }
+          else {
+            alert('Invalid time!');
           }
         })
     },
