@@ -127,19 +127,19 @@ class PharmacistDataService {
 }
 
   getPharmacist(id){
-    return axios.get(`${API_URL}/api/users/` + id);
+    return axios.get(`${API_URL}/users/` + id);
   }
 
   editPersonalData(pharmacist){
     return axios({
       method: 'post',
-      url: API_URL + "/users/edit/pharmacist",
+      url: API_URL + "/edit/pharmacist",
       data: pharmacist
     });
   }
 
   getVisitedPharmacists(id){
-    return axios.get(`${API_URL}/api/users/visitedDoctors/` + id);
+    return axios.get(`${API_URL}/users/visitedDoctors/` + id);
   }
 }
 

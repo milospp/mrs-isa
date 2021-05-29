@@ -205,7 +205,9 @@ public abstract class UserServiceBase implements UserService {
         List<Doctor> visitedDoctors = new ArrayList<>();
 
         for(Examination e : patient.getMyExaminations()){
-            visitedDoctors.add(e.getAppointment().getDoctor());
+            if(e.getStatus().equals(ExaminationStatus.HELD)){
+                visitedDoctors.add(e.getAppointment().getDoctor());
+            }
         }
 
         return visitedDoctors;

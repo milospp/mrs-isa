@@ -6,6 +6,7 @@
       <span v-else-if="calendarDetail === 'year'">Year</span>
       <span v-else>Week</span>ly preview of appointments, examinations, absences and vacations
     </p>
+    <!-- <p v-if="calendarDetail === 'week'" class="text-lg font-medium text-gray-600 text-center">{{thisWeekStart.toDateString()}} - {{thisWeekEnd.toDateString()}}</p> -->
     <div class="row">
       <div v-if="doctor.role === 'DERMATOLOGIST' && jobs" class="form-group col">
           <label for="pharmacySelect">Pharmacy</label>
@@ -23,6 +24,7 @@
         </select>
       </div>
     </div>
+    
     <!-- W E E K -->
     <div class="text-center section calendar-parent" v-if="appointments && vacations && calendarDetail === 'week'">
       <calendar-view
@@ -147,6 +149,7 @@ import UtilService from '../service/UtilService.js';
 
 import { CalendarView, CalendarViewHeader, CalendarMath } from "vue-simple-calendar"
 import VacationDataService from "@/service/VacationDataService.js";
+
 	
 import "vue-simple-calendar/dist/style.css"
 // The next two lines are optional themes

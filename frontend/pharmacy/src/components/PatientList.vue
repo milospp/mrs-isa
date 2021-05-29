@@ -149,7 +149,7 @@
                         <!-- <th>Medicine name</th> -->
                         <th>Days</th>
                       </tr>
-                      <tr v-for="t in selectedAppointment.examination.therapy" :key="t.medicine.code">
+                      <tr v-for="t in selectedAppointment.examination.therapy" :key="t">
                         <td>{{t.medicine.code}}</td>
                         <!-- <td>m.name</td> -->
                         <td>{{t.days}}</td>
