@@ -669,7 +669,7 @@ public class MailService {
                 "                            </tr>\n" +
                 "                            <tr>\n" +
                 "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
-                "                                " + lek.getName() + "(" + lek.getCode() + ")\n" +
+                "                                " + lek.getName() + " (" + lek.getCode() + ")\n" +
                 "                              </td>\n" +
                 "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
                 "                                " + medPrice.getOldPrice() + "min\n" +
