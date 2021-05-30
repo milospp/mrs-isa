@@ -298,7 +298,7 @@ public class MedicineController {
         odabraniLek.setCurrentPrice(novacena);
         odabraniLek.setInStock(lek.getInStock());
         pharmacyService.save(apoteka);
-        this.pharmacyService.sendActionMail(novacena);
+        this.pharmacyService.sendActionMail(novacena, false);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
@@ -318,6 +318,7 @@ public class MedicineController {
         MedPrice trenutnaCena = odabraniLek.getCurrentPrice();
         if (trenutnaCena.getPriceType() == PriceType.NORMAL) return new ResponseEntity<>(povratna, HttpStatus.OK);
         povratna = 2;
+        this.pharmacyService.sendActionMail(trenutnaCena, true);
         // vracam cenu leka
         MedPrice novacena = new MedPrice();
         novacena.setPriceType(PriceType.NORMAL);

@@ -513,21 +513,38 @@ public class MailService {
 
 
     @Async
-    public void sendActionInfo(MedPrice medPrice, Patient patient) {             // metoda za sladnje mejla kada se napravi promocija
+    public void sendActionInfo(MedPrice medPrice, Patient patient, Boolean delete) {             // metoda za sladnje mejla kada se napravi promocija
         Pharmacy apoteka = medPrice.getMedicineInPharmacy().getPharmacy();
         Medicine lek = medPrice.getMedicineInPharmacy().getMedicine();
         String mejl = patient.getEmail();
-        String naslov = "New action or promotion";
+        String naslov = "";
         String htmlKod = "" +
-                this.startOfMail +              // OVDEE MENJAM
-                "                          New action or promotion\n" +
-                "                        </div>\n" +
-                "                      </td>\n" +
-                "                    </tr>\n" +
-                "                    <tr>\n" +
-                "                      <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;'>\n" +
-                "                        <div style=\"color:#187272;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:20px;text-align:center;\">\n" +
-                "                          " + apoteka.getName() + " pharmacy have new action or promotion.\n" +
+                this.startOfMail;              // OVDEE MENJAM
+        if (delete) {
+            naslov = "Action or promotion is deleted";
+            htmlKod = htmlKod +
+                    "                          Deleted action or promotion\n" +
+                    "                        </div>\n" +
+                    "                      </td>\n" +
+                    "                    </tr>\n" +
+                    "                    <tr>\n" +
+                    "                      <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;'>\n" +
+                    "                        <div style=\"color:#187272;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:20px;text-align:center;\">\n" +
+                    "                          " + apoteka.getName() + " pharmacy deleted action or promotion.\n";
+        }
+        else {
+            naslov = "New action or promotion";
+            htmlKod = htmlKod +
+                    "                          New action or promotion\n" +
+                    "                        </div>\n" +
+                    "                      </td>\n" +
+                    "                    </tr>\n" +
+                    "                    <tr>\n" +
+                    "                      <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;'>\n" +
+                    "                        <div style=\"color:#187272;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:20px;text-align:center;\">\n" +
+                    "                          " + apoteka.getName() + " pharmacy have new action or promotion.\n";
+        }
+        htmlKod = htmlKod +
                 "                        </div>\n" +
                 "                      </td>\n" +
                 "                    </tr>\n" +
