@@ -119,13 +119,13 @@
               </thead>
               <tbody>
                 <tr :key="app" v-for="app in appointmentsOnDay">
-                  <td>{{app.customData.startTime}}</td>
-                  <td>{{app.customData.durationInMins}} min</td>
-                  <td>{{app.customData.patientName}} {{app.customData.patientSurname}}</td>
+                  <td>{{app.customData.data.startTime}}</td>
+                  <td>{{app.customData.data.durationInMins}} min</td>
+                  <td>{{app.customData.data.patientName}} {{app.customData.data.patientSurname}}</td>
                   <td>
-                    <button v-if="!(app.customData.typeForClass.includes('free') || app.customData.typeForClass.includes('over'))" class="btn btn-primary" @click="startAppointment(app)">Start</button>
-                    <h4 v-else-if="app.customData.typeForClass.includes('free')"><span class="badge badge-secondary">FREE</span></h4>
-                    <h4 v-else-if="app.customData.typeForClass.includes('over')"><span class="badge">OVER</span></h4>
+                    <button v-if="!(app.customData.data.typeForClass.includes('free') || app.customData.data.typeForClass.includes('over'))" class="btn btn-primary" @click="startAppointment(app)">Start</button>
+                    <h4 v-else-if="app.customData.data.typeForClass.includes('free')"><span class="badge badge-secondary">FREE</span></h4>
+                    <h4 v-else-if="app.customData.data.typeForClass.includes('over')"><span class="badge">OVER</span></h4>
                   </td>
                 </tr>
               </tbody>
@@ -246,7 +246,10 @@ export default {
       } else if (this.calendarDetail === 'year'){
         return this.appointments.map(t => ({
           dates: Date.parse(t.startDate),
-          customData: t,
+          customData: {
+            data: t,
+            typeForClass: t.typeForClass + " rounded p-0 mt-0 mb-0 mx-1 appointment lbl",
+          },
           dot: {
             style: {
               backgroundColor: (Date.parse(t.startDate) < this.today) ? 'gray' : (this.doctor.role === 'DERMATOLOGIST') ? '#007bff' : (this.doctor.role === 'PHARMACIST') ? '#ffc107' : 'gray',//'#ff8080',
@@ -267,7 +270,7 @@ export default {
           id: t.id,
           startDate: Date.parse(t.startDate),
           endDate: Date.parse(t.endDate),
-          custom: t,
+          customData: t,
           title: t.type,
           style: 'background-color: lightgreen; color: darkgreen; height: 96.9%; opacity: 0.6;'
         }));
@@ -285,7 +288,10 @@ export default {
       } else if (this.calendarDetail === 'year'){
         return this.vacations.map(t => ({
           dates: { start: Date.parse(t.startDate), end: Date.parse(t.endDate) },
-          custom: t,
+          customData: {
+            data: t,
+            typeForClass: t.typeForClass + " rounded p-0 mt-0 mb-0 mx-1 appointment lbl",
+          },
           highlight: 'green',
           popover: {
             label: t.type,
@@ -346,12 +352,13 @@ export default {
         console.log('selected day:',this.selectedDay);
       },
       startAppointment(attributeApp) {
+        console.log(JSON.stringify(attributeApp));
         if (attributeApp.customData.typeForClass.includes('over'))
           alert("Appointemnt already held.");
         else if (attributeApp.customData.typeForClass.includes('free'))
           alert("Appointment not booked yet.");
         else
-          window.location.href = "/appointment/" + attributeApp.customData.id;
+          this.$router.push("/appointment/" + attributeApp.customData.data.id);
       },
       startAppointmentFromWeekly(app){
         if (app.typeForClass.includes('over'))
@@ -359,7 +366,7 @@ export default {
         else if (app.typeForClass.includes('free'))
           alert("Appointment not booked yet.");
         else
-          window.location.href = "/appointment/" + app.id;
+          this.$router.push("/appointment/" + app.id);
       },
       setAttributes(pharmacyIdEvent) {
         if (pharmacyIdEvent === 0){ this.appointments = []; return; }
@@ -391,7 +398,7 @@ export default {
           .then(response => {
             if (response.data){
               this.vacations = response.data;
-              alert(JSON.stringify(this.vacations));
+              console.log(JSON.stringify(this.vacations));
             }
           });
       },
