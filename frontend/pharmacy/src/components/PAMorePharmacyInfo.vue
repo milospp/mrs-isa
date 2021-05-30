@@ -374,8 +374,9 @@ export default {
         MedicineDataService.getPricelistForPharmacyAdmin(this.id)
         .then(response => {
           this.cenovnik = response.data;
-          this.akcijePromocije = [];
-          for (var prom of this.cenovnik.medicines) if (prom.priceType != "NORMAL") { this.izmene = false; this.akcijePromocije[this.akcijePromocije.length] = prom; break; }
+          this.akcijePromocije = []; var ind = 0;
+          this.izmene = true;
+          for (var prom of this.cenovnik.medicines) if (prom.priceType != "NORMAL") { this.izmene = false; this.akcijePromocije[ind] = prom; ind ++; }
         });
       },
 
@@ -504,6 +505,9 @@ export default {
             this.poruka = "You successfully made action or promotion.";
             this.osveziCenovnik();
           });
+        this.izabraniLek = null;
+        this.procenti = 0;
+        this.novaCena = 0;
       },
       izbrisiAkciju() {
         MedicineDataService.deleteActionPromotion(this.id, this.izabraniLek.medicine.code)
