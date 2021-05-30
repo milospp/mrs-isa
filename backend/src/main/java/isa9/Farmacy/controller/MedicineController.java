@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -58,6 +57,7 @@ public class MedicineController {
     @GetMapping("tmp-test")
     public ResponseEntity<Boolean> debug(){
         medReservationService.checkForExpiredReservations();
+        this.medInPharmaService.checkForExpiredActionOrPromotion();
         return new ResponseEntity<>(true, HttpStatus.OK);
 
     }
@@ -177,6 +177,7 @@ public class MedicineController {
                 med.getMedicine().setType(lek.getMedicine().getType());
                 med.getMedicine().setPoints(lek.getMedicine().getPoints());
                 MedPrice novacena = new MedPrice();
+                novacena.setPriceType(PriceType.NORMAL);
                 novacena.setPrice(lek.getCurrentPrice());
                 novacena.setStartDate(LocalDateTime.now());
                 novacena.setMedicineInPharmacy(med);
@@ -222,7 +223,7 @@ public class MedicineController {
         List<Medicine> sviLekovi = medicineService.findAll();
         povratna = 0;
         for (Medicine med : sviLekovi)
-            if (med.getCode().equals(lek.getMedicine().getCode())) new ResponseEntity<>(povratna, HttpStatus.OK);
+            if (med.getCode().equals(lek.getMedicine().getCode())) return new ResponseEntity<>(povratna, HttpStatus.OK);
         povratna = 1;
 
         // novi lek
@@ -256,6 +257,7 @@ public class MedicineController {
         noviUApoteci.setPharmacy(apoteka);
         //cena leka
         MedPrice novacena = new MedPrice();
+        novacena.setPriceType(PriceType.NORMAL);
         novacena.setPrice(lek.getCurrentPrice());
         novacena.setStartDate(LocalDateTime.now());
         novacena.setMedicineInPharmacy(noviUApoteci);
@@ -263,6 +265,40 @@ public class MedicineController {
         noviUApoteci.setInStock(lek.getInStock());
         apoteka.getMedicines().add(noviUApoteci);
         pharmacyService.save(apoteka);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/makeActionPromotion/{idAdmina}/{akcijaJe}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<Integer> makeActionPromotion(@PathVariable Long idAdmina, @PathVariable Boolean akcijaJe, @RequestBody MedInPharmaDTO lek) {
+        int povratna = -2;
+        if (lek.getEndDate().isBefore(LocalDateTime.now())) return new ResponseEntity<>(povratna, HttpStatus.OK);
+        User user = userService.findOne(idAdmina);
+        povratna = -1;
+        if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
+        Pharmacy apoteka = ((PharmacyAdmin) user).getPharmacy();
+        povratna = 0;
+        MedicineInPharmacy odabraniLek = null;
+        for (MedicineInPharmacy med : apoteka.getMedicines())
+            if (med.getMedicine().getCode().equals(lek.getMedicine().getCode())) {odabraniLek = med; break;}
+        if (odabraniLek == null) return new ResponseEntity<>(povratna, HttpStatus.OK);
+        povratna = 1;
+        if (odabraniLek.getCurrentPrice().getPriceType() != PriceType.NORMAL) return new ResponseEntity<>(povratna, HttpStatus.OK);
+        povratna = 2;
+        //cena leka
+        MedPrice novacena = new MedPrice();
+        if (akcijaJe) novacena.setPriceType(PriceType.ACTION);
+        else novacena.setPriceType(PriceType.PROMOTION);
+        novacena.setPrice(lek.getCurrentPrice());
+        novacena.setOldPrice(lek.getOldPrice());
+        novacena.setStartDate(LocalDateTime.now());
+        novacena.setEndDate(lek.getEndDate());
+        novacena.setMedicineInPharmacy(odabraniLek);
+        odabraniLek.setCurrentPrice(novacena);
+        odabraniLek.setInStock(lek.getInStock());
+        pharmacyService.save(apoteka);
+        this.pharmacyService.sendActionMail(novacena);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 

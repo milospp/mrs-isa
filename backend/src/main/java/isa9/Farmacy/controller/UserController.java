@@ -568,7 +568,7 @@ public class UserController {
             Dermatologist dermatolog = (Dermatologist) u;
             for (Work work : dermatolog.getWorking())
                 if (work.getPharmacy().getId().equals(admin.getPharmacy().getId())) { posao = work; break;}
-            if (posao != null) povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog, posao));
+            if (posao == null) povratna.add(this.dermatologistToDermatologistDTO.convert(dermatolog));
         }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
@@ -588,6 +588,7 @@ public class UserController {
                     List<Examination> sviPregledi = this.examinationService.getFutureExaminations(dermatolog.getId());
                     for (Examination e : sviPregledi)
                         if (e.getAppointment().getPharmacy().getId().equals(admin.getPharmacy().getId())) {
+
                             okej = 1;
                             break;
                         }

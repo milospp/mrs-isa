@@ -198,4 +198,21 @@ public class dbUserService extends UserServiceBase implements UserService, UserD
     public Patient getPatientById(Long id) {
         return this.patientRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public List<Patient> howSucribePharmacy(Long pharmacyId) {
+        List<Patient> pacijenti = new ArrayList<>();
+        for (User korisnik : findAll()) {
+            if (korisnik.getClass() == Patient.class) {
+                Patient pacijent = (Patient) korisnik;
+                for (Pharmacy apoteka : pacijent.getSubscriptions()) {
+                    if (apoteka.getId() == pharmacyId) {
+                        pacijenti.add(pacijent);
+                        break;
+                    }
+                }
+            }
+        }
+        return pacijenti;
+    }
 }
