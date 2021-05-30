@@ -28,9 +28,9 @@ public class MedPrice {
     @Column
     private PriceType priceType;    // da li je obicna, akcija ili promocija
     @Column
-    private double oldPrice;           // cuvamo staru vrednost kako bismo je vratili
+    private Double oldPrice;           // cuvamo staru vrednost kako bismo je vratili
     @Column
-    private double price;
+    private Double price;
     @ManyToOne
     private MedicineInPharmacy medicineInPharmacy;
 
