@@ -30,6 +30,7 @@
             <li class="nav-item active"><a class="nav-link" data-toggle="tab" href="#tab-medicines">Pricelist</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu1">Invalid inquiries</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu2">Orders</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#menu3">Actions and promotions</a></li>
           </ul>
         
           <div class="tab-content">
@@ -146,6 +147,38 @@
                 </tbody>
               </table>
             </div>
+
+            <div id="menu3" class="tab-pane fade">
+              <h3>Actions and promotions</h3>
+                <table class="table table-striped">
+                  <thead class="card-header">
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th>Old rice</th>
+                  <th>Action/prom</th>
+                  <th>Start date</th>
+                  <th>End date</th>
+                  <th></th>
+                  <th></th>
+                </thead>
+                <tbody>
+                    <tr :key="l" v-for="l in this.akcijePromocije">
+                      <td>{{l.medicine.code}}</td>
+                      <td>{{l.medicine.name}}</td>
+                      <td>{{l.oldPrice}}</td>
+                      <!-- popust/akcija -->
+                      <td v-if="l.priceType=='ACTION'">{{l.currentPrice}} ({{100-l.currentPrice*100/l.oldPrice}}%)</td>
+                      <td v-else>{{l.currentPrice}}</td>
+                      <td>{{l.startDate[2]}}/{{l.startDate[1]}}/{{l.startDate[2]}}</td>
+                      <td>{{l.endDate[2]}}/{{l.endDate[1]}}/{{l.endDate[0]}}</td>
+                      <!-- Nema promene dok je akcija/promocija i nema brisanja -->
+                      <td> <form v-on:click.prevent="postaviLek(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaciPromocija">View</button></form></td>
+                      <td><form v-on:click.prevent="postaviLek(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#brisanjeAkcije">Delete</button></form></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
           </div>
         </div>
       </div>
@@ -216,6 +249,58 @@
     </div>
   </div>
 
+  
+  <!-- Prikaz promocija i akcija -->
+  <div class="modal fade" id="podaciPromocija" tabindex="-1" role="dialog" aria-labelledby="About medicine" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="AboutMedicine">About medicine</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" align="left">Code: {{this.izabraniLek?.medicine.code}}</div>
+        <div class="modal-body" align="left">Name: {{this.izabraniLek?.medicine.name}}</div>
+        <div class="modal-body" align="left">Structure: {{this.izabraniLek?.medicine.specification.structure}}</div>
+        <div class="modal-body" align="left">Manufacturer: {{this.izabraniLek?.medicine.manufacturer}}</div>
+        <div class="modal-body" align="left">Note: {{this.izabraniLek?.medicine.note}}</div>
+        <div class="modal-body" align="left">Type: {{this.izabraniLek?.medicine.type}}</div>
+        <div class="modal-body" align="left">Points: {{this.izabraniLek?.medicine.points}}</div>
+        <div class="modal-body" align="left">Price: {{this.izabraniLek?.currentPrice}}</div>
+        <div class="modal-body" align="left">Action/promotion: 
+          <label v-if="originalLeka?.priceType=='ACTION'">Action {{100-izabraniLek?.currentPrice*100/izabraniLek?.oldPrice}}% (original price = {{izabraniLek?.oldPrice}})</label>
+          <label v-else>Promotion (original price = {{izabraniLek?.oldPrice}})</label></div>
+        <div class="modal-body" align="left">Quantity: {{this.izabraniLek?.inStock}}</div>
+        <div class="modal-body" align="left">With receipt (yes/no): {{this.izabraniLek?.medicine.perscription}}</div>
+        <div class="modal-body" align="left">Shape: {{this.izabraniLek?.medicine.shape}}</div>
+        <div class="modal-body" align="left">Rating: {{this.izabraniLek?.rating}}</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+     <!-- brisanje Akcije ili Promocije -->
+  <div class="modal fade" id="brisanjeAkcije" tabindex="-1" role="dialog" aria-labelledby="Brisanje" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="Bris">Medicine {{this.izabraniLek?.medicine.name}} is on {{this.izabraniLek?.priceType == 'ACTION' ? "action" : "promotion"}}.<br/>Do you want to delete this action/promotion?</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+         <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="izbrisiAkciju()" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
       <!-- obavestenja -->
   <div class="modal fade" id="obavestenje" tabindex="-1" role="dialog" aria-labelledby="poruka" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -252,6 +337,7 @@ export default {
             filterOrder: 0, narudzbenica: null, sveNarudzbenice: [], narudzbeniceZaIspis: [],
             upitiZaLek: [], postojiPromena:false, cenovnik: null, 
             izabraniLek: null, novaCena: 0, procenti: 0, krajAkcije: null, izmene: true,
+            akcijePromocije: [], 
         };
       
     },
@@ -288,12 +374,14 @@ export default {
         MedicineDataService.getPricelistForPharmacyAdmin(this.id)
         .then(response => {
           this.cenovnik = response.data;
-          for (var prom of this.cenovnik.medicines) if (prom.priceType != "NORMAL") { this.izmene = false; break; }
+          this.akcijePromocije = [];
+          for (var prom of this.cenovnik.medicines) if (prom.priceType != "NORMAL") { this.izmene = false; this.akcijePromocije[this.akcijePromocije.length] = prom; break; }
         });
       },
 
       inicijalizujPoruku(pk) { this.poruka = pk; },
       postaviNarudzbenicu(p) { this.narudzbenica = p; },  // prelazak na drugu formu
+      postaviLek(lek) { this.izabraniLek = lek; },
       
       proveraApoteka() {
         if (this.pharmacyName.length == 0 || this.pharmacyDesc.length == 0 || this.pharmacyConsulting.length == 0) {
@@ -417,6 +505,16 @@ export default {
             this.osveziCenovnik();
           });
       },
+      izbrisiAkciju() {
+        MedicineDataService.deleteActionPromotion(this.id, this.izabraniLek.medicine.code)
+          .then(response => {
+            if (response.data == 0) {this.poruka = "Medicine is not found."; return;}
+            else if (response.data == 1) {this.poruka = "Medicine is not on action or promotion."; return;}
+            this.poruka = "Action or promotion is successfully deleted.";
+            this.osveziCenovnik();
+          });       
+      },
+
     }
 }
 </script>

@@ -527,7 +527,7 @@ public class MailService {
                 "                    <tr>\n" +
                 "                      <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;'>\n" +
                 "                        <div style=\"color:#187272;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:20px;text-align:center;\">\n" +
-                "                          " + apoteka.getName() + " pharmacy have new action or promotion .\n" +
+                "                          " + apoteka.getName() + " pharmacy have new action or promotion.\n" +
                 "                        </div>\n" +
                 "                      </td>\n" +
                 "                    </tr>\n" +

@@ -67,7 +67,7 @@
                       <td v-if="l.priceType=='NORMAL'"><form v-on:click.prevent="funkcija(l, false)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">View</button></form></td>
                       <td v-else> <form v-on:click.prevent="funkcija(l, false)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaciPromocija">View</button></form></td>
                       <td v-if="l.priceType=='NORMAL'"><form v-on:click.prevent="funkcija(l, true)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#brisanje">Delete</button></form></td>
-                      <td v-else></td>
+                      <td v-else><form v-on:click.prevent="funkcija(l, true)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#brisanjeAkcije">Delete</button></form></td>
                   </tr>
                 </tbody>
               </table>
@@ -337,6 +337,24 @@
         </div>
          <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="izbrisiLek()" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+     <!-- brisanje Akcije ili Promocije -->
+  <div class="modal fade" id="brisanjeAkcije" tabindex="-1" role="dialog" aria-labelledby="Brisanje" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="Bris">Medicine {{this.originalLeka?.medicine.name}} is on action or promotion.<br/>Do you want to delete action or promotion first?</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+         <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="izbrisiAkciju()" data-dismiss="modal">Yes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -892,6 +910,15 @@ export default {
             this.osveziPreglede();
             return;
           });
+        },
+        izbrisiAkciju() {
+          MedicineDataService.deleteActionPromotion(this.id, this.originalLeka.medicine.code)
+            .then(response => {
+              if (response.data == 0) {this.poruka = "Medicine is not found."; return;}
+              else if (response.data == 1) {this.poruka = "Medicine is not on action or promotion."; return;}
+              this.poruka = "Action or promotion is successfully deleted.";
+              this.osveziLekove();
+            });       
         },
     }
 }

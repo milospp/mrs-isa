@@ -302,6 +302,33 @@ public class MedicineController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
+    @GetMapping("/deleteActionPromotion/{idAdmina}/{kodLeka}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<Integer> deleteActionPromotion(@PathVariable Long idAdmina, @PathVariable String kodLeka) {
+        User user = userService.findOne(idAdmina);
+        int povratna = -1;
+        if (user.getClass() != PharmacyAdmin.class) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
+        Pharmacy apoteka = ((PharmacyAdmin) user).getPharmacy();
+        povratna = 0;
+        MedicineInPharmacy odabraniLek = null;
+        for (MedicineInPharmacy med : apoteka.getMedicines())
+            if (med.getMedicine().getCode().equals(kodLeka)) {odabraniLek = med; break;}
+        if (odabraniLek == null) return new ResponseEntity<>(povratna, HttpStatus.OK);
+        povratna = 1;
+        MedPrice trenutnaCena = odabraniLek.getCurrentPrice();
+        if (trenutnaCena.getPriceType() == PriceType.NORMAL) return new ResponseEntity<>(povratna, HttpStatus.OK);
+        povratna = 2;
+        // vracam cenu leka
+        MedPrice novacena = new MedPrice();
+        novacena.setPriceType(PriceType.NORMAL);
+        novacena.setPrice(trenutnaCena.getOldPrice());
+        novacena.setStartDate(LocalDateTime.now());
+        odabraniLek.setCurrentPrice(novacena);
+        novacena.setMedicineInPharmacy(odabraniLek);
+        pharmacyService.save(apoteka);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
     @GetMapping("/pharmacy/{id}")
     public ResponseEntity<List<MedInPharmaDTO>> getMedicinePharmacy(@PathVariable Long id) {
         Pharmacy apoteka = pharmacyService.findOne(id);
