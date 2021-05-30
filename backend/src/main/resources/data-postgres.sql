@@ -90,11 +90,11 @@ insert into medicine_specifications (side_effects, daily_intake, structure) valu
 insert into medicine_specifications (side_effects, daily_intake, structure) values ('Sistemska alergija, lokalna alergija, Lipodistrofija','Doktor daje instrukcije za dozu','insulin');
 
 --medicine
-insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('AZ45', 'Hemofarm', 'Methyldopa', 'Može uzrokovati pospanost', 1, 3, 'pills', 1, 'Alfa-adrenergicki agonist');
-insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('BZ55', 'Kinezi', 'Sinopharm', 'vakcina', 1, 5, 'pills', 2, 'some type idl');
+insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('AZ45', 'Hemofarm', 'Methyldopa', 'Može uzrokovati pospanost', 0, 3, 'pills', 1, 'Alfa-adrenergicki agonist');
+insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('BZ55', 'Kinezi', 'Sinopharm', 'vakcina', 0, 5, 'pills', 2, 'some type idl');
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('FAR-123', 'Galenika','Farin','Piti isključivo prema receptu',0,2,'tablets',3,'antikoagulans');
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('ANB-001', 'Galenika', 'Anbol', 'Ne uzimati ako uzimate lekove protiv zgrušavanja krvi npr. varfarin', 0, 1, 'tablets', 4, 'NSAIL');
-insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('C784','TAD PHARMA GMBH','Co-Amlessa','Čuvati na temperaturi do 30°C, u originalnom pakovanju radi zaštite od svetlosti i vlage',1,2,'tablets',5,'perindopril');
+insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('C784','TAD PHARMA GMBH','Co-Amlessa','Čuvati na temperaturi do 30°C, u originalnom pakovanju radi zaštite od svetlosti i vlage',0,2,'tablets',5,'perindopril');
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('HUM010','ELI LILLY ITALIA S.P.A.','Humulin','Uložak od 3 mL se primenjuje samo u pen aplikatoru od 3 mL. Nije namenjen za primenu u penaplikatoru od 1,5 mL.',0,4,'saline',6,'insulini');
 
 --replacement medicine
@@ -125,10 +125,10 @@ insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (11, '11:
 insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 3);
 
 --med price
-insert into med_price(price, start_date, price_type, old_price) values (200, current_timestamp - INTERVAL '10 days', 0, -1);
-insert into med_price(price, start_date, price_type, old_price) values (100, current_timestamp - INTERVAL '10 days', 0, -1);
-insert into med_price(price, start_date, price_type, old_price) values (250, current_timestamp - INTERVAL '10 days', 0, -1);
-insert into med_price(price, start_date, price_type, old_price) values (150, current_timestamp - INTERVAL '10 days', 0, -1);
+insert into med_price(price, start_date) values (200, current_timestamp - INTERVAL '10 days');
+insert into med_price(price, start_date) values (100, current_timestamp - INTERVAL '10 days');
+insert into med_price(price, start_date) values (250, current_timestamp - INTERVAL '10 days');
+insert into med_price(price, start_date) values (150, current_timestamp - INTERVAL '10 days');
 
 --med catalog in pharmacy
 insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (0, 1,1,1);
