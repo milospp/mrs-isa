@@ -107,7 +107,6 @@ public class MedicineController {
         MedReservation reservationWithId = medReservationService.getByCode(medReservation.getCode());
 
         MedReservationDTO dto = medReservationToMedReservationDTO.convert(reservationWithId);
-        System.out.println("Id rezervacije: " + dto.getId());
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }

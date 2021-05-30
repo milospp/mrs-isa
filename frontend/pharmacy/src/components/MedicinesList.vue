@@ -2,7 +2,7 @@
 
 	<div class="row mb-3">
 			<div class="col-md-12">
-				<a class="btn btn-primary float-right" data-toggle="collapse" href="#searchMedCollapse" role="button" aria-expanded="false" aria-controls="searchMedCollapse">
+				<a class="btn btn-outline-secondary" data-toggle="collapse" href="#searchMedCollapse" role="button" aria-expanded="false" aria-controls="searchMedCollapse">
 					Filter
 				</a>
 			</div>
@@ -93,6 +93,8 @@
 
         </div>
         <button type="submit" class="btn btn-primary">Search</button> 
+        <a v-on:click="resetFormMedicines" class="ml-3 btn btn-warning">Reset</a> 
+
     </form>
   </div>
   
@@ -100,7 +102,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="Potvrdica">Specification of {{this.viewedMedicine.name}}</h5>
+                    <h5 class="modal-title" id="Potvrdica">Specification of {{this.viewedMedicine.name}} <span class="badge badge badge-dark">{{viewedMedicine.code}}</span></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -111,6 +113,15 @@
                             <tr><td>Structure: </td><td>{{this.viewedMedicine.specification.structure}}</td></tr>
                             <tr><td>Daily intake: </td><td>{{this.viewedMedicine.specification.dailyIntake}}</td></tr>
                             <tr><td>Side effects: </td><td>{{this.viewedMedicine.specification.sideEffects}}</td></tr>
+                            <tr><td>Manufacturer: </td><td>{{this.viewedMedicine.manufacturer}}</td></tr>
+                            <tr><td>Note: </td><td>{{this.viewedMedicine.note}}</td></tr>
+                            <tr><td>Type: </td><td>{{this.viewedMedicine.type}}</td></tr>
+                            <tr><td>Perscription: </td><td>{{this.viewedMedicine.perscription}}</td></tr>
+                            <tr><td>Similar med: </td><td>
+                              <template v-for="replace in viewedMedicine.replacementMedicationIds">
+                                <span class="badge badge-pill badge-dark mr-1">{{replace}}</span>
+                              </template></td></tr>
+                            <tr v-if="viewedMedicine.rating > 0"><td>Rating: </td><td>{{viewedMedicine.rating}}</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -121,8 +132,36 @@
   <reserve-med-modal v-if="userId && userId.role == 'PATIENT'" modalId="reserve-med-modal" v-model="selectedMed" :patientId="userId.id" @rated="reserveMedicine"></reserve-med-modal>
 
 
-  <div class="row">
+  <div class="row medicines-list">
 
+    <div class="col-6 col-xl-2 col-lg-3 py-2 card-group" v-for="m in medicinesSlice">
+      <div class="card">
+        <a href="#" v-on:click="fetchMedicine(m)" data-toggle="modal" data-target="#specsView">
+          <img class="card-img-top pl-4 pr-4 pt-2" src="@/assets/medicinelogo.png" alt="Card image cap">
+        </a>
+        <div class="card-body">
+          <h5 class="card-title mb-0">{{m.name}}</h5>
+          <div class="rating mb-3">
+            <span v-for="i in m.rating">★</span>
+          </div>
+          <p class="card-text">{{m.type}}</p>
+        </div>
+        <!-- <ul class="list-group list-group-flush">
+          <li class="list-group-item">{{m.manufacturer}}</li>
+        
+        </ul> -->
+
+        <div class="card-footer">
+            <button type="button" class="btn btn-block btn-outline-primary" v-on:click="fetchMedicine(m)" data-toggle="modal" data-target="#specsView">View specification</button>
+            <button v-if="userId && userId.role == 'PATIENT' && m.perscription == 'WITHOUT_RECEIPT'" type="button" class="btn btn-block btn-outline-primary" v-on:click="openReservationModal(m)" data-toggle="modal" data-target="#reserve-med-modal">Reserve</button>
+          
+        </div>
+      </div>
+    </div>
+
+
+
+<!-- 
     <div class="col-md-4" v-for="m in medicinesSlice">
       <div class="card mb-4 box-shadow">
         <div class="card-header">
@@ -132,21 +171,29 @@
           <h6>{{m.type}}</h6>
           <h6>{{m.shape}}</h6>
           <h6>{{m.manufacturer}}</h6>
-          <!-- <p class="card-text">
+          <p class="card-text">
             {{m.note}}
-          </p> -->
+          </p> 
           
           <div class="d-flex justify-content-between align-items-center">
-            <!-- <router-link class="btn btn-block btn-primary" :to="{ name: 'MedicinePage', params: { id: m.id  }}">View</router-link> -->
             <button type="button" class="btn btn-primary" v-on:click="fetchMedicine(m)" data-toggle="modal" data-target="#specsView">View specification</button>
             <button v-if="userId && userId.role == 'PATIENT'" type="button" class="btn btn-primary" v-on:click="openReservationModal(m)" data-toggle="modal" data-target="#reserve-med-modal">Reserve</button>
           </div>
           
         </div>
       </div>
-    </div>
+    </div> -->
+
+    
   </div>
 </template>
+
+
+<style>
+.medicines-list .card:hover {
+  background: #fafafa;
+}
+</style>
 
 <script>
 import MedicineDataService from '../service/MedicineDataService.js';
@@ -203,7 +250,17 @@ export default {
 
         openReservationModal(med){
           this.selectedMed = med;
-        }
+        },
+
+        resetFormMedicines() {
+          this.searchParams = {
+              minPoints: 0,
+              maxPoints: 999,
+              minRating: 0,
+              maxRating: 5,
+              userId: null,
+          }
+        },
 
     },
     mounted() {

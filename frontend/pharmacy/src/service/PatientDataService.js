@@ -72,13 +72,6 @@ class PatientDataService {
       method: 'post',
       url: `${API_URL}/users/register/patient`,
       data: newPatient
-    }).then(response => {
-      if (response.data) {
-        alert("Successfully added patient!");
-        return true;
-      }
-      alert("This e-mail is already taken!");
-      return false;
     });
   }
 
