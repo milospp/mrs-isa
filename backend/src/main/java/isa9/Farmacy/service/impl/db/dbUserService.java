@@ -44,9 +44,9 @@ import java.util.List;
 @Service
 public class dbUserService extends UserServiceBase implements UserService, UserDetailsService {
 
-    private UserRepository userRepository;
-    private PatientRepository patientRepository;
-    private DoctorRepository doctorRepository;
+    private final UserRepository userRepository;
+    private final PatientRepository patientRepository;
+    private final DoctorRepository doctorRepository;
 
 
     @Autowired

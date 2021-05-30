@@ -22,6 +22,7 @@ app.use(store)
     .use(SetupCalendar, {})
     .use(Toaster)
     .component('Calendar', Calendar)
+    .component('DatePicker', DatePicker)
     .mount('#app');
     
 app.config.globalProperties.$axios = axios;

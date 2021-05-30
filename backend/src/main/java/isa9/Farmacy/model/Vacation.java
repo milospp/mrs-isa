@@ -1,27 +1,59 @@
 package isa9.Farmacy.model;
 
-import java.util.Date;
-import java.util.Objects;
+import java.time.LocalDate;
 import lombok.*;
+
+import javax.persistence.*;
 
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 
+@Entity
 public class Vacation {
-    private boolean accepted;
+
+    @Id
+    @EqualsAndHashCode.Include
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "doctor_id")
+    @EqualsAndHashCode.Include
+    private Doctor doctor;
+
+    @ManyToOne
+    @JoinColumn(name = "pharmacy_id")
+    private Pharmacy pharmacy;
+
+    @ManyToOne
+    @JoinColumn(name = "pharmacy_admin_id")
+    private PharmacyAdmin pharmacyAdmin;
+
+    @Column
+    @Enumerated
+    private VacationRequestStatus status;
+
+    @Column
+    @Enumerated
+    @EqualsAndHashCode.Include
     private TypeOfRest type;
-    private Date startDate;
-    private Date endDate;
+
+    @Column
+    @EqualsAndHashCode.Include
+    private LocalDate startDate;
+
+    @Column
+    @EqualsAndHashCode.Include
+    private LocalDate endDate;
+
+    @Column
+    private String reason;
+
+    @Column
     private String whyNot;
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(accepted, type, startDate, endDate, whyNot);
-    }
 }

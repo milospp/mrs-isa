@@ -1,14 +1,9 @@
 package isa9.Farmacy.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import isa9.Farmacy.model.dto.DoctorDTO;
-import isa9.Farmacy.model.dto.ExaminationDTO;
-import isa9.Farmacy.model.dto.PharmacyDTO;
 import isa9.Farmacy.model.TypeOfReview;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import lombok.*;
 
 @Getter
