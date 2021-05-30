@@ -38,6 +38,7 @@ public class MedicineInPharmacyToMedInPharmaDTO implements Converter<MedicineInP
         dto.setCurrentPrice(medicineInPharmacy.getCurrentPrice().getPrice());
         dto.setInStock(medicineInPharmacy.getInStock());
         // za akcije i promocije
+        dto.setStartDate(medicineInPharmacy.getCurrentPrice().getStartDate());
         dto.setEndDate(medicineInPharmacy.getCurrentPrice().getEndDate());
         dto.setOldPrice(medicineInPharmacy.getCurrentPrice().getOldPrice());
         dto.setPriceType(medicineInPharmacy.getCurrentPrice().getPriceType());

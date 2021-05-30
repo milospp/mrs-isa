@@ -95,10 +95,10 @@ public class dbPharmacyService extends PharmacyServiceBase implements PharmacySe
     }
 
     @Override
-    public void sendActionMail(MedPrice actionPromotion) {
+    public void sendActionMail(MedPrice actionPromotion, Boolean delete) {
         Pharmacy apoteka = actionPromotion.getMedicineInPharmacy().getPharmacy();
         for (Patient pacijent : this.userService.howSucribePharmacy(apoteka.getId()))
-          this.mailService.sendActionInfo(actionPromotion, pacijent);
+          this.mailService.sendActionInfo(actionPromotion, pacijent, delete);
     }
 
     @Override
