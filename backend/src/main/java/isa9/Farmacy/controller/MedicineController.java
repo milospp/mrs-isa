@@ -57,6 +57,7 @@ public class MedicineController {
     @GetMapping("tmp-test")
     public ResponseEntity<Boolean> debug(){
         medReservationService.checkForExpiredReservations();
+        this.medInPharmaService.checkForExpiredActionOrPromotion();
         return new ResponseEntity<>(true, HttpStatus.OK);
 
     }
