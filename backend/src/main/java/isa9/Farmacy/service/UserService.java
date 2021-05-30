@@ -54,4 +54,6 @@ public interface UserService extends GenericService<User> {
     Penality addPenalty(Patient patient, String reason);
 
     List<Doctor> getVisitedDoctors(Patient patient);
+
+    List<Patient> howSucribePharmacy(Long pharmacyId);
 }

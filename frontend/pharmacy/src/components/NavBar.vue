@@ -88,8 +88,8 @@
 
 				<!-- desni deo -->
 				<div v-if="!user" class="navbar-nav my-2 my-lg-0">
-					<router-link to="/login" class="nav-link">Login</router-link>
-					<router-link to="/register" class="nav-link">Register</router-link>
+					<router-link to="/login" class="btn btn-outline-info">Login</router-link>
+					<router-link to="/register" class="nav-link ">Register</router-link>
 				</div>
 			  	<div v-else-if="user.role === 'PHARMACIST'" class="navbar-nav my-2 my-lg-0">
 					<router-link to="/pharmacist/profile" class="nav-link">Profile</router-link>
@@ -137,7 +137,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-#navbar a.router-link-exact-active {
+
+#navbar a.router-link-exact-active.nav-link {
   color: #42b983;
 }
 </style>

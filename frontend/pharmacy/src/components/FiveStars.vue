@@ -1,15 +1,16 @@
 <template>
     <div class="rate">
-        <input type="radio" :id="inputId+'star5'" name="rate" value="5" @input="changePageTitle" v-model="modelValue" />
-        <label :for="inputId+'star5'" title="text">5 stars</label>
-        <input type="radio" :id="inputId+'star4'" name="rate" value="4" @input="changePageTitle" v-model="modelValue" />
-        <label :for="inputId+'star4'" title="text">4 stars</label>
-        <input type="radio" :id="inputId+'star3'" name="rate" value="3" @input="changePageTitle" v-model="modelValue" />
-        <label :for="inputId+'star3'" title="text">3 stars</label>
-        <input type="radio" :id="inputId+'star2'" name="rate" value="2" @input="changePageTitle" v-model="modelValue" />
-        <label :for="inputId+'star2'" title="text">2 stars</label>
-        <input type="radio" :id="inputId+'star1'" name="rate" value="1" @input="changePageTitle" v-model="modelValue" />
-        <label :for="inputId+'star1'" title="text">1 star</label>
+
+            <input :disabled="disableEdit" type="radio" :id="inputId+'star5'" name="rate" value="5" @input="changePageTitle" v-model="modelValue" />
+            <label :for="inputId+'star5'" title="text" :class="{star: !disableEdit, readonly: disableEdit}">5 stars</label>
+            <input :disabled="disableEdit" type="radio" :id="inputId+'star4'" name="rate" value="4" @input="changePageTitle" v-model="modelValue" />
+            <label :for="inputId+'star4'" title="text" :class="{star: !disableEdit, readonly: disableEdit}">4 stars</label>
+            <input :disabled="disableEdit" type="radio" :id="inputId+'star3'" name="rate" value="3" @input="changePageTitle" v-model="modelValue" />
+            <label :for="inputId+'star3'" title="text" :class="{star: !disableEdit, readonly: disableEdit}">3 stars</label>
+            <input :disabled="disableEdit" type="radio" :id="inputId+'star2'" name="rate" value="2" @input="changePageTitle" v-model="modelValue" />
+            <label :for="inputId+'star2'" title="text" :class="{star: !disableEdit, readonly: disableEdit}">2 stars</label>
+            <input :disabled="disableEdit" type="radio" :id="inputId+'star1'" name="rate" value="1" @input="changePageTitle" v-model="modelValue" />
+            <label :for="inputId+'star1'" title="text" :class="{star: !disableEdit, readonly: disableEdit}">1 star</label>
     </div>
 </template>
 
@@ -21,6 +22,11 @@ export default {
     inputId: {
         type: String,
         default: "",
+    },
+    
+    disableEdit: {
+        type: Boolean,
+        default: false,
     }
   },
   emits: ['update:modelValue'],
@@ -39,6 +45,10 @@ export default {
 </script>
 
 <style scoped>
+    .readonly {
+        cursor: default !important;
+    }
+
     .rate {
         float: left;
         height: 46px;
@@ -57,21 +67,24 @@ export default {
         font-size:30px;
         color:#ccc;
     }
+
+
+
     .rate:not(:checked) > label:before {
         content: '★ ';
     }
     .rate > input:checked ~ label {
         color: #ffc700;    
     }
-    .rate:not(:checked) > label:hover,
-    .rate:not(:checked) > label:hover ~ label {
+    .rate:not(:checked) > label.star:hover,
+    .rate:not(:checked) > label.star:hover ~ label.star {
         color: #deb217;  
     }
-    .rate > input:checked + label:hover,
-    .rate > input:checked + label:hover ~ label,
-    .rate > input:checked ~ label:hover,
-    .rate > input:checked ~ label:hover ~ label,
-    .rate > label:hover ~ input:checked ~ label {
+    .rate > input:checked + label.star:hover,
+    .rate > input:checked + label.star:hover ~ label.star,
+    .rate > input:checked ~ label.star:hover,
+    .rate > input:checked ~ label.star:hover ~ label.star,
+    .rate > label.star:hover ~ input:checked ~ label.star {
         color: #c59b08;
     }
 </style>

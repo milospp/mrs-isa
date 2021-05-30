@@ -7,6 +7,7 @@ import isa9.Farmacy.model.dto.PharmacySearchDTO;
 import isa9.Farmacy.service.MedicineService;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.RatingService;
+import isa9.Farmacy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Comparator;
@@ -18,9 +19,17 @@ import java.util.stream.Collectors;
 public abstract class PharmacyServiceBase implements PharmacyService {
     protected RatingService ratingService;
 
+
+    protected UserService userService;
+
     @Autowired
     public void setRatingService(RatingService ratingService) {
         this.ratingService = ratingService;
+    }
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 
     @Override

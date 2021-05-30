@@ -7,4 +7,5 @@ import java.util.Collection;
 
 public interface MedInPharmaService extends GenericService<MedicineInPharmacy> {
     Collection<MedicineInPharmacy> findAllMedicinesInPharmacy(Long medicineId);
+    void checkForExpiredActionOrPromotion();       // kada istekne akcija ili promocija vrati staru cenu
 }

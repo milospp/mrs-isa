@@ -1,15 +1,18 @@
 <template>
   <NavBar/>
   <FirstLoginWatcher/>
-  <h1 class="title">Home</h1>
-  <div class="container">
+  <div class="container mt-3">
     <Pharmacies limit="8"/>
-    <router-link class="btn btn-secondary text-left" :to="{ name: 'Pharmacies'}">View all</router-link>
+    <div class="text-center">
+      <router-link class="btn btn-info" :to="{ name: 'Pharmacies'}">View all</router-link>
+    </div>
 
   </div>
   <div class="container py-5">
     <Medicines limit="6"/>
-    <router-link class="btn btn-secondary text-left" :to="{ name: 'Medicines'}">View all</router-link>
+    <div class="text-center">
+      <router-link class="btn btn-info" :to="{ name: 'Medicines'}">View all</router-link>
+    </div>
   </div>
 </template>
 

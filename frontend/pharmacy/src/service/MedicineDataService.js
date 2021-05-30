@@ -55,6 +55,32 @@ class MedicineDataService {
     });
   }
 
+  makeActionPromotion(idAdminaApoteke, lek, procenat, novaCena, datum) {
+    lek.oldPrice = lek.currentPrice;
+    lek.currentPrice = novaCena;
+    datum = datum.split("-");
+    var konacan_datum = []
+    var ind = 0;
+    for (var p of datum) {konacan_datum[ind] = parseInt(p); ind++;}
+    konacan_datum[3] = 0; konacan_datum[4] = 0;
+    lek.endDate = konacan_datum;
+    var jesteAkcija = true;
+    if (procenat == 0) jesteAkcija = false;
+    return axios({
+      method: 'post',
+      url: API_URL + "/makeActionPromotion/"+ idAdminaApoteke + "/" + jesteAkcija,
+      data: lek
+    }).catch(function (error) {
+        if (error.response) {
+            console.log(error.response.data);
+        } else if (error.request) {
+            console.log(error.request);
+        }
+        console.log("Error");
+        console.log(error.config);
+    });
+  }
+
   addMedicinePharmacyAdmin(idAdminaApoteke, lek) {
     return axios({
       method: 'post',

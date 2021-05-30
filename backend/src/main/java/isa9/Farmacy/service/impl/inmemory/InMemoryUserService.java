@@ -346,5 +346,10 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         throw new NotYetImplementedException();
     }
 
+    @Override
+    public List<Patient> howSucribePharmacy(Long pharmacyId) {
+        return null;
+    }
+
 }
 
