@@ -95,11 +95,10 @@ public class dbPharmacyService extends PharmacyServiceBase implements PharmacySe
     }
 
     @Override
-    public void setActionMail(MedPrice actionPromotion) {
-        System.out.println("Nije implementirana metoda za slanje mejla do kraja");
+    public void sendActionMail(MedPrice actionPromotion) {
         Pharmacy apoteka = actionPromotion.getMedicineInPharmacy().getPharmacy();
-        //for (Patient pacijent : apoteka._______)
-        //  this.mailService.sendActionInfo(actionPromotion, pacijent);
+        for (Patient pacijent : this.userService.howSucribePharmacy(apoteka.getId()))
+          this.mailService.sendActionInfo(actionPromotion, pacijent);
     }
 
     @Override

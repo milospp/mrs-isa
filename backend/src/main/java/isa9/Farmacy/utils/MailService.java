@@ -667,10 +667,10 @@ public class MailService {
                 "                                $" + (medPrice.getPriceType() == PriceType.ACTION ? 100 - medPrice.getPrice() *100/ medPrice.getOldPrice() : "") + "\n" +
                 "                              </td>\n" +
                 "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
-                "                                $" + medPrice.getStartDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n" +
+                "                                " + medPrice.getStartDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n" +
                 "                              </td>\n" +
                 "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
-                "                                $" + medPrice.getEndDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n" +
+                "                                " + medPrice.getEndDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n" +
                 "                              </td>\n" +
                 "                            </tr>\n" +
                 "                          </tbody>\n" +

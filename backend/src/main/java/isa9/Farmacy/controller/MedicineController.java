@@ -299,6 +299,7 @@ public class MedicineController {
         odabraniLek.setCurrentPrice(novacena);
         odabraniLek.setInStock(lek.getInStock());
         pharmacyService.save(apoteka);
+        this.pharmacyService.sendActionMail(novacena);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
