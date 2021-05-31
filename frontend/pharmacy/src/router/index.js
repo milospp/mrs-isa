@@ -34,6 +34,7 @@ import SupplierProfile from '@/views/SupplierProfile.vue'
 import CounselingPage from '@/views/CounselingPage.vue'
 import MedicineSearchPage from '@/views/MedicineSearchPage.vue'
 import FirstLogin from '@/views/FirstLogin.vue'
+import ChangePassword from '@/views/ChangePassword.vue'
 import SuppliersOffersPage from '@/views/SuppliersOffersPage.vue'
 import AddNewOffer from '@/views/AddNewOffer.vue'
 import ComplaintPage from '@/views/ComplaintPage.vue'
@@ -217,6 +218,11 @@ const routes = [
     path: '/firstLogin',
     name: 'FirstLogin',
     component: FirstLogin
+  },
+  {
+    path: '/change-password',
+    name: 'ChangePassword',
+    component: ChangePassword
   },
   {
     path: '/addNewOffer',
