@@ -79,7 +79,8 @@ public class VacationController {
     @GetMapping("/{idAdmina}")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<List<VacationDTO>> getVacationForPharmacy(@PathVariable Long idAdmina) {
-        List<Vacation> sviZahtevi = vacationService.getAllForPharmacyAdmin(idAdmina);
+        PharmacyAdmin admin = (PharmacyAdmin) this.userService.findOne(idAdmina);
+        List<Vacation> sviZahtevi = vacationService.getAllForPharmacy(admin.getPharmacy().getId());
         List<VacationDTO> povratna = vacationToVacationDTO.convert(sviZahtevi);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
@@ -96,5 +97,6 @@ public class VacationController {
         originalZahtev.setWhyNot(zahtev.getWhyNot());
         originalZahtev.setPharmacyAdmin(admin);
         this.vacationService.save(originalZahtev);
+        this.mailService.sendVacationInfo(originalZahtev);
     }
 }

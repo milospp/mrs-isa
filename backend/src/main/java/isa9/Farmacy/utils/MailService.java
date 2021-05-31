@@ -534,8 +534,7 @@ public class MailService {
         Medicine lek = medPrice.getMedicineInPharmacy().getMedicine();
         String mejl = patient.getEmail();
         String naslov = "";
-        String htmlKod = "" +
-                this.startOfMail;              // OVDEE MENJAM
+        String htmlKod = "" + this.startOfMail;
         if (delete) {
             naslov = "Action or promotion is deleted";
             htmlKod = htmlKod +
@@ -688,22 +687,227 @@ public class MailService {
                 "                                " + lek.getName() + " (" + lek.getCode() + ")\n" +
                 "                              </td>\n" +
                 "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
-                "                                " + medPrice.getOldPrice() + "min\n" +
+                "                                $" + medPrice.getOldPrice() + "\n" +
                 "                              </td>\n" +
                 "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
                 "                                " + (medPrice.getPriceType() == PriceType.ACTION ? "Action" : "Promotion")  + "\n" +
                 "                              </td>\n" +
                 "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
-                "                                " + medPrice.getPrice() + "\n" +
+                "                                $" + medPrice.getPrice() + "\n" +
                 "                              </td>\n" +
                 "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
-                "                                $" + (medPrice.getPriceType() == PriceType.ACTION ? 100 - medPrice.getPrice() *100/ medPrice.getOldPrice() : "") + "\n" +
+                "                                " + (medPrice.getPriceType() == PriceType.ACTION ? (100 - medPrice.getPrice() *100/ medPrice.getOldPrice()) + "%" : "") + "\n" +
                 "                              </td>\n" +
                 "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
                 "                                " + medPrice.getStartDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n" +
                 "                              </td>\n" +
                 "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
                 "                                " + medPrice.getEndDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n" +
+                "                              </td>\n" +
+                "                            </tr>\n" +
+                "                          </tbody>\n" +
+                "                        </table>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                  </table>\n" +
+                "                </div>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "</td></tr></table>\n" +
+                "<![endif]-->\n" +
+                "              </td>\n" +
+                "            </tr>\n" +
+                "          </tbody>\n" +
+                "        </table>\n" +
+                "      </div>\n" +
+                "      <!--[if mso | IE]>\n" +
+                "</td></tr></table>\n" +
+                "<![endif]-->\n" +
+                "      <!--[if mso | IE]>\n" +
+                "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:600px;\" width=\"600\"><tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\">\n" +
+                "<![endif]-->\n" +
+                "      <div style='background:#F5774E;background-color:#F5774E;margin:0px auto;max-width:600px;'>\n" +
+                "        <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='background:#F5774E;background-color:#F5774E;width:100%;'>\n" +
+                "          <tbody>\n" +
+                "            <tr>\n" +
+                "              <td style='direction:ltr;font-size:0px;padding:10px 0;text-align:center;vertical-align:top;'>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td style=\"vertical-align:top;width:540px;\">\n" +
+                "<![endif]-->\n" +
+                "                <div class='dys-column-per-90 outlook-group-fix' style='direction:ltr;display:inline-block;font-size:13px;text-align:left;vertical-align:top;width:100%;'>\n" +
+                "                  <table border='0' cellpadding='0' cellspacing='0' role='presentation' style='vertical-align:top;' width='100%'>\n" +
+                "                    <tr>\n" +
+                "                      <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#ffffff;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:1;text-align:left;\">\n" +
+                "                          Address: <strong>" + apoteka.getAddress().getState() + " " + apoteka.getAddress().getCity() + " " + apoteka.getAddress().getStreet() + " " + apoteka.getAddress().getNumber() + "</strong>\n" +
+                this.endOfMail;
+
+        sendMail(mejl, naslov, htmlKod);
+        return;
+    }
+
+    @Async
+    public void sendVacationInfo(Vacation vacation) {             // metoda za sladnje mejla kada se odobri ili odbije zahtev za odmor
+        Pharmacy apoteka = vacation.getPharmacy();
+        Doctor doktor = vacation.getDoctor();
+        String mejl = doktor.getEmail();
+        String naslov = "";
+        String htmlKod = "" + this.startOfMail;
+        if (vacation.getStatus() == VacationRequestStatus.DENIED) {
+            naslov = "Vacation request is denided";
+            htmlKod = htmlKod +
+                    "                          Vacation request is denided\n" +
+                    "                        </div>\n" +
+                    "                      </td>\n" +
+                    "                    </tr>\n" +
+                    "                    <tr>\n" +
+                    "                      <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;'>\n" +
+                    "                        <div style=\"color:#187272;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:20px;text-align:center;\">\n" +
+                    "                          Vacation request in " + apoteka.getName() + " pharmacy is denided.\n";
+        }
+        else {
+            naslov = "Vacation request is accepted";
+            htmlKod = htmlKod +
+                    "                          Vacation request is accepted\n" +
+                    "                        </div>\n" +
+                    "                      </td>\n" +
+                    "                    </tr>\n" +
+                    "                    <tr>\n" +
+                    "                      <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;'>\n" +
+                    "                        <div style=\"color:#187272;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:20px;text-align:center;\">\n" +
+                    "                          Vacation request in " + apoteka.getName() + " pharmacy is accepted.\n";
+        }
+        htmlKod = htmlKod +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                  </table>\n" +
+                "                </div>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "</td></tr></table>\n" +
+                "<![endif]-->\n" +
+                "              </td>\n" +
+                "            </tr>\n" +
+                "          </tbody>\n" +
+                "        </table>\n" +
+                "      </div>\n" +
+                "      <!--[if mso | IE]>\n" +
+                "</td></tr></table>\n" +
+                "<![endif]-->\n" +
+                "      <!--[if mso | IE]>\n" +
+                "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:600px;\" width=\"600\"><tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\">\n" +
+                "<![endif]-->\n" +
+                "      <div style='background:#F5774E;background-color:#F5774E;margin:0px auto;max-width:600px;'>\n" +
+                "        <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='background:#F5774E;background-color:#F5774E;width:100%;'>\n" +
+                "          <tbody>\n" +
+                "            <tr>\n" +
+                "              <td style='direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td style=\"vertical-align:top;width:300px;\">\n" +
+                "<![endif]-->\n" +
+                "                <div class='dys-column-per-50 outlook-group-fix' style='direction:ltr;display:inline-block;font-size:13px;text-align:left;vertical-align:top;width:100%;'>\n" +
+                "                  <table border='0' cellpadding='0' cellspacing='0' role='presentation' style='vertical-align:top;' width='100%'>\n" +
+                "                    <tr>\n" +
+                "                      <td align='left' style='font-size:0px;padding:25px 25px 0 50px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#FFFFFF;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:13px;line-height:1;text-align:left;\">\n" +
+                "                          " + doktor.getName() + " " + doktor.getSurname() + "\n" +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                    <tr>\n" +
+                "                      <td align='left' style='font-size:0px;padding:0 25px 0 50px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#933f24;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:13px;line-height:1;text-align:left;\">\n" +
+                "                          " + doktor.getAddress().getState() + " " + doktor.getAddress().getCity() + " " + doktor.getAddress().getStreet() + " " + doktor.getAddress().getNumber() + "\n" +
+                "                        </div>\n" +
+                "                        <div style=\"color:#933f24;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:13px;line-height:1;text-align:left;\">\n" +
+                "                          " + doktor.getPhoneNumber() + "\n" +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                  </table>\n" +
+                "                </div>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "</td><td style=\"vertical-align:top;width:300px;\">\n" +
+                "<![endif]-->\n" +
+                "                <div class='dys-column-per-50 outlook-group-fix' style='direction:ltr;display:inline-block;font-size:13px;text-align:left;vertical-align:top;width:100%;'>\n" +
+                "                  <table border='0' cellpadding='0' cellspacing='0' role='presentation' style='vertical-align:top;' width='100%'>\n" +
+                "                    <tr>\n" +
+                "                      <td align='right' style='font-size:0px;padding:25px 50px 0 25px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#FFFFFF;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:13px;line-height:1;text-align:right;\">\n" +
+                //OVDE MENJAM
+                "                          \n" +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                    <tr>\n" +
+                "                      <td align='right' style='font-size:0px;padding:0 50px 0 25px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#FFFFFF;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:13px;line-height:1;text-align:right;\">\n" +
+                "                          \n" +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                  </table>\n" +
+                "                </div>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "</td></tr></table>\n" +
+                "<![endif]-->\n" +
+                "              </td>\n" +
+                "            </tr>\n" +
+                "          </tbody>\n" +
+                "        </table>\n" +
+                "      </div>\n" +
+                "      <!--[if mso | IE]>\n" +
+                "</td></tr></table>\n" +
+                "<![endif]-->\n" +
+                "      <!--[if mso | IE]>\n" +
+                "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:600px;\" width=\"600\"><tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\">\n" +
+                "<![endif]-->\n" +
+                "      <div style='background:#F5774E;background-color:#F5774E;margin:0px auto;max-width:600px;'>\n" +
+                "        <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='background:#F5774E;background-color:#F5774E;width:100%;'>\n" +
+                "          <tbody>\n" +
+                "            <tr>\n" +
+                "              <td style='direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td style=\"vertical-align:top;width:600px;\">\n" +
+                "<![endif]-->\n" +
+                "                <div class='dys-column-per-100 outlook-group-fix' style='direction:ltr;display:inline-block;font-size:13px;text-align:left;vertical-align:top;width:100%;'>\n" +
+                "                  <table border='0' cellpadding='0' cellspacing='0' role='presentation' style='vertical-align:top;' width='100%'>\n" +
+                "                    <tr>\n" +
+                "                      <td align='left' style='font-size:0px;padding:10px 50px;word-break:break-word;'>\n" +
+                "                        <table border='0' cellpadding='10' cellspacing='0' style='cellpadding:10;cellspacing:0;color:#000000;font-family:Helvetica, Arial, sans-serif;font-size:16px;line-height:22px;table-layout:auto;width:100%;' width='100%'>\n" +
+                "                          <tbody>\n" +
+                "                            <tr align='center'>\n" +
+                "                              <th align='center' style='background-color: #ac4d2f; color: #ffffff;'>\n" +
+                //OVDE MENJAM
+                "                                Start date\n" +
+                "                              </th>\n" +
+                "                              <th align='center' style='background-color: #ac4d2f; color: #ffffff;'>\n" +
+                "                                End date\n" +
+                "                              </th>\n" +
+                "                              <th align='center' style='background-color: #ac4d2f; color: #ffffff;'>\n" +
+                "                                Status\n" +
+                "                              </th>\n" +
+                "                              <th align='center' style='background-color: #ac4d2f; color: #ffffff;'>\n" +
+                "                                Why not\n" +
+                "                              </th>\n" +
+                "                              <th align='center' style='background-color: #ac4d2f; color: #ffffff;'>\n" +
+                "                                Pharmacy admin\n" +
+                "                              </th>\n" +
+                "                            </tr>\n" +
+                "                            <tr>\n" +
+                "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
+                "                                " + vacation.getStartDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n" +
+                "                              </td>\n" +
+                "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
+                "                                " + vacation.getEndDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n" +
+                "                              </td>\n" +
+                "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
+                "                                " + (vacation.getStatus() == VacationRequestStatus.ACCEPTED ? "Accepted" : "Denided")  + "\n" +
+                "                              </td>\n" +
+                "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
+                "                                " + (vacation.getWhyNot() == null ? "" : vacation.getWhyNot()) + "\n" +
+                "                              </td>\n" +
+                "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
+                "                                " + vacation.getPharmacyAdmin().getName() + " " + vacation.getPharmacyAdmin().getSurname() + "\n" +
                 "                              </td>\n" +
                 "                            </tr>\n" +
                 "                          </tbody>\n" +
