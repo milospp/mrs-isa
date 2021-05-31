@@ -7,11 +7,13 @@ import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.VacationService;
 import isa9.Farmacy.service.impl.base.VacationServiceBase;
+import isa9.Farmacy.utils.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Component
@@ -91,5 +93,32 @@ public class dbVacationService extends VacationServiceBase implements VacationSe
             }
         }
         return true;
+    }
+
+    @Override
+    public void cancelAppointments(Vacation vacation, MailService mailService) {
+        List<Appointment> pregledi = appointmentService.getDoctorAppointmentsNotCanceled(vacation.getDoctor().getId());
+        for (Appointment p : pregledi) {                                                        // za svaki pregled
+            if (p.getExamination() != null) {                                                   // ako ima zakzan
+                if (p.getExamination().getStatus() == ExaminationStatus.PENDING) {              // ako je na cekanju
+                    if (p.getPharmacy().getId().equals(vacation.getPharmacy().getId()) &&       // u istoj apoteci
+                            p.getStartTime().isAfter(vacation.getStartDate().atStartOfDay()) && // vreme se podudara
+                            p.getStartTime().isBefore(vacation.getEndDate().atStartOfDay())) {
+                        p.getExamination().setStatus(ExaminationStatus.CANCELED);               // otkazi ga
+                        this.appointmentService.save(p);
+                        mailService.sendAppointmentInfo(p, true);                       // posalji mejl
+                    }
+                }
+            }
+            else {
+                Examination prazan = new Examination();
+                prazan.setAppointment(p);
+                prazan.setStatus(ExaminationStatus.CANCELED);
+                prazan.setPatient(null);
+                prazan.setTherapy(new HashSet<>());
+                p.setExamination(prazan);
+                this.appointmentService.save(p);
+            }
+        }
     }
 }

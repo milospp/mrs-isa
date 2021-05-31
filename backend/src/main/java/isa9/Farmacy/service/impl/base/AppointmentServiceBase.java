@@ -215,7 +215,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         appointment.setExamination(examination);
 
         save(appointment);
-        mailService.sendAppointmentInfo(appointment);
+        mailService.sendAppointmentInfo(appointment, false);
 
         return appointment;
     }
@@ -306,7 +306,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         appointment.setExamination(examination);
 
         save(appointment);
-        mailService.sendAppointmentInfo(appointment);
+        mailService.sendAppointmentInfo(appointment, false);
 
         return appointment;
 

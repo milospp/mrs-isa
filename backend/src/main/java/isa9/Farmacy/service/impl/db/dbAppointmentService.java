@@ -47,6 +47,7 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
 
     @Override
     public Appointment save(Appointment entity) {
+        if (entity.getExamination() != null) {this.examinationService.save(entity.getExamination());System.out.println("Nananna");}
         return this.appointmentRepository.save(entity);
     }
 
