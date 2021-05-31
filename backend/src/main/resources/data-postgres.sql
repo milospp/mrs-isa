@@ -90,10 +90,10 @@ insert into medicine_specifications (side_effects, daily_intake, structure) valu
 insert into medicine_specifications (side_effects, daily_intake, structure) values ('Sistemska alergija, lokalna alergija, Lipodistrofija','Doktor daje instrukcije za dozu','insulin');
 
 --medicine
-insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('AZ45', 'Hemofarm', 'Methyldopa', 'Može uzrokovati pospanost', 0, 3, 'pills', 1, 'Alfa-adrenergicki agonist');
+insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('AZ45', 'Hemofarm', 'Methyldopa', 'Može uzrokovati pospanost', 1, 3, 'pills', 1, 'Alfa-adrenergicki agonist');
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('BZ55', 'Kinezi', 'Sinopharm', 'vakcina', 0, 5, 'pills', 2, 'some type idl');
-insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('FAR-123', 'Galenika','Farin','Piti isključivo prema receptu',0,2,'tablets',3,'antikoagulans');
-insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('ANB-001', 'Galenika', 'Anbol', 'Ne uzimati ako uzimate lekove protiv zgrušavanja krvi npr. varfarin', 0, 1, 'tablets', 4, 'NSAIL');
+insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('FAR-123', 'Galenika','Farin','Piti isključivo prema receptu',1,2,'tablets',3,'antikoagulans');
+insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('ANB-001', 'Galenika', 'Anbol', 'Ne uzimati ako uzimate lekove protiv zgrušavanja krvi npr. varfarin', 1, 1, 'tablets', 4, 'NSAIL');
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('C784','TAD PHARMA GMBH','Co-Amlessa','Čuvati na temperaturi do 30°C, u originalnom pakovanju radi zaštite od svetlosti i vlage',0,2,'tablets',5,'perindopril');
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('HUM010','ELI LILLY ITALIA S.P.A.','Humulin','Uložak od 3 mL se primenjuje samo u pen aplikatoru od 3 mL. Nije namenjen za primenu u penaplikatoru od 1,5 mL.',0,4,'saline',6,'insulini');
 
@@ -133,19 +133,15 @@ insert into med_price(price, start_date, old_price, price_type) values (150, cur
 --med catalog in pharmacy
 insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (0, 1,1,1);
 update med_price SET medicine_in_pharmacy_id = 1 WHERE id = 1;
-insert into pharmacy_medicines (pharmacy_id, medicines_id) values (1,1);
 --
 insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (10000, 2,2,1);
 update med_price SET medicine_in_pharmacy_id = 2 WHERE id = 2;
-insert into pharmacy_medicines (pharmacy_id, medicines_id) values (1,2);
 --
 insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (300, 3,3,1);
 update med_price SET medicine_in_pharmacy_id = 3 WHERE id = 3;
-insert into pharmacy_medicines (pharmacy_id, medicines_id) values (1,3);
 --
 insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (12000, 4,4,1);
 update med_price SET medicine_in_pharmacy_id = 4 WHERE id = 4;
-insert into pharmacy_medicines (pharmacy_id, medicines_id) values (1,4);
 
 set timezone = 'Europe/Belgrade';
 --appointments
@@ -299,5 +295,5 @@ values ('fakecode1', current_timestamp - INTERVAL '1 days', 5, current_timestamp
 insert into med_reservation (code, last_date, quantity, reservation_date, status, medicine_in_pharmacy_id, patient_id, who_dispenses_id)
 values ('fakecode2', current_timestamp + INTERVAL '2 days', 5, current_timestamp - INTERVAL '2 days', 0, 1, 1, null);
 
-insert into patient_reservations (patient_id, reservations_id) values (1,1);
-insert into patient_reservations (patient_id, reservations_id) values (1,2);
+-- insert into patient_reservations (patient_id, reservations_id) values (1,1);
+-- insert into patient_reservations (patient_id, reservations_id) values (1,2);

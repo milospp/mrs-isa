@@ -9,6 +9,8 @@ import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.utils.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -118,7 +120,9 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     @Override
     public List<Appointment> getAllFreeDermatologist() {
         List<Appointment> allAppointments;
-        allAppointments = findAll().stream().filter(x -> isFreeDermAppointment(x)).collect(Collectors.toList());
+        allAppointments = findAll().stream().filter(
+                x -> isFreeDermAppointment(x) && isUpcoming(x)
+                ).collect(Collectors.toList());
         return allAppointments;
     }
 
@@ -195,6 +199,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     }
 
     @Override
+    @Transactional
     public Appointment bookAnAppointment(Long patientId, Long appointmentId) {
         User user = userService.findOne(patientId);
         if (user == null || !user.getRole().getName().equals("PATIENT")) return null;
@@ -266,6 +271,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Appointment bookConsultingAppointment(ConsultingAppointmentReqDTO appointmentReqDTO, Patient patient) {
 //      TODO: Add error message...
         if (userService.isPatientBlocked(patient)) return null;

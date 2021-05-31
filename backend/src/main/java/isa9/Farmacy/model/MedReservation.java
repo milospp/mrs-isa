@@ -24,6 +24,7 @@ public class MedReservation {
     private String code;
 
     @ManyToOne
+    @JoinColumn(name = "patient_id")
     private Patient patient;
     @Column
     private LocalDate reservationDate;

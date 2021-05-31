@@ -6,6 +6,7 @@ import isa9.Farmacy.model.dto.MedReservationDTO;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
 import isa9.Farmacy.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -131,6 +132,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
     }
 
     @Override
+    @Transactional
     public MedReservation reserveMedicine(MedReservationFormDTO reservationFormDTO, Long doctorId) {
         if (!isDateAfter(reservationFormDTO)) return null;
         if (reservationFormDTO.getQuantity() < 1) return null;
@@ -188,6 +190,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
 
 
     @Override
+    @Transactional
     public MedReservation reserveMedicine(MedReservationFormDTO reservationFormDTO) {
         return this.reserveMedicine(reservationFormDTO, null);
     }

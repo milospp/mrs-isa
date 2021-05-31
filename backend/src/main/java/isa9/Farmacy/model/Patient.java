@@ -26,7 +26,7 @@ public class Patient extends User {
     private Set<Examination> myExaminations;
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Medicine> allergies;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "patient")
     private Set<MedReservation> reservations;
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Complaint> complaints;

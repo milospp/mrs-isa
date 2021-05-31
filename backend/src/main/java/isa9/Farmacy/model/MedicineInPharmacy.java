@@ -3,6 +3,7 @@ package isa9.Farmacy.model;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 import lombok.*;
 
@@ -15,7 +16,9 @@ import lombok.*;
 
 @Entity
 @EqualsAndHashCode(exclude = {"currentPrice", "pharmacy"})
-public class MedicineInPharmacy {
+public class MedicineInPharmacy implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,7 +29,11 @@ public class MedicineInPharmacy {
     @Column
     private int inStock;
     @ManyToOne
+    @JoinColumn(name = "pharmacy_id")
     private Pharmacy pharmacy; // mozda ne treba
 
+    @Column(name = "version", nullable = false, columnDefinition = "int default 0")
+    @Version
+    private Long version;
 
 }
