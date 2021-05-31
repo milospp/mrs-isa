@@ -113,6 +113,8 @@ export default {
         sendComplaint(){
             this.complaint.author = this.author.id;
             this.complaint.pharmacy = this.complaint.pharmacy.id;
+            console.log("new complaint");
+            console.log(this.complaint);
             ComplaintDataService.sendComplaint(this.complaint).then(response => {
                 this.complaint.description = "";
             });
