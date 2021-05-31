@@ -38,7 +38,7 @@ public class ComplaintController {
         return new ResponseEntity<>(0, HttpStatus.OK);
     }
 
-    @PostMapping("/")
+    @GetMapping("/")
     @PreAuthorize("hasAuthority('SYS_ADMIN')")
     public ResponseEntity<List<ComplaintDTO>> getAllComplaints(){
         List<ComplaintDTO> allComplaints = this.complaintToComplaintDTO.convert(this.complaintService.findAll());
