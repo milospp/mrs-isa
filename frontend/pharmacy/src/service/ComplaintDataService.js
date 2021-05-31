@@ -16,6 +16,14 @@ class ComplaintDataService{
     getAllComplaints(){
         return axios.get(`${API_URL}/`);
     }
+
+    respondToComplaint(complaint){
+        return axios({
+            method: 'post',
+            url: `${API_URL}/responseToComplaint`,
+            data: complaint
+        });
+    }
 }
 
 export default new ComplaintDataService();

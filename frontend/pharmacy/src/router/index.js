@@ -38,6 +38,7 @@ import ChangePassword from '@/views/ChangePassword.vue'
 import SuppliersOffersPage from '@/views/SuppliersOffersPage.vue'
 import AddNewOffer from '@/views/AddNewOffer.vue'
 import ComplaintPage from '@/views/ComplaintPage.vue'
+import ComplaintResponsePage from '@/views/ComplaintResponsePage.vue'
 
 
 const routes = [
@@ -243,6 +244,11 @@ const routes = [
     path: '/newComplaint',
     name: 'ComplaintPage',
     component: ComplaintPage
+  },
+  {
+    path: '/complaints',
+    name: 'ComplaintResponsePage',
+    component: ComplaintResponsePage
   }
 
   // {
