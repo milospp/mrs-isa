@@ -21,8 +21,12 @@ class VacationDataService{
         return axios.get(API_URL + "/" + idAdminaApoteke);
     }
 
-    saveVacationApproval(idAdminaApoteke, zahtev, potvrda) {
+    saveVacationApproval(idAdminaApoteke, zahtev, potvrda, zastoNe) {
         if (potvrda == "Accept") {zahtev.status = "ACCEPTED";}
+        else {
+            zahtev.status = "DENIED";
+            zahtev.whyNot = zastoNe;
+        }
         return axios({
             method: 'post',
             url: API_URL + "/" + idAdminaApoteke,

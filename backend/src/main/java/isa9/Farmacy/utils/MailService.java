@@ -324,22 +324,38 @@ public class MailService {
     }
 
     @Async
-    public void sendAppointmentInfo(Appointment appointment) {
+    public void sendAppointmentInfo(Appointment appointment, Boolean canceled) {
         Patient patient = appointment.getExamination().getPatient();
         Doctor doctor = appointment.getDoctor();
         Pharmacy pharmacy = appointment.getPharmacy();
         String recipient = patient.getEmail();
-        String subject = "Appointment invoice";
-        String content = "" +
-                this.startOfMail +
-                "                          Appointment info\n" +
-                "                        </div>\n" +
-                "                      </td>\n" +
-                "                    </tr>\n" +
-                "                    <tr>\n" +
-                "                      <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;'>\n" +
-                "                        <div style=\"color:#187272;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:20px;text-align:center;\">\n" +
-                "                          You have successfully booked an appointment.\n" +
+        String subject = "";
+        String content = this.startOfMail;
+        if (canceled) {
+            subject = "Appointment is canceled";
+            content = content +
+                    "                          Appointment is canceled\n" +
+                    "                        </div>\n" +
+                    "                      </td>\n" +
+                    "                    </tr>\n" +
+                    "                    <tr>\n" +
+                    "                      <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;'>\n" +
+                    "                        <div style=\"color:#187272;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:20px;text-align:center;\">\n" +
+                    "                          Doctor is on vacation.\n";
+        }
+        else {
+            subject = "Appointment invoice";
+            content = content +
+                    "                          Appointment info\n" +
+                    "                        </div>\n" +
+                    "                      </td>\n" +
+                    "                    </tr>\n" +
+                    "                    <tr>\n" +
+                    "                      <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;'>\n" +
+                    "                        <div style=\"color:#187272;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:20px;text-align:center;\">\n" +
+                    "                          You have successfully booked an appointment.\n";
+        }
+        content = content +
                 "                        </div>\n" +
                 "                      </td>\n" +
                 "                    </tr>\n" +

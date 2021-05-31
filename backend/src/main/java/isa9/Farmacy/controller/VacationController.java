@@ -8,6 +8,7 @@ import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.VacationService;
 import isa9.Farmacy.support.VacationToVacationDTO;
+import isa9.Farmacy.utils.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +28,15 @@ public class VacationController {
     private final UserService userService;
     private final PharmacyService pharmacyService;
     private final VacationToVacationDTO vacationToVacationDTO;
+    private final MailService mailService;
 
     @Autowired
-    public VacationController(VacationService vacationService, UserService userService, PharmacyService pharmacyService, VacationToVacationDTO vacationToVacationDTO) {
+    public VacationController(VacationService vacationService, UserService userService, PharmacyService pharmacyService, VacationToVacationDTO vacationToVacationDTO, MailService mailService) {
         this.vacationService = vacationService;
         this.userService = userService;
         this.pharmacyService = pharmacyService;
         this.vacationToVacationDTO = vacationToVacationDTO;
+        this.mailService = mailService;
     }
 
     @PostMapping("/saveRequest")
@@ -76,24 +79,22 @@ public class VacationController {
     @GetMapping("/{idAdmina}")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<List<VacationDTO>> getVacationForPharmacy(@PathVariable Long idAdmina) {
-        PharmacyAdmin admin = (PharmacyAdmin) this.userService.findOne(idAdmina);
-        List<Vacation> sviZahtevi = vacationService.getAllForPharmacy(admin.getPharmacy().getId());
+        List<Vacation> sviZahtevi = vacationService.getAllForPharmacyAdmin(idAdmina);
         List<VacationDTO> povratna = vacationToVacationDTO.convert(sviZahtevi);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
     @PostMapping("/{idAdmina}")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
-    public ResponseEntity<Integer> saveVacationAdmin(@PathVariable Long idAdmina, @RequestBody VacationDTO zahtev) {
+    public void saveVacationAdmin(@PathVariable Long idAdmina, @RequestBody VacationDTO zahtev) {
         PharmacyAdmin admin = (PharmacyAdmin) this.userService.findOne(idAdmina);
         Vacation originalZahtev = this.vacationService.findOne(zahtev.getId());
-        int povratna = 0;
-        if (!this.vacationService.testTime(originalZahtev)) return new ResponseEntity<>(povratna, HttpStatus.OK);
-        povratna = 1;
+        if (!this.vacationService.testTime(originalZahtev) && zahtev.getStatus() == VacationRequestStatus.ACCEPTED) {
+            this.vacationService.cancelAppointments(originalZahtev, this.mailService);
+        }
         originalZahtev.setStatus(zahtev.getStatus());
         originalZahtev.setWhyNot(zahtev.getWhyNot());
         originalZahtev.setPharmacyAdmin(admin);
         this.vacationService.save(originalZahtev);
-        return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 }

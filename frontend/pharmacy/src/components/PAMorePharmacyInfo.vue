@@ -296,8 +296,7 @@
               <option>Accept</option>
               <option>Deny</option>
           </select></div>
-         
-          <div class="modal-body" align="left">----: </div>
+          <div v-if="potvrdaZahteva=='Deny'" class="modal-body" align="left">Why not: <input type="text" v-model="zastoNe"/></div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="obradiZahtev()" data-dismiss="modal">Save</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -428,7 +427,8 @@ export default {
             filterOrder: 0, narudzbenica: null, sveNarudzbenice: [], narudzbeniceZaIspis: [],
             upitiZaLek: [], postojiPromena:false, cenovnik: null, 
             izabraniLek: null, novaCena: 0, procenti: 0, krajAkcije: null, izmene: true,
-            akcijePromocije: [], zahteviZaGodisnji: [], odabraniZahtev: null, potvrdaZahteva: null,
+            akcijePromocije: [], 
+            zahteviZaGodisnji: [], odabraniZahtev: null, potvrdaZahteva: null, zastoNe: null,
         };
       
     },
@@ -619,10 +619,10 @@ export default {
       },
       obradiZahtev() {
         if (this.potvrdaZahteva == null) { this.poruka = "You must choose to accept or deny request."; return; }
-
-        VacationDataService.saveVacationApproval(this.id, this.odabraniZahtev, this.potvrdaZahteva)
+        if (this.potvrdaZahteva == "Deny" && (this.zastoNe == null || this.zastoNe?.length == 0))
+          { this.poruka = "You must input reason why do not accept vacation request."; return; }
+        VacationDataService.saveVacationApproval(this.id, this.odabraniZahtev, this.potvrdaZahteva, this.zastoNe)
           .then(response => {
-            if (response.data == 0) { this.poruka = "---."; return; }
             this.poruka = "Vacation request is successfully saved.";
             this.osveziZahteve();
           });
