@@ -100,12 +100,14 @@ public class dbVacationService extends VacationServiceBase implements VacationSe
         List<Appointment> pregledi = appointmentService.getDoctorAppointmentsNotCanceled(vacation.getDoctor().getId());
         for (Appointment p : pregledi) {                                                        // za svaki pregled
             if (p.getExamination() != null) {                                                   // ako ima zakzan
-                if (p.getPharmacy().getId().equals(vacation.getPharmacy().getId()) &&       // u istoj apoteci
-                        p.getStartTime().isAfter(vacation.getStartDate().atStartOfDay()) && // vreme se podudara
-                        p.getStartTime().isBefore(vacation.getEndDate().atStartOfDay())) {
-                    p.getExamination().setStatus(ExaminationStatus.CANCELED);               // otkazi ga
-                    this.appointmentService.save(p);
-                    mailService.sendAppointmentInfo(p, true);                       // posalji mejl
+                if (p.getExamination().getStatus() == ExaminationStatus.PENDING) {              // ako je na cekanju
+                    if (p.getPharmacy().getId().equals(vacation.getPharmacy().getId()) &&       // u istoj apoteci
+                            p.getStartTime().isAfter(vacation.getStartDate().atStartOfDay()) && // vreme se podudara
+                            p.getStartTime().isBefore(vacation.getEndDate().atStartOfDay())) {
+                        p.getExamination().setStatus(ExaminationStatus.CANCELED);               // otkazi ga
+                        this.appointmentService.save(p);
+                        mailService.sendAppointmentInfo(p, true);                       // posalji mejl
+                    }
                 }
             }
             else {
