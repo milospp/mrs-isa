@@ -36,7 +36,7 @@ public class Pharmacy {
     @OneToMany(fetch = FetchType.EAGER)
     private Set<MedicineOrder> orders;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "pharmacy")
     private Set<MedicineInPharmacy> medicines;
 
     @OneToMany(fetch = FetchType.EAGER)
@@ -52,7 +52,6 @@ public class Pharmacy {
 
     @OneToMany(fetch = FetchType.EAGER)
     private List<InquiryMedicine> inquiryMedicines;
-
 
     public Pharmacy(String name, Address address, String description, Long id) {
         super();

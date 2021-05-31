@@ -15,12 +15,12 @@ import java.time.LocalDateTime;
 
 public class MedInPharmaDTO {
     private Long id;
-    private double currentPrice;
+    private Double currentPrice;
     private PriceType priceType;    // tip
-    private double oldPrice;           // za akciju i promociju
+    private Double oldPrice;           // za akciju i promociju
     private LocalDateTime endDate;  // kraj akcije ili promocije
     private MedicineDTO medicine;
-    private int inStock;
+    private Integer inStock;
     private PharmacyDTO pharmacy;
 
 }

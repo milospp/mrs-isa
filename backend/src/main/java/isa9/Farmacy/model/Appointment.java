@@ -49,4 +49,7 @@ public class Appointment {
     @JoinColumn(name = "examination_id")
     private Examination examination;
 
+    @Column(name = "version", nullable = false, columnDefinition = "int default 0")
+    @Version
+    private Long version;
 }
