@@ -88,16 +88,27 @@ export default {
         },
 
         sendResponse(complaint){
+            let fullAuthor = JSON.parse(JSON.stringify(this.chosenComplaint.author));
+            let fullPharmacy = {};
+            let fullDoctor = {};
             this.chosenComplaint.author =  this.chosenComplaint.author.id;
             if(this.chosenComplaint.pharmacy){
+                fullPharmacy = JSON.parse(JSON.stringify(this.chosenComplaint.pharmacy));
                 this.chosenComplaint.pharmacy = this.chosenComplaint.pharmacy.id;
             }
             if(this.chosenComplaint.doctor){
+                fullDoctor = JSON.parse(JSON.stringify(this.chosenComplaint.doctor));
                 this.chosenComplaint.doctor = this.chosenComplaint.doctor.id;
             }
 
             ComplaintDataService.respondToComplaint(complaint).then(response => {
-                
+                this.chosenComplaint.author =  fullAuthor;
+                if(fullPharmacy){
+                    this.chosenComplaint.pharmacy = fullPharmacy;
+                }
+                if(fullDoctor){
+                    this.chosenComplaint.doctor = fullDoctor;
+                }
             });
         }
     },
@@ -129,7 +140,6 @@ export default {
                     for(let complaint of this.allComplaints){
                         if(pharmacy.id == complaint.pharmacy){
                             complaint.pharmacy = pharmacy;
-                            break;
                         }
                     }
                 }

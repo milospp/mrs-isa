@@ -949,4 +949,44 @@ public class MailService {
         sendMail(mejl, naslov, htmlKod);
         return;
     }
+
+    @Async
+    public void sendResponseMail(Complaint complaint){
+        Patient author = complaint.getAuthor();
+        String description = complaint.getDescription();
+        String response = complaint.getResponse();
+        Pharmacy pharmacy = complaint.getPharmacy();
+        Doctor doctor = complaint.getDoctor();
+
+        String complaintAbout = (pharmacy == null) ? doctor.getName()+" "+doctor.getSurname() : pharmacy.getName();
+
+        String recipient = author.getEmail();
+        String subject = "Complaint response";
+        String content = this.startOfMail;
+
+        content = content +
+                "                          Complaint response\n" +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                    <tr>\n" +
+                "                      <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#187272;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:20px;text-align:center;\">\n" +
+                "                          "+"to your complaint about " + complaintAbout + " has arrived.\n";
+
+
+        content += "Your complaint was: \n\n"+
+                description+           "\n"+
+                "\nAdministrator's response is: \n"+
+                response                +"\n";
+
+        ;
+
+
+
+        content += this.endOfMail;
+
+        sendMail(recipient, subject, content);
+        return;
+    }
 }
