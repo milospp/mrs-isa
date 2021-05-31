@@ -90,9 +90,8 @@ public class VacationController {
     public void saveVacationAdmin(@PathVariable Long idAdmina, @RequestBody VacationDTO zahtev) {
         PharmacyAdmin admin = (PharmacyAdmin) this.userService.findOne(idAdmina);
         Vacation originalZahtev = this.vacationService.findOne(zahtev.getId());
-        if (!this.vacationService.testTime(originalZahtev) && zahtev.getStatus() == VacationRequestStatus.ACCEPTED) {
+        if (zahtev.getStatus() == VacationRequestStatus.ACCEPTED)
             this.vacationService.cancelAppointments(originalZahtev, this.mailService);
-        }
         originalZahtev.setStatus(zahtev.getStatus());
         originalZahtev.setWhyNot(zahtev.getWhyNot());
         originalZahtev.setPharmacyAdmin(admin);

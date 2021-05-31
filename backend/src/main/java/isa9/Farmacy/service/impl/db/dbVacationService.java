@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Component
@@ -99,16 +100,22 @@ public class dbVacationService extends VacationServiceBase implements VacationSe
         List<Appointment> pregledi = appointmentService.getDoctorAppointmentsNotCanceled(vacation.getDoctor().getId());
         for (Appointment p : pregledi) {                                                        // za svaki pregled
             if (p.getExamination() != null) {                                                   // ako ima zakzan
-                if (p.getExamination().getStatus() == ExaminationStatus.PENDING) {              // ako je na cekanju
-                    if (p.getPharmacy().getId().equals(vacation.getPharmacy().getId()) &&       // u istoj apoteci
-                            p.getStartTime().isAfter(vacation.getStartDate().atStartOfDay()) && // vreme se podudara
-                            p.getStartTime().isBefore(vacation.getEndDate().atStartOfDay())) {
-                        p.getExamination().setStatus(ExaminationStatus.CANCELED);               // otkazi ga
-                        this.appointmentService.save(p);
-                        System.out.println("anannan");
-                        mailService.sendAppointmentInfo(p, true);                       // posalji mejl
-                    }
+                if (p.getPharmacy().getId().equals(vacation.getPharmacy().getId()) &&       // u istoj apoteci
+                        p.getStartTime().isAfter(vacation.getStartDate().atStartOfDay()) && // vreme se podudara
+                        p.getStartTime().isBefore(vacation.getEndDate().atStartOfDay())) {
+                    p.getExamination().setStatus(ExaminationStatus.CANCELED);               // otkazi ga
+                    this.appointmentService.save(p);
+                    mailService.sendAppointmentInfo(p, true);                       // posalji mejl
                 }
+            }
+            else {
+                Examination prazan = new Examination();
+                prazan.setAppointment(p);
+                prazan.setStatus(ExaminationStatus.CANCELED);
+                prazan.setPatient(null);
+                prazan.setTherapy(new HashSet<>());
+                p.setExamination(prazan);
+                this.appointmentService.save(p);
             }
         }
     }
