@@ -1,5 +1,6 @@
 package isa9.Farmacy.controller;
 
+import isa9.Farmacy.model.PharmacyAdmin;
 import isa9.Farmacy.model.Vacation;
 import isa9.Farmacy.model.VacationRequestStatus;
 import isa9.Farmacy.model.dto.VacationDTO;
@@ -70,5 +71,29 @@ public class VacationController {
             }
         }
         return new ResponseEntity<>(vacationToVacationDTO.convert(result), HttpStatus.OK);
+    }
+
+    @GetMapping("/{idAdmina}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<List<VacationDTO>> getVacationForPharmacy(@PathVariable Long idAdmina) {
+        PharmacyAdmin admin = (PharmacyAdmin) this.userService.findOne(idAdmina);
+        List<Vacation> sviZahtevi = vacationService.getAllForPharmacy(admin.getPharmacy().getId());
+        List<VacationDTO> povratna = vacationToVacationDTO.convert(sviZahtevi);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @PostMapping("/{idAdmina}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<Integer> saveVacationAdmin(@PathVariable Long idAdmina, @RequestBody VacationDTO zahtev) {
+        PharmacyAdmin admin = (PharmacyAdmin) this.userService.findOne(idAdmina);
+        Vacation originalZahtev = this.vacationService.findOne(zahtev.getId());
+        int povratna = 0;
+        if (!this.vacationService.testTime(originalZahtev)) return new ResponseEntity<>(povratna, HttpStatus.OK);
+        povratna = 1;
+        originalZahtev.setStatus(zahtev.getStatus());
+        originalZahtev.setWhyNot(zahtev.getWhyNot());
+        originalZahtev.setPharmacyAdmin(admin);
+        this.vacationService.save(originalZahtev);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 }

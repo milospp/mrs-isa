@@ -16,6 +16,27 @@ class VacationDataService{
     getVacationsForDoctorAndPharmacy(doctorId, pharmacyId){
         return axios.get(`${API_URL}/`+doctorId+'/'+pharmacyId);
     }
+
+    getVacationsForPharmacy(idAdminaApoteke){
+        return axios.get(API_URL + "/" + idAdminaApoteke);
+    }
+
+    saveVacationApproval(idAdminaApoteke, zahtev, potvrda) {
+        if (potvrda == "Accept") {zahtev.status = "ACCEPTED";}
+        return axios({
+            method: 'post',
+            url: API_URL + "/" + idAdminaApoteke,
+            data: zahtev
+        }).catch(function (error) {
+            if (error.response) {
+            console.log(error.response.data);
+            } else if (error.request) {
+            console.log(error.request);
+            }
+            console.log("Error");
+            console.log(error.config);
+        });
+    }
 }
 
 export default new VacationDataService();

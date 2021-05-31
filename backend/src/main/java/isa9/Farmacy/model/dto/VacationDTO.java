@@ -25,5 +25,6 @@ public class VacationDTO {
     private LocalDate endDate;
     private TypeOfRest type;
     private VacationRequestStatus status;
-
+    private DoctorDTO doctor;
+    private UserDTO pharmacyAdmin;
 }
