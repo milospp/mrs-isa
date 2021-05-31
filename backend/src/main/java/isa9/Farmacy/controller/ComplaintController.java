@@ -44,4 +44,10 @@ public class ComplaintController {
         List<ComplaintDTO> allComplaints = this.complaintToComplaintDTO.convert(this.complaintService.findAll());
         return new ResponseEntity<>(allComplaints, HttpStatus.OK);
     }
+
+    @PostMapping("/responseToComplaint")
+    @PreAuthorize("hasAuthority('SYS_ADMIN')")
+    public ResponseEntity<Boolean> responseToComplaint(@RequestBody ComplaintDTO dto){
+        return new ResponseEntity<>( this.complaintService.saveResponse(dto.getResponse(), dto.getId()), HttpStatus.OK);
+    }
 }

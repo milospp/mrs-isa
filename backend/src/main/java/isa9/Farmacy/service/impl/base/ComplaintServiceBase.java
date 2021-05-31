@@ -22,4 +22,17 @@ public abstract class ComplaintServiceBase implements ComplaintService {
 
         return complaint;
     }
+
+    @Override
+    public boolean saveResponse(String response, Long complaintId) {
+        Complaint toBeRespondedTo = this.findOne(complaintId);
+
+        if(toBeRespondedTo == null) return false;
+
+        toBeRespondedTo.setResponse(response);
+
+        this.save(toBeRespondedTo);
+
+        return true;
+    }
 }

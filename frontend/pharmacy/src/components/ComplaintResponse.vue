@@ -14,12 +14,47 @@
                 <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 350px; display: inline-block;">{{complaint.description}}</td>
                 <td>{{setAbout(complaint)}}</td>
                 <td><button type="submit" class="btn btn-primary"
-                v-on:click="printShit()" data-toggle="modal" data-target="#responseModal">Respond</button> </td>
+                v-on:click="setComplaint(complaint)" data-toggle="modal" data-target="#responseModal">Respond</button> </td>
             </tr>
         </tbody>
     </table>
 </form>
 </div>
+
+
+    <div class="modal fade" id="responseModal" tabindex="-1" role="dialog" aria-labelledby="responseModal" aria-hidden="true" size="lg">
+        <div class="modal-dialog modal-dialog-centered" role="document" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="Potvrdica">Respond to {{this.chosenComplaint.author.name+" "+this.chosenComplaint.author.surname}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <div>
+                    <table class="table table-striped" >
+                        <thead class="card-header">
+                            <th>Complaint description</th>
+                            <th>Your response</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><textarea v-model="this.chosenComplaint.description" rows="5" style="width : 100%;" readonly></textarea></td>
+                                <td><textarea v-model="this.chosenComplaint.response" rows="5" style="width : 100%;"></textarea></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <div class="form-group">
+                        <button class="btn btn-primary" type="submit" data-dismiss="modal" v-on:click="sendResponse(this.chosenComplaint)">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </template>
 
 <script>
@@ -35,6 +70,7 @@ export default {
     data(){
         return {
             allComplaints: [],
+            chosenComplaint: {author: {name: "", surname: ""}, description: ""},
         }
     },
     methods: {
@@ -46,10 +82,24 @@ export default {
                 return complaint.pharmacy.name;
             }
         },
-
-        printShit(){
-            console.log(this.allComplaints);
+        setComplaint(complaint){
+            this.chosenComplaint = complaint;
+            console.log(this.chosenComplaint);
         },
+
+        sendResponse(complaint){
+            this.chosenComplaint.author =  this.chosenComplaint.author.id;
+            if(this.chosenComplaint.pharmacy){
+                this.chosenComplaint.pharmacy = this.chosenComplaint.pharmacy.id;
+            }
+            if(this.chosenComplaint.doctor){
+                this.chosenComplaint.doctor = this.chosenComplaint.doctor.id;
+            }
+
+            ComplaintDataService.respondToComplaint(complaint).then(response => {
+                
+            });
+        }
     },
     created(){
         ComplaintDataService.getAllComplaints().then(response => {
@@ -86,7 +136,7 @@ export default {
             });
         });
 
-        
+        console.log(this.allComplaints);
 
         
     }
