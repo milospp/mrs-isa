@@ -188,6 +188,15 @@ export default {
             console.log(offer);
             offer.supplier.id = this.id;
             offer.supplier.email = AuthService.getCurrentUser().email;
+            let dateArray = offer.endDate.split("T")[0].split("-");
+            dateArray.push(this.orderExpires.split("T")[1].split(":")[0]);
+            dateArray.push(this.orderExpires.split("T")[1].split(":")[1]);
+            dateArray[0] = parseInt(dateArray[0]);
+            dateArray[1] = parseInt(dateArray[1]);
+            dateArray[2] = parseInt(dateArray[2]);
+            dateArray[3] = parseInt(dateArray[3]);
+            dateArray[4] = parseInt(dateArray[4]);
+            offer.endDate = dateArray;
             OfferDataService.updateOffer(offer);
         },
     },
