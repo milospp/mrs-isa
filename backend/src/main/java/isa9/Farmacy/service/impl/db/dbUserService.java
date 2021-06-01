@@ -81,6 +81,17 @@ public class dbUserService extends UserServiceBase implements UserService, UserD
     }
 
     @Override
+    public boolean isAvaibleEmail(String em, Long id) {
+        List<User> allUsers = this.findAll();
+
+        for(User u : allUsers){
+            if(u.getEmail().equals(em) && u.getId() != id) return false;
+        }
+
+        return true;
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = null;
 

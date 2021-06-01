@@ -297,6 +297,11 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         return povratna;
     }
 
+    @Override
+    public boolean isAvaibleEmail(String em, Long id) {
+        return false;
+    }
+
 
     @Override
     public PharmacyAdmin findPharmacyAdmin(Long pharmacyId) {

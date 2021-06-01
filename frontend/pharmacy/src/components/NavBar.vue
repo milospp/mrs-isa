@@ -104,6 +104,10 @@
 					<router-link to="/supplier/profile" class="nav-link">Profile</router-link>
 					<router-link to="/logout" class="nav-link">Logout</router-link>
 				</div>
+				<div v-else-if="user.role === 'PHARMACY_ADMIN'" class="navbar-nav my-2 my-lg-0">
+					<router-link to="/pharmacyAdminProfile" class="nav-link">Profile</router-link>
+					<router-link to="/logout" class="nav-link">Logout</router-link>
+				</div>
 				<div v-else class="navbar-nav my-2 my-lg-0">
 					<router-link to="/profile" class="nav-link">Profile</router-link>
 					<router-link to="/logout" class="nav-link">Logout</router-link>

@@ -8,7 +8,9 @@ public class PAdminToPAdminDTO implements Converter<PharmacyAdmin, PharmacyAdmin
     @Override
     public PharmacyAdminDTO convert(PharmacyAdmin pharmacyAdmin) {
         PharmacyAdminDTO povratna = new PharmacyAdminDTO();
+        povratna.setId(pharmacyAdmin.getId());
         povratna.setAddress(pharmacyAdmin.getAddress());
+        povratna.setEmail(pharmacyAdmin.getEmail());
         povratna.setName(pharmacyAdmin.getName());
         povratna.setPhoneNumber(pharmacyAdmin.getPhoneNumber());
         povratna.setSurname(pharmacyAdmin.getSurname());

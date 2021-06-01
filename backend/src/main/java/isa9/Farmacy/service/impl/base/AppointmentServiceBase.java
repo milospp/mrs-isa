@@ -119,10 +119,11 @@ public abstract class AppointmentServiceBase implements AppointmentService {
 
     @Override
     public List<Appointment> getAllFreeDermatologist() {
-        List<Appointment> allAppointments;
-        allAppointments = findAll().stream().filter(
-                x -> isFreeDermAppointment(x) && isUpcoming(x)
-                ).collect(Collectors.toList());
+        List<Appointment> allAppointments = new ArrayList<>();
+        for (Appointment a :  findAll())
+            if (a.getDoctor().getClass() == Dermatologist.class && a.getExamination() == null
+                    && a.getStartTime().isAfter(LocalDateTime.now()))
+                allAppointments.add(a);
         return allAppointments;
     }
 

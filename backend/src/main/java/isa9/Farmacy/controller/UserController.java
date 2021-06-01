@@ -612,6 +612,14 @@ public class UserController {
         return new ResponseEntity<>(okej, HttpStatus.OK);
     }
 
+    @GetMapping("/getPharmacyAdmin/{idAdmina}")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<PharmacyAdminDTO> getPA(@PathVariable Long idAdmina) {
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(idAdmina);
+        PAdminToPAdminDTO konverter = new PAdminToPAdminDTO();
+        return new ResponseEntity<>(konverter.convert(admin), HttpStatus.OK);
+    }
+
     @GetMapping("/dermatologists/admin/{id}/{search}")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<List<DermatologistDTO>> searchDermatologistsAdmin(@PathVariable Long id, @PathVariable String search) {
@@ -660,6 +668,25 @@ public class UserController {
                     break;
                 }}
         }
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
+    @PostMapping("/edit/pharmacyAdmin")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<Integer> editPAdmin(@RequestBody PharmacyAdminDTO pharmacyAdminDTO){
+        PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(pharmacyAdminDTO.getId());
+        int povratna = 1;
+        if (!userService.isAvaibleEmail(pharmacyAdminDTO.getEmail(), pharmacyAdminDTO.getId())) return new ResponseEntity<>(povratna, HttpStatus.OK);
+        povratna = 0;
+        admin.setName(pharmacyAdminDTO.getName());
+        admin.setSurname(pharmacyAdminDTO.getSurname());
+        admin.setPhoneNumber(pharmacyAdminDTO.getPhoneNumber());
+        admin.setEmail(pharmacyAdminDTO.getEmail());
+        admin.getAddress().setState(pharmacyAdminDTO.getAddress().getState());
+        admin.getAddress().setCity(pharmacyAdminDTO.getAddress().getCity());
+        admin.getAddress().setStreet(pharmacyAdminDTO.getAddress().getStreet());
+        admin.getAddress().setNumber(pharmacyAdminDTO.getAddress().getNumber());
+        this.userService.save(admin);
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
