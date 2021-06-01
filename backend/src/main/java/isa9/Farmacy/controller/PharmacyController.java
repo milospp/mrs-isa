@@ -194,5 +194,13 @@ public class PharmacyController {
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @GetMapping("/visitedPharmacies/{id}")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<List<PharmacyDTO>> getVisitedPharmacies(@PathVariable Long id){
+        Patient patient = (Patient) this.userService.findOne(id);
+        List<Pharmacy> visitedPharmacies = this.pharmacyService.getVisitedPharmacies(patient);
+        return new ResponseEntity<>(this.pharmacyToPharmacyDTO.convert(visitedPharmacies), HttpStatus.OK);
+    }
 }
 
