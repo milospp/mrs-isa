@@ -111,8 +111,8 @@ export default {
         };
     },
     methods: {
-        getAvailableOrders(){
-            OrderDataService.getAvailableOrders().then(response => {
+        getAvailableOrders(id){
+            OrderDataService.getAvailableOrders(id).then(response => {
                 this.availableOrders = response.data;
                 console.log(this.availableOrders);
             });
@@ -146,7 +146,9 @@ export default {
             this.newOffer.price = this.calculateOfferPrice(this.currentOrder);
 
             console.log(this.newOffer);
-            OfferDataService.sendOffer(this.newOffer);
+            OfferDataService.sendOffer(this.newOffer).then(response => {
+                this.$router.go("/addNewOffer");
+            })
             
         },
         setDeliveryDate(){
@@ -171,8 +173,8 @@ export default {
         }
     },
     created(){
-        this.getAvailableOrders();
         this.id = AuthService.getCurrentUser().id;
+        this.getAvailableOrders(this.id);
         MedicineDataService.getSuppliersMedicines(this.id).then(response => {
             this.suppliersMedicines = response.data;
             console.log(this.suppliersMedicines);

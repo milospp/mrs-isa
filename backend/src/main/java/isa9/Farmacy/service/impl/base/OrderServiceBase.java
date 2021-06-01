@@ -1,6 +1,8 @@
 package isa9.Farmacy.service.impl.base;
 
 import isa9.Farmacy.model.MedicineOrder;
+import isa9.Farmacy.model.Offer;
+import isa9.Farmacy.model.Supplier;
 import isa9.Farmacy.model.dto.MedicineOrderDTO;
 import isa9.Farmacy.service.MedQuantityService;
 import isa9.Farmacy.service.OfferService;
@@ -30,13 +32,22 @@ public abstract class OrderServiceBase implements OrderService {
     }
 
     @Override
-    public List<MedicineOrder> getAvailableOrders() {
+    public List<MedicineOrder> getAvailableOrders(Supplier supplier) {
         ArrayList<MedicineOrder> availableOrders = new ArrayList<>();
         List<MedicineOrder> allOrders = this.findAll();
 
         for(MedicineOrder mo : allOrders){
             if(mo.getChosenOffer() == null && LocalDateTime.now().isBefore(mo.getEndDate())){
-                availableOrders.add(mo);
+                boolean alreadyMadeAnOffer = false;
+
+                for(Offer offer : mo.getAllOffer()){
+                    if(offer.getSupplier().getId().equals(supplier.getId())){
+                        alreadyMadeAnOffer = true;
+                        break;
+                    }
+                }
+
+                if(!alreadyMadeAnOffer) availableOrders.add(mo);
             }
         }
 

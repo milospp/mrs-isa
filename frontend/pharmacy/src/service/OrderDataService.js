@@ -18,8 +18,8 @@ class OrderDataService {
       });
     }
 
-    getAvailableOrders(){
-      return axios.get(`${API_URL}/availableOrders`);
+    getAvailableOrders(id){
+      return axios.get(`${API_URL}/availableOrders/`+id);
     }
 
     addOrder(idAdminaApoteke, lekovi, kraj) {
