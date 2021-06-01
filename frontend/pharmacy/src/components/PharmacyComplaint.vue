@@ -94,8 +94,15 @@ export default {
                     this.pharmacies.set(reservation.medicineInPharmacy.pharmacy.id.toString(), reservation.medicineInPharmacy.pharmacy);
                 }
 
+                PharmacyDataService.getVisitedPharmacies(this.author.id).then(response => {
+                    for(let pharmacy of response.data){
+                        this.pharmacies.set(pharmacy.id.toString(), pharmacy);
+                    }
+                });
+
                 this.results = this.pharmacies;
             });
+            
         },
         filterResults(){
             this.results = new Map();

@@ -22,4 +22,6 @@ public interface PharmacyService extends GenericService<Pharmacy> {
     void checkMedicineInPharmacy(Pharmacy pharmacy, List<MedicineQuantity> medicines);
 
     void sendActionMail(MedPrice actionPromotion, Boolean delete);
+
+    List<Pharmacy> getVisitedPharmacies(Patient patient);
 }

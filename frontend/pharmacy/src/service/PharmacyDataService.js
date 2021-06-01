@@ -115,9 +115,12 @@ class PharmacyDataService {
       }
       console.log("Error");
       console.log(error.config);
-  });
+    });
   }
 
+  getVisitedPharmacies(patientId){
+    return axios.get(`${API_URL}/visitedPharmacies/`+patientId);
+  }
 }
 
 
