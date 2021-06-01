@@ -44,10 +44,10 @@ public class OrderController {
         this.offerDTOtoOffer = offerDTOtoOffer;
     }
 
-    @GetMapping("/availableOrders")
+    @GetMapping("/availableOrders/{id}")
     @PreAuthorize("hasAuthority('SUPPLIER')")
-    public ResponseEntity<List<MedicineOrderDTO>> getAllAvailableOrders() {
-        List<MedicineOrder> availableOrders = this.orderService.getAvailableOrders();
+    public ResponseEntity<List<MedicineOrderDTO>> getAllAvailableOrders(@PathVariable Long id) {
+        List<MedicineOrder> availableOrders = this.orderService.getAvailableOrders((Supplier) this.userService.findOne(id));
         return new ResponseEntity<>(medOrderToMedOrderDTO.convert(availableOrders), HttpStatus.OK);
     }
 
