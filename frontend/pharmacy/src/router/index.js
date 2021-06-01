@@ -9,6 +9,7 @@ import AddPharmacist from '@/views/AddPharmacist.vue'
 import HomePagePharmacyAdmin from '@/views/HomePagePharmacyAdmin.vue'
 import CartPharmacyAdmin from '@/views/CartPharmacyAdmin.vue'
 import PAMoreInfo from '@/views/PAMoreInfo.vue'
+import PAProfile from '@/views/PAProfile.vue'
 import ChangingOrder from '@/views/ChangingOrder.vue'
 import HireDermatologist from '@/views/HireDermatologist.vue'
 import AddNewPricelist from '@/views/AddNewPricelist.vue'
@@ -103,6 +104,11 @@ const routes = [
     path: '/paMoreInfo',
     name: 'PAMoreInfo',
     component: PAMoreInfo    // view je komponenta
+  },
+  {
+    path: '/pharmacyAdminProfile',
+    name: 'PAProfile',
+    component: PAProfile    // view je komponenta
   },
   {
     path: '/addPricelist',
