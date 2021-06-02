@@ -68,7 +68,7 @@
                       <td v-else-if="l.priceType=='ACTION'">{{l.currentPrice}} ({{100-l.currentPrice*100/l.oldPrice}}%)</td>
                       <td v-else>{{l.currentPrice}}</td>
 
-                      <td v-if="user.role=='PATIENT'"><form v-on:click.prevent="funkcija(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">Reserve</button></form></td>
+                      <td v-if="user.role=='PATIENT' && l.medicine.perscription == 'WITHOUT_RECEIPT'"><form v-on:click.prevent="funkcija(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">Reserve</button></form></td>
                       <td v-else></td>
                   </tr>
                 </tbody>
