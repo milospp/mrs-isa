@@ -214,7 +214,12 @@
         <div class="modal-body" align="left">Points: <input type="text" v-model="points" placeholder=points/></div>
         <div class="modal-body" align="left">Price: <input type="text" v-model="price" placeholder=price/></div>
         <div class="modal-body" align="left">Quantity: <input type="text" v-model="quantity" placeholder=quantity/></div>
-        <div class="modal-body" align="left">With receipt (yes/no): <input type="text" v-model="perscription" placeholder=perscription/></div>
+        <div class="modal-body" align="left">With receipt: 
+          <select id="potvrdaZahteva" style="width: 50%;" v-model="perscription" required="required">
+              <option>Yes</option>
+              <option>No</option>
+          </select>
+        </div>
         <div class="modal-body" align="left">Shape: <input type="text" v-model="shape" placeholder=shape/></div>
         <div class="modal-body" align="left">Rating: {{this.rating}}</div>
         <div class="modal-footer">
@@ -238,19 +243,25 @@
         <div class="modal-body" align="left">Code: {{this.originalLeka?.medicine.code}}</div>
         <div class="modal-body" align="left">Name: {{this.originalLeka?.medicine.name}}</div>
         <div class="modal-body" align="left">Structure: {{this.structure}}</div>
-        <div class="modal-body" align="left">Manufacturer: {{this.originalLeka?.medicine.manufacturer}}</div>
-        <div class="modal-body" align="left">Note: {{this.originalLeka?.medicine.note}}</div>
-        <div class="modal-body" align="left">Type: {{this.originalLeka?.medicine.type}}</div>
-        <div class="modal-body" align="left">Points: {{this.originalLeka?.medicine.points}}</div>
+        <div class="modal-body" align="left">Manufacturer: <input type="text" v-model="manufacturer" placeholder=manufacturer/></div>
+        <div class="modal-body" align="left">Note: <input type="text" v-model="note" placeholder=note/></div>
+        <div class="modal-body" align="left">Type: <input type="text" v-model="type" placeholder=type/></div>
+        <div class="modal-body" align="left">Points: <input type="text" v-model="points" placeholder=points/></div>
         <div class="modal-body" align="left">Price: {{this.originalLeka?.currentPrice}}</div>
         <div class="modal-body" align="left">Action/promotion: 
           <label v-if="originalLeka?.priceType=='ACTION'">Action {{100-originalLeka?.currentPrice*100/originalLeka?.oldPrice}}% (original price = {{originalLeka?.oldPrice}})</label>
           <label v-else>Promotion (original price = {{originalLeka?.oldPrice}})</label></div>
-        <div class="modal-body" align="left">Quantity: {{this.originalLeka?.inStock}}</div>
-        <div class="modal-body" align="left">With receipt (yes/no): {{this.originalLeka?.medicine.perscription}}</div>
-        <div class="modal-body" align="left">Shape: {{this.originalLeka?.medicine.shape}}</div>
+        <div class="modal-body" align="left">Quantity: <input type="text" v-model="quantity" placeholder=quantity/></div>
+        <div class="modal-body" align="left">With receipt (yes/no): 
+          <select id="potvrdaZahteva" style="width: 50%;" v-model="perscription" required="required">
+              <option>Yes</option>
+              <option>No</option>
+          </select>
+        </div>
+        <div class="modal-body" align="left">Shape: <input type="text" v-model="shape" placeholder=shape/></div>
         <div class="modal-body" align="left">Rating: {{this.rating}}</div>
         <div class="modal-footer">
+          <button type="button" class="btn btn-primary"  data-dismiss="modal" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="provera()">Save changes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -401,7 +412,11 @@
         <div class="modal-body" align="left">Points: <input type="text" v-model="points"/></div>
         <div class="modal-body" align="left">Price: <input type="text" v-model="price"/></div>
         <div class="modal-body" align="left">Quantity: <input type="text" v-model="quantity"/></div>
-        <div class="modal-body" align="left">With receipt (yes/no): <input type="text" v-model="perscription"/> </div>
+        <div class="modal-body" align="left">With receipt: 
+          <select id="potvrdaZahteva" style="width: 50%;" v-model="perscription" required="required">
+              <option>Yes</option>
+              <option>No</option>
+          </select></div>
         <div class="modal-body" align="left">Shape: <input type="text" v-model="shape"/></div>
         <div class="modal-body" align="left">Replacement medicines: 
           <select id="zamenski" style="width: 50%;" v-model="zamenskiLekovi" required="required" multiple>
@@ -683,8 +698,8 @@ export default {
         this.originalLeka = l;
         if (!samoLek) {
           this.name = l.medicine.name;
-          if (l.medicine.perscription == "WITH_RECEIPT") this.perscription = "yes";  //novi
-          else this.perscription = "no";  //novi
+          if (l.medicine.perscription == "WITH_RECEIPT") this.perscription = "Yes";  //novi
+          else this.perscription = "No";  //novi
           this.structure =  l.medicine.specification.structure;
           this.manufacturer = l.medicine.manufacturer;
           this.note = l.medicine.note;
