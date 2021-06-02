@@ -170,8 +170,8 @@
                       <!-- popust/akcija -->
                       <td v-if="l.priceType=='ACTION'">{{l.currentPrice}} ({{100-l.currentPrice*100/l.oldPrice}}%)</td>
                       <td v-else>{{l.currentPrice}}</td>
-                      <td>{{l.startDate[2]}}/{{l.startDate[1]}}/{{l.startDate[2]}}</td>
-                      <td>{{l.endDate[2]}}/{{l.endDate[1]}}/{{l.endDate[0]}}</td>
+                      <td>{{l?.startDate}}</td>
+                      <td>{{l?.endDate}}</td>
                       <!-- Nema promene dok je akcija/promocija i nema brisanja -->
                       <td> <form v-on:click.prevent="postaviLek(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaciPromocija">View</button></form></td>
                       <td><form v-on:click.prevent="postaviLek(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#brisanjeAkcije">Delete</button></form></td>

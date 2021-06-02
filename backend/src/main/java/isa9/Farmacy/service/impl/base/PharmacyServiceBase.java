@@ -2,10 +2,7 @@ package isa9.Farmacy.service.impl.base;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.PharmacySearchDTO;
-import isa9.Farmacy.service.MedicineService;
-import isa9.Farmacy.service.PharmacyService;
-import isa9.Farmacy.service.RatingService;
-import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -13,13 +10,18 @@ import java.util.stream.Collectors;
 
 public abstract class PharmacyServiceBase implements PharmacyService {
     protected RatingService ratingService;
-
+    protected MedInPharmaService medInPharmaService;
 
     protected UserService userService;
 
     @Autowired
     public void setRatingService(RatingService ratingService) {
         this.ratingService = ratingService;
+    }
+
+    @Autowired
+    public void setMedInPharmaService(MedInPharmaService medInPharmaService) {
+        this.medInPharmaService = medInPharmaService;
     }
 
     @Autowired

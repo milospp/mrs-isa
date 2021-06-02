@@ -38,7 +38,7 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
     public List<MedicineOrder> findAll() {
         List<MedicineOrder> povratna = new ArrayList<>();
         for (MedicineOrder mo : this.orderRepository.findAll()) {
-            List<Offer> ponude = this.offerService.getOffers(mo.getId());
+            List<Offer> ponude = this.offerService.getOffersForOrder(mo.getId());
             mo.setAllOffer(ponude);
             povratna.add(mo);
         }

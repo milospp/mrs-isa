@@ -2,7 +2,7 @@
     <div v-if="!this.narudzbenica">
         <label> Something goes wrong </label>
     </div>
-    <div v-else-if="this.narudzbenica.allOffer.length == 0">
+    <div v-else-if="this.narudzbenica.allOffer.length == 0 && this.id == this.narudzbenica.author.id">
         <label> Start date: {{this.narudzbenica.startDate[1]}}/{{this.narudzbenica.startDate[2]}}/{{this.narudzbenica.startDate[0]}} 
         {{this.narudzbenica.startDate[3]}}:{{this.narudzbenica.startDate[4]}} <br />
              End date: <input type="datetime-local" v-model="this.narudzbenica.endDate" placeholder="this.narudzbenica.endDate"/>  <br />
@@ -275,7 +275,7 @@
             {{this.odabranaPonuda?.endDate[3]}}:{{this.odabranaPonuda?.endDate[4]}}</div>
         <div class="modal-body" align="left">Offer description: {{this.odabranaPonuda?.supplier.offerDescription}}</div>
         <div class="modal-footer">
-          <div v-if="this.narudzbenica?.chosenOffer == null">
+          <div v-if="this.narudzbenica?.chosenOffer == null && this.narudzbenica?.author.id == this.id">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#potvrdaPonude" data-dismiss="modal">Choose offer</button>
           </div>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -309,6 +309,7 @@
 <script>
 import OrderDataService from '../service/OrderDataService.js';
 import MedicineDataService from '../service/MedicineDataService.js';
+import AuthService from "../service/AuthService.js";
 
 export default {
     name: 'ChangeOrder',
@@ -319,6 +320,7 @@ export default {
         };
     },
     created() {
+        this.id = AuthService.getCurrentUser().id; 
         this.procitajNarudzbenicu();
     },
     mounted() {
@@ -367,10 +369,9 @@ export default {
                 .then(response => {
                     this.narudzbenica = response.data;
                     if (this.narudzbenica == null) return;     // ne bi trebalo da se dogodi ikad
-
                     this.podesiDatume();
 
-                    if (this.narudzbenica.allOffer.length == 0) {
+                    if (this.narudzbenica.allOffer?.length == 0) {
                         this.narudzbenica.endDate = this.narudzbenica.endDate[0] + "-" + this.narudzbenica.endDate[1] + "-"
                         + this.narudzbenica.endDate[2] + "T" + this.narudzbenica.endDate[3] + ":" +
                         this.narudzbenica.endDate[4];
