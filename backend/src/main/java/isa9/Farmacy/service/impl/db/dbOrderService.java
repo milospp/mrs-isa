@@ -82,7 +82,6 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
     public int chooseOffer(Offer ponuda, Long idOrder) {
         int povratna = -1;
         MedicineOrder narudzbenica = this.orderRepository.findById(idOrder).orElse(null);
-
         if (ponuda.getEndDate().isBefore(LocalDateTime.now())) return povratna;
         povratna = 0;
         narudzbenica.setChosenOffer(ponuda);
