@@ -188,7 +188,9 @@ export default {
             console.log(offer);
             offer.supplier.id = this.id;
             offer.supplier.email = AuthService.getCurrentUser().email;
-            OfferDataService.updateOffer(offer);
+            OfferDataService.updateOffer(offer).then(response => {
+                this.$router.go("/SuppliersOffers");
+            });
         },
     },
     created(){
