@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -56,15 +57,25 @@ public class dbVacationService extends VacationServiceBase implements VacationSe
     }
 
     @Override
-    public List<Vacation> getAllForPharmacyAdmin(Long pharmacyAdminId) {
-        PharmacyAdmin pharmacyAdmin = userService.findPharmacyAdmin(pharmacyAdminId);
-        return vacationRepository.findByPharmacyAdmin(pharmacyAdmin);
+    public List<Vacation> getAllForAdmin(Long adminId) {
+        PharmacyAdmin pharmacyAdmin = userService.findPharmacyAdmin(adminId);
+        return vacationRepository.findByAdmin(pharmacyAdmin);
     }
 
     @Override
     public List<Vacation> getAllForDoctor(Long doctorId) {
         Doctor doctor = userService.getDoctorById(doctorId);
         return vacationRepository.findByDoctor(doctor);
+    }
+
+    @Override
+    public List<Vacation> getWaitnigAll() {
+        List<Vacation> povratna = new ArrayList<>();
+        for (Vacation odmor : findAll()) {
+            if (odmor.getStatus() == VacationRequestStatus.WAITING)
+                povratna.add(odmor);
+        }
+        return povratna;
     }
 
     @Override

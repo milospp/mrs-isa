@@ -7,8 +7,9 @@ import java.util.List;
 
 public interface VacationService extends GenericService<Vacation>{
     List<Vacation> getAllForPharmacy(Long pharmacyId);
-    List<Vacation> getAllForPharmacyAdmin(Long pharmacyAdminId);
+    List<Vacation> getAllForAdmin(Long adminId);
     List<Vacation> getAllForDoctor(Long doctorId);
+    List<Vacation> getWaitnigAll();
 
     boolean testTime(Vacation vacation);
     void cancelAppointments(Vacation vacation, MailService mailService);

@@ -19,6 +19,7 @@ public class VacationDTO {
     private Long doctorId;
     private Long pharmacyId;
     private Long pharmacyAdminId;
+    private String pharmacyName;
     private String reason;
     private String whyNot;
     private LocalDate startDate;
@@ -26,5 +27,5 @@ public class VacationDTO {
     private TypeOfRest type;
     private VacationRequestStatus status;
     private DoctorDTO doctor;
-    private UserDTO pharmacyAdmin;
+    private UserDTO admin;
 }

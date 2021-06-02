@@ -361,7 +361,7 @@
           <label v-else>Rest</label>
         </div>
         <div v-if="this.odabraniZahtev?.status!='WAITING'" class="modal-body" align="left">
-          Pharmacy admin: {{this.odabraniZahtev?.pharmacyAdmin?.name}} {{this.odabraniZahtev?.pharmacyAdmin?.surname}} ({{this.odabraniZahtev?.pharmacyAdmin?.phoneNumber}})
+          Pharmacy admin: {{this.odabraniZahtev?.admin?.name}} {{this.odabraniZahtev?.admin?.surname}} ({{this.odabraniZahtev?.admin?.phoneNumber}})
         </div>
         <div v-if="this.odabraniZahtev?.status=='DENIED'" class="modal-body" align="left">
           Why not: {{this.odabraniZahtev?.whyNot}} </div>
@@ -592,7 +592,7 @@ export default {
       promenaNoveCene() { this.novaCena = this.izabraniLek?.currentPrice - this.izabraniLek?.currentPrice * this.procenti / 100; },
       napraviAkciju()  {
         if (this.izabraniLek == null) { this.poruka = "You must select some medicine."; return; }
-        if (this.procenti < 0) { this.poruka = "Action discount must be positive number."; return; }
+        if (this.procenti < 0 || this.procenti > 99) { this.poruka = "Action discount must in interval (0, 100)."; return; }
         if (this.novaCena < 0) { this.poruka = "Price for promotion must be positive number."; return; }
         if (this.procenti == 0 && this.novaCena == 0) { this.poruka = "You must enter action discount or price for promotion."; return; }
         if (this.krajAkcije == null) { this.poruka = "You must choose end date."; return; }

@@ -890,7 +890,7 @@ public class MailService {
                 "                                Why not\n" +
                 "                              </th>\n" +
                 "                              <th align='center' style='background-color: #ac4d2f; color: #ffffff;'>\n" +
-                "                                Pharmacy admin\n" +
+                "                                Admin\n" +
                 "                              </th>\n" +
                 "                            </tr>\n" +
                 "                            <tr>\n" +
@@ -907,7 +907,7 @@ public class MailService {
                 "                                " + (vacation.getWhyNot() == null ? "" : vacation.getWhyNot()) + "\n" +
                 "                              </td>\n" +
                 "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
-                "                                " + vacation.getPharmacyAdmin().getName() + " " + vacation.getPharmacyAdmin().getSurname() + "\n" +
+                "                                " + vacation.getAdmin().getName() + " " + vacation.getAdmin().getSurname() + "\n" +
                 "                              </td>\n" +
                 "                            </tr>\n" +
                 "                          </tbody>\n" +
