@@ -24,6 +24,10 @@ class ComplaintDataService{
             data: complaint
         });
     }
+
+    getPatientsComplaints(id){
+        return axios.get(`${API_URL}/complaintsByPatient/`+id);
+    }
 }
 
 export default new ComplaintDataService();

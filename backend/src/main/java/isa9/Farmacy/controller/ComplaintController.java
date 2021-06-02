@@ -1,8 +1,11 @@
 package isa9.Farmacy.controller;
 
 
+import isa9.Farmacy.model.Complaint;
+import isa9.Farmacy.model.Patient;
 import isa9.Farmacy.model.dto.ComplaintDTO;
 import isa9.Farmacy.service.ComplaintService;
+import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.support.ComplaintDTOtoComplaint;
 import isa9.Farmacy.support.ComplaintToComplaintDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +24,14 @@ public class ComplaintController {
     private final ComplaintService complaintService;
     private final ComplaintToComplaintDTO complaintToComplaintDTO;
     private final ComplaintDTOtoComplaint complaintDTOtoComplaint;
+    private final UserService userService;
 
     @Autowired
-    public ComplaintController(ComplaintService complaintService, ComplaintToComplaintDTO complaintToComplaintDTO, ComplaintDTOtoComplaint complaintDTOtoComplaint) {
+    public ComplaintController(ComplaintService complaintService, ComplaintToComplaintDTO complaintToComplaintDTO, ComplaintDTOtoComplaint complaintDTOtoComplaint, UserService userService) {
         this.complaintService = complaintService;
         this.complaintToComplaintDTO = complaintToComplaintDTO;
         this.complaintDTOtoComplaint = complaintDTOtoComplaint;
+        this.userService = userService;
     }
 
     @PostMapping("/newComplaint")
@@ -49,5 +54,13 @@ public class ComplaintController {
     @PreAuthorize("hasAuthority('SYS_ADMIN')")
     public ResponseEntity<Boolean> responseToComplaint(@RequestBody ComplaintDTO dto){
         return new ResponseEntity<>( this.complaintService.saveResponse(dto.getResponse(), dto.getId()), HttpStatus.OK);
+    }
+
+    @GetMapping("complaintsByPatient/{id}")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<List<ComplaintDTO>> getPatientsComplaints(@PathVariable Long id){
+        Patient patient = (Patient) this.userService.findOne(id);
+        List<Complaint> patientsComplaints = this.complaintService.complaintsOfPatient(patient);
+        return new ResponseEntity<>(this.complaintToComplaintDTO.convert(patientsComplaints), HttpStatus.OK);
     }
 }
