@@ -10,7 +10,7 @@
         </tr>
     </table>
 
-    <h4>Pharmacies you bought from: </h4>
+    <h4>Pharmacies you bought from or visited: </h4>
 
     <div style="height: 350px; overflow-y: scroll;">
     <table class="table table-striped">

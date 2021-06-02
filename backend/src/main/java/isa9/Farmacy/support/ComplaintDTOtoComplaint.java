@@ -3,6 +3,7 @@ package isa9.Farmacy.support;
 import isa9.Farmacy.model.Complaint;
 import isa9.Farmacy.model.Doctor;
 import isa9.Farmacy.model.Patient;
+import isa9.Farmacy.model.SysAdmin;
 import isa9.Farmacy.model.dto.ComplaintDTO;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
@@ -34,9 +35,19 @@ public class ComplaintDTOtoComplaint implements Converter<ComplaintDTO, Complain
         complaint.setAuthor((Patient) this.userService.findOne(complaintDTO.getAuthor()));
         complaint.setDoctor(null);
         complaint.setPharmacy(null);
+        complaint.setRespondent(null);
         try{
             complaint.setDoctor((Doctor) this.userService.findOne(complaintDTO.getDoctor()));
+        }catch (NullPointerException e){
+
+        }
+        try{
             complaint.setPharmacy(this.pharmacyService.findOne(complaintDTO.getPharmacy()));
+        }catch (NullPointerException e){
+
+        }
+        try{
+            complaint.setRespondent((SysAdmin) this.userService.findOne(complaintDTO.getRespondent()));
         }catch (NullPointerException e){
 
         }
