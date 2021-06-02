@@ -1,10 +1,9 @@
 package isa9.Farmacy.model.dto;
 
-import isa9.Farmacy.model.MedPrice;
-import isa9.Farmacy.model.MedSpecification;
-import isa9.Farmacy.model.Medicine;
-import isa9.Farmacy.model.Pharmacy;
+import isa9.Farmacy.model.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -16,9 +15,13 @@ import lombok.*;
 
 public class MedInPharmaDTO {
     private Long id;
-    private double currentPrice;
+    private Double currentPrice;
+    private PriceType priceType;    // tip
+    private Double oldPrice;           // za akciju i promociju
+    private LocalDateTime startDate;  // pocetak akcije ili promocije
+    private LocalDateTime endDate;  // kraj akcije ili promocije
     private MedicineDTO medicine;
-    private int inStock;
+    private Integer inStock;
     private PharmacyDTO pharmacy;
 
 }

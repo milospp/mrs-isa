@@ -94,8 +94,15 @@ export default {
                     this.pharmacies.set(reservation.medicineInPharmacy.pharmacy.id.toString(), reservation.medicineInPharmacy.pharmacy);
                 }
 
+                PharmacyDataService.getVisitedPharmacies(this.author.id).then(response => {
+                    for(let pharmacy of response.data){
+                        this.pharmacies.set(pharmacy.id.toString(), pharmacy);
+                    }
+                });
+
                 this.results = this.pharmacies;
             });
+            
         },
         filterResults(){
             this.results = new Map();
@@ -113,6 +120,8 @@ export default {
         sendComplaint(){
             this.complaint.author = this.author.id;
             this.complaint.pharmacy = this.complaint.pharmacy.id;
+            console.log("new complaint");
+            console.log(this.complaint);
             ComplaintDataService.sendComplaint(this.complaint).then(response => {
                 this.complaint.description = "";
             });

@@ -10,8 +10,11 @@
       </div>
       
       <div class="col-md-12">
-        <div class="d-inline-flex">
+        <div class="d-inline-flex mr-2">
             <button class="btn btn-block btn-warning" v-on:click="showModal()">Edit</button>
+        </div>
+        <div class="d-inline-flex">
+            <button class="btn btn-block btn-secondary" v-on:click="changePass()">Change Password</button>
         </div>
       </div>
 
@@ -96,11 +99,8 @@ import DataService from '@/service/DermatologistDataService.js';
 import UtilService from '@/service/UtilService.js';
 import AuthService from '@/service/AuthService.js';
 
-// import DermatologistDataService from '../../service/DermatologistDataService';
-
 export default {
     name: "DermatologistProfileInfo",
-    //props: ['id'],
     setup() {
       return { UtilService }
     },
@@ -132,6 +132,9 @@ export default {
             });
             $('#editDataModal').modal('hide');
         },
+        changePass() {
+            this.$router.push("/change-password");
+        }
     },
     mounted() {
         this.loadDoctorData();

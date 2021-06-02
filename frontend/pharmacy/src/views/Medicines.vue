@@ -1,7 +1,6 @@
 <template>
   <NavBar/>
-  <div class="container">
-    <h1>Medicines</h1> 
+  <div class="container mt-3">
     <MedicinesList/>
   </div>
 </template>

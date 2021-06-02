@@ -76,6 +76,7 @@
 					<router-link :to="{ name: 'AddMedicine' }" class="nav-item nav-link">Add Medicine</router-link>
 					<router-link :to="{ name: 'AddPharmacyAdmin' }" class="nav-item nav-link">Add Pharmacy Admin.</router-link>
 					<router-link :to="{ name: 'AddSysAdmin' }" class="nav-item nav-link">Add Sys. Admin.</router-link>
+					<router-link :to="{ name: 'ComplaintResponsePage' }" class="nav-item nav-link">Complaints</router-link>
 					
 				</div>
 				<div v-else-if="user.role === 'SUPPLIER'" class="navbar-nav mr-auto mt-2 mt-lg-0">
@@ -88,8 +89,8 @@
 
 				<!-- desni deo -->
 				<div v-if="!user" class="navbar-nav my-2 my-lg-0">
-					<router-link to="/login" class="nav-link">Login</router-link>
-					<router-link to="/register" class="nav-link">Register</router-link>
+					<router-link to="/login" class="btn btn-outline-info">Login</router-link>
+					<router-link to="/register" class="nav-link ">Register</router-link>
 				</div>
 			  	<div v-else-if="user.role === 'PHARMACIST'" class="navbar-nav my-2 my-lg-0">
 					<router-link to="/pharmacist/profile" class="nav-link">Profile</router-link>
@@ -101,6 +102,10 @@
 				</div>
 				<div v-else-if="user.role === 'SUPPLIER'" class="navbar-nav my-2 my-lg-0">
 					<router-link to="/supplier/profile" class="nav-link">Profile</router-link>
+					<router-link to="/logout" class="nav-link">Logout</router-link>
+				</div>
+				<div v-else-if="user.role === 'PHARMACY_ADMIN'" class="navbar-nav my-2 my-lg-0">
+					<router-link to="/pharmacyAdminProfile" class="nav-link">Profile</router-link>
 					<router-link to="/logout" class="nav-link">Logout</router-link>
 				</div>
 				<div v-else class="navbar-nav my-2 my-lg-0">
@@ -137,7 +142,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-#navbar a.router-link-exact-active {
+
+#navbar a.router-link-exact-active.nav-link {
   color: #42b983;
 }
 </style>

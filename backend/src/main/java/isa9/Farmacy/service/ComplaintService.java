@@ -4,4 +4,5 @@ import isa9.Farmacy.model.Complaint;
 
 public interface ComplaintService extends GenericService<Complaint> {
     Complaint fileAComplaint(Complaint complaint);
+    boolean saveResponse(String response, Long complaintId);
 }

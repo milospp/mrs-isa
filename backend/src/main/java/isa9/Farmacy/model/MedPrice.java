@@ -24,7 +24,13 @@ public class MedPrice {
     @Column
     private LocalDateTime startDate;
     @Column
-    private double price;
+    private LocalDateTime endDate;  // za akcije i promocije
+    @Column
+    private PriceType priceType;    // da li je obicna, akcija ili promocija
+    @Column
+    private Double oldPrice;           // cuvamo staru vrednost kako bismo je vratili
+    @Column
+    private Double price;
     @ManyToOne
     private MedicineInPharmacy medicineInPharmacy;
 

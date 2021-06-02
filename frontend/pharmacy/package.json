@@ -12,8 +12,8 @@
     "@popperjs/core": "^2.9.1",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
-    "choices.js": "^7.0.0",
-    "core-js": "^3.6.5",
+    "choices.js": "^7.1.5",
+    "core-js": "^3.13.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "jquery": "^3.6.0",
@@ -23,19 +23,22 @@
     "request": "^2.88.2",
     "select2": "^4.1.0-rc.0",
     "v-calendar": "^3.0.0-alpha.4",
-    "v-pagination-3": "^0.1.2",
+    "v-pagination-3": "^0.1.5",
     "vue": "^3.0.0",
     "vue-axios": "^3.2.4",
     "vue-choice": "^0.2.3",
     "vue-multiselect": "^2.1.6",
-    "vue-router": "^4.0.0-0",
-    "vuex": "^4.0.0-0"
+    "vue-router": "^4.0.8",
+    "vue-simple-calendar": "^6.0.1",
+    "vue-toasted": "^1.1.28",
+    "vue-toastify": "^1.8.0",
+    "vuex": "^4.0.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-router": "~4.5.0",
-    "@vue/cli-plugin-vuex": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
+    "@vue/cli-plugin-babel": "^4.5.13",
+    "@vue/cli-plugin-router": "^4.5.13",
+    "@vue/cli-plugin-vuex": "^4.5.13",
+    "@vue/cli-service": "^4.5.13",
     "@vue/compiler-sfc": "^3.0.0"
   }
 }

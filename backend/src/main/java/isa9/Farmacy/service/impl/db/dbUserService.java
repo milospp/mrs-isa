@@ -44,9 +44,9 @@ import java.util.List;
 @Service
 public class dbUserService extends UserServiceBase implements UserService, UserDetailsService {
 
-    private UserRepository userRepository;
-    private PatientRepository patientRepository;
-    private DoctorRepository doctorRepository;
+    private final UserRepository userRepository;
+    private final PatientRepository patientRepository;
+    private final DoctorRepository doctorRepository;
 
 
     @Autowired
@@ -75,6 +75,17 @@ public class dbUserService extends UserServiceBase implements UserService, UserD
 
         for(User u : allUsers){
             if(u.getEmail().equals(em)) return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean isAvaibleEmail(String em, Long id) {
+        List<User> allUsers = this.findAll();
+
+        for(User u : allUsers){
+            if(u.getEmail().equals(em) && u.getId() != id) return false;
         }
 
         return true;
@@ -197,5 +208,22 @@ public class dbUserService extends UserServiceBase implements UserService, UserD
     @Override
     public Patient getPatientById(Long id) {
         return this.patientRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Patient> howSucribePharmacy(Long pharmacyId) {
+        List<Patient> pacijenti = new ArrayList<>();
+        for (User korisnik : findAll()) {
+            if (korisnik.getClass() == Patient.class) {
+                Patient pacijent = (Patient) korisnik;
+                for (Pharmacy apoteka : pacijent.getSubscriptions()) {
+                    if (apoteka.getId() == pharmacyId) {
+                        pacijenti.add(pacijent);
+                        break;
+                    }
+                }
+            }
+        }
+        return pacijenti;
     }
 }

@@ -297,6 +297,11 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
         return povratna;
     }
 
+    @Override
+    public boolean isAvaibleEmail(String em, Long id) {
+        return false;
+    }
+
 
     @Override
     public PharmacyAdmin findPharmacyAdmin(Long pharmacyId) {
@@ -344,6 +349,11 @@ public class InMemoryUserService extends UserServiceBase implements UserService 
     @Override
     public Patient getPatientById(Long id) {
         throw new NotYetImplementedException();
+    }
+
+    @Override
+    public List<Patient> howSucribePharmacy(Long pharmacyId) {
+        return null;
     }
 
 }

@@ -47,6 +47,7 @@
                   <th>Type</th>
                   <th>Price</th>
                   <th>Quantity</th>
+                  <th>Action/promotion</th>
                   <th></th>
                 </thead>
                 <tbody>
@@ -57,8 +58,16 @@
                       <td>{{l.medicine.note}}</td>
                       <td>{{l.medicine.points}}</td>
                       <td>{{l.medicine.type}}</td>
-                      <th>{{l.currentPrice}}</th>
+                       <!-- prava cena -->
+                      <td v-if="l.priceType=='NORMAL'">{{l.currentPrice}}</td>
+                      <td v-else>{{l.oldPrice}}</td>
+
                       <td>{{l.inStock}}</td>
+                      <!-- popust/akcija -->
+                      <td v-if="l.priceType=='NORMAL'"></td>
+                      <td v-else-if="l.priceType=='ACTION'">{{l.currentPrice}} ({{100-l.currentPrice*100/l.oldPrice}}%)</td>
+                      <td v-else>{{l.currentPrice}}</td>
+
                       <td><form v-on:click.prevent="funkcija(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">Reserve</button></form></td>
                   </tr>
                 </tbody>
@@ -77,7 +86,7 @@
                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
                   
-                    <td> <input type="text" v-model="pharmaSearch"  size="50"/></td>
+                    <td> <input class="form-control" type="text" v-model="pharmaSearch"  size="50"/></td>
                     <td> <form v-on:click.prevent="pretragaFarm()"> <input type="submit" data-toggle="modal" data-target="#obavestenje" value="Search"/></form></td>
                 </tr>
                 <tr>
@@ -117,7 +126,7 @@
                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
                   
-                    <td> <input type="text" v-model="dermaSearch"  size="50"/></td>
+                    <td> <input type="text"  class="form-control" v-model="dermaSearch"  size="50"/></td>
                     <td> <form v-on:click.prevent="pretraga()"> <input type="submit" data-toggle="modal" data-target="#obavestenje" value="Search"/></form></td>
                 </tr>
                 <tr>
@@ -170,14 +179,19 @@
           </button>
         </div>
         <div class="modal-body" align="left">Name: {{lek_za_prikaz?.medicine.name}}</div>
-        <div class="modal-body" align="left">Structure: {{lek_za_prikaz?.medicine.structure}}</div>
+        <div class="modal-body" align="left">Structure: {{lek_za_prikaz?.medicine.specification.structure}}</div>
         <div class="modal-body" align="left">Manufacturer: {{lek_za_prikaz?.medicine.manufacturer}}</div>
         <div class="modal-body" align="left">Note: {{lek_za_prikaz?.medicine.note}}</div>
         <div class="modal-body" align="left">Points: {{lek_za_prikaz?.medicine.points}}</div>
         <div class="modal-body" align="left">Type: {{lek_za_prikaz?.medicine.type}}</div>
         <div class="modal-body" align="left">Price: {{lek_za_prikaz?.currentPrice}}</div>
-        <div class="modal-body" align="left">Quantity: <input type="text" v-model="test"/> (max = {{lek_za_prikaz?.inStock}})</div>
-        <div class="modal-body" align="left">Expiry date: <input type="date" v-model="datum"/></div>
+        <div class="modal-body" align="left">Action/promotion:
+          <label v-if="lek_za_prikaz?.priceType=='NORMAL'">No</label>
+          <label v-else-if="lek_za_prikaz?.priceType=='ACTION'">Action {{100-lek_za_prikaz?.currentPrice*100/lek_za_prikaz?.oldPrice}}% (original price = {{lek_za_prikaz?.oldPrice}})</label>
+          <label v-else>Promotion (original price = {{lek_za_prikaz?.oldPrice}})</label></div>
+          <hr>
+        <div class="modal-body" align="left">Quantity: <input class="form-control d-inline w-auto" type="text" v-model="kolicina"/> (max = {{lek_za_prikaz?.inStock}})</div>
+        <div class="modal-body" align="left">Expiry date: <input class="form-control d-inline w-auto" type="date" v-model="datum"/></div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" data-dismiss="modal" v-on:click.prevent="provera(lek_za_prikaz)">Reserve</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -426,7 +440,7 @@ export default {
 
         }).catch(error => {
           // TODO: DODATI OSTALE PROVERE!!!!
-          this.poruka = "Pacijent je alergičan";
+          this.poruka = "Patient is alergic";
             });
 
 

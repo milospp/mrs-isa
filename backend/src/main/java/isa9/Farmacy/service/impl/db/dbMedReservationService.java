@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -84,6 +83,7 @@ public class dbMedReservationService extends MedReservationServiceBase implement
         MedReservation medReservation;
         medReservation = medReservationRepository.findFirstByPatientAndMedicineInPharmacy_PharmacyAndStatus(patient, pharmacy, MedReservationStatus.TAKEN);
         if (medReservation == null) return false;
-        else return true;    }
+        else return true;
+    }
 
 }

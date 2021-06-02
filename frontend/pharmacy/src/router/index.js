@@ -9,6 +9,7 @@ import AddPharmacist from '@/views/AddPharmacist.vue'
 import HomePagePharmacyAdmin from '@/views/HomePagePharmacyAdmin.vue'
 import CartPharmacyAdmin from '@/views/CartPharmacyAdmin.vue'
 import PAMoreInfo from '@/views/PAMoreInfo.vue'
+import PAProfile from '@/views/PAProfile.vue'
 import ChangingOrder from '@/views/ChangingOrder.vue'
 import HireDermatologist from '@/views/HireDermatologist.vue'
 import AddNewPricelist from '@/views/AddNewPricelist.vue'
@@ -34,9 +35,11 @@ import SupplierProfile from '@/views/SupplierProfile.vue'
 import CounselingPage from '@/views/CounselingPage.vue'
 import MedicineSearchPage from '@/views/MedicineSearchPage.vue'
 import FirstLogin from '@/views/FirstLogin.vue'
+import ChangePassword from '@/views/ChangePassword.vue'
 import SuppliersOffersPage from '@/views/SuppliersOffersPage.vue'
 import AddNewOffer from '@/views/AddNewOffer.vue'
 import ComplaintPage from '@/views/ComplaintPage.vue'
+import ComplaintResponsePage from '@/views/ComplaintResponsePage.vue'
 
 
 const routes = [
@@ -101,6 +104,11 @@ const routes = [
     path: '/paMoreInfo',
     name: 'PAMoreInfo',
     component: PAMoreInfo    // view je komponenta
+  },
+  {
+    path: '/pharmacyAdminProfile',
+    name: 'PAProfile',
+    component: PAProfile    // view je komponenta
   },
   {
     path: '/addPricelist',
@@ -219,6 +227,11 @@ const routes = [
     component: FirstLogin
   },
   {
+    path: '/change-password',
+    name: 'ChangePassword',
+    component: ChangePassword
+  },
+  {
     path: '/addNewOffer',
     name: 'AddNewOffer',
     component: AddNewOffer
@@ -237,6 +250,11 @@ const routes = [
     path: '/newComplaint',
     name: 'ComplaintPage',
     component: ComplaintPage
+  },
+  {
+    path: '/complaints',
+    name: 'ComplaintResponsePage',
+    component: ComplaintResponsePage
   }
 
   // {

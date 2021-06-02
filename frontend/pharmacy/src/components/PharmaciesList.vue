@@ -2,7 +2,7 @@
 
 		<div class="row mb-3">
 			<div class="col-md-12">
-				<a class="btn btn-primary float-right" data-toggle="collapse" href="#searchCollapse" role="button" aria-expanded="false" aria-controls="searchCollapse">
+				<a class="btn btn-outline-secondary" data-toggle="collapse" href="#searchCollapse" role="button" aria-expanded="false" aria-controls="searchCollapse">
 					Filter
 				</a>
 			</div>
@@ -48,16 +48,42 @@
 
           </div>
           <button type="submit" class="btn btn-primary">Search</button> 
+          <a v-on:click="resetFormPharmacies" class="ml-3 btn btn-warning">Reset</a> 
       </form>
 
     </div>
 
 
-  <div class="row">
+  <div class="row pharmacies-list">
+
+    <div class="col-md-3 py-2 card-group" v-for="p in pharmaciesSlice">
+      <div class="card">
+        <router-link :to="{ name: 'PharmacyPage', params: { id: p.id  }}">
+          <img class="card-img-top p-1 pl-5 pr-5" src="@/assets/pharmacylogo.png" alt="Card image cap">
+        </router-link>
+        <div class="card-body">
+          <router-link :to="{ name: 'PharmacyPage', params: { id: p.id  }}">
+            <h5 class="card-title mb-0">{{p.name}}</h5>
+          </router-link>
+          <div class="rating mb-3">
+            <span v-for="i in p.rating">★</span>
+          </div>
+          <p class="card-text">{{p.description}}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">{{UtilService.AddressToString(p.address)}}</li>
+        
+        </ul>
+
+        <!-- <div class="card-footer">
+          <five-stars v-model="p.rating" v-bind:inputId="modalId" disableEdit/>
+        </div> -->
+      </div>
+    </div>
 
 
       
-    <div class="col-md-3 py-2" v-for="p in pharmaciesSlice">
+    <!-- <div class="col-md-3 py-2" v-for="p in pharmaciesSlice">
       <div class="card h-100 box-shadow">
         <div class="card-header">
             <h4 class="my-0 font-weight-normal">{{p.name}}</h4>
@@ -78,7 +104,7 @@
           </div>
         </div>
       </div>
-    </div>      
+    </div>       -->
 
   </div>
 
@@ -86,12 +112,15 @@
 
 <script>
 import PharmacyDataService from '../service/PharmacyDataService.js';
+import FiveStars from "@/components/FiveStars.vue";
 import UtilService from '../service/UtilService.js';
 
 export default {
     setup() {
       return { UtilService }
     },
+
+    components: { FiveStars },
     name: 'PharmaciesList',
     data() {
         return {
@@ -100,6 +129,7 @@ export default {
             searchParams: {
               minRating: 0,
               maxRating: 5,
+              sort: 'NAME_ASC'
             },
         };
     },
@@ -126,6 +156,16 @@ export default {
                 });
         },
 
+        resetFormPharmacies(){
+          this.searchParams = {
+              minRating: 0,
+              maxRating: 5,
+              name: undefined,
+              addressString: undefined,
+              sort: 'NAME_ASC'
+          };
+        },
+
     },
     mounted() {
         this.getPharmacies();
@@ -135,3 +175,9 @@ export default {
 }
 
 </script>
+
+<style scoped>
+  .pharmacies-list .card:hover {
+    background: #fafafa;
+  }
+</style>

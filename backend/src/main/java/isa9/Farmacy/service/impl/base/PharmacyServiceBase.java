@@ -1,26 +1,30 @@
 package isa9.Farmacy.service.impl.base;
 
-import isa9.Farmacy.model.Medicine;
-import isa9.Farmacy.model.MedicineInPharmacy;
-import isa9.Farmacy.model.Pharmacy;
+import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.PharmacySearchDTO;
 import isa9.Farmacy.service.MedicineService;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.RatingService;
+import isa9.Farmacy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class PharmacyServiceBase implements PharmacyService {
     protected RatingService ratingService;
 
+
+    protected UserService userService;
+
     @Autowired
     public void setRatingService(RatingService ratingService) {
         this.ratingService = ratingService;
+    }
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
@@ -77,5 +81,20 @@ public abstract class PharmacyServiceBase implements PharmacyService {
                 .filter(p -> pharmacySearchDTO.getAddressString().isEmpty() || (p.getAddress().getCity() + p.getAddress().getState() + p.getAddress().getStreet()).toLowerCase().contains(pharmacySearchDTO.getAddressString()))
                 .filter(p -> p.getRating() >= pharmacySearchDTO.getMinRating() && p.getRating() <= pharmacySearchDTO.getMaxRating())
                 .sorted(comp).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Pharmacy> getVisitedPharmacies(Patient patient) {
+        Set<Examination> examinations = patient.getMyExaminations();
+
+        List<Pharmacy> visitedPharmacies = new ArrayList<>();
+
+        for(Examination e : examinations){
+            if(e.getStatus().equals(ExaminationStatus.HELD)){
+                visitedPharmacies.add(e.getAppointment().getPharmacy());
+            }
+        }
+
+        return visitedPharmacies;
     }
 }

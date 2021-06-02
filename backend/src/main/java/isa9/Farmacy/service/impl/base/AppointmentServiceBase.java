@@ -9,6 +9,8 @@ import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.utils.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -117,8 +119,11 @@ public abstract class AppointmentServiceBase implements AppointmentService {
 
     @Override
     public List<Appointment> getAllFreeDermatologist() {
-        List<Appointment> allAppointments;
-        allAppointments = findAll().stream().filter(x -> isFreeDermAppointment(x)).collect(Collectors.toList());
+        List<Appointment> allAppointments = new ArrayList<>();
+        for (Appointment a :  findAll())
+            if (a.getDoctor().getClass() == Dermatologist.class && a.getExamination() == null
+                    && a.getStartTime().isAfter(LocalDateTime.now()))
+                allAppointments.add(a);
         return allAppointments;
     }
 
@@ -195,6 +200,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     }
 
     @Override
+    @Transactional
     public Appointment bookAnAppointment(Long patientId, Long appointmentId) {
         User user = userService.findOne(patientId);
         if (user == null || !user.getRole().getName().equals("PATIENT")) return null;
@@ -215,7 +221,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         appointment.setExamination(examination);
 
         save(appointment);
-        mailService.sendAppointmentInfo(appointment);
+        mailService.sendAppointmentInfo(appointment, false);
 
         return appointment;
     }
@@ -266,6 +272,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Appointment bookConsultingAppointment(ConsultingAppointmentReqDTO appointmentReqDTO, Patient patient) {
 //      TODO: Add error message...
         if (userService.isPatientBlocked(patient)) return null;
@@ -306,7 +313,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         appointment.setExamination(examination);
 
         save(appointment);
-        mailService.sendAppointmentInfo(appointment);
+        mailService.sendAppointmentInfo(appointment, false);
 
         return appointment;
 

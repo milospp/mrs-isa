@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -194,6 +193,14 @@ public class PharmacyController {
         Boolean result = ratingService.canUserRate(userId, pharmacyId);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/visitedPharmacies/{id}")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<List<PharmacyDTO>> getVisitedPharmacies(@PathVariable Long id){
+        Patient patient = (Patient) this.userService.findOne(id);
+        List<Pharmacy> visitedPharmacies = this.pharmacyService.getVisitedPharmacies(patient);
+        return new ResponseEntity<>(this.pharmacyToPharmacyDTO.convert(visitedPharmacies), HttpStatus.OK);
     }
 }
 

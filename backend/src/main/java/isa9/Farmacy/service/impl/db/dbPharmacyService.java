@@ -9,6 +9,7 @@ import isa9.Farmacy.service.InquiryService;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.impl.base.PharmacyServiceBase;
+import isa9.Farmacy.utils.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -26,12 +27,15 @@ public class dbPharmacyService extends PharmacyServiceBase implements PharmacySe
     private final PharmacyRepository pharmacyRepository;
     private final WorkRepository workRepository;
     private final InquiryService inquiryService;
+    private final MailService mailService;
 
     @Autowired
-    public dbPharmacyService(PharmacyRepository pharmacyRepository, WorkRepository workRepository, InquiryService inquiryService) {
+    public dbPharmacyService(PharmacyRepository pharmacyRepository, WorkRepository workRepository,
+            InquiryService inquiryService, MailService mailService) {
         this.pharmacyRepository = pharmacyRepository;
         this.workRepository = workRepository;
         this.inquiryService = inquiryService;
+        this.mailService = mailService;
     }
 
     @Override
@@ -80,7 +84,7 @@ public class dbPharmacyService extends PharmacyServiceBase implements PharmacySe
                 MedPrice cena = new MedPrice();
                 cena.setMedicineInPharmacy(noviLek);
                 cena.setStartDate(LocalDateTime.now());
-                cena.setPrice(77);
+                cena.setPrice(77.0);
                 noviLek.setCurrentPrice(cena);
                 noviLek.setPharmacy(pharmacy);
                 noviLek.setMedicine(mq.getMedicine());
@@ -88,6 +92,13 @@ public class dbPharmacyService extends PharmacyServiceBase implements PharmacySe
                 save(pharmacy);
             }
         }
+    }
+
+    @Override
+    public void sendActionMail(MedPrice actionPromotion, Boolean delete) {
+        Pharmacy apoteka = actionPromotion.getMedicineInPharmacy().getPharmacy();
+        for (Patient pacijent : this.userService.howSucribePharmacy(apoteka.getId()))
+          this.mailService.sendActionInfo(actionPromotion, pacijent, delete);
     }
 
     @Override

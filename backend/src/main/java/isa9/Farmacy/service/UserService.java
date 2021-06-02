@@ -13,6 +13,7 @@ import java.util.Set;
 public interface UserService extends GenericService<User> {
 
     boolean isAvaibleEmail(String em);
+    boolean isAvaibleEmail(String em, Long id);
 
     //User getByEmail()
 
@@ -54,4 +55,6 @@ public interface UserService extends GenericService<User> {
     Penality addPenalty(Patient patient, String reason);
 
     List<Doctor> getVisitedDoctors(Patient patient);
+
+    List<Patient> howSucribePharmacy(Long pharmacyId);
 }

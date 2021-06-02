@@ -38,10 +38,16 @@ public class ComplaintController {
         return new ResponseEntity<>(0, HttpStatus.OK);
     }
 
-    @PostMapping("/")
+    @GetMapping("/")
     @PreAuthorize("hasAuthority('SYS_ADMIN')")
     public ResponseEntity<List<ComplaintDTO>> getAllComplaints(){
         List<ComplaintDTO> allComplaints = this.complaintToComplaintDTO.convert(this.complaintService.findAll());
         return new ResponseEntity<>(allComplaints, HttpStatus.OK);
+    }
+
+    @PostMapping("/responseToComplaint")
+    @PreAuthorize("hasAuthority('SYS_ADMIN')")
+    public ResponseEntity<Boolean> responseToComplaint(@RequestBody ComplaintDTO dto){
+        return new ResponseEntity<>( this.complaintService.saveResponse(dto.getResponse(), dto.getId()), HttpStatus.OK);
     }
 }
