@@ -1,5 +1,5 @@
 <template>
-<div style="height: 500px; overflow-y: scroll;">
+<div style="height: 450px; overflow-y: scroll;">
 <form v-on:submit.prevent="">
     <table class="table table-striped">
         <thead class="card-header">
@@ -95,6 +95,8 @@ export default {
             if(this.chosenComplaint.doctor){
                 this.chosenComplaint.doctor = this.chosenComplaint.doctor.id;
             }
+            let admin = AuthService.getCurrentUser();
+            this.chosenComplaint.respondent = admin.id;
 
             ComplaintDataService.respondToComplaint(complaint).then(response => {
                 this.$router.go("/complaints"); 
