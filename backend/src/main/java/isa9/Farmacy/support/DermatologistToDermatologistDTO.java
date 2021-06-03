@@ -48,6 +48,7 @@ public class DermatologistToDermatologistDTO implements Converter<Dermatologist,
         posaoUApoteci.setEndHour(workInPharmacy.getEndHour());
         posaoUApoteci.setStartHour(workInPharmacy.getStartHour());
         posaoUApoteci.setPharmacyId(workInPharmacy.getPharmacy().getId());
+        posaoUApoteci.setPharmacyName(workInPharmacy.getPharmacy().getName());
         dto.setPharmacyWork(posaoUApoteci);
         return dto;
     }

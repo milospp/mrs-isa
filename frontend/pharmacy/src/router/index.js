@@ -20,6 +20,7 @@ import PharmacistHomePage from '@/views/PharmacistHomePage.vue'
 import DispenseMedication from '@/views/DispenseMedication.vue'
 import VacationRequest from '@/views/VacationRequest.vue'
 import PharmacyPage from '@/views/PharmacyPage.vue'
+import AllDoctors from '@/views/AllDoctors.vue'
 import PatientProfile from '@/views/PatientProfile.vue'
 import PharmacistProfile from '@/views/PharmacistProfile.vue'
 import DermatologistProfile from '@/views/DermatologistProfile.vue'
@@ -120,6 +121,11 @@ const routes = [
     path: '/vacationRequests',
     name: 'Vacations',
     component: Vacations    // view je komponenta
+  },
+  {
+    path: '/allDoctors',
+    name: 'AllDoctors',
+    component: AllDoctors    // view je komponenta
   },
   {
     path: '/addPharmacy',

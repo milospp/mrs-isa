@@ -89,7 +89,52 @@ class DermatologistDataService {
     console.log(error.config);
     });
 
+  }
+
+  getAllDermatologists() {
+    return axios.get(API_URL + "/users/allDermatologists");
+  }
+
+  searchAllDermatologists(search) {
+    return axios.get(API_URL + "/users/dermatologists/search/" + search)
+    .catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+      } else if (error.request) {
+        console.log(error.request);
+      }
+      console.log("Error");
+      console.log(error.config);
+  });
+  }
+
+  filterAllDermatologists(search, filterIme, filterPrez, filterBroj, 
+    filterAdrD, filterAdrG, filterAdrU, filterAdrB) {
+  if (search.length == 0) search = "-";
+  if (filterIme.length == 0) filterIme = "-";
+  if (filterPrez.length == 0) filterPrez = "-";
+  if (filterBroj.length == 0) filterBroj = "-";
+  if (filterAdrD.length == 0) filterAdrD = "-";
+  if (filterAdrG.length == 0) filterAdrG = "-";
+  if (filterAdrU.length == 0) filterAdrU = "-";
+  if (filterAdrB.length == 0) filterAdrB = "-";
+  var objekat = {"search" : search, "filterIme": filterIme, "filterPrez": filterPrez, "filterBroj": filterBroj,
+    "filterAdrD": filterAdrD, "filterAdrG": filterAdrG, "filterAdrU": filterAdrU, "filterAdrB": filterAdrB};
+  return axios({
+    method: 'post',
+    url: API_URL + "/users/dermatologists/filter",
+    data: objekat
+  }).catch(function (error) {
+    if (error.response) {
+      console.log(error.response.data);
+    } else if (error.request) {
+      console.log(error.request);
     }
+    console.log("Error");
+    console.log(error.config);
+    });
+
+  }
   
   getAllDermatologistsPharmacy(idApoteke) {
     return axios.get(API_URL + "/users/dermatologists/pharmacy/" + idApoteke);
