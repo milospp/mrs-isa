@@ -13,10 +13,10 @@
     </thead>
     <tbody>
         <tr :key="z" v-for="z in this.zahteviZaGodisnji">
-            <td>{{z.doctor.name}} {{z.doctor.surname}}</td>
+            <td>{{z.doctor.name}} {{z.doctor.surname}} <br/> ({{z.doctor.phoneNumber}})</td>
             <td>{{z.pharmacyName}}</td>
-            <td>{{z.startDate[1]}}/{{z.startDate[2]}}/{{z.startDate[0]}}</td>
-            <td>{{z.endDate[1]}}/{{z.endDate[2]}}/{{z.endDate[0]}}</td>
+            <td>{{z.startDate[2] < 10 ? "0" + z.startDate[2] : z.startDate[2]}}/{{z.startDate[1] < 10 ? "0" + z.startDate[1] : z.startDate[1]}}/{{z.startDate[0]}}</td>
+            <td>{{z.endDate[2] < 10 ? "0" + z.endDate[2] : z.endDate[2]}}/{{z.endDate[1] < 10 ? "0" + z.endDate[1] : z.endDate[1]}}/{{z.endDate[0]}}</td>
             <td>Waiting</td>
             <td><form v-on:click.prevent="postaviZahtev(z)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaciZahtev">View</button></form></td>
             <td><form v-on:click.prevent="postaviZahtev(z)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#prihvatiZahtev">Approve</button></form></td>
@@ -24,6 +24,42 @@
         </tr>
     </tbody>
     </table>
+
+    
+  <!-- Prikaz zahteva za godisnji -->
+  <div class="modal fade" id="podaciZahtev" tabindex="-1" role="dialog" aria-labelledby="About medicine" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="AboutMedicine">About vacation</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" align="left">Doctor: {{this.odabraniZahtev?.doctor.name}} {{this.odabraniZahtev?.doctor.surname}} ({{this.odabraniZahtev?.doctor.phoneNumber}})</div>
+        <div class="modal-body" align="left">Start date: {{this.odabraniZahtev?.startDate[2] < 10 ? "0" + this.odabraniZahtev?.startDate[2] : this.odabraniZahtev?.startDate[2]}}/{{this.odabraniZahtev?.startDate[1]  < 10 ? "0" + this.odabraniZahtev?.startDate[1] : this.odabraniZahtev?.startDate[1]}}/{{this.odabraniZahtev?.startDate[0]}}</div>
+        <div class="modal-body" align="left">End date: {{this.odabraniZahtev?.endDate[2] < 10 ? "0" + this.odabraniZahtev?.endDate[2] : this.odabraniZahtev?.endDate[2]}}/{{this.odabraniZahtev?.endDate[1]  < 10 ? "0" + this.odabraniZahtev?.endDate[1] : this.odabraniZahtev?.endDate[1]}}/{{this.odabraniZahtev?.endDate[0]}}</div>
+        <div class="modal-body" align="left">Vacation type: 
+          <label v-if="this.odabraniZahtev?.type=='REST'">Rest</label>
+          <label v-else>Absence</label>
+        </div>
+        <div class="modal-body" align="left">Reason: {{this.odabraniZahtev?.reason}}</div>
+        <div class="modal-body" align="left">Status:
+          <label v-if="this.odabraniZahtev?.status=='WAITING'">Waiting</label>
+          <label v-else-if="this.odabraniZahtev?.status=='ACCEPTED'">Accepted</label>
+          <label v-else>Rest</label>
+        </div>
+        <div v-if="this.odabraniZahtev?.status!='WAITING'" class="modal-body" align="left">
+          Pharmacy admin: {{this.odabraniZahtev?.admin?.name}} {{this.odabraniZahtev?.admin?.surname}} ({{this.odabraniZahtev?.admin?.phoneNumber}})
+        </div>
+        <div v-if="this.odabraniZahtev?.status=='DENIED'" class="modal-body" align="left">
+          Why not: {{this.odabraniZahtev?.whyNot}} </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
     <!-- Prihvatanje zahteva -->
   <div class="modal fade" id="prihvatiZahtev" tabindex="-1" role="dialog" aria-labelledby="poruka" aria-hidden="true">
@@ -37,8 +73,8 @@
           </button>
         </div>
         <div class="modal-body" align="left">Doctor: {{this.odabraniZahtev?.doctor.name}} {{this.odabraniZahtev?.doctor.surname}} ({{this.odabraniZahtev?.doctor.phoneNumber}})</div>
-        <div class="modal-body" align="left">Start date: {{this.odabraniZahtev?.startDate[1]}}/{{this.odabraniZahtev?.startDate[2]}}/{{this.odabraniZahtev?.startDate[0]}}</div>
-        <div class="modal-body" align="left">End date: {{this.odabraniZahtev?.endDate[1]}}/{{this.odabraniZahtev?.endDate[2]}}/{{this.odabraniZahtev?.endDate[0]}}</div>
+        <div class="modal-body" align="left">Start date: {{this.odabraniZahtev?.startDate[2] < 10 ? "0" + this.odabraniZahtev?.startDate[2] : this.odabraniZahtev?.startDate[2]}}/{{this.odabraniZahtev?.startDate[1]  < 10 ? "0" + this.odabraniZahtev?.startDate[1] : this.odabraniZahtev?.startDate[1]}}/{{this.odabraniZahtev?.startDate[0]}}</div>
+        <div class="modal-body" align="left">End date: {{this.odabraniZahtev?.endDate[2] < 10 ? "0" + this.odabraniZahtev?.endDate[2] : this.odabraniZahtev?.endDate[2]}}/{{this.odabraniZahtev?.endDate[1] < 10 ? "0" + this.odabraniZahtev?.endDate[1] : this.odabraniZahtev?.endDate[1]}}/{{this.odabraniZahtev?.endDate[0]}}</div>
         <div class="modal-body" align="left">Approve: 
           <select id="potvrdaZahteva" style="width: 50%;" v-model="potvrdaZahteva" required="required">
               <option>Accept</option>

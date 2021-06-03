@@ -180,7 +180,7 @@
                       <td>{{p.doctor.name}}</td>
                       <td>{{p.doctor.surname}}</td>
                       <td>{{p.doctor.phoneNumber}} </td>
-                      <td>{{p.startTime[1]}}/{{p.startTime[2]}}/{{p.startTime[0]}} {{p.startTime[3]}}:{{p.startTime[4]}}</td>
+                      <td>{{p.startTime[2]}}/{{p.startTime[1]}}/{{p.startTime[0]}} {{p.startTime[3]}}:{{p.startTime[4]}}</td>
                       <td>{{p.durationInMins}}</td>
                       <td>{{p.price}}</td>
                       <td><form v-on:click.prevent="podesiPregled(p, true)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#izmeniPregled">View</button></form></td>
@@ -327,7 +327,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="Potvrdica">Are you sure you want to fire {{this.otpustiRadnika?.name}} {{this.otpustiRadnika?.surname}}?</h5>
+          <h5 class="modal-title" id="Potvrdica">Are you sure you want to fire {{this.otpustiRadnika?.name}} {{this.otpustiRadnika?.surname}} ({{this.otpustiRadnika?.phoneNumber}})?</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -387,9 +387,10 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-          <label>&emsp; {{this.izabraniPregled?.doctor.name}} {{this.izabraniPregled?.doctor.surname}} {{this.izabraniPregled?.doctor.phoneNumber}}</label>
+          <label>&emsp; {{this.izabraniPregled?.doctor.name}} {{this.izabraniPregled?.doctor.surname}} ({{this.izabraniPregled?.doctor.phoneNumber}})</label>
           <label>&emsp; {{this.izabraniPregled?.startTime[2]}}/{{this.izabraniPregled?.startTime[1]}}/{{this.izabraniPregled?.startTime[0]}}
-            {{this.izabraniPregled?.startTime[3]}}:{{this.izabraniPregled?.startTime[4]}} {{this.izabraniPregled?.durationInMins}}</label>
+            {{this.izabraniPregled?.startTime[3]}}:{{this.izabraniPregled?.startTime[4]}}</label>
+          <label>&emsp; Min: {{this.izabraniPregled?.durationInMins}}</label>
          <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="obrisiPregled()" data-dismiss="modal">Yes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -467,7 +468,7 @@
         <div class="modal-body" align="left">Price: <input type="number" min="1" v-model="pregledKosta"/></div>
         <div class="modal-body" align="left">Choose dermatologist: 
           <select id="zamenski" style="width: 80%;" v-model="pregledDoktor" required="required">
-              <option v-for="d in this.sviZaposleniDermatolozi" v-bind:value=d>{{d.name}} {{d.surname}} {{d.phoneNumber}}</option>
+              <option v-for="d in this.sviZaposleniDermatolozi" v-bind:value=d>{{d.name}} {{d.surname}} ({{d.phoneNumber}})</option>
           </select></div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="modal"  data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="dodajPregled()">Make</button>
@@ -497,7 +498,7 @@
           <div class="modal-body" align="left">Duration : {{this.izabraniPregled?.durationInMins}} minutes</div>
           <div class="modal-body" align="left">Price: {{this.izabraniPregled?.price}}</div>
         </div>
-        <div class="modal-body" align="left">Chosen dermatologist: {{this.izabraniPregled?.doctor.name}} {{this.izabraniPregled?.doctor.surname}} {{this.izabraniPregled?.doctor.phoneNumber}}</div>
+        <div class="modal-body" align="left">Chosen dermatologist: {{this.izabraniPregled?.doctor.name}} {{this.izabraniPregled?.doctor.surname}} ({{this.izabraniPregled?.doctor.phoneNumber}})</div>
         <div class="modal-footer">
           <div v-if="menjaPregled == true">
             <button type="button" class="btn btn-primary" data-dismiss="modal"  data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="izmeniPregled()">Edit</button>

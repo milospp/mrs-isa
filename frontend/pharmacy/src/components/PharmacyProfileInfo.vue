@@ -53,7 +53,7 @@
                 <tbody>
                     <tr :key="l" v-for="l in this.lekovi">
                       <td>{{l.medicine.name}}</td>
-                      <td>{{l.medicine.structure}}</td>
+                      <td>{{l.medicine.specification.structure}}</td>
                       <td>{{l.medicine.manufacturer}}</td>
                       <td>{{l.medicine.note}}</td>
                       <td>{{l.medicine.points}}</td>
