@@ -36,12 +36,13 @@ public abstract class ComplaintServiceBase implements ComplaintService {
     }
 
     @Override
-    public boolean saveResponse(String response, Long complaintId) {
+    public boolean saveResponse(String response, Long complaintId, Long respondentId) {
         Complaint toBeRespondedTo = this.findOne(complaintId);
 
         if(toBeRespondedTo == null) return false;
 
         toBeRespondedTo.setResponse(response);
+        toBeRespondedTo.setRespondent((SysAdmin) this.userService.findOne(respondentId));
         mailService.sendResponseMail(toBeRespondedTo);
         this.save(toBeRespondedTo);
 
@@ -66,8 +67,10 @@ public abstract class ComplaintServiceBase implements ComplaintService {
         List<Complaint> responses = new ArrayList<>();
 
         for(Complaint c : this.findAll()){
-            if(c.getRespondent().getId().equals(sysAdmin.getId())){
-                responses.add(c);
+            if(!c.getResponse().equals("")){
+                if(c.getRespondent().getId() == sysAdmin.getId()){
+                    responses.add(c);
+                }
             }
         }
 

@@ -3,6 +3,7 @@ package isa9.Farmacy.controller;
 
 import isa9.Farmacy.model.Complaint;
 import isa9.Farmacy.model.Patient;
+import isa9.Farmacy.model.SysAdmin;
 import isa9.Farmacy.model.dto.ComplaintDTO;
 import isa9.Farmacy.service.ComplaintService;
 import isa9.Farmacy.service.UserService;
@@ -53,7 +54,7 @@ public class ComplaintController {
     @PostMapping("/responseToComplaint")
     @PreAuthorize("hasAuthority('SYS_ADMIN')")
     public ResponseEntity<Boolean> responseToComplaint(@RequestBody ComplaintDTO dto){
-        return new ResponseEntity<>( this.complaintService.saveResponse(dto.getResponse(), dto.getId()), HttpStatus.OK);
+        return new ResponseEntity<>( this.complaintService.saveResponse(dto.getResponse(), dto.getId(), dto.getRespondent()), HttpStatus.OK);
     }
 
     @GetMapping("complaintsByPatient/{id}")
@@ -62,5 +63,13 @@ public class ComplaintController {
         Patient patient = (Patient) this.userService.findOne(id);
         List<Complaint> patientsComplaints = this.complaintService.complaintsOfPatient(patient);
         return new ResponseEntity<>(this.complaintToComplaintDTO.convert(patientsComplaints), HttpStatus.OK);
+    }
+
+    @GetMapping("responsesBySysAdmin/{id}")
+    @PreAuthorize("hasAuthority('SYS_ADMIN')")
+    public ResponseEntity<List<ComplaintDTO>> getAdminResponses(@PathVariable Long id){
+        SysAdmin sysAdmin = (SysAdmin) this.userService.findOne(id);
+        List<Complaint> adminResponses = this.complaintService.responsesOfAdmin(sysAdmin);
+        return new ResponseEntity<>(this.complaintToComplaintDTO.convert(adminResponses), HttpStatus.OK);
     }
 }
