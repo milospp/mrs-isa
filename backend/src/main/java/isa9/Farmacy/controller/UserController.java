@@ -339,12 +339,16 @@ public class UserController {
 
     @PostMapping("register/patient")
     public ResponseEntity<Boolean> registerUser(@RequestBody PatientRegistrationDTO patient) {
+        System.out.println("UserController.registerUser 1");
         int povratna = 0;
+        System.out.println("UserController.registerUser 2");
         if (!userService.isAvaibleEmail(patient.getEmail())) povratna += 2;
+        System.out.println("UserController.registerUser 3");
         if (povratna > 0) return new ResponseEntity<>(false, HttpStatus.OK);
         Patient newlyRegistered = new Patient(patient.getId(), patient.getName(), patient.getSurname()
                 , patient.getEmail(), passwordEncoder.encode(patient.getPassword()), patient.getAddress(), patient.getPhoneNumber()
                 , userRoleService.findOne(3L), false, null);
+        System.out.println("UserController.registerUser 4");
         userService.save(newlyRegistered);
         System.out.println(newlyRegistered);
         return new ResponseEntity<> (true, HttpStatus.OK);
