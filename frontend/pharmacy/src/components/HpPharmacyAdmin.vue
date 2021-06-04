@@ -183,8 +183,8 @@
                       <td>{{p.startTime[2]}}/{{p.startTime[1]}}/{{p.startTime[0]}} {{p.startTime[3]}}:{{p.startTime[4]}}</td>
                       <td>{{p.durationInMins}}</td>
                       <td>{{p.price}}</td>
-                      <td><form v-on:click.prevent="podesiPregled(p, true)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#izmeniPregled">View</button></form></td>
-                      <td><form v-on:click.prevent="podesiPregled(p, false)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obrisiPregled">Delete</button></form></td>
+                      <td><form v-on:click.prevent="podesiPregled(p)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#izmeniPregled">View</button></form></td>
+                      <td><form v-on:click.prevent="podesiPregled(p)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obrisiPregled">Delete</button></form></td>
                   </tr>
                 </tbody>
               </table>
@@ -381,8 +381,8 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="ObrisiNar">Are you sure you want to delete examination? </h5>
-          
+          <h5 v-if="this.izabraniPregled?.canEdit" class="modal-title" id="ObrisiNar">Are you sure you want to delete examination? </h5>
+          <h5 v-else>You can't delete examination</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -392,7 +392,7 @@
             {{this.izabraniPregled?.startTime[3]}}:{{this.izabraniPregled?.startTime[4]}}</label>
           <label>&emsp; Min: {{this.izabraniPregled?.durationInMins}}</label>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="obrisiPregled()" data-dismiss="modal">Yes</button>
+          <button v-if="this.izabraniPregled?.canEdit" type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="obrisiPregled()" data-dismiss="modal">Yes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -483,12 +483,13 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="lekic">Edit appointment</h5>
+          <h5 v-if="this.izabraniPregled?.canEdit" class="modal-title" id="lekic">Edit appointment</h5>
+          <h5 v-else>View appointment</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div v-if="menjaPregled == true">
+        <div v-if="this.izabraniPregled?.canEdit">
           <div class="modal-body" align="left">Start time: <input type="datetime-local" v-model="pregledStartuje"/></div>
           <div class="modal-body" align="left">Duration : <input type="number" min="1" v-model="pregledTraje"/> minutes</div>
           <div class="modal-body" align="left">Price: <input type="number" min="1" v-model="pregledKosta"/></div>
@@ -500,7 +501,7 @@
         </div>
         <div class="modal-body" align="left">Chosen dermatologist: {{this.izabraniPregled?.doctor.name}} {{this.izabraniPregled?.doctor.surname}} ({{this.izabraniPregled?.doctor.phoneNumber}})</div>
         <div class="modal-footer">
-          <div v-if="menjaPregled == true">
+          <div v-if="this.izabraniPregled?.canEdit">
             <button type="button" class="btn btn-primary" data-dismiss="modal"  data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="izmeniPregled()">Edit</button>
           </div>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -541,7 +542,7 @@ export default {
             sviLekovi: [], zamenskiLekovi: [], poruka: "Wait... Your require is in processing", 
             filterOrder: 0, narudzbenica: null, sveNarudzbenice: [], narudzbeniceZaIspis: [],
             pregledStartuje:null, pregledTraje: 0, pregledKosta: 0,  pregledDoktor: null,
-            sviPreglediDermatologa: [], izabraniPregled: null, menjaPregled: false,
+            sviPreglediDermatologa: [], izabraniPregled: null,
             upitiZaLek: [], 
         };
     },
@@ -592,13 +593,8 @@ export default {
 
       inicijalizujPoruku(pk) { this.poruka = pk; },
       podesi(farm_der, jesteFar) { this.otpustiRadnika = farm_der; this.jesteFarmaceut = jesteFar;},
-      podesiPregled(p, zaIzmenu) { 
-        if (zaIzmenu) {
-          AppointmentDataService.canEditAppointment(p.id)
-            .then(response => {
-              if (response.data == 0) this.menjaPregled = true;
-              else this.menjaPregled = false;
-              return;});
+      podesiPregled(p) { 
+        if (p.canEdit) {
           this.pregledTraje = p.durationInMins;
           this.pregledKosta = p.price;
         }

@@ -106,7 +106,8 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
             if (pregled.getDoctor().getId() != idDoktora || pregled.getId() == id) continue;
             kraj = pregled.getStartTime().plusMinutes(pregled.getDurationInMins());
             if ((start.isAfter(pregled.getStartTime()) && start.isBefore(kraj))
-                    || (start.isBefore(pregled.getStartTime()) && end.isAfter(pregled.getStartTime())))
+                    || (start.isBefore(pregled.getStartTime()) && end.isAfter(pregled.getStartTime()))
+                    || (start.isEqual(pregled.getStartTime()) || end.isEqual(kraj)))
                 return false;
         }
         return true;
@@ -132,19 +133,20 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
             if (ex.getAppointment().getId() == id) {
                 this.examinationService.delete(ex);}
         }
-        this.appointmentRepository.delete(this.appointmentRepository.getOne(id));
+        this.appointmentRepository.delete(findOne(id));
     }
 
     @Override
-    public int canEditDelete(Long id) {
+    public boolean canEditDelete(Long id) {
+        if (findOne(id).getStartTime().isBefore(LocalDateTime.now())) return false; // bio u proslosti
         for (Examination ex : this.examinationService.findAll())
             if (ex.getAppointment().getId() == id) {
                 if (ex.getStatus() != ExaminationStatus.CANCELED) continue;
                 if (ex.getStatus() == ExaminationStatus.HELD || ex.getStatus() == ExaminationStatus.NOT_HELD)
-                    return 1;               // bio je u proslosti
-                else return 2;              // neko je rezervisao
+                    return false;               // bio je u proslosti
+                else return false;              // neko je rezervisao
             }
-        return 0;                           // mozes da menjas
+        return true;                           // mozes da menjas
     }
 
 
