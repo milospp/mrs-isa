@@ -172,7 +172,7 @@ const routes = [
     component: DermatologistHomePage
   },
   {
-    path: '/darm-appointments',
+    path: '/derm-appointments',
     name: 'DermAppointments',
     component: DermAppointments
   },

@@ -59,6 +59,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         Examination examination;
         examination = appointment.getExamination();
         if (examination == null) return false;
+        if (examination.getPatient() == null) return false;
         if (!examination.getPatient().getId().equals(patient.getId())) return false;
 
         return true;
