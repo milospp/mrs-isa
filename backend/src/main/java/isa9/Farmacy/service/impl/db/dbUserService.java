@@ -29,6 +29,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpServerErrorException;
 
 import javax.persistence.EntityManager;
@@ -206,8 +207,19 @@ public class dbUserService extends UserServiceBase implements UserService, UserD
     }
 
     @Override
+    @Transactional
+    public Doctor getDoctorByIdLocked(Long id) {
+        return this.doctorRepository.findDoctorByIdLocked(id);
+    }
+
+    @Override
     public Patient getPatientById(Long id) {
         return this.patientRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Patient getPatientByIdLocked(Long id) {
+        return this.patientRepository.findPatientByIdLocked(id);
     }
 
     @Override

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -40,6 +42,7 @@ public class dbWorkService extends WorkServiceBase implements WorkService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public List<Work> getWorksByTime(LocalTime time) {
         System.out.println("time.toString() = " + time.toString());
         return workRepository.getAllWorksByTime(time.toString());

@@ -1,5 +1,6 @@
 package isa9.Farmacy.repository;
 
+import isa9.Farmacy.model.Doctor;
 import isa9.Farmacy.model.Patient;
 import isa9.Farmacy.model.User;
 import isa9.Farmacy.model.dto.PatientIdLastDateDTO;
@@ -7,11 +8,13 @@ import isa9.Farmacy.model.dto.PatientLastAppointmentDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.util.Pair;
 
+import javax.persistence.LockModeType;
 import javax.persistence.Tuple;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -50,5 +53,9 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
             nativeQuery = true)
     long findNotSortedCount(@Param("doctorId") Long doctorId, @Param("name") String name, @Param("surname") String surname);
 
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT p FROM Patient p WHERE p.id = :id")
+    Patient findPatientByIdLocked(@Param("id") Long id);
 
 }

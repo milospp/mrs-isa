@@ -44,7 +44,9 @@ public interface UserService extends GenericService<User> {
     PatientsPagesDTO getPatientLastAppointmentDTOsSortedSearched(PaginationSortSearchDTO pssDTO);
 
     Doctor getDoctorById(Long id);
+    Doctor getDoctorByIdLocked(Long id);
     Patient getPatientById(Long id);
+    Patient getPatientByIdLocked(Long id);
 
     Doctor updateDoctorRating(Doctor doctor);
 
