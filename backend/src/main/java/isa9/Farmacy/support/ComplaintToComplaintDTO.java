@@ -27,6 +27,13 @@ public class ComplaintToComplaintDTO implements Converter<Complaint, ComplaintDT
         }catch(NullPointerException e){
             dto.setPharmacy(complaint.getPharmacy().getId());
         }
+
+        try{
+            dto.setRespondent(complaint.getRespondent().getId());
+        }catch(NullPointerException e){
+
+        }
+
         return dto;
     }
 

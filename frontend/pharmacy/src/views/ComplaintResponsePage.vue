@@ -3,6 +3,8 @@
   <div class="container">
     <h1>Complaints</h1>
     <ComplaintResponse/>
+
+    <router-link to="/adminResponses">Responses</router-link>
   </div>
 </template>
 <script>

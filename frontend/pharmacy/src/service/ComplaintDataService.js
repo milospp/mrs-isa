@@ -24,6 +24,14 @@ class ComplaintDataService{
             data: complaint
         });
     }
+
+    getPatientsComplaints(id){
+        return axios.get(`${API_URL}/complaintsByPatient/`+id);
+    }
+
+    getAdminResponses(id){
+        return axios.get(`${API_URL}/responsesBySysAdmin/`+id);
+    }
 }
 
 export default new ComplaintDataService();

@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 
 public class ComplaintDTO {
-    private long id, author, pharmacy, doctor;
+    private long id, author, pharmacy, doctor, respondent;
 
     private String description;
 
