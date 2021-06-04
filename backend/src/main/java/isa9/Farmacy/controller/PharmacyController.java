@@ -46,6 +46,7 @@ public class PharmacyController {
 
     @GetMapping("")
     public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
+        System.out.println("PharmacyController.getAllPharmacies");
         List<PharmacyDTO> resultDTOS = pharmacyToPharmacyDTO.convert(this.pharmacyService.findAll());
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
     }

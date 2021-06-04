@@ -55,22 +55,29 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<UserTokenState> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest,
                                                                     HttpServletResponse response) {
-
+        System.out.println("AuthenticationController.createAuthenticationToken 1");
         UsernamePasswordAuthenticationToken u = new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
                 authenticationRequest.getPassword());
+        System.out.println("AuthenticationController.createAuthenticationToken 2");
 
 
         //
         Authentication authentication = authenticationManager.authenticate(u);
+        System.out.println("AuthenticationController.createAuthenticationToken 3");
 
 
         // Ubaci korisnika u trenutni security kontekst
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        System.out.println("AuthenticationController.createAuthenticationToken 4");
 
         // Kreiraj token za tog korisnika
         User user = (User) authentication.getPrincipal();
+        System.out.println("AuthenticationController.createAuthenticationToken 5");
+
         String jwt = tokenUtils.generateToken(user.getEmail());
+        System.out.println("AuthenticationController.createAuthenticationToken 6");
         int expiresIn = tokenUtils.getExpiredIn();
+        System.out.println("AuthenticationController.createAuthenticationToken 7");
 
         // Vrati token kao odgovor na uspesnu autentifikaciju
         return ResponseEntity.ok(new UserTokenState(jwt, expiresIn));
