@@ -152,7 +152,7 @@ insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_i
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 500, '2021-06-04 08:00:00'::timestamp + INTERVAL '2 hours', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 330, '2021-06-01 08:00:00'::timestamp + INTERVAL '3 hours', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 340, '2021-06-17 08:00:00'::timestamp + INTERVAL '4 hours', 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-05-17 08:00:00'::timestamp + INTERVAL '5 hours', 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-06-07 11:00:00'::timestamp, 0); -- free app
 insert into examination (status, appointment_id, patient_id) values (0, 1, 2);
 insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Migrena', 'Pacijent oseca glavobolju', 1, 2, 1);
 insert into examination (status, appointment_id, patient_id) values (0, 3, 3);
@@ -184,6 +184,12 @@ update appointment SET examination_id = 8 WHERE id = 9;
 insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 7);
 insert into patient_my_examinations (patient_id, my_examinations_id) values (2, 6);
 insert into patient_my_examinations (patient_id, my_examinations_id) values (3, 8);
+
+
+-- more free appointments
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-06-07 11:30:00'::timestamp, 0); -- free app
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-06-07 09:00:00'::timestamp, 0); -- free app
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-06-09 10:00:00'::timestamp, 0); -- free app
 
 
 -- --Therapy

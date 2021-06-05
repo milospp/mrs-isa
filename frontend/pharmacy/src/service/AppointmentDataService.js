@@ -1,4 +1,3 @@
-import { variationPlacements } from "@popperjs/core";
 import axios from "axios";
 import config from "@/config";
 
@@ -92,6 +91,14 @@ class AppointmentDataService {
 
   getPharmAppForCalendar(pharmId) {
     return axios.get(`${API_URL}/` + `calendar/pharm/`+pharmId);
+  }
+
+  getDermAppFromPharmacyFree(dermId, pharmacyId) {
+    return axios.get(`${API_URL}/` + `calendar/free-derm/`+dermId+`/pharmacy/`+pharmacyId);
+  }
+
+  getPharmAppForCalendarFree(pharmId) {
+    return axios.get(`${API_URL}/` + `calendar/free-pharm/`+pharmId);
   }
 
   makeAppointmentPAdmin(pocetak, trajanje, cena, dermatolog, idApoteke) {

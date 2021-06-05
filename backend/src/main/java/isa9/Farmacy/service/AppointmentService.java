@@ -3,6 +3,7 @@ package isa9.Farmacy.service;
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.AppointmentSearchDTO;
 import isa9.Farmacy.model.dto.ConsultingAppointmentReqDTO;
+import isa9.Farmacy.support.DateTimeDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,6 +50,8 @@ public interface AppointmentService extends GenericService<Appointment>{
 
     List<Appointment> getDermForPharmacyAppointmentsNotCanceled(Long dermId, Long pharamcyId);
     List<Appointment> getDoctorAppointmentsNotCanceled(Long doctorId);
+    List<Appointment> getDermForPharmacyAppointmentsFree(Long dermId, Long pharamcyId);
+    List<Appointment> getDoctorAppointmentsFree(Long doctorId);
 
     List<Appointment> getPatientDoctorNotCanceledAppointments(Long patientId, Long doctorId);
     List<User> getDoctorNotCanceledAppointmentsPatients(Long doctorId);
@@ -61,4 +64,6 @@ public interface AppointmentService extends GenericService<Appointment>{
     Boolean isPatientOccupied(LocalDateTime start, LocalDateTime end, Long patientId);
 
     Appointment findByStartTime(LocalDateTime last);
+
+    boolean bookFromAppointment(DateTimeDTO dateTime);
 }
