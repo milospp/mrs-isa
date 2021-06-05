@@ -2,9 +2,11 @@ package isa9.Farmacy.repository;
 
 import isa9.Farmacy.model.*;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.LockModeType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;

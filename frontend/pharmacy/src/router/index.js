@@ -42,6 +42,8 @@ import SuppliersOffersPage from '@/views/SuppliersOffersPage.vue'
 import AddNewOffer from '@/views/AddNewOffer.vue'
 import ComplaintPage from '@/views/ComplaintPage.vue'
 import ComplaintResponsePage from '@/views/ComplaintResponsePage.vue'
+import PatientsComplaints from '@/views/PatientsComplaints.vue'
+import AdminResponses from '@/views/AdminResponses.vue'
 
 
 const routes = [
@@ -184,7 +186,7 @@ const routes = [
     component: DermatologistHomePage
   },
   {
-    path: '/darm-appointments',
+    path: '/derm-appointments',
     name: 'DermAppointments',
     component: DermAppointments
   },
@@ -267,6 +269,16 @@ const routes = [
     path: '/complaints',
     name: 'ComplaintResponsePage',
     component: ComplaintResponsePage
+  },
+  {
+    path: '/patientsComplaints',
+    name: 'PatientsComplaints',
+    component: PatientsComplaints
+  },
+  {
+    path: '/adminResponses',
+    name: "AdminResponses",
+    component: AdminResponses
   }
 
   // {

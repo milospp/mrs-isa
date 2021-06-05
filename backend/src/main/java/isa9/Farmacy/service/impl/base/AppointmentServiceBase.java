@@ -10,6 +10,7 @@ import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.utils.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -59,6 +60,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         Examination examination;
         examination = appointment.getExamination();
         if (examination == null) return false;
+        if (examination.getPatient() == null) return false;
         if (!examination.getPatient().getId().equals(patient.getId())) return false;
 
         return true;
@@ -257,6 +259,8 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     }
 
     @Override
+    @Transactional
+    //@Transactional(propagation = Propagation.REQUIRED)
     public List<Pharmacist> getOccupiedPharmacists(LocalDateTime start, LocalDateTime end) {
         List<Appointment> appointments = getAllAppointmentsInInterval(start, end);
         Set<Pharmacist> pharmacists = new HashSet<Pharmacist>();
@@ -269,54 +273,6 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         List<Pharmacist> listPharmacist = new ArrayList<>();
         listPharmacist.addAll(pharmacists);
         return listPharmacist;
-    }
-
-    @Override
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    public Appointment bookConsultingAppointment(ConsultingAppointmentReqDTO appointmentReqDTO, Patient patient) {
-//      TODO: Add error message...
-        if (userService.isPatientBlocked(patient)) return null;
-        if (appointmentReqDTO.getDurationInMins() <= 0) return null;
-        if (appointmentReqDTO.getStartTime().isBefore(LocalDateTime.now())) return null;
-        if (this.isPatientOccupied(
-                appointmentReqDTO.getStartTime(),
-                appointmentReqDTO.getStartTime().plusMinutes(appointmentReqDTO.getDurationInMins()),
-                patient.getId()
-                )) return null;
-
-        Set<Work> workSet = getFreePharmacist(appointmentReqDTO);
-        Boolean available = workSet.stream().anyMatch(w ->
-                w.getDoctor().getId() == appointmentReqDTO.getPharmacistId() &&
-                        w.getPharmacy().getId() == appointmentReqDTO.getPharmacyId());
-
-        if (!available) return null;
-
-        Doctor doctor = userService.getDoctorById(appointmentReqDTO.getPharmacistId());
-        Pharmacy pharmacy = pharmacyService.findOne(appointmentReqDTO.getPharmacyId());
-
-        Double price = pharmacy.getPricePerHour();
-        if (price == null) price = 999.0;
-
-        Appointment appointment = Appointment.builder()
-                .doctor(doctor).pharmacy(pharmacy)
-                .durationInMins(appointmentReqDTO.getDurationInMins())
-                .startTime(appointmentReqDTO.getStartTime())
-                .price(price * appointmentReqDTO.getDurationInMins() / 60)
-                .type(TypeOfReview.COUNSELING)
-                .build();
-
-        Examination examination = Examination.builder()
-                .patient(patient)
-                .status(ExaminationStatus.PENDING)
-                .therapy(new HashSet<>())
-                .appointment(appointment).build();
-        appointment.setExamination(examination);
-
-        save(appointment);
-        mailService.sendAppointmentInfo(appointment, false);
-
-        return appointment;
-
     }
 
 
@@ -403,6 +359,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     }
 
     @Override
+    @Transactional
     public Boolean isPatientOccupied(LocalDateTime start, LocalDateTime end, Long patientId) {
         Collection<Appointment> appointments = this.getAllAppointmentsInInterval(start, end);
         for (Appointment appointment : appointments){

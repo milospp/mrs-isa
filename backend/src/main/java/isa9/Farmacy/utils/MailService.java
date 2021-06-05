@@ -1181,9 +1181,9 @@ public class MailService {
                 "                          "+"to your complaint about " + complaintAbout + " has arrived.\n";
 
 
-        content += "Your complaint was: \n\n"+
+        content += "\nYour complaint was: \n"+
                 description+           "\n"+
-                "\nAdministrator's response is: \n"+
+                "\n\nAdministrator's response is: \n"+
                 response                +"\n";
 
         ;
