@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -102,6 +103,21 @@ public class dbVacationService extends VacationServiceBase implements VacationSe
             if (v.getStatus() == VacationRequestStatus.ACCEPTED && v.getEndDate().isAfter(vacation.getStartDate()) && v.getEndDate().isBefore(vacation.getEndDate())){
                 return false;
             }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean checkDate(Long idDoktora, LocalDate datum) {
+        for (Vacation v : findAll()) {
+            if (v.getDoctor().getId() != idDoktora) continue;
+            if (v.getStatus() == VacationRequestStatus.DENIED || v.getStatus() == VacationRequestStatus.WAITING)
+                continue;
+
+            // dobar doktor i prihvacen godisnji
+            if ((v.getStartDate().isBefore(datum) && v.getEndDate().isAfter(datum)) ||
+                v.getStartDate().isEqual(datum) || v.getEndDate().isEqual(datum))
+                return false;
         }
         return true;
     }

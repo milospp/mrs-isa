@@ -34,9 +34,10 @@ public class AppointmentController {
     private final ExaminationService examinationService;
     private final WorkService workService;
     private final AppointmentToAppointmentCalendarDTO appointmentToAppointmentCalendarDTO;
+    private final VacationService vacationService;
 
     @Autowired
-    public AppointmentController(AppointmentService appointmentService, AppointmentToAppointmentDTO appointmentToAppointmentDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedInPharmaService medInPharmaService, PharmacyService pharmacyService, UserService userService, MedicineService medicineService, ExaminationService examinationService, WorkService workService, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, WorkToWorkDTO workToWorkDTO, AppointmentToAppointmentCalendarDTO appointmentToAppointmentCalendarDTO){
+    public AppointmentController(AppointmentService appointmentService, AppointmentToAppointmentDTO appointmentToAppointmentDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedInPharmaService medInPharmaService, PharmacyService pharmacyService, UserService userService, MedicineService medicineService, ExaminationService examinationService, WorkService workService, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, WorkToWorkDTO workToWorkDTO, AppointmentToAppointmentCalendarDTO appointmentToAppointmentCalendarDTO, VacationService vacationService){
         this.appointmentService = appointmentService;
         this.appointmentToAppointmentDTO = appointmentToAppointmentDTO;
         this.medicineInPharmacyToMedInPharmaDTO = medicineInPharmacyToMedInPharmaDTO;
@@ -49,6 +50,7 @@ public class AppointmentController {
         this.dermatologistToDermatologistDTO = dermatologistToDermatologistDTO;
         this.workToWorkDTO = workToWorkDTO;
         this.appointmentToAppointmentCalendarDTO = appointmentToAppointmentCalendarDTO;
+        this.vacationService = vacationService;
     }
 
     @GetMapping("")
@@ -315,6 +317,9 @@ public class AppointmentController {
     public ResponseEntity<Integer> pharmacyAdminMake(@RequestBody AppointmentDTO podaci) {
         int povratna = this.proveriVreme(podaci);
         if (povratna != 0) return new ResponseEntity<>(povratna, HttpStatus.OK);
+        if (!this.vacationService.checkDate(podaci.getDoctor().getId(), podaci.getStartTime().toLocalDate()))
+            return new ResponseEntity<>(povratna, HttpStatus.OK);
+        povratna = 1;
         podaci.setType(TypeOfReview.EXAMINATION);
         AppointmentDTOtoAppointment konverter = new AppointmentDTOtoAppointment(this.userService, this.pharmacyService);
         Appointment pregled = konverter.convert(podaci);

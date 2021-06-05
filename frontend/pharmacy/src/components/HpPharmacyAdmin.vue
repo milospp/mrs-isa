@@ -883,14 +883,14 @@ export default {
         AppointmentDataService.makeAppointmentPAdmin(this.pregledStartuje, this.pregledTraje, this.pregledKosta,
           this.pregledDoktor, this.pregledDoktor.pharmacyWork.pharmacyId)
           .then(response => {
-            if (response.data == 0) {
+            if (response.data == 1) {
               this.poruka = "You successfully made appointment";
               this.osveziPreglede();
             }
             else if (response.data == -1) this.poruka = "Dermatologist doesn't work in this pharmacy in inputed time";
             else if (response.data == -2) this.poruka = "Appointment is too long, end time is after end hour of dermatologist";
             else if (response.data == -3) this.poruka = "Dermatologist already have some appointment at inputed time";
-
+            else if (response.data == 0) this.poruka = "Dermatologist is on vacation at that day";
             return;
           });
         },
