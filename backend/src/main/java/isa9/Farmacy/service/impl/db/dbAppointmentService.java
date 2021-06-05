@@ -149,6 +149,16 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
         return true;                           // mozes da menjas
     }
 
+    @Override
+    public void deleteFreeAppointments(Long idDoktora) {
+        for (Appointment a : findAll()) {
+            if (a.getDoctor().getId() != idDoktora) continue;
+            if (a.getStartTime().isBefore(LocalDateTime.now())) continue;
+            // jeste doktor i jeste u buducnosti
+            deleteApponitment(a.getId());
+        }
+    }
+
 
     @Override
     public Appointment findByStartTime(LocalDateTime last) {

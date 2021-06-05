@@ -20,7 +20,7 @@
             
             <td align="left"> <form v-on:submit.prevent="">
                     <input type="submit" class="btn btn-primary" data-toggle="modal" data-target="#napraviPregled" 
-                      v-on:click.prevent="osveziDermatologe()" value="Make appointment"></form> </td>
+                      v-on:click.prevent="osveziDermatologe()" value="Make examination"></form> </td>
         </tr> 
     </table> 
     <!-- Tabela sa podacima -->
@@ -458,7 +458,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="lekic">New appointment</h5>
+          <h5 class="modal-title" id="lekic">New examination</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>

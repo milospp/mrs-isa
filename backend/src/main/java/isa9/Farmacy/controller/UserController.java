@@ -499,6 +499,7 @@ public class UserController {
                     if (sviPregledi.isEmpty()) {
                         farmaceut.setWorking(new HashSet<>());
                         okej = 0;
+                        appointmentService.deleteFreeAppointments(farmaceut.getId());
                         userService.save(farmaceut);
                         break;
                     }
@@ -653,6 +654,7 @@ public class UserController {
                         }
                         if (odabrani == null) return new ResponseEntity<>(okej, HttpStatus.OK);     // otpusten vec
                         dermatolog.getWorking().remove(odabrani);
+                        this.appointmentService.deleteFreeAppointments(dermatolog.getId());
                         userService.save(dermatolog);
                         break;
                     }
