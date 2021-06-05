@@ -38,7 +38,7 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
     public List<MedicineOrder> findAll() {
         List<MedicineOrder> povratna = new ArrayList<>();
         for (MedicineOrder mo : this.orderRepository.findAll()) {
-            List<Offer> ponude = this.offerService.getOffers(mo.getId());
+            List<Offer> ponude = this.offerService.getOffersForOrder(mo.getId());
             mo.setAllOffer(ponude);
             povratna.add(mo);
         }
@@ -82,7 +82,6 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
     public int chooseOffer(Offer ponuda, Long idOrder) {
         int povratna = -1;
         MedicineOrder narudzbenica = this.orderRepository.findById(idOrder).orElse(null);
-
         if (ponuda.getEndDate().isBefore(LocalDateTime.now())) return povratna;
         povratna = 0;
         narudzbenica.setChosenOffer(ponuda);

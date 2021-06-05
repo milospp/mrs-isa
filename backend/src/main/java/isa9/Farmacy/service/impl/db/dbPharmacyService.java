@@ -84,11 +84,13 @@ public class dbPharmacyService extends PharmacyServiceBase implements PharmacySe
                 MedPrice cena = new MedPrice();
                 cena.setMedicineInPharmacy(noviLek);
                 cena.setStartDate(LocalDateTime.now());
+                cena.setPriceType(PriceType.NORMAL);
                 cena.setPrice(77.0);
                 noviLek.setCurrentPrice(cena);
                 noviLek.setPharmacy(pharmacy);
                 noviLek.setMedicine(mq.getMedicine());
                 pharmacy.getMedicines().add(noviLek);
+                this.medInPharmaService.save(noviLek);
                 save(pharmacy);
             }
         }

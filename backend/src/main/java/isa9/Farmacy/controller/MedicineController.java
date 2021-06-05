@@ -176,12 +176,14 @@ public class MedicineController {
                 med.getMedicine().setShape(lek.getMedicine().getShape());
                 med.getMedicine().setType(lek.getMedicine().getType());
                 med.getMedicine().setPoints(lek.getMedicine().getPoints());
-                MedPrice novacena = new MedPrice();
-                novacena.setPriceType(PriceType.NORMAL);
-                novacena.setPrice(lek.getCurrentPrice());
-                novacena.setStartDate(LocalDateTime.now());
-                novacena.setMedicineInPharmacy(med);
-                med.setCurrentPrice(novacena);
+                if (med.getCurrentPrice().getPriceType() == PriceType.NORMAL) {
+                    MedPrice novacena = new MedPrice();
+                    novacena.setPriceType(PriceType.NORMAL);
+                    novacena.setPrice(lek.getCurrentPrice());
+                    novacena.setStartDate(LocalDateTime.now());
+                    novacena.setMedicineInPharmacy(med);
+                    med.setCurrentPrice(novacena);
+                }
                 medicineService.save(med.getMedicine());
                 povratna = 1;
                 pharmacyService.save(((PharmacyAdmin) user).getPharmacy());

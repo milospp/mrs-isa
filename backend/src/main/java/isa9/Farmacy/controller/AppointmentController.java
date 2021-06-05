@@ -34,9 +34,10 @@ public class AppointmentController {
     private final ExaminationService examinationService;
     private final WorkService workService;
     private final AppointmentToAppointmentCalendarDTO appointmentToAppointmentCalendarDTO;
+    private final VacationService vacationService;
 
     @Autowired
-    public AppointmentController(AppointmentService appointmentService, AppointmentToAppointmentDTO appointmentToAppointmentDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedInPharmaService medInPharmaService, PharmacyService pharmacyService, UserService userService, MedicineService medicineService, ExaminationService examinationService, WorkService workService, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, WorkToWorkDTO workToWorkDTO, AppointmentToAppointmentCalendarDTO appointmentToAppointmentCalendarDTO){
+    public AppointmentController(AppointmentService appointmentService, AppointmentToAppointmentDTO appointmentToAppointmentDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedInPharmaService medInPharmaService, PharmacyService pharmacyService, UserService userService, MedicineService medicineService, ExaminationService examinationService, WorkService workService, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, WorkToWorkDTO workToWorkDTO, AppointmentToAppointmentCalendarDTO appointmentToAppointmentCalendarDTO, VacationService vacationService){
         this.appointmentService = appointmentService;
         this.appointmentToAppointmentDTO = appointmentToAppointmentDTO;
         this.medicineInPharmacyToMedInPharmaDTO = medicineInPharmacyToMedInPharmaDTO;
@@ -49,6 +50,7 @@ public class AppointmentController {
         this.dermatologistToDermatologistDTO = dermatologistToDermatologistDTO;
         this.workToWorkDTO = workToWorkDTO;
         this.appointmentToAppointmentCalendarDTO = appointmentToAppointmentCalendarDTO;
+        this.vacationService = vacationService;
     }
 
     @GetMapping("")
@@ -315,6 +317,9 @@ public class AppointmentController {
     public ResponseEntity<Integer> pharmacyAdminMake(@RequestBody AppointmentDTO podaci) {
         int povratna = this.proveriVreme(podaci);
         if (povratna != 0) return new ResponseEntity<>(povratna, HttpStatus.OK);
+        if (!this.vacationService.checkDate(podaci.getDoctor().getId(), podaci.getStartTime().toLocalDate()))
+            return new ResponseEntity<>(povratna, HttpStatus.OK);
+        povratna = 1;
         podaci.setType(TypeOfReview.EXAMINATION);
         AppointmentDTOtoAppointment konverter = new AppointmentDTOtoAppointment(this.userService, this.pharmacyService);
         Appointment pregled = konverter.convert(podaci);
@@ -326,14 +331,18 @@ public class AppointmentController {
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<List<AppointmentDTO>> getAppAdmin(@PathVariable Long idApoteke) {
         List<AppointmentDTO> povratna = new ArrayList<>();
-        for (Appointment pregled : this.appointmentService.findAll())
+        for (Appointment pregled : this.appointmentService.findAll()) {
+            if (pregled.getDoctor().getClass() == Pharmacist.class) continue;
             if (idApoteke == pregled.getPharmacy().getId()) {
                 for (Work w : pregled.getDoctor().getWorking())
                     if (w.getPharmacy().getId() == pregled.getPharmacy().getId()) {
-                        povratna.add(this.appointmentToAppointmentDTO.convert(pregled, w));
+                        AppointmentDTO pregledDTO = this.appointmentToAppointmentDTO.convert(pregled, w);
+                        pregledDTO.setCanEdit(this.appointmentService.canEditDelete(pregled.getId()));
+                        povratna.add(pregledDTO);
                         break;
                     }
             }
+        }
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
@@ -343,16 +352,10 @@ public class AppointmentController {
         int povratna = -1;
         Appointment odabrani = this.appointmentService.findOne(pregled.getId());
         if (odabrani == null) return new ResponseEntity<>(povratna, HttpStatus.NOT_FOUND);
-        povratna = this.appointmentService.canEditDelete(pregled.getId());
+        povratna = this.appointmentService.canEditDelete(pregled.getId()) ? 0 : 1;
         if (povratna != 0) return new ResponseEntity<>(povratna, HttpStatus.OK);
         this.appointmentService.deleteApponitment(pregled.getId());
         return new ResponseEntity<>(povratna, HttpStatus.OK);
-    }
-
-    @GetMapping("/canEdit/{id}")
-    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
-    public ResponseEntity<Integer> canEditAdmin(@PathVariable Long id) {
-        return new ResponseEntity<>(this.appointmentService.canEditDelete(id), HttpStatus.OK);
     }
 
     @PostMapping("/edit")

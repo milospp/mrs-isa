@@ -65,6 +65,7 @@ public class dbOfferService extends OfferServiceBase implements OfferService {
                 }
             }
         }
+        this.mailService.sendOfferInfo(o);
         this.pharmacyService.save(apoteka);
         this.offerRepository.save(o);
     }
@@ -81,6 +82,7 @@ public class dbOfferService extends OfferServiceBase implements OfferService {
                 }
             }
         }
+        this.mailService.sendOfferInfo(o);
         this.userService.save(dobavljac);
         this.offerRepository.save(o);
     }

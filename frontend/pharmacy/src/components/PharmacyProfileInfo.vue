@@ -53,7 +53,7 @@
                 <tbody>
                     <tr :key="l" v-for="l in this.lekovi">
                       <td>{{l.medicine.name}}</td>
-                      <td>{{l.medicine.structure}}</td>
+                      <td>{{l.medicine.specification.structure}}</td>
                       <td>{{l.medicine.manufacturer}}</td>
                       <td>{{l.medicine.note}}</td>
                       <td>{{l.medicine.points}}</td>
@@ -68,7 +68,8 @@
                       <td v-else-if="l.priceType=='ACTION'">{{l.currentPrice}} ({{100-l.currentPrice*100/l.oldPrice}}%)</td>
                       <td v-else>{{l.currentPrice}}</td>
 
-                      <td><form v-on:click.prevent="funkcija(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">Reserve</button></form></td>
+                      <td v-if="user.role=='PATIENT' && l.medicine.perscription == 'WITHOUT_RECEIPT'"><form v-on:click.prevent="funkcija(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">Reserve</button></form></td>
+                      <td v-else></td>
                   </tr>
                 </tbody>
               </table>
@@ -519,7 +520,7 @@ export default {
   },
   created() {
       this.id = this.$route.params.id;
-
+      this.user = AuthService.getCurrentUser();
 
       this.userId = AuthService.getLoggedIdOrLogout();
       if (this.userId == null) return;
@@ -527,7 +528,7 @@ export default {
       PharmacistDataService.getAllPharmacistPharmacy(this.id)
         .then(response => {
           this.sviZaposleniFarmaceuti = response.data;
-        });2
+        });
       DermatologistDataService.getAllDermatologistsPharmacy(this.id)
         .then(response => {
           this.sviZaposleniDermatolozi = response.data;});
