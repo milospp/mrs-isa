@@ -121,6 +121,18 @@ class PharmacyDataService {
   getVisitedPharmacies(patientId){
     return axios.get(`${API_URL}/visitedPharmacies/`+patientId);
   }
+
+  subscribeUnsubscribeToPharmacy(pharmacy, id){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/subscribeUnsubscribe/`+id ,
+      data: pharmacy
+    });
+  }
+
+  getSubscriptions(id){
+    return axios.get(`${API_URL}/subscriptions/`+id);
+  }
 }
 
 

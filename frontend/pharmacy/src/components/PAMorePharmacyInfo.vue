@@ -156,7 +156,7 @@
                   <thead class="card-header">
                   <th>Code</th>
                   <th>Name</th>
-                  <th>Old rice</th>
+                  <th>Old price</th>
                   <th>Action/prom</th>
                   <th>Start date</th>
                   <th>End date</th>

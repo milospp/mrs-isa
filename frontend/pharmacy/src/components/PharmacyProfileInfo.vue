@@ -13,7 +13,7 @@
       <div class="col-md-6 text-left" align="center"></div>
       
       <div class="col-md-2">
-      <button class="btn btn-block btn-primary">Subscribe</button>
+      <button class="btn btn-block btn-primary" v-on:click="subUnsub()">{{setSubBtnText()}}</button>
       <button v-bind:disabled="!pharmacy.canVote" type="button" class="btn btn-block btn-primary" v-on:click="ratingModal(pharmacy)" data-toggle="modal" data-target="#rating-modal">
           {{getMyVote(pharmacy)>0 ? "Change Rate": "Rate"}}
       </button>
@@ -316,7 +316,8 @@ export default {
               pharmacy: null,
             },
             userId: 1,
-            poruka: "Wait... Your require is in processing", 
+            poruka: "Please wait... Your requirement is in processing", 
+            subscriptions: [],
 		}
 	},
   methods: {
@@ -516,6 +517,30 @@ export default {
             }
           });
         },
+        isPatientSubscribed(){
+          // for(let subscription of this.user.subscriptions){
+          //   if(subscription == this.pharmacy.id){
+          //     return true;
+          //   }
+          // }
+          for(let subscription of this.subscriptions){
+            if(subscription.id == this.pharmacy.id) return true;
+          }
+
+
+          return false;
+        },
+        subUnsub(){
+          PharmacyDataService.subscribeUnsubscribeToPharmacy(this.pharmacy, this.user.id).then(response => {
+            PharmacyDataService.getSubscriptions(this.user.id).then(response => {
+              this.subscriptions = response.data;
+            });
+          });
+        },
+        setSubBtnText(){
+          if(this.isPatientSubscribed()) return "Unsubscribe";
+          else return "Subscribe";
+        }
 
   },
   created() {
@@ -536,6 +561,9 @@ export default {
         .then(response => {
             this.lekovi = response.data;
         });
+      PharmacyDataService.getSubscriptions(this.user.id).then(response => {
+        this.subscriptions = response.data;
+      });
   },
   mounted() {
     this.loadPharmacyData();
