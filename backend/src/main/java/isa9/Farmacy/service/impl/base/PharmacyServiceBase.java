@@ -99,4 +99,45 @@ public abstract class PharmacyServiceBase implements PharmacyService {
 
         return visitedPharmacies;
     }
+
+    @Override
+    public boolean subscribeToPharmacy(Pharmacy pharmacy, Long patientId) {
+        if(pharmacy == null || this.userService.findOne(patientId) == null) return false;
+
+        Patient patient = (Patient) this.userService.findOne(patientId);
+        patient.getSubscriptions().add(pharmacy);
+        this.userService.save(patient);
+
+
+        return true;
+    }
+
+    @Override
+    public boolean unsubscribeToPharmacy(Pharmacy pharmacy, Long patientId) {
+        if(pharmacy == null || this.userService.findOne(patientId) == null) return false;
+
+        Patient patient = (Patient) this.userService.findOne(patientId);
+        for(Pharmacy p : patient.getSubscriptions()){
+            if(p.getId() == pharmacy.getId()){
+                patient.getSubscriptions().remove(p);
+                break;
+            }
+        }
+        this.userService.save(patient);
+
+
+        return true;
+    }
+
+    @Override
+    public boolean isPatientSubscribed(Pharmacy pharmacy, Long patientId) {
+        Patient patient = (Patient) this.userService.findOne(patientId);
+
+        for(Pharmacy p : patient.getSubscriptions()){
+            if(p.getId() == pharmacy.getId()) return true;
+        }
+
+
+        return false;
+    }
 }
