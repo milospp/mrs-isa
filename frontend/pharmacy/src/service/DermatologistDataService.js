@@ -178,13 +178,6 @@ class DermatologistDataService {
         method: 'post',
         url: `${API_URL}/users/register/dermatologist`,
         data: newDermatologist
-    }).then(response => {
-		if (response.data) {
-			alert("Dermatologist has been successfully added!");
-			return true;
-		  }
-		  alert("This e-mail is already taken!");
-		  return false;
     });
   }
   editPersonalData(dermatologist){
