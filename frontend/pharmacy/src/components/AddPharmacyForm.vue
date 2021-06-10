@@ -24,7 +24,7 @@
             required="required" title="Price must be a number">
           </td></tr>
 
-          <tr><td></td><td align="left"><input  type="submit" value="Register" style="width: 50%;">
+          <tr><td></td><td align="left"><input  type="submit" value="Register" style="width: 50.66%;">
           </td></tr>
           
         </table>

@@ -71,12 +71,13 @@
 
 					<a class="navbar-brand" href="/">Navbar</a>
 
-					<router-link :to="{ name: 'AddPharmacy'}" class="nav-item nav-link">Add Pharmacy</router-link>
+					<!-- <router-link :to="{ name: 'AddPharmacy'}" class="nav-item nav-link">Add Pharmacy</router-link>
 					<router-link :to="{ name: 'AddSupplier'}" class="nav-item nav-link">Add Supplier</router-link>
 					<router-link :to="{ name: 'AddDermatologist' }" class="nav-item nav-link">Add Dermatologist</router-link>
 					<router-link :to="{ name: 'AddMedicine' }" class="nav-item nav-link">Add Medicine</router-link>
 					<router-link :to="{ name: 'AddPharmacyAdmin' }" class="nav-item nav-link">Add Pharmacy Admin.</router-link>
-					<router-link :to="{ name: 'AddSysAdmin' }" class="nav-item nav-link">Add Sys. Admin.</router-link>
+					<router-link :to="{ name: 'AddSysAdmin' }" class="nav-item nav-link">Add Sys. Admin.</router-link> -->
+					<router-link :to="{ name: 'SysAdminAdd' }" class="nav-item nav-link">Add...</router-link>
 					<router-link :to="{ name: 'ComplaintResponsePage' }" class="nav-item nav-link">Complaints</router-link>
 					<router-link :to="{ name: 'Vacations' }" class="nav-item nav-link">Vacation requests</router-link>
 					
