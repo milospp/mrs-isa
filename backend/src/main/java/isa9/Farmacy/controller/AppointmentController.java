@@ -213,83 +213,27 @@ public class AppointmentController {
     }
 
     @PostMapping("book")
+    @PreAuthorize("hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
     public ResponseEntity<Boolean> bookAnAppointment(@RequestBody DateTimeDTO dateTime) {
-        System.out.println(dateTime);
-
-        boolean badTime = false;
+        boolean valid = appointmentService.bookFromAppointment(dateTime);
 
         Doctor doctor = userService.getDoctorById(dateTime.getDoctorId());
         Patient patient = userService.getPatientById(dateTime.getPatientId());
         Pharmacy pharmacy = pharmacyService.findOne(dateTime.getPharmacyId());
 
-        boolean derm = doctor.getRole().getName().equals("DERMATOLOGIST");
+        LocalDateTime tryBookDateTime = dateTime.getDateTime();
+        LocalDateTime tryBookDateTimeEnd = tryBookDateTime.plusMinutes(dateTime.getDurationInMins());
 
-        List<Appointment> patientAppointments = appointmentService.getPatientUpcomingAppointments(patient.getId());
-        List<Appointment> doctorAppointments = appointmentService.getDoctorUpcomingAppointments(doctor.getId());
+        boolean badTime = vacationService.getIfAcceptedInIntervalForDoctor(dateTime.getDoctorId(),
+                tryBookDateTime.toLocalDate(), tryBookDateTimeEnd.toLocalDate());
 
-        //TODO: all this logic place in appointment service or repository
-
-        List<Work> works = pharmacyService.findDoctorsWork(doctor);
-        for (Work work : works){
-            for (Appointment a : doctorAppointments){
-                if (LocalTime.from(dateTime.getDateTime()).isAfter(work.getEndHour()) ||
-                        LocalTime.from(dateTime.getDateTime()).isBefore(work.getStartHour()) ||
-                        LocalTime.from(dateTime.getDateTime()).plusMinutes(dateTime.getDurationInMins()).isAfter(work.getEndHour())){
-                    badTime = true;
-                }
-            }
+        if (badTime) {
+            //System.out.println("Tad ima odmor");
+            valid = false;
         }
 
-        // patient validation
-        for (Appointment a : patientAppointments){
-            if (dateTime.getDateTime().isAfter(a.getStartTime()) && dateTime.getDateTime().isBefore(a.getStartTime().plusMinutes(dateTime.getDurationInMins()))){
-                badTime = true;
-                break;
-            }
-            if (dateTime.getDateTime().isEqual(a.getStartTime()) || dateTime.getDateTime().isEqual(a.getStartTime().plusMinutes(dateTime.getDurationInMins()))){
-                badTime = true;
-                break;
-            }
-        }
 
-        // doctor validation
-        for (Appointment a : doctorAppointments){
-            if (dateTime.getDateTime().isAfter(a.getStartTime()) && dateTime.getDateTime().isBefore(a.getStartTime().plusMinutes(dateTime.getDurationInMins()))){
-                badTime = true;
-                break;
-            }
-            if (dateTime.getDateTime().isEqual(a.getStartTime()) || dateTime.getDateTime().isEqual(a.getStartTime().plusMinutes(dateTime.getDurationInMins()))) {
-                badTime = true;
-                break;
-            }
-        }
-
-        if (badTime) return new ResponseEntity<>(false, HttpStatus.OK);
-
-        Appointment appointment = Appointment.builder()
-                .id(null)
-                .doctor(doctor)
-                .durationInMins(dateTime.getDurationInMins())
-                .examination(Examination.builder()
-                        .id(null)
-                        .patient(patient)
-                        .status(ExaminationStatus.PENDING)
-                        .build())
-                .pharmacy(pharmacy)
-                .price(dateTime.getPrice())
-                .startTime(dateTime.getDateTime())
-                .build();
-        appointment.getExamination().setAppointment(appointment);
-        if (derm)
-            appointment.setType(TypeOfReview.EXAMINATION);
-        else
-            appointment.setType(TypeOfReview.COUNSELING);
-
-        appointmentService.save(appointment);
-
-        //AppointmentDTO dto = appointmentToAppointmentDTO.convert(appointment);
-        return new ResponseEntity<>(true, HttpStatus.OK);
-
+        return new ResponseEntity<>(valid, HttpStatus.OK);
     }
 
     @GetMapping("calendar/derm/{dermId}/pharmacy/{pharmaId}")
@@ -302,10 +246,30 @@ public class AppointmentController {
         return new ResponseEntity<>(resultDTOs, HttpStatus.OK);
     }
 
+    @GetMapping("calendar/free-derm/{dermId}/pharmacy/{pharmaId}")
+    @PreAuthorize("hasAuthority('DERMATOLOGIST')")
+    public ResponseEntity<List<AppointmentCalendarDTO>> getFreeDermaPharmaAppointmentsForCalendar(@PathVariable Long dermId, @PathVariable Long pharmaId) {
+        List<Appointment> appointments = this.appointmentService.getDermForPharmacyAppointmentsFree(dermId, pharmaId);
+
+        List<AppointmentCalendarDTO> resultDTOs = appointmentToAppointmentCalendarDTO.convert(appointments);
+
+        return new ResponseEntity<>(resultDTOs, HttpStatus.OK);
+    }
+
     @GetMapping("calendar/pharm/{pharmId}")
     @PreAuthorize("hasAuthority('PHARMACIST')")
     public ResponseEntity<List<AppointmentCalendarDTO>> getPharmaAppointmentsForCalendar(@PathVariable Long pharmId) {
         List<Appointment> appointments = this.appointmentService.getDoctorAppointmentsNotCanceled(pharmId);
+
+        List<AppointmentCalendarDTO> resultDTOs = appointmentToAppointmentCalendarDTO.convert(appointments);
+
+        return new ResponseEntity<>(resultDTOs, HttpStatus.OK);
+    }
+
+    @GetMapping("calendar/free-pharm/{pharmId}")
+    @PreAuthorize("hasAuthority('PHARMACIST')")
+    public ResponseEntity<List<AppointmentCalendarDTO>> getFreePharmaAppointmentsForCalendar(@PathVariable Long pharmId) {
+        List<Appointment> appointments = this.appointmentService.getDoctorAppointmentsFree(pharmId);
 
         List<AppointmentCalendarDTO> resultDTOs = appointmentToAppointmentCalendarDTO.convert(appointments);
 

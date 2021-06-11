@@ -53,6 +53,9 @@ public class VacationController {
                 .type(vacationDTO.getType())
                 .build();
         if (vacationService.testTime(vacation)) {
+            Doctor d = userService.getDoctorById(vacationDTO.getDoctorId());
+            d.getVacations().add(vacation);
+            userService.save(d);
             vacationService.save(vacation);
             return new ResponseEntity<>(true, HttpStatus.OK);
         } else {

@@ -2,7 +2,9 @@ package isa9.Farmacy.model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import isa9.Farmacy.model.dto.DoctorDTO;
@@ -25,12 +27,16 @@ public abstract class Doctor extends User{
     @Column (nullable = false, columnDefinition="Decimal(2,1) default '0.0'")
     private double rating = 0.0;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Vacation> vacations;
+
 
     public Doctor(Long id, String name, String surname, String email,
                   String password, Address address, String phoneNumber, UserRole role, Timestamp t) {
         super(id, name, surname, email, password, address, phoneNumber, role, true, t);
         working = new HashSet<>();
         rating = 0;
+        vacations = new HashSet<>();
     }
 
     public Doctor(Long id, String name, String surname, String email,
@@ -39,6 +45,7 @@ public abstract class Doctor extends User{
         super(id, name, surname, email, password, address, phoneNumber, role, true, t);
         this.working = working;
         rating = 0;
+        vacations = new HashSet<>();
     }
 
 }

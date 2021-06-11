@@ -10,4 +10,6 @@ public interface WorkService extends GenericService<Work>{
     List<Work> getWorksByTime(LocalTime time);
     List<Work> getWorksInInterval(LocalTime start, LocalTime end);
 
+    boolean getIfWorksInIntervalForDocPharm(Long doctorId, Long pharmacyId, LocalTime start, LocalTime end);
+
 }

@@ -10,6 +10,9 @@ public interface VacationService extends GenericService<Vacation>{
     List<Vacation> getAllForPharmacy(Long pharmacyId);
     List<Vacation> getAllForAdmin(Long adminId);
     List<Vacation> getAllForDoctor(Long doctorId);
+    List<Vacation> getAcceptedForDoctor(Long doctorId);
+    boolean getIfAcceptedInIntervalForDoctor(Long doctorId, LocalDate start, LocalDate end);
+  
     List<Vacation> getWaitnigAll();
 
     boolean testTime(Vacation vacation);
