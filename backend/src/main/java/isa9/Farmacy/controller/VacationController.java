@@ -1,5 +1,6 @@
 package isa9.Farmacy.controller;
 
+import isa9.Farmacy.model.Doctor;
 import isa9.Farmacy.model.PharmacyAdmin;
 import isa9.Farmacy.model.Vacation;
 import isa9.Farmacy.model.VacationRequestStatus;
@@ -55,6 +56,9 @@ public class VacationController {
                 .type(vacationDTO.getType())
                 .build();
         if (vacationService.testTime(vacation)) {
+            Doctor d = userService.getDoctorById(vacationDTO.getDoctorId());
+            d.getVacations().add(vacation);
+            userService.save(d);
             vacationService.save(vacation);
             return new ResponseEntity<>(true, HttpStatus.OK);
         } else {

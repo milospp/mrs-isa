@@ -240,38 +240,6 @@
         </div>
     </div>
 
-    <!-- MODAL for booking new appointment -->
-    <!-- <div class="modal" tabindex="-1" role="dialog" id="newAppointmentModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Book Custom Appointment</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="customTimeAppointment" class="form-group">
-                        <div class="form-group">
-                            <label for="datetime">Date and time</label>
-                            <input id="datetime" class="form-control" v-model="newAppointment.dateTime" type="datetime-local">
-                        </div>
-                        <div class="form-group">
-                            <label for="duration">Duration (minutes)</label>
-                            <input id="duration" class="form-control" v-model="newAppointment.durationInMins" type="number" min="5" step="5">
-                        </div>
-                        <div class="form-group">
-                            <label for="price">Price:   {{ predictedPrice.toFixed(2) }} RSD</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" @click="bookAtCustomTime()">Book</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div> -->
 </div>
 </template>
 
@@ -312,6 +280,7 @@ export default {
             date: new Date(),
             freeAppointments: [],
             appointments: [],
+            bookedAppointments: [],
             appointment: {
                 id: null,
                 examination: {
@@ -335,9 +304,9 @@ export default {
             },
             patientAppeared: null,
             newAppointment: {
-                "dateTime": null,
-                "price": 0,
-                "durationInMins": 0
+                dateTime : null,
+                price : 0,
+                durationInMins : 5
             },
             medicines: [],
             therapyMed: null,
@@ -356,7 +325,6 @@ export default {
             .then(response => {
                     this.appointment = response.data;
                     this.status = this.appointment.examination.status;
-                    console.log(response.data);
                     MedicineDataService.getAllMedicineForPharmacy(this.appointment.pharmacy.id)
                     .then(response =>
                             {
@@ -379,9 +347,6 @@ export default {
             for (let r in this.reservations){
                 this.appointment.examination.therapy.push({medInPharma: this.reservations[r].medicineInPharmacy, days: this.reservations[r].days+''});
             }
-            console.table(this.appointment.examination.therapy);
-
-
             AppointmentDataService.postAppointmentInfo(this.appointment)
             .then(response => {
                     if (response.data){
@@ -415,15 +380,9 @@ export default {
         addTherapy() {
             if (this.therapyMed && this.therapyDays && this.reservationDate){
                 let unique = true;
-                console.log('polja nisu prazna');
-                console.log(this.reservations);
                 for (let t in this.reservations){
-                    console.log('gledam neki lek u terapiji' + t);
-                    console.log(JSON.stringify(this.reservations[t].medicineInPharmacy.id));
                     if (this.reservations[t].medicineInPharmacy.id === this.therapyMed.id){
                         unique = false;
-                        console.log('vec je rezervisan taj lek');
-                        console.log(unique);
                         break;
                     }
                 }
@@ -444,8 +403,7 @@ export default {
                             console.log(response.data.id);
                             this.reservations[response.data.id] = response.data;
                             this.reservations[response.data.id].days = this.therapyDays;
-                            console.log("rezervacije!!!\n"+JSON.stringify(this.reservations));
-
+                            
                             this.therapyMed = null; this.therapyDays = null; this.reservationDate = null;
                         }
                     })
@@ -458,18 +416,10 @@ export default {
             }           
         },
         removeTherapy(reservationIndex){
-            console.log("rezervacija koja je selektovana!!!\n"+JSON.stringify(this.reservations[reservationIndex]));
-            console.log(reservationIndex + " = " + this.reservations[reservationIndex].id);
             PatientDataService.cancelReservation(reservationIndex)
                 .then(response => {
                     if (response){
-                        
-                        console.log(JSON.stringify(this.appointment.examination.therapy));
-
                         delete this.reservations[reservationIndex];
-                        console.log('nakon brisanja');
-                        console.log(JSON.stringify(this.reservations));
-                        
                     }
                 });
         },
@@ -478,11 +428,11 @@ export default {
         },
         bookAtCustomTime(){
             this.newAppointment.price = this.predictedPrice;
-            console.log(this.newAppointment.dateTime, this.appointment.doctor.id, this.appointment.examination.patient.id, this.appointment.pharmacy.id, this.newAppointment.price, this.newAppointment.durationInMins);
             AppointmentDataService.bookCustomAppointment(this.newAppointment.dateTime, this.appointment.doctor.id, this.appointment.examination.patient.id, this.appointment.pharmacy.id, this.newAppointment.price, this.newAppointment.durationInMins)
             .then(response => {
                 if (response.data){
                     alert('Successfuly booked appoinment at ' + this.newAppointment.dateTime);
+                    this.bookedAppointments.push(this.newAppointment);
                 }
                 else {
                     alert('Time is not valid');
@@ -490,12 +440,12 @@ export default {
             });
         },
         bookExistingAppointment(app){
-            //alert(JSON.stringify(app));
             AppointmentDataService.bookAppointment(app.key, this.appointment.examination.patient.id)
                 .then(response => {
                     if (response.data){
                         alert('Successfuly booked appointment!');
                         this.setAttr();
+                        this.bookedAppointments.push(this.appointment);
                     }
                 });
         },
@@ -507,8 +457,6 @@ export default {
         AppointmentDataService.getDermAppFromPharmacyFree(this.doctor.id, pharmacyId)
         .then(response => {
             this.appointments = response.data;
-            console.log("appointments: " + JSON.stringify(this.appointments));
-            console.log("attributes: " + JSON.stringify(this.attributes));
         });
       },
       setAttributesForPharmacist() {
@@ -535,12 +483,6 @@ export default {
                     data: t,
                 },
                 highlight: 'gray',
-                // dot: {
-                //     style: {
-                //     backgroundColor: (this.doctor.role === 'DERMATOLOGIST') ? '#007bff' : '#ffc107',//'#ff8080',
-                //     opacity: 1,//t.typeForClass.includes('held') ? 0.5 : 1,//todo.isComplete ? 0.3 : 1,
-                //     }
-                // },
                 popover: {
                     label: t.startTime + ' ' + t.durationInMins + ' min',
                     visibility: 'hover',
@@ -559,17 +501,13 @@ export default {
             var now = new Date();
             now.setHours(0,0,0,0);
             for (let attr of a){
-                //alert(JSON.stringify(attr.dates));
                 let date = new Date(attr.dates);
 
                 if (date.toDateString() === this.selectedDay.toDateString() && date >= now)
                     apps.push(attr);
-                // else
-                //     alert("nisu isti datumi");
             }
-            //console.log(apps);
+            console.log(apps);
             return apps;
-            //'<a href="/appointment/'+t.id+'">start</a>'
         },
         doctor() {
             return AuthService.getCurrentUser();

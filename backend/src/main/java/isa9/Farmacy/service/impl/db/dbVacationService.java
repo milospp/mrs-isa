@@ -13,8 +13,10 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Primary
@@ -65,6 +67,31 @@ public class dbVacationService extends VacationServiceBase implements VacationSe
     public List<Vacation> getAllForDoctor(Long doctorId) {
         Doctor doctor = userService.getDoctorById(doctorId);
         return vacationRepository.findByDoctor(doctor);
+    }
+
+    @Override
+    public List<Vacation> getAcceptedForDoctor(Long doctorId) {
+        Doctor doctor = userService.getDoctorById(doctorId);
+        return vacationRepository.findByDoctor(doctor).stream()
+                .filter(x -> x.getStatus().equals(VacationRequestStatus.ACCEPTED))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean getIfAcceptedInIntervalForDoctor(Long doctorId, LocalDate start, LocalDate end) {
+        List<Vacation> vacations = getAcceptedForDoctor(doctorId);
+        for (Vacation v : vacations){
+            if (v.getStartDate().isAfter(start) && v.getStartDate().isAfter(end)){
+                continue;
+            }
+            else if (v.getEndDate().isBefore(start) && v.getEndDate().isBefore(end)){
+                continue;
+            }
+            else{
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

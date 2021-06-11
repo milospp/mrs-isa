@@ -34,9 +34,10 @@ public class AppointmentController {
     private final ExaminationService examinationService;
     private final WorkService workService;
     private final AppointmentToAppointmentCalendarDTO appointmentToAppointmentCalendarDTO;
+    private final VacationService vacationService;
 
     @Autowired
-    public AppointmentController(AppointmentService appointmentService, AppointmentToAppointmentDTO appointmentToAppointmentDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedInPharmaService medInPharmaService, PharmacyService pharmacyService, UserService userService, MedicineService medicineService, ExaminationService examinationService, WorkService workService, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, WorkToWorkDTO workToWorkDTO, AppointmentToAppointmentCalendarDTO appointmentToAppointmentCalendarDTO){
+    public AppointmentController(AppointmentService appointmentService, AppointmentToAppointmentDTO appointmentToAppointmentDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedInPharmaService medInPharmaService, PharmacyService pharmacyService, UserService userService, MedicineService medicineService, ExaminationService examinationService, WorkService workService, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, WorkToWorkDTO workToWorkDTO, AppointmentToAppointmentCalendarDTO appointmentToAppointmentCalendarDTO, VacationService vacationService){
         this.appointmentService = appointmentService;
         this.appointmentToAppointmentDTO = appointmentToAppointmentDTO;
         this.medicineInPharmacyToMedInPharmaDTO = medicineInPharmacyToMedInPharmaDTO;
@@ -49,6 +50,7 @@ public class AppointmentController {
         this.dermatologistToDermatologistDTO = dermatologistToDermatologistDTO;
         this.workToWorkDTO = workToWorkDTO;
         this.appointmentToAppointmentCalendarDTO = appointmentToAppointmentCalendarDTO;
+        this.vacationService = vacationService;
     }
 
     @GetMapping("")
@@ -214,6 +216,23 @@ public class AppointmentController {
     @PreAuthorize("hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
     public ResponseEntity<Boolean> bookAnAppointment(@RequestBody DateTimeDTO dateTime) {
         boolean valid = appointmentService.bookFromAppointment(dateTime);
+
+        Doctor doctor = userService.getDoctorById(dateTime.getDoctorId());
+        Patient patient = userService.getPatientById(dateTime.getPatientId());
+        Pharmacy pharmacy = pharmacyService.findOne(dateTime.getPharmacyId());
+
+        LocalDateTime tryBookDateTime = dateTime.getDateTime();
+        LocalDateTime tryBookDateTimeEnd = tryBookDateTime.plusMinutes(dateTime.getDurationInMins());
+
+        boolean badTime = vacationService.getIfAcceptedInIntervalForDoctor(dateTime.getDoctorId(),
+                tryBookDateTime.toLocalDate(), tryBookDateTimeEnd.toLocalDate());
+
+        if (badTime) {
+            //System.out.println("Tad ima odmor");
+            valid = false;
+        }
+
+
         return new ResponseEntity<>(valid, HttpStatus.OK);
     }
 

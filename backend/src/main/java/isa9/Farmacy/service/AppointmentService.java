@@ -62,6 +62,7 @@ public interface AppointmentService extends GenericService<Appointment>{
     int canEditDelete(Long id);
 
     Boolean isPatientOccupied(LocalDateTime start, LocalDateTime end, Long patientId);
+    Boolean isDoctorOccupied(LocalDateTime start, LocalDateTime end, Long doctorId);
 
     Appointment findByStartTime(LocalDateTime last);
 

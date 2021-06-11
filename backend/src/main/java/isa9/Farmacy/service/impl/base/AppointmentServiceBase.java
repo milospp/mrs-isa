@@ -397,4 +397,17 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         return false;
 
     }
+
+    @Override
+    //@Transactional
+    public Boolean isDoctorOccupied(LocalDateTime start, LocalDateTime end, Long doctorId) {
+        List<Appointment> appointments = getAllAppointmentsInInterval(start, end);
+        for (Appointment appointment : appointments){
+            if (appointment.getExamination() == null) continue;
+            if (appointment.getDoctor().getId().equals(doctorId)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

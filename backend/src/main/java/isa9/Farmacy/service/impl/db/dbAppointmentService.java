@@ -5,6 +5,7 @@ import isa9.Farmacy.model.dto.ConsultingAppointmentReqDTO;
 import isa9.Farmacy.repository.AppointmentRepository;
 import isa9.Farmacy.repository.ExaminationRepository;
 import isa9.Farmacy.service.AppointmentService;
+import isa9.Farmacy.service.VacationService;
 import isa9.Farmacy.service.WorkService;
 import isa9.Farmacy.service.impl.base.AppointmentServiceBase;
 import isa9.Farmacy.support.DateTimeDTO;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @Primary
@@ -223,11 +224,6 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
         Patient patient = userService.getPatientById(dateTime.getPatientId());
         Pharmacy pharmacy = pharmacyService.findOne(dateTime.getPharmacyId());
 
-        boolean derm = doctor.getRole().getName().equals("DERMATOLOGIST");
-
-        List<Appointment> patientAppointments = getPatientUpcomingAppointments(patient.getId());
-        List<Appointment> doctorAppointments = getDoctorUpcomingAppointments(doctor.getId());
-
         List<Work> works = pharmacyService.findDoctorsWork(doctor);
 
         LocalTime tryBookTime = dateTime.getDateTime().toLocalTime();
@@ -238,96 +234,50 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
         LocalDateTime tryBookDateTimeEnd = tryBookDateTime.plusMinutes(tryBookDuration);
 
         // checking working hours - works fine
-        for (Work work : works){
-            if (work.getPharmacy().getId().equals(pharmacy.getId())) {
-                System.out.println("Radno vreme " + work.getStartHour() + "-" + work.getEndHour());
-                System.out.println("Vreme pregleda: " + tryBookTime + "-" + tryBookTimeEnd);
-                if (tryBookTime.isAfter(work.getEndHour()))
-                    System.out.println("kasno za pocetak pregleda");
-                if (tryBookTime.isBefore(work.getStartHour()))
-                    System.out.println("rano za pocetak pregled");
-                if (tryBookTimeEnd.isAfter(work.getEndHour()))
-                    System.out.println("kasno za kraj pregleda");
-                if (tryBookTimeEnd.isBefore(work.getStartHour()))
-                    System.out.println("rano za kraj pregleda");
-                if (tryBookTime.isAfter(work.getEndHour()) ||
-                        tryBookTime.isBefore(work.getStartHour()) ||
-                        tryBookTimeEnd.isAfter(work.getEndHour()) ||
-                        tryBookTimeEnd.isBefore(work.getStartHour())) {
-                    badTime = true;
-                }
-            }
-        }
+        boolean worksThen = workService.getIfWorksInIntervalForDocPharm(doctor.getId(), pharmacy.getId(), tryBookTime, tryBookTimeEnd);
+        if (!worksThen) badTime = true;
 
         // checking patient's appointments
         boolean occupied = isPatientOccupied(tryBookDateTime, tryBookDateTimeEnd, patient.getId()); // if true, than it is bad time for appointment
         if (occupied) badTime = true;
-//        for (Appointment a : patientAppointments){
-//            LocalDateTime aStartDateTime = a.getStartTime();
-//            LocalDateTime aEndDateTime = a.getStartTime().plusMinutes(a.getDurationInMins());
-//
-//            /*tryBookDateTime.isBefore(aEndDateTime) ||
-//                        tryBookDateTime.isAfter(aStartDateTime) ||
-//                        tryBookDateTimeEnd.isBefore(aEndDateTime)*/
-//
-//            LocalDateTime hybridEndTime = a.getStartTime().plusMinutes(tryBookDuration);
-//            if (tryBookDateTime.isAfter(aStartDateTime) && tryBookDateTime.isBefore(aEndDateTime)){
-//                // -- ?? -- ??
-//                badTime = true;
-//                break;
-//            }
-//            if (tryBookDateTime.isEqual(aStartDateTime) || tryBookDateTime.isEqual(aEndDateTime)){
-//                // -? -?
-//                badTime = true;
-//                break;
-//            }
-//        }
 
         // checking doctor's appointments
-        // TODO: this could be moved into separate method like the isPatientOccupied
-        List<Appointment> appointments = getAllAppointmentsInInterval(tryBookDateTime, tryBookDateTimeEnd);
-        for (Appointment appointment : appointments){
-            if (appointment.getExamination() == null) continue;
-            if (appointment.getDoctor().getId().equals(doctor.getId())) {
-                badTime = true;
-                break;
-            }
+        boolean occupiedDoc = isDoctorOccupied(tryBookDateTime, tryBookDateTimeEnd, doctor.getId());
+        if (occupiedDoc) badTime = true;
+
+        // checking doctor's vacations and absences
+        List<Vacation> acceptedVacationsInTheGivenPeriod = doctor.getVacations().stream()
+                .filter(x -> x.getStatus().equals(VacationRequestStatus.ACCEPTED) &&
+                        ((x.getStartDate().isAfter(tryBookDateTime.toLocalDate()) && x.getStartDate().isAfter(tryBookDateTimeEnd.toLocalDate()))
+                        || (x.getEndDate().isBefore(tryBookDateTime.toLocalDate()) && x.getEndDate().isBefore(tryBookDateTimeEnd.toLocalDate()))))
+                .collect(Collectors.toList());
+        if (!acceptedVacationsInTheGivenPeriod.isEmpty())
+            badTime = true;
+
+        boolean derm = doctor.getRole().getName().equals("DERMATOLOGIST");
+        if (!badTime) {
+            Appointment appointment = Appointment.builder()
+                    .id(null)
+                    .doctor(doctor)
+                    .durationInMins(dateTime.getDurationInMins())
+                    .examination(Examination.builder()
+                            .id(null)
+                            .patient(patient)
+                            .status(ExaminationStatus.PENDING)
+                            .build())
+                    .pharmacy(pharmacy)
+                    .price(dateTime.getPrice())
+                    .startTime(dateTime.getDateTime())
+                    .build();
+            appointment.getExamination().setAppointment(appointment);
+            if (derm)
+                appointment.setType(TypeOfReview.EXAMINATION);
+            else
+                appointment.setType(TypeOfReview.COUNSELING);
+
+            save(appointment);
         }
-//
-//        for (Appointment a : doctorAppointments){
-//            if (dateTime.getDateTime().isAfter(a.getStartTime()) && dateTime.getDateTime().isBefore(a.getStartTime().plusMinutes(dateTime.getDurationInMins()))){
-//                badTime = true;
-//                break;
-//            }
-//            if (dateTime.getDateTime().isEqual(a.getStartTime()) || dateTime.getDateTime().isEqual(a.getStartTime().plusMinutes(dateTime.getDurationInMins()))) {
-//                badTime = true;
-//                break;
-//            }
-//        }
 
-        if (badTime) return false;
-
-        Appointment appointment = Appointment.builder()
-                .id(null)
-                .doctor(doctor)
-                .durationInMins(dateTime.getDurationInMins())
-                .examination(Examination.builder()
-                        .id(null)
-                        .patient(patient)
-                        .status(ExaminationStatus.PENDING)
-                        .build())
-                .pharmacy(pharmacy)
-                .price(dateTime.getPrice())
-                .startTime(dateTime.getDateTime())
-                .build();
-        appointment.getExamination().setAppointment(appointment);
-        if (derm)
-            appointment.setType(TypeOfReview.EXAMINATION);
-        else
-            appointment.setType(TypeOfReview.COUNSELING);
-
-        save(appointment);
-
-        return true;
+        return !badTime;
     }
 }
