@@ -11,7 +11,7 @@
               <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab-phAdmin">Pharmacy Admin.</a></li>
               <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab-sysAdmin">System Admin.</a></li>
         </ul>
-          
+            <br>
             <div class="tab-content">
                 <div id="tab-pharmacy" class="tab-pane in fade active">
                     <AddPharmacyForm/>

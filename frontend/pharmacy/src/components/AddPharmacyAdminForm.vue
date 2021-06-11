@@ -1,6 +1,6 @@
 <template>
     
-    <!-- <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-center">
         <form v-on:submit.prevent="formCheck(this)" class="col-md-8">
             <div class="form-group row">
                 <label for="inputName" class="col-sm-2 col-form-label">Name</label>
@@ -83,13 +83,23 @@
                 >
                 </div>
             </div>
+
+            <div class="form-group row">
+                <label for="inputPhoneNumber" class="col-sm-2 col-form-label">Select a pharmacy</label>
+                <div class="col-sm-10">
+                <select id="pharmaciesSelection" class="form-control" v-on:click="selectedPharmacy(this)" style="width: 100%;" v-model="registerData.pharmacyId" required>
+                        <option v-for="pharmacy in this.availablePharmacies" v-bind:value=pharmacy.id>{{pharmacy.name}}</option>
+                </select>
+                </div>
+            </div>
+
             <button type="submit" id="dugme" class="btn btn-primary">Register</button>
 
 
         </form>
-    </div> -->
+    </div>
 
-     <form v-on:submit.prevent="formCheck(this)" >
+        <!-- <form v-on:submit.prevent="formCheck(this)" >
         <table>
             <tr>
                 <td align="right">Name:</td>
@@ -169,7 +179,7 @@
             <tr >
                 <td align="right">Select a pharmacy:</td>
                 <td colspan="2">
-                    <select id="pharmaciesSelection" v-on:click="selectedPharmacy(this)" style="width: 100%;" v-model="registerData.pharmacyId" required="required">
+                    <select id="pharmaciesSelection" v-on:click="selectedPharmacy(this)" style="width: 100%;" v-model="registerData.pharmacyId" required>
                         <option v-for="pharmacy in this.availablePharmacies" v-bind:value=pharmacy.id>{{pharmacy.name}}</option>
                     </select>
                 </td>
@@ -179,7 +189,7 @@
                 <td colspan="2"><input type="submit" id="dugme" value="Register" ></td>
             </tr>
         </table>
-    </form>
+    </form> -->
 </template>
 
 <script>
@@ -209,6 +219,7 @@ export default {
     },
     methods: {      
         formCheck(e) {
+            console.log(this.registerData);
             PharmacyAdminDataService.SendPharmacyAdmin(this.registerData).then(response => {
                 if (response.data) {
                     this.$toast.show(
