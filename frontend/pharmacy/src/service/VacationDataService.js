@@ -21,6 +21,10 @@ class VacationDataService{
         return axios.get(API_URL + "/" + idAdminaApoteke);
     }
 
+    getAllVacations(idAdminaSistema){
+        return axios.get(API_URL + "/all/" + idAdminaSistema);
+    }
+
     saveVacationApproval(idAdminaApoteke, zahtev, potvrda, zastoNe) {
         if (potvrda == "Accept") {zahtev.status = "ACCEPTED";}
         else {

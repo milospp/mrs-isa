@@ -36,7 +36,7 @@
         
           <div class="tab-content">
             <div id="tab-medicines" class="tab-pane in fade active in">
-              <h3>Last editing of pricelist: {{this.cenovnik?.lastEditing[1] < 10 ? "0" + this.cenovnik?.lastEditing[1] : this.cenovnik?.lastEditing[1]}}/{{this.cenovnik?.lastEditing[2] < 10 ? "0" + this.cenovnik?.lastEditing[2] : this.cenovnik?.lastEditing[2]}}/{{this.cenovnik?.lastEditing[0]}}
+              <h3>Last editing of pricelist: {{this.cenovnik?.lastEditing[2] < 10 ? "0" + this.cenovnik?.lastEditing[2] : this.cenovnik?.lastEditing[2]}}/{{this.cenovnik?.lastEditing[1] < 10 ? "0" + this.cenovnik?.lastEditing[1] : this.cenovnik?.lastEditing[1]}}/{{this.cenovnik?.lastEditing[0]}}
                   {{this.cenovnik?.lastEditing[3] < 10 ? "0" + this.cenovnik?.lastEditing[3] : this.cenovnik?.lastEditing[3]}}:{{this.cenovnik?.lastEditing[4] < 10 ? "0" + this.cenovnik?.lastEditing[4] : this.cenovnik?.lastEditing[4]}}
               </h3>
               <div v-if="this.postojiPromena == true">
@@ -97,7 +97,7 @@
                       <td>{{u.medicine.name}}</td>
                       <td>{{u.doctor.name}} {{u.doctor.surname}}</td>
                       <td>{{u.doctor.phoneNumber}}</td>
-                      <td>{{u.inquiryDate[1] < 10 ? "0" + u.inquiryDate[1] : u.inquiryDate[1]}}/{{u.inquiryDate[2] < 10 ? "0" + u.inquiryDate[2] : u.inquiryDate[2]}}/{{u.inquiryDate[0]}}  
+                      <td>{{u.inquiryDate[2] < 10 ? "0" + u.inquiryDate[2] : u.inquiryDate[2]}}/{{u.inquiryDate[1] < 10 ? "0" + u.inquiryDate[1] : u.inquiryDate[1]}}/{{u.inquiryDate[0]}}  
                       {{u.inquiryDate[3] < 10 ? "0" + u.inquiryDate[3] : u.inquiryDate[3]}}:{{u.inquiryDate[4] < 10 ? "0" + u.inquiryDate[4] : u.inquiryDate[4]}}</td>
                     </tr>
                 </tbody>
@@ -135,10 +135,11 @@
                 </thead>
                 <tbody>
                     <tr :key="n.name" v-for="n in this.narudzbeniceZaIspis">
-                      <td>{{n.startDate[1]}}/{{n.startDate[2]}}/{{n.startDate[0]}} {{n.startDate[3]}}:{{n.startDate[4]}}</td>
-                      <td>{{n.endDate[1]}}/{{n.endDate[2]}}/{{n.endDate[0]}} {{n.startDate[3]}}:{{n.startDate[4]}}</td>
+                      <td>{{n.startDate[2]}}/{{n.startDate[1]}}/{{n.startDate[0]}} {{n.startDate[3]}}:{{n.startDate[4]}}</td>
+                      <td>{{n.endDate[2]}}/{{n.endDate[1]}}/{{n.endDate[0]}} {{n.startDate[3]}}:{{n.startDate[4]}}</td>
                       <td>{{n.allMedicines.length}}</td>
-                      <td>{{n.chosenOffer?.supplier?.name}} {{n.chosenOffer?.supplier.surname}}</td>
+                      <td v-if="n.chosenOffer">{{n.chosenOffer?.supplier?.name}} {{n.chosenOffer?.supplier.surname}} ({{n.chosenOffer?.supplier.phoneNumber}})</td>
+                      <td v-else></td>
                       <td>{{n.allOffer?.length}}</td>
                       <td><form v-on:click.prevent="izmeniNarudzbenicu(n)"><button type="button" class="btn btn-primary">View</button></form></td>
                       <td><div v-if="n.allOffer?.length == 0"><form v-on:click.prevent="postaviNarudzbenicu(n)">
@@ -155,7 +156,7 @@
                   <thead class="card-header">
                   <th>Code</th>
                   <th>Name</th>
-                  <th>Old rice</th>
+                  <th>Old price</th>
                   <th>Action/prom</th>
                   <th>Start date</th>
                   <th>End date</th>
@@ -170,8 +171,8 @@
                       <!-- popust/akcija -->
                       <td v-if="l.priceType=='ACTION'">{{l.currentPrice}} ({{100-l.currentPrice*100/l.oldPrice}}%)</td>
                       <td v-else>{{l.currentPrice}}</td>
-                      <td>{{l.startDate[2]}}/{{l.startDate[1]}}/{{l.startDate[0]}}</td>
-                      <td>{{l.endDate[2]}}/{{l.endDate[1]}}/{{l.endDate[0]}}</td>
+                      <td>{{l?.startDate[2] < 10 ? "0" + l?.startDate[2] : l?.startDate[2]}}/{{l?.startDate[1] < 10 ? "0" + l?.startDate[1] : l?.startDate[1]}}/{{l?.startDate[0]}}</td>
+                      <td>{{l?.endDate[2] < 10 ? "0" + l?.endDate[2] : l?.endDate[2]}}/{{l?.endDate[1] < 10 ? "0" + l?.endDate[1] : l?.endDate[1]}}/{{l?.endDate[0]}}</td>
                       <!-- Nema promene dok je akcija/promocija i nema brisanja -->
                       <td> <form v-on:click.prevent="postaviLek(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaciPromocija">View</button></form></td>
                       <td><form v-on:click.prevent="postaviLek(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#brisanjeAkcije">Delete</button></form></td>
@@ -193,9 +194,9 @@
                 </thead>
                 <tbody>
                     <tr :key="z" v-for="z in this.zahteviZaGodisnji">
-                      <td>{{z.doctor.name}} {{z.doctor.surname}}</td>
-                      <td>{{z.startDate[1]}}/{{z.startDate[2]}}/{{z.startDate[0]}}</td>
-                      <td>{{z.endDate[1]}}/{{z.endDate[2]}}/{{z.endDate[0]}}</td>
+                      <td>{{z.doctor.name}} {{z.doctor.surname}} <br/> ({{z.doctor.phoneNumber}})</td>
+                      <td>{{z.startDate[2] < 10 ? "0" + z.startDate[2] : z.startDate[2]}}/{{z.startDate[1] < 10 ? "0" + z.startDate[1] : z.startDate[1]}}/{{z.startDate[0]}}</td>
+                      <td>{{z.endDate[2] < 10 ? "0" + z.endDate[2] : z.endDate[2]}}/{{z.endDate[1] < 10 ? "0" + z.endDate[1] : z.endDate[1]}}/{{z.endDate[0]}}</td>
                       <td v-if="z.status=='WAITING'">Waiting</td>
                       <td v-else-if="z.status=='ACCEPTED'">Accepted</td>
                       <td v-else>Denied</td>
@@ -289,8 +290,8 @@
           </button>
         </div>
         <div class="modal-body" align="left">Doctor: {{this.odabraniZahtev?.doctor.name}} {{this.odabraniZahtev?.doctor.surname}} ({{this.odabraniZahtev?.doctor.phoneNumber}})</div>
-        <div class="modal-body" align="left">Start date: {{this.odabraniZahtev?.startDate[1]}}/{{this.odabraniZahtev?.startDate[2]}}/{{this.odabraniZahtev?.startDate[0]}}</div>
-        <div class="modal-body" align="left">End date: {{this.odabraniZahtev?.endDate[1]}}/{{this.odabraniZahtev?.endDate[2]}}/{{this.odabraniZahtev?.endDate[0]}}</div>
+         <div class="modal-body" align="left">Start date: {{this.odabraniZahtev?.startDate[2] < 10 ? "0" + this.odabraniZahtev?.startDate[2] : this.odabraniZahtev?.startDate[2]}}/{{this.odabraniZahtev?.startDate[1]  < 10 ? "0" + this.odabraniZahtev?.startDate[1] : this.odabraniZahtev?.startDate[1]}}/{{this.odabraniZahtev?.startDate[0]}}</div>
+        <div class="modal-body" align="left">End date: {{this.odabraniZahtev?.endDate[2] < 10 ? "0" + this.odabraniZahtev?.endDate[2] : this.odabraniZahtev?.endDate[2]}}/{{this.odabraniZahtev?.endDate[1]  < 10 ? "0" + this.odabraniZahtev?.endDate[1] : this.odabraniZahtev?.endDate[1]}}/{{this.odabraniZahtev?.endDate[0]}}</div>
         <div class="modal-body" align="left">Approve: 
           <select id="potvrdaZahteva" style="width: 50%;" v-model="potvrdaZahteva" required="required">
               <option>Accept</option>
@@ -348,8 +349,8 @@
           </button>
         </div>
         <div class="modal-body" align="left">Doctor: {{this.odabraniZahtev?.doctor.name}} {{this.odabraniZahtev?.doctor.surname}} ({{this.odabraniZahtev?.doctor.phoneNumber}})</div>
-        <div class="modal-body" align="left">Start date: {{this.odabraniZahtev?.startDate[1]}}/{{this.odabraniZahtev?.startDate[2]}}/{{this.odabraniZahtev?.startDate[0]}}</div>
-        <div class="modal-body" align="left">End date: {{this.odabraniZahtev?.endDate[1]}}/{{this.odabraniZahtev?.endDate[2]}}/{{this.odabraniZahtev?.endDate[0]}}</div>
+        <div class="modal-body" align="left">Start date: {{this.odabraniZahtev?.startDate[2] < 10 ? "0" + this.odabraniZahtev?.startDate[2] : this.odabraniZahtev?.startDate[2]}}/{{this.odabraniZahtev?.startDate[1]  < 10 ? "0" + this.odabraniZahtev?.startDate[1] : this.odabraniZahtev?.startDate[1]}}/{{this.odabraniZahtev?.startDate[0]}}</div>
+        <div class="modal-body" align="left">End date: {{this.odabraniZahtev?.endDate[2] < 10 ? "0" + this.odabraniZahtev?.endDate[2] : this.odabraniZahtev?.endDate[2]}}/{{this.odabraniZahtev?.endDate[1]  < 10 ? "0" + this.odabraniZahtev?.endDate[1] : this.odabraniZahtev?.endDate[1]}}/{{this.odabraniZahtev?.endDate[0]}}</div>
         <div class="modal-body" align="left">Vacation type: 
           <label v-if="this.odabraniZahtev?.type=='REST'">Rest</label>
           <label v-else>Absence</label>
@@ -361,7 +362,7 @@
           <label v-else>Rest</label>
         </div>
         <div v-if="this.odabraniZahtev?.status!='WAITING'" class="modal-body" align="left">
-          Pharmacy admin: {{this.odabraniZahtev?.pharmacyAdmin?.name}} {{this.odabraniZahtev?.pharmacyAdmin?.surname}} ({{this.odabraniZahtev?.pharmacyAdmin?.phoneNumber}})
+          Pharmacy admin: {{this.odabraniZahtev?.admin?.name}} {{this.odabraniZahtev?.admin?.surname}} ({{this.odabraniZahtev?.admin?.phoneNumber}})
         </div>
         <div v-if="this.odabraniZahtev?.status=='DENIED'" class="modal-body" align="left">
           Why not: {{this.odabraniZahtev?.whyNot}} </div>
@@ -592,7 +593,7 @@ export default {
       promenaNoveCene() { this.novaCena = this.izabraniLek?.currentPrice - this.izabraniLek?.currentPrice * this.procenti / 100; },
       napraviAkciju()  {
         if (this.izabraniLek == null) { this.poruka = "You must select some medicine."; return; }
-        if (this.procenti < 0) { this.poruka = "Action discount must be positive number."; return; }
+        if (this.procenti < 0 || this.procenti > 99) { this.poruka = "Action discount must in interval (0, 100)."; return; }
         if (this.novaCena < 0) { this.poruka = "Price for promotion must be positive number."; return; }
         if (this.procenti == 0 && this.novaCena == 0) { this.poruka = "You must enter action discount or price for promotion."; return; }
         if (this.krajAkcije == null) { this.poruka = "You must choose end date."; return; }

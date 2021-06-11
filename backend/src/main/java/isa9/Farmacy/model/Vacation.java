@@ -31,8 +31,8 @@ public class Vacation {
     private Pharmacy pharmacy;
 
     @ManyToOne
-    @JoinColumn(name = "pharmacy_admin_id")
-    private PharmacyAdmin pharmacyAdmin;
+    @JoinColumn(name = "admin_id")
+    private User admin;
 
     @Column
     @Enumerated

@@ -6,6 +6,7 @@ import isa9.Farmacy.service.MedQuantityService;
 import isa9.Farmacy.service.OfferService;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.utils.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -18,6 +19,12 @@ public abstract class OfferServiceBase implements OfferService {
     protected MedQuantityService medQuantityService;
     protected UserService userService;
     protected PharmacyService pharmacyService;
+    protected MailService mailService;
+
+    @Autowired
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
+    }
 
     @Autowired
     public final void setMedQuantityService(MedQuantityService medQuantityService){ this.medQuantityService = medQuantityService;}

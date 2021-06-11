@@ -26,5 +26,5 @@ public class AppointmentDTO {
     private PharmacyDTO pharmacy;
     private ExaminationDTO examination;
 
-    
+    private boolean canEdit;
 }

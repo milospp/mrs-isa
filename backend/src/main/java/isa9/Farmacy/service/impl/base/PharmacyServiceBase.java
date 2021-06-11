@@ -2,10 +2,7 @@ package isa9.Farmacy.service.impl.base;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.PharmacySearchDTO;
-import isa9.Farmacy.service.MedicineService;
-import isa9.Farmacy.service.PharmacyService;
-import isa9.Farmacy.service.RatingService;
-import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -13,13 +10,18 @@ import java.util.stream.Collectors;
 
 public abstract class PharmacyServiceBase implements PharmacyService {
     protected RatingService ratingService;
-
+    protected MedInPharmaService medInPharmaService;
 
     protected UserService userService;
 
     @Autowired
     public void setRatingService(RatingService ratingService) {
         this.ratingService = ratingService;
+    }
+
+    @Autowired
+    public void setMedInPharmaService(MedInPharmaService medInPharmaService) {
+        this.medInPharmaService = medInPharmaService;
     }
 
     @Autowired
@@ -96,5 +98,46 @@ public abstract class PharmacyServiceBase implements PharmacyService {
         }
 
         return visitedPharmacies;
+    }
+
+    @Override
+    public boolean subscribeToPharmacy(Pharmacy pharmacy, Long patientId) {
+        if(pharmacy == null || this.userService.findOne(patientId) == null) return false;
+
+        Patient patient = (Patient) this.userService.findOne(patientId);
+        patient.getSubscriptions().add(pharmacy);
+        this.userService.save(patient);
+
+
+        return true;
+    }
+
+    @Override
+    public boolean unsubscribeToPharmacy(Pharmacy pharmacy, Long patientId) {
+        if(pharmacy == null || this.userService.findOne(patientId) == null) return false;
+
+        Patient patient = (Patient) this.userService.findOne(patientId);
+        for(Pharmacy p : patient.getSubscriptions()){
+            if(p.getId() == pharmacy.getId()){
+                patient.getSubscriptions().remove(p);
+                break;
+            }
+        }
+        this.userService.save(patient);
+
+
+        return true;
+    }
+
+    @Override
+    public boolean isPatientSubscribed(Pharmacy pharmacy, Long patientId) {
+        Patient patient = (Patient) this.userService.findOne(patientId);
+
+        for(Pharmacy p : patient.getSubscriptions()){
+            if(p.getId() == pharmacy.getId()) return true;
+        }
+
+
+        return false;
     }
 }

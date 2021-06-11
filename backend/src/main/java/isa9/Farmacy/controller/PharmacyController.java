@@ -202,5 +202,40 @@ public class PharmacyController {
         List<Pharmacy> visitedPharmacies = this.pharmacyService.getVisitedPharmacies(patient);
         return new ResponseEntity<>(this.pharmacyToPharmacyDTO.convert(visitedPharmacies), HttpStatus.OK);
     }
+
+    @PostMapping("/subscribeUnsubscribe/{id}")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<Integer> subscribeUnsubscribe(@PathVariable Long id, @RequestBody PharmacyDTO pharmacyDTO){
+        boolean result = false;
+        Pharmacy pharmacy = this.pharmacyService.findOne(pharmacyDTO.getId());
+
+        if(this.pharmacyService.isPatientSubscribed(pharmacy, id))
+            result = this.pharmacyService.unsubscribeToPharmacy(pharmacy, id);
+        else
+            result = this.pharmacyService.subscribeToPharmacy(pharmacy, id);
+
+        int responseCode = 0;
+        if(result) {
+            responseCode = 0;
+        }
+        else{
+            responseCode = 1;
+        }
+        return new ResponseEntity<>(responseCode, HttpStatus.OK);
+    }
+
+    @GetMapping("/subscriptions/{id}")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<List<PharmacyDTO>> getPatientsSubscriptions(@PathVariable Long id){
+        Patient patient = (Patient) this.userService.findOne(id);
+
+        List<Pharmacy> subscriptions = new ArrayList<>();
+
+        for(Pharmacy p : patient.getSubscriptions()){
+            subscriptions.add(p);
+        }
+
+        return new ResponseEntity<>(this.pharmacyToPharmacyDTO.convert(subscriptions), HttpStatus.OK);
+    }
 }
 

@@ -59,7 +59,8 @@ public interface AppointmentService extends GenericService<Appointment>{
 
     Boolean isDermatologistFree(Long id, Long idDoktora, LocalDateTime start, int duration);
     void deleteApponitment(Long id);
-    int canEditDelete(Long id);
+    boolean canEditDelete(Long id);
+    void deleteFreeAppointments(Long idDoktora);
 
     Boolean isPatientOccupied(LocalDateTime start, LocalDateTime end, Long patientId);
     Boolean isDoctorOccupied(LocalDateTime start, LocalDateTime end, Long doctorId);

@@ -18,7 +18,7 @@
 					<router-link :to="{ name: 'Pharmacies'}" class="nav-item nav-link">Pharmacies</router-link>
 					<router-link :to="{ name: 'Medicines'}" class="nav-item nav-link">Medicines</router-link>
 					<router-link :to="{ name: 'MedicineSearchPage'}" class="nav-item nav-link">Search medicines</router-link>
-
+					<router-link :to="{ name: 'AllDoctors'}" class="nav-item nav-link">All doctors</router-link>
 
 				</div>
 				<div v-else-if="user.role === 'PATIENT'" class="navbar-nav mr-auto mt-2 mt-lg-0">
@@ -78,6 +78,7 @@
 					<router-link :to="{ name: 'AddPharmacyAdmin' }" class="nav-item nav-link">Add Pharmacy Admin.</router-link>
 					<router-link :to="{ name: 'AddSysAdmin' }" class="nav-item nav-link">Add Sys. Admin.</router-link>
 					<router-link :to="{ name: 'ComplaintResponsePage' }" class="nav-item nav-link">Complaints</router-link>
+					<router-link :to="{ name: 'Vacations' }" class="nav-item nav-link">Vacation requests</router-link>
 					
 				</div>
 				<div v-else-if="user.role === 'SUPPLIER'" class="navbar-nav mr-auto mt-2 mt-lg-0">

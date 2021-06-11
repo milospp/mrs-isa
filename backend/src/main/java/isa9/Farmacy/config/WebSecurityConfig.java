@@ -84,6 +84,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/users/pharmacists/pharmacy/**/**").permitAll()
 				.antMatchers("/api/users/pharm/filter/pharmacy/**").permitAll()
 				.antMatchers("/api/users/derm/filter/pharmacy/**").permitAll()
+				.antMatchers("/api/users/allDermatologists**").permitAll()
+				.antMatchers("/api/users/allPharmacists**").permitAll()
+				.antMatchers("/api/users/dermatologists/**").permitAll()
+				.antMatchers("/api/users/pharmacists/**").permitAll()
 				.antMatchers("/api/medicines/pharmacy/**").permitAll()
 				.antMatchers("/api/pharmacies/**").permitAll()
 				.antMatchers("/api/users/patients/**").permitAll()
@@ -115,6 +119,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 															"/api/users/pharm/filter/pharmacy/**",
 															"/api/users/derm/filter/pharmacy/**",
 															"/api/medicines/pharmacy/**",
+				"/api/users/allDermatologists**", "/api/users/allPharmacists**",
+				"/api/users/dermatologists/**", "/api/users/pharmacists/**",
 															"/api/medicines/prices/**");  // <-- svi korisnici mogu da udju na ove stranice
 		web.ignoring().antMatchers(HttpMethod.GET, "/", "/webjars/**", "/*.html", "/favicon.ico", "/**/*.html","/**/*.css", "/**/*.js");
 	}
