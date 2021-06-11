@@ -254,7 +254,7 @@ export default {
               pageSize: 2,
               sortBy: 'id',
               searchParams: {
-                doctorId: 11,
+                doctorId: 0,
                 name: "",
                 surname: ""
               },
@@ -276,21 +276,21 @@ export default {
     },
     methods: {
         refreshPatients() {
-          this.refreshData.doctorId = AuthService.getCurrentUser().id;
+          this.refreshData.searchParams.doctorId = AuthService.getCurrentUser().id;
           console.log("page size: ", this.refreshData.pageSize);
           if (!this.refreshData.pageNo) this.refreshData.pageNo = 1;
 
           console.log(this.sortParams.sortBy);
         
           console.log(this.refreshData.pageNo);
-            PatientDataService.retrieveAllPatients(this.refreshData) // HARDCODED
-                .then(response => {
-                    this.patients = response.data.patients;
-                    //this.lastAppointments = response.data.lastAppointmentsByDoctor;
-                    this.totalPatients = response.data.count;
-                    //this.addDatesToPatients();
-                    console.log(response.data);
-                });
+          PatientDataService.retrieveAllPatients(this.refreshData) // HARDCODED
+              .then(response => {
+                  this.patients = response.data.patients;
+                  //this.lastAppointments = response.data.lastAppointmentsByDoctor;
+                  this.totalPatients = response.data.count;
+                  //this.addDatesToPatients();
+                  console.log(response.data);
+              });
         },
         addDatesToPatients(){
           for (let i = 0; i < this.patients.length; i++){
@@ -366,15 +366,14 @@ export default {
 
       mounted() {
           this.refreshData.searchParams.doctorId = AuthService.getCurrentUser().id;
-          this.refreshData.doctorId = AuthService.getCurrentUser().id;
           this.role = AuthService.getCurrentUser().role;
           this.refreshPatients();
 
       },
 
       created() {
-        this.refreshData.doctorId = AuthService.getCurrentUser().id;
-        console.log(this.refreshData.doctorId);
+        this.refreshData.searchParams.doctorId = AuthService.getCurrentUser().id;
+        console.log(this.refreshData.searchParams.doctorId);
         this.role = AuthService.getCurrentUser().role;
         this.refreshPatients();
 
