@@ -45,6 +45,7 @@ import ComplaintResponsePage from '@/views/ComplaintResponsePage.vue'
 import PatientsComplaints from '@/views/PatientsComplaints.vue'
 import AdminResponses from '@/views/AdminResponses.vue'
 import SysAdminAdd from '@/views/SysAdminAdd.vue'
+import LoyaltyProgramView from '@/views/LoyaltyProgramView.vue'
 
 
 const routes = [
@@ -285,6 +286,11 @@ const routes = [
     path: '/add',
     name: 'SysAdminAdd',
     component: SysAdminAdd
+  },
+  {
+    path: '/loyaltyProgram',
+    name: 'LoyaltyProgramView',
+    component: LoyaltyProgramView
   }
 
   // {

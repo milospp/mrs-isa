@@ -80,6 +80,7 @@
 					<router-link :to="{ name: 'SysAdminAdd' }" class="nav-item nav-link">Add...</router-link>
 					<router-link :to="{ name: 'ComplaintResponsePage' }" class="nav-item nav-link">Complaints</router-link>
 					<router-link :to="{ name: 'Vacations' }" class="nav-item nav-link">Vacation requests</router-link>
+					<router-link :to="{ name: 'LoyaltyProgramView' }" class="nav-item nav-link">Loyalty program</router-link>
 					
 				</div>
 				<div v-else-if="user.role === 'SUPPLIER'" class="navbar-nav mr-auto mt-2 mt-lg-0">
