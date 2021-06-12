@@ -247,24 +247,35 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
 
         // checking working hours - works fine
         boolean worksThen = workService.getIfWorksInIntervalForDocPharm(doctor.getId(), pharmacy.getId(), tryBookTime, tryBookTimeEnd);
-        if (!worksThen) badTime = true;
+        if (!worksThen){
+            badTime = true;
+            System.out.println("Doktoru nije tad radno vreme");
+        }
 
         // checking patient's appointments
         boolean occupied = isPatientOccupied(tryBookDateTime, tryBookDateTimeEnd, patient.getId()); // if true, than it is bad time for appointment
-        if (occupied) badTime = true;
+        if (occupied){
+            badTime = true;
+            System.out.println("Pacijent ima pregled tad");
+        }
 
         // checking doctor's appointments
         boolean occupiedDoc = isDoctorOccupied(tryBookDateTime, tryBookDateTimeEnd, doctor.getId());
-        if (occupiedDoc) badTime = true;
+        if (occupiedDoc) {
+            badTime = true;
+            System.out.println("Doktor ima pregled tad");
+        }
 
         // checking doctor's vacations and absences
         List<Vacation> acceptedVacationsInTheGivenPeriod = doctor.getVacations().stream()
                 .filter(x -> x.getStatus().equals(VacationRequestStatus.ACCEPTED) &&
-                        ((x.getStartDate().isAfter(tryBookDateTime.toLocalDate()) && x.getStartDate().isAfter(tryBookDateTimeEnd.toLocalDate()))
+                        !((x.getStartDate().isAfter(tryBookDateTime.toLocalDate()) && x.getStartDate().isAfter(tryBookDateTimeEnd.toLocalDate()))
                         || (x.getEndDate().isBefore(tryBookDateTime.toLocalDate()) && x.getEndDate().isBefore(tryBookDateTimeEnd.toLocalDate()))))
                 .collect(Collectors.toList());
-        if (!acceptedVacationsInTheGivenPeriod.isEmpty())
+        if (!acceptedVacationsInTheGivenPeriod.isEmpty()) {
             badTime = true;
+            System.out.println("Ima odmor tad");
+        }
 
         boolean derm = doctor.getRole().getName().equals("DERMATOLOGIST");
         if (!badTime) {
@@ -288,6 +299,7 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
                 appointment.setType(TypeOfReview.COUNSELING);
 
             save(appointment);
+            mailService.sendAppointmentInfo(appointment, false);
         }
 
         return !badTime;

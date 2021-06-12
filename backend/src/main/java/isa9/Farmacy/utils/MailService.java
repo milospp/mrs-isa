@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
@@ -331,6 +332,7 @@ public class MailService {
         String recipient = patient.getEmail();
         String subject = "";
         String content = this.startOfMail;
+        //DecimalFormat df = new DecimalFormat("###.##");
         if (canceled) {
             subject = "Appointment is canceled";
             content = content +
@@ -484,7 +486,7 @@ public class MailService {
                 "                                " + pharmacy.getName() + "\n" +
                 "                              </td>\n" +
                 "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
-                "                                $" + appointment.getPrice() + "\n" +
+                "                                $" + String.format("%.2f", appointment.getPrice()) + "\n" +
                 "                              </td>\n" +
                 "                            </tr>\n" +
                 "                          </tbody>\n" +
