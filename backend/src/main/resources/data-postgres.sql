@@ -146,12 +146,21 @@ update med_price SET medicine_in_pharmacy_id = 4 WHERE id = 4;
 --appointments
 -- id 1
 --insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 200, current_timestamp + INTERVAL '3day', 0);
+--<<<<<<< TECHNICAL-US-150
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 300, CURRENT_DATE + 1 + TIME '08:00'  , 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 400, CURRENT_DATE + 2 + TIME '09:00', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 500, CURRENT_DATE + 3 + TIME '10:00', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 330, CURRENT_DATE + 4 + TIME '11:00', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 340, CURRENT_DATE + 10 + TIME '12:00', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, CURRENT_DATE + 20 + TIME '13:00', 0);
+--=======
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 300, '2021-06-01 08:00:00'::timestamp, 0);
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 400, '2021-06-03 08:00:00'::timestamp + INTERVAL '1 hour', 0);
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 500, '2021-06-04 08:00:00'::timestamp + INTERVAL '2 hours', 0);
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 330, '2021-06-01 08:00:00'::timestamp + INTERVAL '3 hours', 0);
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 340, '2021-06-17 08:00:00'::timestamp + INTERVAL '4 hours', 0);
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-06-07 11:00:00'::timestamp, 0); -- free app
+
 insert into examination (status, appointment_id, patient_id) values (0, 1, 2);
 insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Migrena', 'Pacijent oseca glavobolju', 1, 2, 1);
 insert into examination (status, appointment_id, patient_id) values (0, 3, 3);
@@ -183,6 +192,12 @@ update appointment SET examination_id = 8 WHERE id = 9;
 insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 7);
 insert into patient_my_examinations (patient_id, my_examinations_id) values (2, 6);
 insert into patient_my_examinations (patient_id, my_examinations_id) values (3, 8);
+
+
+-- more free appointments
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-06-07 11:30:00'::timestamp, 0); -- free app
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-06-07 09:00:00'::timestamp, 0); -- free app
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-06-09 10:00:00'::timestamp, 0); -- free app
 
 
 -- --Therapy
@@ -296,3 +311,7 @@ values ('fakecode2', current_date + 2 + current_time, 5, current_date - 2 + curr
 
 -- insert into patient_reservations (patient_id, reservations_id) values (1,1);
 -- insert into patient_reservations (patient_id, reservations_id) values (1,2);
+
+-- vacations
+insert into vacation (doctor_id, end_date, pharmacy_id, pharmacy_admin_id, reason, start_date, status, type, why_not) values (11, '2021-06-26', 1, null, 'eto', '2021-06-22', 1, 0, null);
+insert into doctor_vacations (doctor_id, vacations_id) values (11, 1);

@@ -124,6 +124,9 @@ export default {
             console.log(this.complaint);
             ComplaintDataService.sendComplaint(this.complaint).then(response => {
                 this.complaint.description = "";
+                if(response.data == 0){
+                    this.$toast.show("You have successfully filed a complaint!", {position: "top", type: "success"});
+                }
             });
         }
     },

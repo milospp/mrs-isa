@@ -5,7 +5,7 @@
                 <label for="inputName" class="col-sm-2 col-form-label">Name</label>
                 <div class="col-sm-10">
                 <input 
-                        type="text" class="form-control" id="inputName" v-model="registerData.name" requiredd
+                        type="text" class="form-control" id="inputName" v-model="registerData.name" required
                         pattern="[A-Z][a-zA-Z]*" title="Name must start with capital letter" size="31" placeholder="Name"
                 >
                 </div>
@@ -14,7 +14,7 @@
                 <label for="inputSurname" class="col-sm-2 col-form-label">Surname</label>
                 <div class="col-sm-10">
                 <input 
-                        type="text" class="form-control" id="inputSurname" v-model="registerData.surname" requiredd
+                        type="text" class="form-control" id="inputSurname" v-model="registerData.surname" required
                         pattern="[A-Z][a-zA-Z]*" title="Surname must start with capital letter" size="31" placeholder="Surname"
                     >
                 </div>
@@ -23,7 +23,7 @@
                 <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
                 <div class="col-sm-10">
                 <input 
-                        type="text" class="form-control" id="email" v-model="registerData.email" requiredd size="31"
+                        type="text" class="form-control" id="email" v-model="registerData.email" required size="31"
                         pattern="[a-z0-9._%+-]+@[a-z0-9.-]+[.][a-z]{2,}$" title="Email must be in form example@yahoo.com" placeholder="example@mail.com"
                     >
                 </div>
@@ -32,7 +32,7 @@
                 <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
                 <div class="col-sm-10">
                 <input 
-                        type="password" class="form-control" id="password" v-model="registerData.password" requiredd
+                        type="password" class="form-control" id="password" v-model="registerData.password" required
                         pattern="[a-zA-Z0-9]{6,}" size="31" title="Password must have minimum 6 symbols" placeholder="Password"
                     >
                 </div>
@@ -42,7 +42,7 @@
                 <label for="inputState" class="col-sm-2 col-form-label">State</label>
                 <div class="col-sm-10">
                 <input 
-                        type="text" class="form-control" id="inputState" v-model="registerData.address.state" requiredd
+                        type="text" class="form-control" id="inputState" v-model="registerData.address.state" required
                             pattern="[A-Z][a-zA-Z| ]*" size="31" title="State must start with capital letter" placeholder="State"
                     >
                 </div>
@@ -52,7 +52,7 @@
                 <label for="inputCity" class="col-sm-2 col-form-label">City</label>
                 <div class="col-sm-10">
                 <input 
-                        type="text" class="form-control" id="inputCity" v-model="registerData.address.city" requiredd
+                        type="text" class="form-control" id="inputCity" v-model="registerData.address.city" required
                             pattern="[A-Z][a-zA-Z| ]*" size="31" title="City must start with capital letter" placeholder="City"
                     >
                 </div>
@@ -62,11 +62,11 @@
                 <label for="inputAddress" class="col-sm-2 col-form-label">Address and number</label>
                 <div class="col-sm-10">
                 <input 
-                        type="text" class="form-control d-inline col-9" id="inputAddress" v-model="registerData.address.street" requiredd
+                        type="text" class="form-control d-inline col-9" id="inputAddress" v-model="registerData.address.street" required
                             pattern="[A-Z][a-zA-Z0-9| ]*" title="Address must start with capital letter" placeholder="Address"
                     >
                 <input 
-                    type="text" class="form-control d-inline col-3" id="inputAddressNumber" v-model="registerData.address.number" requiredd size="5"
+                    type="text" class="form-control d-inline col-3" id="inputAddressNumber" v-model="registerData.address.number" required size="5"
                     pattern="[0-9][0-9a-zA-Z|/| ]*" title="Address number can have number, letters and /" placeholder="Number"
                 >
 
@@ -77,7 +77,7 @@
                 <label for="inputPhoneNumber" class="col-sm-2 col-form-label">Phone Number</label>
                 <div class="col-sm-10">
                 <input 
-                    type="text" class="form-control" id="inputPhoneNumber" v-model="registerData.phoneNumber" requiredd
+                    type="text" class="form-control" id="inputPhoneNumber" v-model="registerData.phoneNumber" required
                     pattern="[0-9]*" size="31" title="Phone number must be number" placeholder="Phone Number"
                 >
                 </div>
@@ -207,7 +207,7 @@ export default {
                         _this.$toast.show(
                             "Successfully added patient!",
                             {
-                                position: "top",
+                                position: "top", type: "success",
                             }
                         );
                         _this.$router.push({ name: 'Login' })
@@ -217,7 +217,7 @@ export default {
                     _this.$toast.show(
                             "This e-mail is already taken!",
                             {
-                            position: "top",
+                            position: "top", type: "error",
                         });
                     // alert("This e-mail is already taken!");
                     return false;

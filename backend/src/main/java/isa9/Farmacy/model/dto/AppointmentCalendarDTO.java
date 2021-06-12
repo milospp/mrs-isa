@@ -27,4 +27,5 @@ public class AppointmentCalendarDTO {
     private String patientSurname;
     private String pharmacyName;
     private String typeForClass;
+    private Double price;
 }
