@@ -212,11 +212,11 @@ insert into doctor_working (doctor_id, working_id) values (12, 2);
 insert into doctor_working (doctor_id, working_id) values (11, 3);
 
 -- for filter dermatologist and pharmacist
--- farm
+        -- farm
 insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (2, 'masaGavr@maildrop.cc', true, 'Masa', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0124567893', 5, 'Gavrilovic', LOCALTIMESTAMP);
 insert into doctor (id) values (15);
 insert into pharmacist (id) values (15);
--- derm
+        -- derm
 insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (2, 'ana@maildrop.cc', true, 'Ana', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '345826485', 4, 'Savin', LOCALTIMESTAMP);
 insert into doctor (id) values (16);
 insert into dermatologist (id) values (16);
@@ -224,7 +224,7 @@ insert into dermatologist (id) values (16);
 insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (2, 'ana17@maildrop.cc', true, 'Anastasija', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '924601573', 4, 'Maric', LOCALTIMESTAMP);
 insert into doctor (id) values (17);
 insert into dermatologist (id) values (17);
--- works
+        -- works
 insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (15, '07:07:00', 1, '12:12:00');
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 4);
 insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (16, '08:08:00', 1, '14:14:00');
@@ -233,7 +233,7 @@ insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (17, '08:
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 6);
 insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (16, '20:00:00', 2, '23:00:00');
 insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 7);
--- doctor_working
+        -- doctor_working
 insert into doctor_working (doctor_id, working_id) values (15, 4);
 insert into doctor_working (doctor_id, working_id) values (16, 5);
 insert into doctor_working (doctor_id, working_id) values (17, 6);
