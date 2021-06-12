@@ -2,7 +2,7 @@
 
 		<div class="row mb-3">
 			<div class="col-md-12">
-				<a class="btn btn-outline-secondary" data-toggle="collapse" href="#searchCollapse" role="button" aria-expanded="false" aria-controls="searchCollapse">
+				<a class="btn btn-outline-secondary" data-toggle="collapse" href="#searchCollapse" role="button" aria-expanded="false" aria-controls="searchCollapse" v-on:click="getLocation()">
 					Filter
 				</a>
 			</div>
@@ -44,6 +44,16 @@
                   <option value="RAING_ASC">By Rating Asc</option>
                   <option value="RAING_DES">By Rating Des</option>
                 </select>          
+              </div>
+              <div class="form-group col-md-2">
+                <label for="inputEmail4">Udaljenost</label>
+                <div class="input-group">
+                  <input :disabled="searchParams.location == undefined" type="number" class="form-control" id="inputDistance" v-model="searchParams.distance">
+                
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputMaxRating">km</span>
+                  </div>
+                </div>
               </div>
 
           </div>
@@ -162,13 +172,33 @@ export default {
               maxRating: 5,
               name: undefined,
               addressString: undefined,
-              sort: 'NAME_ASC'
+              sort: 'NAME_ASC',
+              distance: undefined
           };
+          this.getLocation();
+
+        },
+
+        showPosition(position) {
+          let location = {};
+          location.lat = position.coords.latitude;
+          location.lon = position.coords.longitude;
+          this.searchParams.location = location;
+        },
+
+
+        getLocation() {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(this.showPosition);
+          } else {
+            this.searchParams.location = null;
+          }
         },
 
     },
     mounted() {
         this.getPharmacies();
+  //      this.getLocation();
     },
     created() {
     }
