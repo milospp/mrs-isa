@@ -305,5 +305,5 @@ values ('fakecode2', current_timestamp + INTERVAL '2 days', 5, current_timestamp
 -- insert into patient_reservations (patient_id, reservations_id) values (1,2);
 
 -- vacations
-insert into vacation (doctor_id, end_date, pharmacy_id, pharmacy_admin_id, reason, start_date, status, type, why_not) values (11, '2021-06-26', 1, null, 'eto', '2021-06-22', 1, 0, null);
+insert into vacation (doctor_id, end_date, pharmacy_id, admin_id, reason, start_date, status, type, why_not) values (11, '2021-06-26', 1, null, 'eto', '2021-06-22', 1, 0, null);
 insert into doctor_vacations (doctor_id, vacations_id) values (11, 1);

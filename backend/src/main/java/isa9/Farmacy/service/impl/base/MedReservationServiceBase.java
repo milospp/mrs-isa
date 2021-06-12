@@ -5,6 +5,7 @@ import isa9.Farmacy.model.dto.MedInPharmaDTO;
 import isa9.Farmacy.model.dto.MedReservationDTO;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
 import isa9.Farmacy.service.*;
+import isa9.Farmacy.utils.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
     protected MedicineService medicineService;
     protected UserService userService;
     protected InquiryService inquiryService;
+    protected MailService mailService;
 
     @Autowired
     public void setMedicineService(MedicineService medicineService) {
@@ -37,6 +39,11 @@ public abstract class MedReservationServiceBase implements MedReservationService
 
     @Autowired
     public void setInquiryService(InquiryService inquiryService) { this.inquiryService = inquiryService; }
+
+    @Autowired
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
+    }
 
     @Override
     public MedReservation dispenseMedicine(MedReservation medReservation) {
@@ -62,6 +69,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
 
         patient.setPoints(points);
         userService.save(patient);
+        mailService.sendDispensedReservationInfo(medReservation);
 
         return save(medReservation);
     }

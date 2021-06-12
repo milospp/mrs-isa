@@ -68,7 +68,7 @@
                             <tr :key="app" v-for="app in appointmentsOnDay">
                                 <td>{{app.customData.data.startTime}}</td>
                                 <td>{{app.customData.data.durationInMins}} min</td>
-                                <td>{{app.customData.data.price}} RSD</td>
+                                <td>${{app.customData.data.price}}</td>
                                 <td>
                                     <button class="btn btn-primary" @click="bookExistingAppointment(app)">Book</button>
                                 </td>
@@ -86,8 +86,7 @@
                             <input id="duration" class="form-control" v-model="newAppointment.durationInMins" type="number" min="5" step="5">
                         </div>
                         <div class="form-group">
-                            <label for="price">Price:   {{ predictedPrice.toFixed(2) }} RSD</label>
-                            <!-- <input id="price" class="form-control" v-model="newAppointment.price" type="number" min="0"> -->
+                            <label for="price">Price: <strong>${{ predictedPrice.toFixed(2) }}</strong></label>
                         </div>
                         <div class="form-group">
                             <button type="button" class="btn btn-primary" @click="bookAtCustomTime()">Book</button>
