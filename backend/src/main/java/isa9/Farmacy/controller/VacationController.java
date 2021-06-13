@@ -55,8 +55,8 @@ public class VacationController {
         if (vacationService.testTime(vacation)) {
             Doctor d = userService.getDoctorById(vacationDTO.getDoctorId());
             d.getVacations().add(vacation);
-            userService.save(d);
             vacationService.save(vacation);
+            userService.save(d);
             return new ResponseEntity<>(true, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(false, HttpStatus.OK);
@@ -75,6 +75,13 @@ public class VacationController {
             }
         }
         return new ResponseEntity<>(vacationToVacationDTO.convert(result), HttpStatus.OK);
+    }
+
+    @GetMapping("/pharm/{doctorId}")
+    @PreAuthorize("hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
+    public ResponseEntity<List<VacationDTO>> getAllVacationsForDoctor(@PathVariable Long doctorId) {
+        List<Vacation> vacationsDoc = vacationService.getAllForDoctor(doctorId);
+        return new ResponseEntity<>(vacationToVacationDTO.convert(vacationsDoc), HttpStatus.OK);
     }
 
     @GetMapping("/{idAdmina}")

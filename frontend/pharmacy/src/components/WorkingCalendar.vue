@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div v-if="jobs" class="container">
     <h2 class="h2 mb-3 text-center">Working Calendar</h2>
     <p class="text-lg font-medium text-gray-600 text-center">
       <span v-if="calendarDetail === 'month'">Month</span>
@@ -176,7 +176,7 @@ export default {
       // my
       currentMonth: january,
 
-      chosenPharmacyId: 1,
+      chosenPharmacyId: null,
       jobs: null,
       appointments: null,
       vacations: [],
@@ -222,7 +222,7 @@ export default {
   	attributeAppointments() {
       if (this.calendarDetail === 'week') {
         return this.appointments.map(t => ({
-          id: t.id,
+          id: t.id + "",
           startDate: Date.parse(t.startDate),
           customData: t,
           title: t.startTime + ' ' + t.durationInMins + 'm<br/>' + t.patientName + ' ' + t.patientSurname,
@@ -267,7 +267,7 @@ export default {
     attributeVacations(){
       if (this.calendarDetail === 'week') {
         return this.vacations.map(t => ({
-          id: t.id,
+          id: 'vacation_' + t.id,
           startDate: Date.parse(t.startDate),
           endDate: Date.parse(t.endDate),
           customData: t,
@@ -277,9 +277,9 @@ export default {
       }
       if (this.calendarDetail === 'month') {
         return this.vacations.map(t => ({
-          key: t.id,
+          key: 'vacation_' + t.id,
           dates: { start: new Date(t.startDate[0], t.startDate[1] - 1, t.startDate[2]), end: new Date(t.endDate[0], t.endDate[1] - 1, t.endDate[2]) },
-          customData: { 
+          customData: {
             data: t,
             typeForClass: 'vacation',
             title: t.type
@@ -290,7 +290,7 @@ export default {
           dates: { start: Date.parse(t.startDate), end: Date.parse(t.endDate) },
           customData: {
             data: t,
-            typeForClass: t.typeForClass + " rounded p-0 mt-0 mb-0 mx-1 appointment lbl",
+            typeForClass: "vacation rounded p-0 mt-0 mb-0 mx-1 appointment lbl",
           },
           highlight: 'green',
           popover: {
@@ -344,27 +344,49 @@ export default {
     /* weekly calendar stuff */
   },
   methods: {
-      a(id){
-          alert(id);
-      },
       dayClicked(day) {
         this.selectedDay = new Date(day.date);
         console.log('selected day:',this.selectedDay);
       },
       startAppointment(attributeApp) {
-        console.log(JSON.stringify(attributeApp));
-        if (attributeApp.customData.typeForClass.includes('over'))
-          alert("Appointemnt already held.");
-        else if (attributeApp.customData.typeForClass.includes('free'))
-          alert("Appointment not booked yet.");
+        /* from monthly calendar */
+        if (attributeApp.customData.typeForClass.includes('vacation'))
+          return;
+        else if (attributeApp.customData.typeForClass.includes('over')){
+          this.$toast.show(
+              "Appointemnt already held.",
+              {
+                  position: "top", type: "error",
+              }
+          );
+        } else if (attributeApp.customData.typeForClass.includes('free')) {
+          this.$toast.show(
+              "Appointment not booked yet.",
+              {
+                  position: "top", type: "error",
+              }
+          );
+        }
         else
           this.$router.push("/appointment/" + attributeApp.customData.data.id);
       },
       startAppointmentFromWeekly(app){
-        if (app.typeForClass.includes('over'))
-          alert("Appointemnt already held.");
-        else if (app.typeForClass.includes('free'))
-          alert("Appointment not booked yet.");
+        if (app.id.includes('vacation'))
+          return;
+        else if (app.customData.typeForClass.includes('over'))
+          this.$toast.show(
+              "Appointemnt already held.",
+              {
+                  position: "top", type: "error",
+              }
+          );
+        else if (app.customData.typeForClass.includes('free'))
+          this.$toast.show(
+              "Appointment not booked yet.",
+              {
+                  position: "top", type: "error",
+              }
+          );
         else
           this.$router.push("/appointment/" + app.id);
       },
@@ -383,6 +405,7 @@ export default {
           .then(response => {
             this.appointments = response.data;
           });
+        this.getVacations(0);
       },
       getPharmacies() {
         if (this.doctor){
@@ -394,13 +417,23 @@ export default {
       },
       getVacations(pharmacyId) {
         let doctorId = this.doctor.id;
-        VacationDataService.getVacationsForDoctorAndPharmacy(doctorId, pharmacyId)
+        if (this.doctor.role === 'DERMATOLOGIST'){
+          VacationDataService.getVacationsForDoctorAndPharmacy(doctorId, pharmacyId)
           .then(response => {
             if (response.data){
               this.vacations = response.data;
               console.log(JSON.stringify(this.vacations));
             }
           });
+        } else {
+          VacationDataService.getAllVacationsForDoctor(doctorId)
+            .then(response => {
+              if (response.data){
+                this.vacations = response.data;
+                console.log(JSON.stringify(this.vacations));
+              }
+            });
+        }
       },
       getNumberOfWeek(date) {
         const todayy = new Date(date);
@@ -441,7 +474,12 @@ export default {
       },
       onClickItem(e) {
         console.log(`You clicked: ${e.id}`);
-        window.location.href = "/appointment/" + e.id;
+        for (let attr of this.attributes){
+          if (attr.id === e.id){
+            this.startAppointmentFromWeekly(attr);
+            break;
+          }
+        }
       },
       setShowDate(d) {
         this.message = `Changing calendar view to ${d.toLocaleDateString()}`
@@ -618,31 +656,10 @@ div.cv-weekdays {
 .cv-header-nav button {
   background-color: white;
 }
-/* These styles are optional, to illustrate the flexbility of styling the calendar purely with CSS. */
-/* Add some styling for items tagged with the "birthday" class */
-/* .cv-item.b {
-	background-color: rgb(0, 162, 255);
-	border-color: #73ff73;
-}
-.cv-item.birthday::before {
-	content: "\1F382"; /* Birthday cake */
-	/* margin-right: 10px;
-} */
 
 .cv-item {
   color: red;
   background-color: blue;
 }
 
-/* The following classes style the classes computed in myDateClasses and passed to the component's dateClasses prop. */
-/* .cv-day.ides {
-	background-color: blue;
-  color: red;
-} */
-/* .ides .cv-day-number::before {
-	content: "\271D";
-}
-.cv-day.do-you-remember.the-21st .cv-day-number::after {
-	content: "\1F30D\1F32C\1F525";
-} */
 </style>

@@ -177,7 +177,7 @@ return axios({
   editPersonalData(pharmacist){
     return axios({
       method: 'post',
-      url: API_URL + "/edit/pharmacist",
+      url: API_URL + "/users/edit/pharmacist",
       data: pharmacist
     });
   }

@@ -99,8 +99,20 @@ export default {
 					}
 					console.log("error.config");
 					console.log(error.config);
+                    this.$toast.show(
+                        "Couldn't change the password.",
+                        {
+                            position: "top", type: "error",
+                        }
+                    );
 			}).then(response => {
                 if (response.data) {
+                    this.$toast.show(
+                        "Successfuly changed password.",
+                        {
+                            position: "top", type: "success",
+                        }
+                    );
                     AuthService.logout();
                     this.$router.push("/");
                 }
