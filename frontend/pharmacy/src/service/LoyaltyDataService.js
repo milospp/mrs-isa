@@ -36,6 +36,10 @@ class LoyaltyDataService {
             data: { points: parseInt(p) }
         });
     }
+
+    getCategoryOfUser(userId){
+        return axios.get(`${API_URL}/categoryOfPatient/`+userId);
+    }
 }
 
 export default new LoyaltyDataService();
