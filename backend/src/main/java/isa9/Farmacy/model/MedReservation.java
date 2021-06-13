@@ -38,7 +38,22 @@ public class MedReservation {
     @Column
     private int quantity;
 
+    @Column
+    private Double loyaltyDiscount;
+
     @ManyToOne
     private Pharmacist whoDispenses;
 
+    public MedReservation(Long dbId, String dbCode, Patient p, LocalDate dbResDate, LocalDate dbLastDate, MedReservationStatus dbStatus, MedicineInPharmacy mip, int dbQuantity, Pharmacist dispenser) {
+        this.id = dbId;
+        this.code = dbCode;
+        this.patient = p;
+        this.reservationDate = dbResDate;
+        this.lastDate = dbLastDate;
+        this.status = dbStatus;
+        this.medicineInPharmacy = mip;
+        this.quantity = dbQuantity;
+        this.whoDispenses = dispenser;
+        this.loyaltyDiscount = 0d;
+    }
 }

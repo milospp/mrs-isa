@@ -35,9 +35,10 @@ public class AppointmentController {
     private final WorkService workService;
     private final AppointmentToAppointmentCalendarDTO appointmentToAppointmentCalendarDTO;
     private final VacationService vacationService;
+    private final LoyaltyProgramService loyaltyProgramService;
 
     @Autowired
-    public AppointmentController(AppointmentService appointmentService, AppointmentToAppointmentDTO appointmentToAppointmentDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedInPharmaService medInPharmaService, PharmacyService pharmacyService, UserService userService, MedicineService medicineService, ExaminationService examinationService, WorkService workService, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, WorkToWorkDTO workToWorkDTO, AppointmentToAppointmentCalendarDTO appointmentToAppointmentCalendarDTO, VacationService vacationService){
+    public AppointmentController(AppointmentService appointmentService, AppointmentToAppointmentDTO appointmentToAppointmentDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedInPharmaService medInPharmaService, PharmacyService pharmacyService, UserService userService, MedicineService medicineService, ExaminationService examinationService, WorkService workService, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, WorkToWorkDTO workToWorkDTO, AppointmentToAppointmentCalendarDTO appointmentToAppointmentCalendarDTO, VacationService vacationService, LoyaltyProgramService loyaltyProgramService){
         this.appointmentService = appointmentService;
         this.appointmentToAppointmentDTO = appointmentToAppointmentDTO;
         this.medicineInPharmacyToMedInPharmaDTO = medicineInPharmacyToMedInPharmaDTO;
@@ -51,6 +52,7 @@ public class AppointmentController {
         this.workToWorkDTO = workToWorkDTO;
         this.appointmentToAppointmentCalendarDTO = appointmentToAppointmentCalendarDTO;
         this.vacationService = vacationService;
+        this.loyaltyProgramService = loyaltyProgramService;
     }
 
     @GetMapping("")
@@ -98,7 +100,9 @@ public class AppointmentController {
         }
 
         appointment.getExamination().setTherapy(therapy);
-
+        Patient patient = appointment.getExamination().getPatient();
+        patient.setPoints(patient.getPoints() + this.loyaltyProgramService.getExaminationPointsReward());
+        this.userService.save(patient);
         appointmentService.save(appointment);
 
         return new ResponseEntity<>(true, HttpStatus.OK);
