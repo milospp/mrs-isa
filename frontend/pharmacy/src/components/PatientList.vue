@@ -56,9 +56,9 @@
                                 <button class="btn btn-secondary" v-on:click="showModal(p)">Examination history</button>
                             </td>
                             <td> <!-- UtilService.isTimeForAppointment(p.lastDate.startTime, p.lastDate.durationInMins) && -->
-                                <button v-if="p.status == 'PENDING'" class="btn btn-primary" v-on:click="startAppointment(p.aid)">Start 
-                                  <span >Examination</span>
-                                <!-- <span v-else>Counseling</span> v-if="this.role == 'DERMATOLOGIST'"-->
+                                <button v-if="UtilService.isTimeForAppointment(p.last) && p.status == 'PENDING'" class="btn btn-primary" v-on:click="startAppointment(p.aid)">Start 
+                                  <span v-if="role == 'DERMATOLOGIST'">Examination</span>
+                                  <span v-else>Counseling</span>
                                 </button>
                             </td>
                         </tr>
