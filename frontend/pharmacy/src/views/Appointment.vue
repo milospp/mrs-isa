@@ -349,8 +349,22 @@ export default {
             AppointmentDataService.postAppointmentInfo(this.appointment)
             .then(response => {
                     if (response.data){
-                        alert("Info saved.");
+                        this.$toast.show(
+                            "Info about appointment saved.",
+                            {
+                                position: "top", type: "success",
+                            }
+                        );
                         this.status = this.appointment.examination.status;
+                        this.$router.push('/patients');
+                    }
+                    else {
+                        this.$toast.show(
+                            "There was an error while saving info.",
+                            {
+                                position: "top", type: "error",
+                            }
+                        );
                     }
                 });
         },
@@ -385,8 +399,24 @@ export default {
                         break;
                     }
                 }
-                if (!unique){ alert('Medicine is already prescribed'); return; }
-                if (UtilService.isPastDate(this.reservationDate)) { alert('Date is invalid'); return; }
+                if (!unique) {
+                    this.$toast.show(
+                            "Medicine is already prescribed.",
+                            {
+                                position: "top", type: "error",
+                            }
+                        );
+                    return;
+                }
+                if (UtilService.isPastDate(this.reservationDate)) {
+                    this.$toast.show(
+                            "Date must be in future.",
+                            {
+                                position: "top", type: "error",
+                            }
+                        );
+                    return;
+                }
 
                 let reserve_form = {
                     medicineId: this.therapyMed.medicine.id,
@@ -398,16 +428,26 @@ export default {
                 MedicineDataService.reserveMedicine(reserve_form, AuthService.getCurrentUser().id)
                     .then(response => {
                         if (response.data){
-                            alert('Medicine successfuly reserved');
+                            this.$toast.show(
+                                "Medicine successfuly reserved.",
+                                {
+                                    position: "top", type: "success",
+                                }
+                            );
                             console.log(response.data.id);
                             this.reservations[response.data.id] = response.data;
                             this.reservations[response.data.id].days = this.therapyDays;
                             
-                            this.therapyMed = null; this.therapyDays = null; this.reservationDate = null;
+                            this.therapyMed = null; this.therapyDays = null; //this.reservationDate = null;
                         }
                     })
                     .catch(error => {
-                        alert('Reservation unsuccessful');
+                        this.$toast.show(
+                            "Reservation unsuccessful. Patient may be alergic to this medicine or there are not enough in pharmacy.",
+                            {
+                                position: "top", type: "error",
+                            }
+                        );
                         this.getReplacementMedicine(this.therapyMed);
                     });
                 
@@ -430,11 +470,22 @@ export default {
             AppointmentDataService.bookCustomAppointment(this.newAppointment.dateTime, this.appointment.doctor.id, this.appointment.examination.patient.id, this.appointment.pharmacy.id, this.newAppointment.price, this.newAppointment.durationInMins)
             .then(response => {
                 if (response.data){
-                    alert('Successfuly booked appoinment at ' + this.newAppointment.dateTime);
+                    //alert(' at ' + this.newAppointment.dateTime);
+                    this.$toast.show(
+                            "Successfuly booked appoinment.",
+                            {
+                                position: "top", type: "success",
+                            }
+                        );
                     this.bookedAppointments.push(this.newAppointment);
                 }
                 else {
-                    alert('Time is not valid');
+                    this.$toast.show(
+                            "Time is not valid",
+                            {
+                                position: "top", type: "error",
+                            }
+                        );
                 }
             });
         },
@@ -442,7 +493,12 @@ export default {
             AppointmentDataService.bookAppointment(app.key, this.appointment.examination.patient.id)
                 .then(response => {
                     if (response.data){
-                        alert('Successfuly booked appointment!');
+                        this.$toast.show(
+                            "Successfuly booked appoinment.",
+                            {
+                                position: "top", type: "success",
+                            }
+                        );
                         this.setAttr();
                         this.bookedAppointments.push(this.appointment);
                     }

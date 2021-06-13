@@ -106,12 +106,12 @@ export default {
 
 	data: function () {
 		return {
-      doctor: null
+            doctor: null
 		}
 	},
     methods: {
         loadDoctorData() {
-            DataService.getPharmacist(this.id) // HARDCODED this.id
+            DataService.getPharmacist(this.id)
                 .then(response => {
                     console.log(this.id);
                     this.doctor = response.data;
@@ -126,7 +126,20 @@ export default {
             DataService.editPersonalData(this.doctor)
             .then((response) => {
                 if (response.data)
-                    alert("You have successfuly changed personal data!");
+                    this.$toast.show(
+                        "You have successfully changed personal data!",
+                        {
+                            position: "top", type: "success",
+                        }
+                    );
+                else {
+                    this.$toast.show(
+                        "Due to error did not change personal data.",
+                        {
+                            position: "top", type: "error",
+                        }
+                    );
+                }
             });
             $('#editDataModal').modal('hide');
         },

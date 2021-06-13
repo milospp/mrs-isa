@@ -371,11 +371,10 @@ public class MedicineController {
     }
 
     @GetMapping("/resevation/{code}")
+    @PreAuthorize("hasAuthority('PHARMACIST')")
     public  ResponseEntity<MedReservationDTO> getReservationByCode(@PathVariable String code){
         System.out.println(code);
         MedReservation reservation = medReservationService.getByCode(code);
-
-        //medReservationService.checkForExpiredReservations();
 
         if (reservation != null && reservation.getStatus() == MedReservationStatus.PENDING){
             MedReservationDTO reservationDTO = medReservationToMedReservationDTO.convert(reservation);
@@ -385,14 +384,13 @@ public class MedicineController {
     }
 
     @GetMapping("/reservation/dispense/{code}")
+    @PreAuthorize("hasAuthority('PHARMACIST')")
     public  ResponseEntity<Boolean> dispenseReservationByCode(@PathVariable String code){
         System.out.println(code);
         MedReservation reservation = medReservationService.getByCode(code);
 
         if (reservation != null && reservation.getStatus() == MedReservationStatus.PENDING){
-            // TODO: Move everything into this method
             medReservationService.dispenseMedicine(reservation);
-
             return new ResponseEntity<>(true, HttpStatus.OK);
         }
         return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
