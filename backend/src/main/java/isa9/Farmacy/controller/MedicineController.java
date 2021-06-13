@@ -74,6 +74,7 @@ public class MedicineController {
 
         form.setMedicineId(medId);
         form.setPharmacyId(pharmacyId);
+
         MedReservation medReservation = medReservationService.reserveMedicine(form, doctorId);
 
         if (medReservation == null)

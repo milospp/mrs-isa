@@ -21,6 +21,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
     protected UserService userService;
     protected InquiryService inquiryService;
     protected MailService mailService;
+    protected LoyaltyProgramService loyaltyProgramService;
 
     @Autowired
     public void setMedicineService(MedicineService medicineService) {
@@ -43,6 +44,11 @@ public abstract class MedReservationServiceBase implements MedReservationService
     @Autowired
     public void setMailService(MailService mailService) {
         this.mailService = mailService;
+    }
+
+    @Autowired
+    public void setLoyaltyProgramService(LoyaltyProgramService loyaltyProgramService) {
+        this.loyaltyProgramService = loyaltyProgramService;
     }
 
     @Override
@@ -157,6 +163,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
 
         MedicineInPharmacy mip = pharmacyService.gedMedicineInPharmacy(pharmacy, medicine);
 
+        LoyaltyProgram category = this.loyaltyProgramService.getCategoryOfUser(patient);
 
         MedReservation medReservation = MedReservation.builder()
                 .id(null)
@@ -167,6 +174,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
                 .status(MedReservationStatus.PENDING)
                 .medicineInPharmacy(mip)
                 .quantity(reservationFormDTO.getQuantity())
+                .loyaltyDiscount((category != null) ? category.getDiscount() : null)
                 .build();
 
         patient.getReservations().add(medReservation);

@@ -11,44 +11,44 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label for="inputName" class="col-sm-2 col-form-label">Street name</label>
+                <label for="inputStrName" class="col-sm-2 col-form-label">Street name</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="street" v-model="registerData.address.street" placeholder="Street"
                       required="required" pattern="[A-Z][a-zA-Z ]*" title="Name of street must start with capital letter">
                 </div>
             </div>
             <div class="form-group row">
-                <label for="inputName" class="col-sm-2 col-form-label">Building Nr.</label>
+                <label for="inputBNumber" class="col-sm-2 col-form-label">Building Nr.</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="number" v-model="registerData.address.number" placeholder="Number"
                       required="required" pattern="[0-9]/?[0-9a-z]*" title="Must be an actual number (slash is allowed as well)">
                 </div>
             </div>
             <div class="form-group row">
-                <label for="inputName" class="col-sm-2 col-form-label">City</label>
+                <label for="inputCity" class="col-sm-2 col-form-label">City</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="city" v-model="registerData.address.city" placeholder="City"
                       required="required" pattern="[A-Z][a-zA-Z ]*" title="City's name must start with capital letter">
                 </div>
             </div>
             <div class="form-group row">
-                <label for="inputName" class="col-sm-2 col-form-label">Country</label>
+                <label for="inputCountry" class="col-sm-2 col-form-label">Country</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="state" v-model="registerData.address.state" placeholder="Country"
                       required="required" pattern="[A-Z][a-zA-Z ]*" title="Country must start with capital letter">
                 </div>
             </div>
             <div class="form-group row">
-                <label for="inputName" class="col-sm-2 col-form-label">Description</label>
+                <label for="inputDesc" class="col-sm-2 col-form-label">Description</label>
                 <div class="col-sm-10">
                     <textarea style="resize: none;width: 100%; height : 200px;" class="form-control" placeholder="Description..."
                       id="description" v-model="registerData.description"></textarea>
                 </div>
             </div>
             <div class="form-group row">
-                <label for="inputName" class="col-sm-2 col-form-label">Price of consulting (per hour)</label>
+                <label for="inputPrice" class="col-sm-2 col-form-label">Price of consulting (per hour)</label>
                 <div class="col-sm-10">
-                    <input type="number" class="form-control" id="pricePerHour" v-model="registerData.pricePerHour" 
+                    <input type="number" class="form-control" id="pricePerHour" v-model="registerData.pricePerHour" v-bind:min="0"
                       required="required" title="Price must be a number">
                 </div>
             </div>
