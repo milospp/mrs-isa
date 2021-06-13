@@ -222,7 +222,7 @@ export default {
   	attributeAppointments() {
       if (this.calendarDetail === 'week') {
         return this.appointments.map(t => ({
-          id: t.id,
+          id: t.id + "",
           startDate: Date.parse(t.startDate),
           customData: t,
           title: t.startTime + ' ' + t.durationInMins + 'm<br/>' + t.patientName + ' ' + t.patientSurname,
@@ -267,7 +267,7 @@ export default {
     attributeVacations(){
       if (this.calendarDetail === 'week') {
         return this.vacations.map(t => ({
-          id: t.id,
+          id: 'vacation_' + t.id,
           startDate: Date.parse(t.startDate),
           endDate: Date.parse(t.endDate),
           customData: t,
@@ -277,9 +277,9 @@ export default {
       }
       if (this.calendarDetail === 'month') {
         return this.vacations.map(t => ({
-          key: t.id,
+          key: 'vacation_' + t.id,
           dates: { start: new Date(t.startDate[0], t.startDate[1] - 1, t.startDate[2]), end: new Date(t.endDate[0], t.endDate[1] - 1, t.endDate[2]) },
-          customData: { 
+          customData: {
             data: t,
             typeForClass: 'vacation',
             title: t.type
@@ -290,7 +290,7 @@ export default {
           dates: { start: Date.parse(t.startDate), end: Date.parse(t.endDate) },
           customData: {
             data: t,
-            typeForClass: t.typeForClass + " rounded p-0 mt-0 mb-0 mx-1 appointment lbl",
+            typeForClass: "vacation rounded p-0 mt-0 mb-0 mx-1 appointment lbl",
           },
           highlight: 'green',
           popover: {
@@ -349,8 +349,10 @@ export default {
         console.log('selected day:',this.selectedDay);
       },
       startAppointment(attributeApp) {
-        console.log(JSON.stringify(attributeApp));
-        if (attributeApp.customData.typeForClass.includes('over')){
+        /* from monthly calendar */
+        if (attributeApp.customData.typeForClass.includes('vacation'))
+          return;
+        else if (attributeApp.customData.typeForClass.includes('over')){
           this.$toast.show(
               "Appointemnt already held.",
               {
@@ -369,14 +371,16 @@ export default {
           this.$router.push("/appointment/" + attributeApp.customData.data.id);
       },
       startAppointmentFromWeekly(app){
-        if (app.typeForClass.includes('over'))
+        if (app.id.includes('vacation'))
+          return;
+        else if (app.customData.typeForClass.includes('over'))
           this.$toast.show(
               "Appointemnt already held.",
               {
                   position: "top", type: "error",
               }
           );
-        else if (app.typeForClass.includes('free'))
+        else if (app.customData.typeForClass.includes('free'))
           this.$toast.show(
               "Appointment not booked yet.",
               {
@@ -470,7 +474,12 @@ export default {
       },
       onClickItem(e) {
         console.log(`You clicked: ${e.id}`);
-        window.location.href = "/appointment/" + e.id;
+        for (let attr of this.attributes){
+          if (attr.id === e.id){
+            this.startAppointmentFromWeekly(attr);
+            break;
+          }
+        }
       },
       setShowDate(d) {
         this.message = `Changing calendar view to ${d.toLocaleDateString()}`
