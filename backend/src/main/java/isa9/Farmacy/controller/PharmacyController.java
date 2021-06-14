@@ -225,9 +225,10 @@ public class PharmacyController {
     }
 
     @GetMapping("/subscriptions/{id}")
-    @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<List<PharmacyDTO>> getPatientsSubscriptions(@PathVariable Long id){
-        Patient patient = (Patient) this.userService.findOne(id);
+        User pacijent = this.userService.findOne(id);
+        if (pacijent.getClass() != Patient.class) return new ResponseEntity<>(null, HttpStatus.OK);
+        Patient patient = (Patient) pacijent;
 
         List<Pharmacy> subscriptions = new ArrayList<>();
 

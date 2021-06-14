@@ -551,6 +551,10 @@ export default {
       PharmacyDataService.getPharmacyByIDAdmin(this.id)
         .then(response => {
           this.pharmacy = response.data;
+
+          // za mapu
+          localStorage.setItem("adresa", '[' + this.pharmacy.address.longitude + ', ' + this.pharmacy.address.latitude + ']');
+          
           this.pharmacyName = this.pharmacy.name;
           this.pharmacyDesc = this.pharmacy.description;
           this.pharmacyConsulting = this.pharmacy.pricePerHour;
