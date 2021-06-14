@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -58,6 +59,12 @@ public class dbPharmacyService extends PharmacyServiceBase implements PharmacySe
     @Override
     public Pharmacy save(Pharmacy entity) { return this.pharmacyRepository.save(entity); }
 
+
+    @Override
+    @Transactional
+    public Pharmacy findOneLocked(Long id) {
+        return pharmacyRepository.findPharmacyByIdLocked(id);
+    }
 
     @Override
     public List<Work> findDoctorsWork(Doctor doctor) {

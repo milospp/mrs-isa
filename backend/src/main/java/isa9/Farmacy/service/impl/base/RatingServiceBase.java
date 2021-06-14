@@ -3,6 +3,7 @@ package isa9.Farmacy.service.impl.base;
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 
 public abstract class RatingServiceBase implements RatingService {
@@ -62,9 +63,10 @@ public abstract class RatingServiceBase implements RatingService {
     }
 
     @Override
+    @Transactional
     public Rating rateDoctor(Long doctorId, Long userId, int rate) {
         Doctor doctor = userService.getDoctorById(doctorId);
-        Patient patient = userService.getPatientById(userId);
+        Patient patient = userService.getPatientByIdLocked(userId);
         if (!isRateValid(rate)) return null;
         if (doctor == null || patient == null) return null;
 
@@ -96,9 +98,10 @@ public abstract class RatingServiceBase implements RatingService {
     }
 
     @Override
+    @Transactional
     public Rating rateMedicine(Long medicineId, Long userId, int rate) {
         Medicine medicine = medicineService.findOne(medicineId);
-        Patient patient = userService.getPatientById(userId);
+        Patient patient = userService.getPatientByIdLocked(userId);
         if (!isRateValid(rate)) return null;
         if (medicine == null || patient == null) return null;
 
@@ -132,9 +135,10 @@ public abstract class RatingServiceBase implements RatingService {
     }
 
     @Override
+    @Transactional
     public Rating ratePharmacy(Long pharmacyId, Long userId, int rate) {
         Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
-        Patient patient = userService.getPatientById(userId);
+        Patient patient = userService.getPatientByIdLocked(userId);
         if (!isRateValid(rate)) return null;
         if (pharmacy == null || patient == null) return null;
 

@@ -11,6 +11,7 @@ public interface PharmacyService extends GenericService<Pharmacy> {
     boolean pharmacyExists(Pharmacy p);
     int reduceQuantity(Pharmacy pharmacy, Medicine medicine, int resQuantity);
 
+    Pharmacy findOneLocked(Long id);
 
     MedicineInPharmacy gedMedicineInPharmacy(Pharmacy pharmacy, Medicine medicine);
 
