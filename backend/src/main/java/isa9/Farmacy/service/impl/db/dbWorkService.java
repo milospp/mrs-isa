@@ -33,7 +33,7 @@ public class dbWorkService extends WorkServiceBase implements WorkService {
 
     @Override
     public Work findOne(Long id) {
-        return this.workRepository.findById(id).orElseGet(null);
+        return this.workRepository.findById(id).orElse(null);
     }
 
     @Override

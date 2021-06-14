@@ -72,7 +72,7 @@ public class dbPharmacyService extends PharmacyServiceBase implements PharmacySe
             for (MedicineInPharmacy uApoteci : pharmacy.getMedicines()) {
                 System.out.println(mq.getMedicine().getName());
                 System.out.println(uApoteci.getMedicine().getName());
-                if (mq.getMedicine().getId() == uApoteci.getMedicine().getId()) {
+                if (mq.getMedicine().getId().equals( uApoteci.getMedicine().getId() )) {
                     nadjen = true;
                     break;
                 }

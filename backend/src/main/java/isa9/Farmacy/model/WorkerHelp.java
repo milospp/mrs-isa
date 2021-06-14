@@ -21,4 +21,11 @@ public class WorkerHelp {
         return Objects.hash(registerData, startHour, endHour);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WorkerHelp that = (WorkerHelp) o;
+        return Objects.equals(registerData, that.registerData) && Objects.equals(startHour, that.startHour) && Objects.equals(endHour, that.endHour);
+    }
 }

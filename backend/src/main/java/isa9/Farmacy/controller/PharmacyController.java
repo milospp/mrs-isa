@@ -122,9 +122,9 @@ public class PharmacyController {
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<Boolean> setPharmacyInfo(@RequestBody PharmacyDTO apotekaDTO) {
         Pharmacy apoteka = pharmacyService.findOne(apotekaDTO.getId());
+        if (apoteka == null) return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         apoteka.setName(apotekaDTO.getName());
         apoteka.setDescription(apoteka.getDescription());
-        if (apoteka == null) return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         if (apotekaDTO.getPricePerHour() != null) apoteka.setPricePerHour(apotekaDTO.getPricePerHour());
         apoteka.setName(apotekaDTO.getName());
         apoteka.setDescription(apoteka.getDescription());
@@ -147,8 +147,8 @@ public class PharmacyController {
         PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(idAdmina);
         for (MedicineInPharmacy stariLek : admin.getPharmacy().getMedicines()) {
             for (MedInPharmaDTO noviLek : cenovnik.getMedicines()) {
-                if (stariLek.getMedicine().getId() == noviLek.getMedicine().getId()) {
-                    if (stariLek.getCurrentPrice().getPrice() != noviLek.getCurrentPrice()) {
+                if (stariLek.getMedicine().getId().equals( noviLek.getMedicine().getId()) ) {
+                    if (! (stariLek.getCurrentPrice().getPrice().equals( noviLek.getCurrentPrice()) )) {
                         MedPrice novaCena = new MedPrice();
                         novaCena.setPrice(noviLek.getCurrentPrice());
                         novaCena.setStartDate(LocalDateTime.now());

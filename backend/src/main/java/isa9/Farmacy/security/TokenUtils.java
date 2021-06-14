@@ -77,6 +77,7 @@ public class TokenUtils {
 		String refreshedToken;
 		try {
 			final Claims claims = this.getAllClaimsFromToken(token);
+			if (claims == null) return null;
 			claims.setIssuedAt(new Date());
 			refreshedToken = Jwts.builder()
 					.setClaims(claims)
@@ -108,6 +109,7 @@ public class TokenUtils {
 		String username;
 		try {
 			final Claims claims = this.getAllClaimsFromToken(token);
+			if (claims == null) return null;
 			username = claims.getSubject();
 		} catch (Exception e) {
 			username = null;
@@ -119,6 +121,7 @@ public class TokenUtils {
 		Date issueAt;
 		try {
 			final Claims claims = this.getAllClaimsFromToken(token);
+			if (claims == null) return null;
 			issueAt = claims.getIssuedAt();
 		} catch (Exception e) {
 			issueAt = null;
@@ -130,6 +133,7 @@ public class TokenUtils {
 		String audience;
 		try {
 			final Claims claims = this.getAllClaimsFromToken(token);
+			if (claims == null) return null;
 			audience = claims.getAudience();
 		} catch (Exception e) {
 			audience = null;
@@ -141,6 +145,7 @@ public class TokenUtils {
 		Date expiration;
 		try {
 			final Claims claims = this.getAllClaimsFromToken(token);
+			if (claims == null) return null;
 			expiration = claims.getExpiration();
 		} catch (Exception e) {
 			expiration = null;

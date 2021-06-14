@@ -42,7 +42,7 @@ public class dbInquiryService extends InquiryServiceBase implements InquiryServi
     public List<InquiryMedicine> getAllForPharmacy(Long pharmacyId) {
         List<InquiryMedicine> povratna = new ArrayList<>();
         for (InquiryMedicine im : this.inquiryMedRepository.findAll())
-            if (im.getPharmacyId() == pharmacyId)
+            if (im.getPharmacyId().equals( pharmacyId ))
                 povratna.add(im);
         return povratna;
     }

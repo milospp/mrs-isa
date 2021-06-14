@@ -41,6 +41,7 @@ public abstract class PharmacyServiceBase implements PharmacyService {
 
     @Override
     public int reduceQuantity(Pharmacy pharmacy, Medicine medicine, int resQuantity) {
+        // TODO: Prepraviti da se dobavlja iz repo
         MedicineInPharmacy mip = pharmacy.getMedicines().stream().filter(m -> m.getMedicine().equals(medicine)).findFirst().get();
         int quantity = mip.getInStock();
         if(quantity == 0) return 1;                 // nema ga na stanju

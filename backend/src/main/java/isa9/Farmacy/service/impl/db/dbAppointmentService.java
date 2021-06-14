@@ -47,7 +47,7 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
 
     @Override
     public Appointment findOne(Long id) {
-        return this.appointmentRepository.findById(id).orElseGet(null);
+        return this.appointmentRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
 
         for (Work work : workSet) {
             if (work.getDoctor().getRole().getId() != 5L) invalidWorkSet.add(work);
-            else if (dermatologists.stream().anyMatch(d -> d.getId() == work.getDoctor().getId())) invalidWorkSet.add(work);
+            else if (dermatologists.stream().anyMatch(d -> d.getId().equals( work.getDoctor().getId()))) invalidWorkSet.add(work);
         }
 
         workSet.removeAll(invalidWorkSet);
@@ -163,7 +163,7 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
         LocalDateTime end = start.plusMinutes(duration);
         LocalDateTime kraj;
         for (Appointment pregled : this.appointmentRepository.findAll()) {
-            if (pregled.getDoctor().getId() != idDoktora || pregled.getId() == id) continue;
+            if (!pregled.getDoctor().getId().equals( idDoktora ) || pregled.getId().equals( id )) continue;
             kraj = pregled.getStartTime().plusMinutes(pregled.getDurationInMins());
             if ((start.isAfter(pregled.getStartTime()) && start.isBefore(kraj))
                     || (start.isBefore(pregled.getStartTime()) && end.isAfter(pregled.getStartTime()))
@@ -180,7 +180,7 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
             if (u.getClass() == Patient.class) {
                 zaBrisanje.clear();
                 for (Examination e : ((Patient) u).getMyExaminations()) {
-                    if (e.getAppointment().getId() == id) {
+                    if (e.getAppointment().getId().equals( id )) {
                         zaBrisanje.add(e);
                     }
                 }
@@ -190,7 +190,7 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
         }
 
         for (Examination ex : this.examinationService.findAll()) {
-            if (ex.getAppointment().getId() == id) {
+            if (ex.getAppointment().getId() .equals( id )) {
                 this.examinationService.delete(ex);}
         }
         this.appointmentRepository.delete(findOne(id));
@@ -200,7 +200,7 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
     public boolean canEditDelete(Long id) {
         if (findOne(id).getStartTime().isBefore(LocalDateTime.now())) return false; // bio u proslosti
         for (Examination ex : this.examinationService.findAll())
-            if (ex.getAppointment().getId() == id) {
+            if (ex.getAppointment().getId().equals( id )) {
                 if (ex.getStatus() != ExaminationStatus.CANCELED) continue;
                 if (ex.getStatus() == ExaminationStatus.HELD || ex.getStatus() == ExaminationStatus.NOT_HELD)
                     return false;               // bio je u proslosti
