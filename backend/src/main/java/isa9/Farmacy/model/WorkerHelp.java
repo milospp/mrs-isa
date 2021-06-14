@@ -6,19 +6,17 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 
 public class WorkerHelp {
+    @EqualsAndHashCode.Include
     private Pharmacist registerData;
+    @EqualsAndHashCode.Include
     private String startHour;
+    @EqualsAndHashCode.Include
     private String endHour ;
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(registerData, startHour, endHour);
-    }
 
 }

@@ -36,7 +36,7 @@ public class dbExaminationService extends ExaminationServiceBase implements Exam
 
     @Override
     public Examination findOne(Long id) {
-        return this.examinationRepository.findById(id).orElseGet(null);
+        return this.examinationRepository.findById(id).orElse(null);
     }
 
     @Override

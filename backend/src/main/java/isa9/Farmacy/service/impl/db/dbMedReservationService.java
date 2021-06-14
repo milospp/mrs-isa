@@ -36,7 +36,7 @@ public class dbMedReservationService extends MedReservationServiceBase implement
 
     @Override
     public MedReservation findOne(Long id) {
-        return this.medReservationRepository.findById(id).orElseGet(null);
+        return this.medReservationRepository.findById(id).orElse(null);
     }
 
     @Override
