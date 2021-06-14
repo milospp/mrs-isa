@@ -4,10 +4,7 @@ import isa9.Farmacy.constants.*;
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
 import isa9.Farmacy.repository.MedReservationRepository;
-import isa9.Farmacy.service.impl.db.dbMedReservationService;
-import isa9.Farmacy.service.impl.db.dbMedicineService;
-import isa9.Farmacy.service.impl.db.dbPharmacyService;
-import isa9.Farmacy.service.impl.db.dbUserService;
+import isa9.Farmacy.service.impl.db.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -42,6 +39,9 @@ public class MedReservationServiceTest {
     private dbUserService userService;
 
     @Mock
+    private dbLoyaltyProgramService loyaltyProgramService;
+
+    @Mock
     private MedReservation medReservation;
 
 
@@ -67,6 +67,7 @@ public class MedReservationServiceTest {
         medReservationService.setPharmacyService(pharmacyService);
         medReservationService.setMedicineService(medicineService);
         medReservationService.setUserService(userService);
+        medReservationService.setLoyaltyProgramService(loyaltyProgramService);
 
         Medicine medicine = MedicineConstants.getMedicineExample();
         Pharmacy pharmacy = PharmacyConstants.getPharmacyExample();
@@ -85,15 +86,17 @@ public class MedReservationServiceTest {
 
         //when(userService.findAll()).thenReturn(Arrays.asList(UserConstants.getPatient());
         when(userService.findOne(1L)).thenReturn(patient);
+        when(userService.getPatientByIdLocked(1L)).thenReturn(patient);
         when(userService.countActivePenalties(patient)).thenReturn(2);
 
         when(pharmacyService.gedMedicineInPharmacy(pharmacy, medicine)).thenReturn(mip);
         when(pharmacyService.reduceQuantity(pharmacy, medicine, 2)).thenReturn(0);
 
-        MedReservationFormDTO medReservationFormDTO = new MedReservationFormDTO(1L,1L, 1L, 2, LocalDate.of(2021,6,10));
+        MedReservationFormDTO medReservationFormDTO = new MedReservationFormDTO(1L,1L, 1L, 2, LocalDate.now().plusDays(10));
         MedReservation medReservation = medReservationService.reserveMedicine(medReservationFormDTO);
 
-        MedReservation expectedMedRes = new MedReservation(null,medReservation.getCode(), (Patient) userService.findOne(1L), LocalDate.now(),LocalDate.of(2021,6,10), MedReservationStatus.PENDING, mip, 2, null);
+        MedReservation expectedMedRes = new MedReservation(null,medReservation.getCode(), (Patient) userService.findOne(1L), LocalDate.now(),LocalDate.now().plusDays(10), MedReservationStatus.PENDING, mip, 2, null);
+        expectedMedRes.setLoyaltyDiscount(null);
         assertThat(medReservation).isEqualTo(expectedMedRes);
 
     }

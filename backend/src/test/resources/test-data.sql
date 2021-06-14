@@ -1,38 +1,38 @@
-insert into address (city, number, state, street) values ('Beograd', '2', 'Serbia', 'Nemanjina');
-insert into address (city, number, state, street) values ('Beograd', '33', 'Serbia', 'Laze Kostića');
-insert into address (city, number, state, street) values ('Beograd', '21', 'Serbia', 'Brodarska');
-insert into address (city, number, state, street) values ('Beograd', '11', 'Serbia', 'Vuka Karadžića');
-insert into address (city, number, state, street) values ('Beograd', '2', 'Serbia', 'Magelanova');
-insert into address (city, number, state, street) values ('Beograd', '26', 'Serbia', 'Partizanska');
-insert into address (city, number, state, street) values ('Beograd', '17', 'Serbia', 'Kolarčeva');
-insert into address (city, number, state, street) values ('Beograd', '9', 'Serbia', 'Aleksandra Fleminga');
-insert into address (city, number, state, street) values ('Beograd', '31', 'Serbia', 'Bajronova');
-insert into address (city, number, state, street) values ('Beograd', '49', 'Serbia', 'Ljutice Bogdana');
-insert into address (city, number, state, street) values ('Beograd', '25', 'Serbia', 'Karađorđeva');
-insert into address (city, number, state, street) values ('Beograd', '3', 'Serbia', 'Makedonska');
-insert into address (city, number, state, street) values ('Beograd', '13', 'Serbia', 'Stevana Sremca');
-insert into address (city, number, state, street) values ('Beograd', '13', 'Serbia', 'Varvarinska');
-insert into address (city, number, state, street) values ('Beograd', '50', 'Serbia', 'Bežanijska');
-insert into address (city, number, state, street) values ('Beograd', '14', 'Serbia', 'Plitvička');
-insert into address (city, number, state, street) values ('Beograd', '9', 'Serbia', 'Ustanička');
-insert into address (city, number, state, street) values ('Beograd', '29', 'Serbia', 'Bore Stankovića');
-insert into address (city, number, state, street) values ('Beograd', '35', 'Serbia', 'Milunke Savić');
-insert into address (city, number, state, street) values ('Beograd', '12', 'Serbia', 'Filipa Višnjića');
-insert into address (city, number, state, street) values ('Beograd', '8', 'Serbia', 'Nikolaja Gogolja');
-insert into address (city, number, state, street) values ('Beograd', '28', 'Serbia', 'Petra Kočića');
-insert into address (city, number, state, street) values ('Beograd', '100', 'Serbia', 'Bulevar Arsenija Čarnojevića');
-insert into address (city, number, state, street) values ('Beograd', '18', 'Serbia', 'Laze Lazarevića');
-insert into address (city, number, state, street) values ('Beograd', '23', 'Serbia', 'Karlovačka');
-insert into address (city, number, state, street) values ('Beograd', '90', 'Serbia', 'Lenjinov bulevar');
-insert into address (city, number, state, street) values ('Beograd', '47', 'Serbia', 'Mačvanska');
-insert into address (city, number, state, street) values ('Beograd', '30', 'Serbia', 'Terazije');
-insert into address (city, number, state, street) values ('Beograd', '29', 'Serbia', 'Avalska');
-insert into address (city, number, state, street) values ('Beograd', '41', 'Serbia', 'Milutina Milankovića');
-insert into address (city, number, state, street) values ('Novi Sad', '128', 'Serbia', 'Bulevar oslobođenja');
-insert into address (city, number, state, street) values ('Novi Sad', '43', 'Serbia', 'Bulevar oslobođenja');
-insert into address (city, number, state, street) values ('Novi Sad', '8', 'Serbia', 'Trg slobode');
-insert into address (city, number, state, street) values ('Novi Sad', '20', 'Serbia', 'Stražilovska');
-insert into address (city, number, state, street) values ('Novi Sad', '23', 'Serbia', 'Vuka Karadžića');
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '2', 'Serbia', 'Nemanjina', 19.837380032838656, 45.25170720477278);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '33', 'Serbia', 'Laze Kostića', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '21', 'Serbia', 'Brodarska', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '11', 'Serbia', 'Vuka Karadžića', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '2', 'Serbia', 'Magelanova', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '26', 'Serbia', 'Partizanska', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '17', 'Serbia', 'Kolarčeva', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '9', 'Serbia', 'Aleksandra Fleminga', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '31', 'Serbia', 'Bajronova', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '49', 'Serbia', 'Ljutice Bogdana', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '25', 'Serbia', 'Karađorđeva', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '3', 'Serbia', 'Makedonska', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '13', 'Serbia', 'Stevana Sremca', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '13', 'Serbia', 'Varvarinska', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '50', 'Serbia', 'Bežanijska', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '14', 'Serbia', 'Plitvička', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '9', 'Serbia', 'Ustanička', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '29', 'Serbia', 'Bore Stankovića', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '35', 'Serbia', 'Milunke Savić', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '12', 'Serbia', 'Filipa Višnjića', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '8', 'Serbia', 'Nikolaja Gogolja', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '28', 'Serbia', 'Petra Kočića', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '100', 'Serbia', 'Bulevar Arsenija Čarnojevića', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '18', 'Serbia', 'Laze Lazarevića', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '23', 'Serbia', 'Karlovačka', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '90', 'Serbia', 'Lenjinov bulevar', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '47', 'Serbia', 'Mačvanska', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '30', 'Serbia', 'Terazije', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '29', 'Serbia', 'Avalska', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '8', 'Serbia', 'Trg slobode', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '41', 'Serbia', 'Milutina Milankovića', 19.849610906323882, 45.244606911501705);
+insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '128', 'Serbia', 'Bulevar oslobođenja', 19.7535234496781, 45.250347642880996);
+insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '43', 'Serbia', 'Bulevar oslobođenja', 19.736773424361914, 45.325864824612886);
+insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '20', 'Serbia', 'Stražilovska', 20, 45);
+insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '23', 'Serbia', 'Vuka Karadžića', 20, 45);
 
 --user roles
 insert into user_roles (name) values ('SYS_ADMIN');
@@ -146,12 +146,21 @@ update med_price SET medicine_in_pharmacy_id = 4 WHERE id = 4;
 --appointments
 -- id 1
 --insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 200, current_timestamp + INTERVAL '3day', 0);
+--<<<<<<< TECHNICAL-US-150
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 300, CURRENT_DATE + 1 + TIME '08:00'  , 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 400, CURRENT_DATE + 2 + TIME '09:00', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 500, CURRENT_DATE + 3 + TIME '10:00', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 330, CURRENT_DATE + 4 + TIME '11:00', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 340, CURRENT_DATE + 10 + TIME '12:00', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, CURRENT_DATE + 20 + TIME '13:00', 0);
+--=======
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 300, '2021-06-01 08:00:00'::timestamp, 0);
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 400, '2021-06-03 08:00:00'::timestamp + INTERVAL '1 hour', 0);
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 500, '2021-06-04 08:00:00'::timestamp + INTERVAL '2 hours', 0);
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 330, '2021-06-01 08:00:00'::timestamp + INTERVAL '3 hours', 0);
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 340, '2021-06-17 08:00:00'::timestamp + INTERVAL '4 hours', 0);
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-06-07 11:00:00'::timestamp, 0); -- free app
+
 insert into examination (status, appointment_id, patient_id) values (0, 1, 2);
 insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Migrena', 'Pacijent oseca glavobolju', 1, 2, 1);
 insert into examination (status, appointment_id, patient_id) values (0, 3, 3);
@@ -185,6 +194,12 @@ insert into patient_my_examinations (patient_id, my_examinations_id) values (2, 
 insert into patient_my_examinations (patient_id, my_examinations_id) values (3, 8);
 
 
+-- more free appointments
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-06-07 11:30:00'::timestamp, 0); -- free app
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-06-07 09:00:00'::timestamp, 0); -- free app
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-06-09 10:00:00'::timestamp, 0); -- free app
+
+
 -- --Therapy
 -- insert into therapy_item (days, medicine_id) values (5, 1);
 -- insert into therapy_item (days, medicine_id) values (5, 2);
@@ -212,11 +227,11 @@ insert into doctor_working (doctor_id, working_id) values (12, 2);
 insert into doctor_working (doctor_id, working_id) values (11, 3);
 
 -- for filter dermatologist and pharmacist
-        -- farm
+-- farm
 insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (2, 'masaGavr@maildrop.cc', true, 'Masa', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0124567893', 5, 'Gavrilovic', LOCALTIMESTAMP);
 insert into doctor (id) values (15);
 insert into pharmacist (id) values (15);
-        -- derm
+-- derm
 insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (2, 'ana@maildrop.cc', true, 'Ana', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '345826485', 4, 'Savin', LOCALTIMESTAMP);
 insert into doctor (id) values (16);
 insert into dermatologist (id) values (16);
@@ -224,7 +239,7 @@ insert into dermatologist (id) values (16);
 insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (2, 'ana17@maildrop.cc', true, 'Anastasija', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '924601573', 4, 'Maric', LOCALTIMESTAMP);
 insert into doctor (id) values (17);
 insert into dermatologist (id) values (17);
-        -- works
+-- works
 insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (15, '07:07:00', 1, '12:12:00');
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 4);
 insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (16, '08:08:00', 1, '14:14:00');
@@ -233,7 +248,7 @@ insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (17, '08:
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 6);
 insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (16, '20:00:00', 2, '23:00:00');
 insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 7);
-        -- doctor_working
+-- doctor_working
 insert into doctor_working (doctor_id, working_id) values (15, 4);
 insert into doctor_working (doctor_id, working_id) values (16, 5);
 insert into doctor_working (doctor_id, working_id) values (17, 6);
@@ -296,3 +311,7 @@ values ('fakecode2', current_date + 2 + current_time, 5, current_date - 2 + curr
 
 -- insert into patient_reservations (patient_id, reservations_id) values (1,1);
 -- insert into patient_reservations (patient_id, reservations_id) values (1,2);
+
+-- vacations
+insert into vacation (doctor_id, end_date, pharmacy_id, admin_id, reason, start_date, status, type, why_not) values (11, '2021-06-26', 1, null, 'eto', '2021-06-22', 1, 0, null);
+insert into doctor_vacations (doctor_id, vacations_id) values (11, 1);

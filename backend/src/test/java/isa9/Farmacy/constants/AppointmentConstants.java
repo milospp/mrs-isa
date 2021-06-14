@@ -6,6 +6,7 @@ import isa9.Farmacy.model.dto.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,9 +14,10 @@ import java.util.List;
 import java.util.Set;
 
 public class AppointmentConstants {
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d HH:mm:ss");
 
     public static final Long AP_FREE_ID = 6L;
-    public static final String AP_FREE_START_TIME = "2021-7-2 15:00:00";
+    public static final String AP_FREE_START_TIME = LocalDate.now().atTime(15,0).plusDays(20).format(formatter);
     public static final double AP_FREE_PRICE = 350.0;
     public static final int AP_FREE_DURATION = 30;
     public static final String AP_FREE_TYPE = "EXAMINATION";
