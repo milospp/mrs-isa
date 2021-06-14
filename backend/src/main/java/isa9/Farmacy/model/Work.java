@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -18,6 +18,7 @@ import lombok.*;
 public class Work {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @ManyToOne
@@ -29,16 +30,4 @@ public class Work {
     @Column
     private LocalTime endHour;
 
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Work work = (Work) o;
-        return id.equals(work.id) && Objects.equals(doctor, work.doctor) && Objects.equals(pharmacy, work.pharmacy) && Objects.equals(startHour, work.startHour) && Objects.equals(endHour, work.endHour);
-    }
 }
