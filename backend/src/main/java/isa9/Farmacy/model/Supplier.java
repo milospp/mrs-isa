@@ -20,10 +20,10 @@ import lombok.*;
 
 @Entity
 public class Supplier extends User{
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     private List<Offer> allOffer;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<MedicineAtSupplier> medicinesInStock;
 
 

@@ -45,7 +45,7 @@ public class Appointment {
     @JoinColumn(name = "pharmacy_id")
     private Pharmacy pharmacy;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "examination_id")
     private Examination examination;
 

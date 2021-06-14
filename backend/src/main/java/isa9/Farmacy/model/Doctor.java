@@ -19,7 +19,7 @@ import lombok.*;
 @Inheritance(strategy= InheritanceType.JOINED)
 public abstract class Doctor extends User{
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Work> working;
 
     @Column (nullable = false, columnDefinition="Decimal(2,1) default '0.0'")

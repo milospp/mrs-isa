@@ -50,7 +50,7 @@ public class Medicine {
     @Enumerated
     @EqualsAndHashCode.Include
     private DispencingMedicine perscription;
-    @ManyToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToMany(cascade=CascadeType.ALL,fetch = FetchType.LAZY)
     private Set<Medicine> replacementMedication;
     @Column (nullable = false, columnDefinition="Decimal(2,1) default '0.0'")
     @Builder.Default
