@@ -21,12 +21,10 @@ import java.util.List;
 public class dbMedReservationService extends MedReservationServiceBase implements MedReservationService {
 
     private final MedReservationRepository medReservationRepository;
-    private final UserService userService;
 
     @Autowired
-    public dbMedReservationService(MedReservationRepository medReservationRepository, UserService userService) {
+    public dbMedReservationService(MedReservationRepository medReservationRepository) {
         this.medReservationRepository = medReservationRepository;
-        this.userService = userService;
     }
 
     @Override
