@@ -151,6 +151,11 @@ public class dbUserService extends UserServiceBase implements UserService, UserD
     }
 
     @Override
+    public User getByEmail(String email) {
+        return userRepository.findFirstByEmail(email);
+    }
+
+    @Override
     public long getAllMyPatientsTotalCount(PaginationSortSearchDTO pssDTO) {
         return patientRepository.countFoundPatientsByDoctorIdAndSearch(Long.valueOf(pssDTO.getSearchParams().get("doctorId")), pssDTO.getSearchParams().get("name"),
                 pssDTO.getSearchParams().get("surname"));

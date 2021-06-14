@@ -88,6 +88,7 @@ public class MedicineController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('PATIENT')")
     @PostMapping("{medId}/pharmacy/{pharmacyId}/reserve")
     public ResponseEntity<MedReservationDTO> reserveMedicineAsPatient(@PathVariable Long medId, @PathVariable Long pharmacyId,
                                                              @RequestBody MedReservationFormDTO form){
