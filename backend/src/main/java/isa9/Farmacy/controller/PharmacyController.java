@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
@@ -236,6 +237,20 @@ public class PharmacyController {
         }
 
         return new ResponseEntity<>(this.pharmacyToPharmacyDTO.convert(subscriptions), HttpStatus.OK);
+    }
+
+    @PostMapping("/eligibleForEPrescription")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<List<PharmacyDTO>> getEligibleForEPrescription(@RequestBody EPrescriptionDTO ePrescriptionDTO){
+        List<Pharmacy> eligible = this.pharmacyService.findEligibleForEPrescription(ePrescriptionDTO);
+        return new ResponseEntity<>(this.pharmacyToPharmacyDTO.convert(eligible), HttpStatus.OK);
+    }
+
+    @PostMapping("/totalsInEligible")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<Map<Long, Double>> getTotalsInEligible(@RequestBody EPrescriptionDTO dto){
+        List<Pharmacy> pharmacyList = this.pharmacyService.findEligibleForEPrescription(dto);
+        return new ResponseEntity<>(this.pharmacyService.calculateTotalsInPharmacies( pharmacyList, dto), HttpStatus.OK);
     }
 }
 

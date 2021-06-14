@@ -197,6 +197,14 @@ class MedicineDataService {
   getPatientsPurchases(id){
     return axios.get(`${API_URL}/patientsPurchases/`+id);
   }
+
+  eReserve(ePrescription){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/reserveFromEPrescription`,
+      data: ePrescription
+    });
+  }
 }
 
 export default new MedicineDataService();

@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,17 +28,18 @@ public class MedicineController {
     private final RatingService ratingService;
     private final MedReservationService medReservationService;
     private final MedInPharmaService medInPharmaService;
+    private final MedicineAtSupplierService medicineAtSupplierService;
+    private final EPrescriptionService ePrescriptionService;
     private final MedReservationToMedReservationDTO medReservationToMedReservationDTO;
     private final MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO;
     private final MedicineToMedicineDTO medicineToMedicineDTO;
     private final RatingToRatingDTO ratingToRatingDTO;
     private final MedicineQuantityToMedicineQuantityDTO medicineQuantityToMedicineQuantityDTO;
-    private final MedicineAtSupplierService medicineAtSupplierService;
     private final MedicineAtSupplierToMedAtSupplierDTO medicineAtSupplierToMedAtSupplierDTO;
     private final MedAtSupplierDTOtoMedAtSupplier medAtSupplierDTOtoMedAtSupplier;
 
     @Autowired
-    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, RatingService ratingService, MedReservationService medReservationService, MedInPharmaService medInPharmaService, MedReservationToMedReservationDTO medReservationToMedReservationDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedicineToMedicineDTO medicineToMedicineDTO, RatingToRatingDTO ratingToRatingDTO, MedQuantityService medQuantityService, MedicineQuantityToMedicineQuantityDTO medicineQuantityToMedicineQuantityDTO, MedicineAtSupplierService medicineAtSupplierService, MedicineAtSupplierToMedAtSupplierDTO medicineAtSupplierToMedAtSupplierDTO, MedAtSupplierDTOtoMedAtSupplier medAtSupplierDTOtoMedAtSupplier) {
+    public MedicineController(MedicineService medicineService, UserService userService, PharmacyService pharmacyService, RatingService ratingService, MedReservationService medReservationService, MedInPharmaService medInPharmaService, MedReservationToMedReservationDTO medReservationToMedReservationDTO, MedicineInPharmacyToMedInPharmaDTO medicineInPharmacyToMedInPharmaDTO, MedicineToMedicineDTO medicineToMedicineDTO, RatingToRatingDTO ratingToRatingDTO, MedQuantityService medQuantityService, MedicineQuantityToMedicineQuantityDTO medicineQuantityToMedicineQuantityDTO, MedicineAtSupplierService medicineAtSupplierService, MedicineAtSupplierToMedAtSupplierDTO medicineAtSupplierToMedAtSupplierDTO, MedAtSupplierDTOtoMedAtSupplier medAtSupplierDTOtoMedAtSupplier, EPrescriptionService ePrescriptionService) {
         this.medicineService = medicineService;
         this.userService = userService;
         this.pharmacyService = pharmacyService;
@@ -52,6 +55,7 @@ public class MedicineController {
         this.medicineAtSupplierService = medicineAtSupplierService;
         this.medicineAtSupplierToMedAtSupplierDTO = medicineAtSupplierToMedAtSupplierDTO;
         this.medAtSupplierDTOtoMedAtSupplier = medAtSupplierDTOtoMedAtSupplier;
+        this.ePrescriptionService = ePrescriptionService;
     }
 
     @GetMapping("tmp-test")
@@ -491,5 +495,11 @@ public class MedicineController {
         List<MedReservation> purchases = this.medReservationService.getPatientsPurchases((Patient) this.userService.findOne(id));
 
         return new ResponseEntity<>(this.medReservationToMedReservationDTO.convert(purchases), HttpStatus.OK);
+    }
+
+    @PostMapping("/reserveFromEPrescription")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<Integer> reserveFromEPrescription(@RequestBody EPrescriptionDTO ePrescriptionDTO){
+        return new ResponseEntity<>(this.medReservationService.eReserveMedicines(ePrescriptionDTO), HttpStatus.OK);
     }
 }

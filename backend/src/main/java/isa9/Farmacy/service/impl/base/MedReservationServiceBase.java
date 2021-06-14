@@ -1,6 +1,7 @@
 package isa9.Farmacy.service.impl.base;
 
 import isa9.Farmacy.model.*;
+import isa9.Farmacy.model.dto.EPrescriptionDTO;
 import isa9.Farmacy.model.dto.MedInPharmaDTO;
 import isa9.Farmacy.model.dto.MedReservationDTO;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public abstract class MedReservationServiceBase implements MedReservationService {
@@ -220,5 +222,46 @@ public abstract class MedReservationServiceBase implements MedReservationService
         }
 
         return purchases;
+    }
+
+    @Override
+    public Integer eReserveMedicines(EPrescriptionDTO ePrescriptionDTO) {
+        Patient patient = (Patient) this.userService.getLoggedInUser();
+        Map<String, Integer> reservations = ePrescriptionDTO.getMedicines();
+        Pharmacy pharmacy = this.pharmacyService.findOne(ePrescriptionDTO.getPharmacy().getId());
+        int index = 0;
+
+        for(Map.Entry<String, Integer> entry : reservations.entrySet()){
+            Medicine medicine = null;
+            for(Medicine m : this.medicineService.findAll()){
+                if(m.getCode().equals(entry.getKey())) medicine = m;
+            }
+
+            if(isPatientAlergic(patient, medicine)) return 1;
+
+            MedicineInPharmacy medicineInPharmacy = this.pharmacyService.gedMedicineInPharmacy(pharmacy, medicine);
+
+            MedReservation medReservation = new MedReservation();
+
+            medReservation.setReservationDate(LocalDate.now());
+            medReservation.setLastDate(LocalDate.now());
+            medReservation.setPatient(patient);
+            medReservation.setMedicineInPharmacy(medicineInPharmacy);
+            medReservation.setStatus(MedReservationStatus.TAKEN);
+            medReservation.setCode(ePrescriptionDTO.getCode()+"_"+ ++index);
+            medReservation.setQuantity(entry.getValue());
+
+            LoyaltyProgram category = this.loyaltyProgramService.getCategoryOfUser(patient);
+            medReservation.setLoyaltyDiscount((category != null) ?  category.getDiscount() : null);
+
+            patient.getReservations().add(medReservation);
+            medicineInPharmacy.setInStock(medicineInPharmacy.getInStock() - entry.getValue());
+        }
+
+        this.pharmacyService.save(pharmacy);
+        this.userService.save(patient);
+
+
+        return 0;
     }
 }
