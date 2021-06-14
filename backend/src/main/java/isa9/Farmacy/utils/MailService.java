@@ -1197,6 +1197,7 @@ public class MailService {
         return;
     }
 
+
     @Async
     public void sendDispensedReservationInfo(MedReservation medReservation) {             // sending mail to patient that reservation was taken successfully
         Pharmacy pharmacy = medReservation.getMedicineInPharmacy().getPharmacy();
