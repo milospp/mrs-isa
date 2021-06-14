@@ -20,7 +20,8 @@ public interface MedReservationService extends GenericService<MedReservation> {
     MedReservation cancel(Long medReservationId);
 
     MedReservation getByCode(String code);
-    MedReservation dispenseMedicine(MedReservation medReservation);
+    MedReservation getByCodeLocked(String code);
+    MedReservation dispenseMedicine(String code);
 
     Boolean patientConsumedMedicine(Patient patient, Medicine medicine);
     Boolean patientConsumedMedInPharmacy(Patient patient, Pharmacy pharmacy);

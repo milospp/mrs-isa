@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -52,6 +53,13 @@ public class dbMedReservationService extends MedReservationServiceBase implement
     @Override
     public MedReservation getByCode(String code) {
         return medReservationRepository.findByCode(code);
+    }
+
+    @Override
+    @Transactional
+    // TODO dodatni konflikt resen
+    public MedReservation getByCodeLocked(String code) {
+        return medReservationRepository.findByCodeLocked(code);
     }
 
     @Override

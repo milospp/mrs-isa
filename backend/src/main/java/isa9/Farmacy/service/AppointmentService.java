@@ -68,4 +68,6 @@ public interface AppointmentService extends GenericService<Appointment>{
     Appointment findByStartTime(LocalDateTime last);
 
     boolean bookFromAppointment(DateTimeDTO dateTime);
+
+    void checkForNotHeldAppointments();
 }

@@ -212,7 +212,7 @@ public class dbUserService extends UserServiceBase implements UserService, UserD
     }
 
     @Override
-    @Transactional
+    @Transactional // TODO is this needed because this method will be used in another transactional method
     public Doctor getDoctorByIdLocked(Long id) {
         return this.doctorRepository.findDoctorByIdLocked(id);
     }
@@ -223,6 +223,7 @@ public class dbUserService extends UserServiceBase implements UserService, UserD
     }
 
     @Override
+    @Transactional // TODO is this needed because this method will be used in another transactional method
     public Patient getPatientByIdLocked(Long id) {
         return this.patientRepository.findPatientByIdLocked(id);
     }

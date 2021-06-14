@@ -147,7 +147,7 @@ update med_price SET medicine_in_pharmacy_id = 4 WHERE id = 4;
 -- id 1
 --insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 200, current_timestamp + INTERVAL '3day', 0);
 --<<<<<<< TECHNICAL-US-150
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 300, CURRENT_DATE + 1 + TIME '08:00'  , 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 300, CURRENT_DATE + TIME '15:00'  , 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 400, CURRENT_DATE + 2 + TIME '09:00', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 500, CURRENT_DATE + 3 + TIME '10:00', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 330, CURRENT_DATE + 4 + TIME '11:00', 0);
