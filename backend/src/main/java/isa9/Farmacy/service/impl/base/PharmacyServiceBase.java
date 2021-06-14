@@ -3,6 +3,7 @@ package isa9.Farmacy.service.impl.base;
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.PharmacySearchDTO;
 import isa9.Farmacy.service.*;
+import isa9.Farmacy.utils.Geo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -82,6 +83,9 @@ public abstract class PharmacyServiceBase implements PharmacyService {
                 .filter(p -> pharmacySearchDTO.getName().isEmpty() || p.getName().toLowerCase().contains(pharmacySearchDTO.getName().toLowerCase()))
                 .filter(p -> pharmacySearchDTO.getAddressString().isEmpty() || (p.getAddress().getCity() + p.getAddress().getState() + p.getAddress().getStreet()).toLowerCase().contains(pharmacySearchDTO.getAddressString()))
                 .filter(p -> p.getRating() >= pharmacySearchDTO.getMinRating() && p.getRating() <= pharmacySearchDTO.getMaxRating())
+                .filter(p -> pharmacySearchDTO.getDistance() == 0 || pharmacySearchDTO.getDistance() >= Geo.distanceInKmBetweenEarthCoordinates(
+                        pharmacySearchDTO.getLocation().getLatitude(), pharmacySearchDTO.getLocation().getLongitude(), p.getAddress().getLatitude(), p.getAddress().getLongitude()
+                ) )
                 .sorted(comp).collect(Collectors.toList());
     }
 

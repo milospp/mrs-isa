@@ -1195,4 +1195,5 @@ public class MailService {
         sendMail(recipient, subject, content);
         return;
     }
+
 }

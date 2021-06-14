@@ -31,6 +31,10 @@ public class Address {
     @Column
     private String state;
 
+    @Column
+    private double longitude;
+    @Column
+    private double latitude;
 
     public Address(String street, String number, String city, String state) {
         this.street = street;
@@ -39,4 +43,12 @@ public class Address {
         this.state = state;
     }
 
+    public Address(String street, String number, String city, String state, double longitude, double latitude) {
+        this.street = street;
+        this.number = number;
+        this.city = city;
+        this.state = state;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
 }

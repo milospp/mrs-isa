@@ -48,7 +48,7 @@
               <div class="form-group col-md-2">
                 <label for="inputEmail4">Udaljenost</label>
                 <div class="input-group">
-                  <input :disabled="searchParams.location == undefined" type="number" class="form-control" id="inputDistance" v-model="searchParams.distance">
+                  <input :disabled="searchParams.location == undefined" step="0.1" min="0" type="number" class="form-control" id="inputDistance" v-model="searchParams.distance">
                 
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="inputMaxRating">km</span>
@@ -181,8 +181,8 @@ export default {
 
         showPosition(position) {
           let location = {};
-          location.lat = position.coords.latitude;
-          location.lon = position.coords.longitude;
+          location.latitude = position.coords.latitude;
+          location.longitude = position.coords.longitude;
           this.searchParams.location = location;
         },
 
