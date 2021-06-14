@@ -74,7 +74,7 @@
       <div class="col-md-6 text-left">
         <p>Points: {{patient.points}}</p>
         <p>Active Penalties: {{penalties}}</p>
-        
+        <p>Category: {{this.setCategoryName(category)}} ({{category.discount}}% loyalty discount)</p>
       </div>
       
       <div class="col-md-2">
@@ -90,6 +90,7 @@
 
 <script>
     import PatientDataService from '@/service/PatientDataService.js';
+    import LoyaltyDataService from '@/service/LoyaltyDataService.js';
     import UtilService from '@/service/UtilService.js';
     import AuthService from '@/service/AuthService.js';
     import $ from 'jquery';
@@ -106,6 +107,7 @@ export default {
       patient: null,
       patientEdit: null,
       penalties: 0,
+      category: {name: "", requiredPoints: 0, discount: 0},
 		}
 	},
     methods: {
@@ -143,24 +145,29 @@ export default {
 
         updatePatient() {
           PatientDataService.updatePatientInfo(this.patientEdit)
-                .then(response => {
-                    $('#editModal').modal('hide');
-                    this.patient = response.data;
-                });
-        }
+          .then(response => {
+              $('#editModal').modal('hide');
+              this.patient = response.data;
+          });
+        },
 
+        setCategoryName(category){
+          if(category.name) return category.name;
+          else return "None";
+        },
 
     },
     mounted() {
         this.loadPatientData();
         this.getPatientPenalties();
-
         this.editModalMethod();
 
     },
 	created() {
-
 		  this.id = this.userId; 
+      LoyaltyDataService.getCategoryOfUser(this.id).then(response => {
+        this.category = response.data;
+      });
 
 	},
 }

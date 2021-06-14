@@ -5,7 +5,7 @@
         <h1 class="gray" v-if="appointment.type == 'EXAMINATION'">Examination</h1>
         <h1 class="gray" v-else-if="appointment.type == 'COUNSELING'">Counseling</h1>
         <h3 class="gray">Patient: {{appointment.examination.patient.name}} {{appointment.examination.patient.surname}}</h3>
-        <!-- <h3 class="gray">Dermatologist: {{appointment.doctor.name}} {{appointment.doctor.surname}}</h3> -->
+        <!-- <h4 class="gray">Dermatologist: {{appointment.doctor.name}} {{appointment.doctor.surname}}</h4> -->
         <p class="gray">Appointment: {{UtilService.formatDateTime(appointment.startTime)}}</p>
         <p class="gray">Duration: {{appointment.durationInMins}} min</p>
         <p class="gray">Pharmacy: {{appointment.pharmacy.name}}</p>
@@ -26,7 +26,7 @@
                 <label for="diagnose">Diagnose</label>
                 <input :disabled="!patientAppeared" v-model="appointment.examination.diagnose" class="form-control" placeholder="Diagnose" id="diagnose">
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <button @click="bookNewAppointmentModal()" :disabled="!patientAppeared" class="btn btn-secondary">Book New Custom 
                     <span v-if="appointment.type == 'EXAMINATION'">
                         Examination
@@ -35,6 +35,63 @@
                         Counseling
                     </span>
                 </button>
+            </div> -->
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <a class="btn btn-outline-secondary" @click="setAttr" data-toggle="collapse" href="#newAppCollapse" role="button" aria-expanded="false" aria-controls="newAppCollapse">
+                        Book Next Appointment
+                    </a>
+                </div>
+	        </div>
+            <div class="searchForm collapse bg-light row p-4" id="newAppCollapse">
+                <div class="col pr-0"><!--d-flex justify-content-center
+                :date="selectedDate"-->
+                <Calendar 
+                    :min-date='new Date()'
+                    v-model="date"
+                    :attributes="attributes"
+                    ref="calendar"
+                    @dayclick='dayClicked'
+                >
+                </Calendar>
+                </div>
+                <div class="col-6">
+                    <!--  d-flex justify-content-center <p>Here will be table with appointments</p> -->
+                    <table v-if="appointmentsOnDay.length > 0" class="table table-stirped" style="text-align: left; table-layout: fixed;">
+                        <thead>
+                            <th>Start time</th>
+                            <th>Duration</th>
+                            <th>Price</th>
+                            <th>Book</th>
+                        </thead>
+                        <tbody>
+                            <tr :key="app" v-for="app in appointmentsOnDay">
+                                <td>{{app.customData.data.startTime}}</td>
+                                <td>{{app.customData.data.durationInMins}} min</td>
+                                <td>${{app.customData.data.price}}</td>
+                                <td>
+                                    <button class="btn btn-primary" @click="bookExistingAppointment(app)">Book</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="customTimeAppointment" class="form-group col-3">
+                        <div class="form-group">
+                            <label for="datetime">Date and time</label>
+                            <input id="datetime" class="form-control" v-model="newAppointment.dateTime" type="datetime-local">
+                        </div>
+                        <div class="form-group">
+                            <label for="duration">Duration (minutes)</label>
+                            <input id="duration" class="form-control" v-model="newAppointment.durationInMins" type="number" min="5" step="5">
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Price: <strong>${{ predictedPrice.toFixed(2) }}</strong></label>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary" @click="bookAtCustomTime()">Book</button>
+                        </div>
+                    </div>
             </div>
         <div class="form-group">
             <label for="selectMed">Therapy</label>
@@ -49,7 +106,7 @@
                 </div>
 
                 <div id="therapyDiv">
-                    <table class="table table-striped box-shadow">
+                    <table class="table table-striped box-shadow" style="overflow-y: auto;">
                         <thead>
                             <th>Medicine</th>
                             <th>Days</th>
@@ -60,7 +117,7 @@
                             <tr :key="r.id" v-for="r in reservations">
                                 <td>{{r.medicineInPharmacy.medicine.name}}</td>
                                 <td>{{r.days}}</td>
-                                <td>{{r.lastDate}}</td>
+                                <td>{{r.lastDate[2]}}/{{r.lastDate[1]}}/{{r.lastDate[0]}}</td>
                                 <td>
                                     <button class="btn btn-danger" @click="removeTherapy(r.id)">
                                         Remove
@@ -182,39 +239,6 @@
         </div>
     </div>
 
-    <!-- MODAL for booking new appointment -->
-    <div class="modal" tabindex="-1" role="dialog" id="newAppointmentModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Book Custom Appointment</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="customTimeAppointment" class="form-group">
-                        <div class="form-group">
-                            <label for="datetime">Date and time</label>
-                            <input id="datetime" class="form-control" v-model="newAppointment.dateTime" type="datetime-local">
-                        </div>
-                        <div class="form-group">
-                            <label for="duration">Duration (minutes)</label>
-                            <input id="duration" class="form-control" v-model="newAppointment.durationInMins" type="number" min="5" step="5">
-                        </div>
-                        <div class="form-group">
-                            <label for="price">Price</label>
-                            <input id="price" class="form-control" v-model="newAppointment.price" type="number" min="0">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" @click="bookAtCustomTime()">Book</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 </template>
 
@@ -252,6 +276,10 @@ export default {
     data() {
         return {
             message: null,
+            date: new Date(),
+            freeAppointments: [],
+            appointments: [],
+            bookedAppointments: [],
             appointment: {
                 id: null,
                 examination: {
@@ -266,7 +294,7 @@ export default {
                 },
                 startTime: '',
                 pharmacy: { name: '' },
-                durationInMins: 0,
+                durationInMins: 5,
                 doctor: {
                         name: '',
                         surname: '',
@@ -275,9 +303,9 @@ export default {
             },
             patientAppeared: null,
             newAppointment: {
-                "dateTime": null,
-                "price": 0,
-                "durationInMins": 0
+                dateTime : null,
+                price : 0,
+                durationInMins : 5
             },
             medicines: [],
             therapyMed: null,
@@ -287,6 +315,7 @@ export default {
             status: '',
 
             currentReplacements: null,
+            selectedDay: new Date(),
         };
     },
     methods: {
@@ -295,7 +324,6 @@ export default {
             .then(response => {
                     this.appointment = response.data;
                     this.status = this.appointment.examination.status;
-                    console.log(response.data);
                     MedicineDataService.getAllMedicineForPharmacy(this.appointment.pharmacy.id)
                     .then(response =>
                             {
@@ -318,14 +346,25 @@ export default {
             for (let r in this.reservations){
                 this.appointment.examination.therapy.push({medInPharma: this.reservations[r].medicineInPharmacy, days: this.reservations[r].days+''});
             }
-            console.table(this.appointment.examination.therapy);
-
-
             AppointmentDataService.postAppointmentInfo(this.appointment)
             .then(response => {
                     if (response.data){
-                        alert("Info saved.");
+                        this.$toast.show(
+                            "Info about appointment saved.",
+                            {
+                                position: "top", type: "success",
+                            }
+                        );
                         this.status = this.appointment.examination.status;
+                        this.$router.push('/patients');
+                    }
+                    else {
+                        this.$toast.show(
+                            "There was an error while saving info.",
+                            {
+                                position: "top", type: "error",
+                            }
+                        );
                     }
                 });
         },
@@ -354,20 +393,30 @@ export default {
         addTherapy() {
             if (this.therapyMed && this.therapyDays && this.reservationDate){
                 let unique = true;
-                console.log('polja nisu prazna');
-                console.log(this.reservations);
                 for (let t in this.reservations){
-                    console.log('gledam neki lek u terapiji' + t);
-                    console.log(JSON.stringify(this.reservations[t].medicineInPharmacy.id));
                     if (this.reservations[t].medicineInPharmacy.id === this.therapyMed.id){
                         unique = false;
-                        console.log('vec je rezervisan taj lek');
-                        console.log(unique);
                         break;
                     }
                 }
-                if (!unique){ alert('Medicine is already prescribed'); return; }
-                if (UtilService.isPastDate(this.reservationDate)) { alert('Date is invalid'); return; }
+                if (!unique) {
+                    this.$toast.show(
+                            "Medicine is already prescribed.",
+                            {
+                                position: "top", type: "error",
+                            }
+                        );
+                    return;
+                }
+                if (UtilService.isPastDate(this.reservationDate)) {
+                    this.$toast.show(
+                            "Date must be in future.",
+                            {
+                                position: "top", type: "error",
+                            }
+                        );
+                    return;
+                }
 
                 let reserve_form = {
                     medicineId: this.therapyMed.medicine.id,
@@ -379,37 +428,37 @@ export default {
                 MedicineDataService.reserveMedicine(reserve_form, AuthService.getCurrentUser().id)
                     .then(response => {
                         if (response.data){
-                            alert('Medicine successfuly reserved');
+                            this.$toast.show(
+                                "Medicine successfuly reserved.",
+                                {
+                                    position: "top", type: "success",
+                                }
+                            );
                             console.log(response.data.id);
                             this.reservations[response.data.id] = response.data;
                             this.reservations[response.data.id].days = this.therapyDays;
-                            console.log("rezervacije!!!\n"+JSON.stringify(this.reservations));
-
-                            this.therapyMed = null; this.therapyDays = null; this.reservationDate = null;
+                            
+                            this.therapyMed = null; this.therapyDays = null; //this.reservationDate = null;
                         }
                     })
                     .catch(error => {
-                        alert('Reservation unsuccessful');
+                        this.$toast.show(
+                            "Reservation unsuccessful. Patient may be alergic to this medicine or there are not enough in pharmacy.",
+                            {
+                                position: "top", type: "error",
+                            }
+                        );
                         this.getReplacementMedicine(this.therapyMed);
                     });
                 
                 
-            }
-            
+            }           
         },
         removeTherapy(reservationIndex){
-            console.log("rezervacija koja je selektovana!!!\n"+JSON.stringify(this.reservations[reservationIndex]));
-            console.log(reservationIndex + " = " + this.reservations[reservationIndex].id);
             PatientDataService.cancelReservation(reservationIndex)
                 .then(response => {
                     if (response){
-                        
-                        console.log(JSON.stringify(this.appointment.examination.therapy));
-
                         delete this.reservations[reservationIndex];
-                        console.log('nakon brisanja');
-                        console.log(JSON.stringify(this.reservations));
-                        
                     }
                 });
         },
@@ -417,21 +466,114 @@ export default {
             $('#newAppointmentModal').modal();
         },
         bookAtCustomTime(){
-            console.log(this.newAppointment.dateTime, this.appointment.doctor.id, this.appointment.examination.patient.id, this.appointment.pharmacy.id, this.newAppointment.price, this.newAppointment.durationInMins);
+            this.newAppointment.price = this.predictedPrice;
             AppointmentDataService.bookCustomAppointment(this.newAppointment.dateTime, this.appointment.doctor.id, this.appointment.examination.patient.id, this.appointment.pharmacy.id, this.newAppointment.price, this.newAppointment.durationInMins)
             .then(response => {
                 if (response.data){
-                    alert('Successfuly booked appoinment at ' + this.newAppointment.dateTime);
+                    //alert(' at ' + this.newAppointment.dateTime);
+                    this.$toast.show(
+                            "Successfuly booked appoinment.",
+                            {
+                                position: "top", type: "success",
+                            }
+                        );
+                    this.bookedAppointments.push(this.newAppointment);
                 }
                 else {
-                    alert('Time is not valid');
+                    this.$toast.show(
+                            "Time is not valid",
+                            {
+                                position: "top", type: "error",
+                            }
+                        );
                 }
             });
+        },
+        bookExistingAppointment(app){
+            AppointmentDataService.bookAppointment(app.key, this.appointment.examination.patient.id)
+                .then(response => {
+                    if (response.data){
+                        this.$toast.show(
+                            "Successfuly booked appoinment.",
+                            {
+                                position: "top", type: "success",
+                            }
+                        );
+                        this.setAttr();
+                        this.bookedAppointments.push(this.appointment);
+                    }
+                });
+        },
+        dayClicked(day) {
+            this.selectedDay = new Date(day.date);
+            console.log('selected day:',this.selectedDay);
+        },
+        setAttributes(pharmacyId) {
+        AppointmentDataService.getDermAppFromPharmacyFree(this.doctor.id, pharmacyId)
+        .then(response => {
+            this.appointments = response.data;
+        });
+      },
+      setAttributesForPharmacist() {
+        AppointmentDataService.getPharmAppForCalendarFree(this.doctor.id)
+          .then(response => {
+            this.appointments = response.data;
+          });
+      },
+      setAttr(){
+        if (this.doctor.role === "PHARMACIST") {
+            this.setAttributesForPharmacist();
+        } else if (this.doctor.role === "DERMATOLOGIST") {
+            if (this.appointment.pharmacy.id)
+                this.setAttributes(this.appointment.pharmacy.id);
         }
+      }
+    },
+    computed: {
+        attributes() {
+            return this.appointments.map(t => ({
+                key: t.id,
+                dates: Date.parse(t.startDate),
+                customData: {
+                    data: t,
+                },
+                highlight: 'gray',
+                popover: {
+                    label: t.startTime + ' ' + t.durationInMins + ' min',
+                    visibility: 'hover',
+                },
+                }));
+        },
+        predictedPrice() {
+            if (this.appointment.pharmacy)
+                return this.appointment.pharmacy.pricePerHour * this.newAppointment.durationInMins/60;
+            else
+                return 0;
+        },
+        appointmentsOnDay() {
+            let apps = [];
+            var a = this.attributes;
+            var now = new Date();
+            now.setHours(0,0,0,0);
+            for (let attr of a){
+                let date = new Date(attr.dates);
+
+                if (date.toDateString() === this.selectedDay.toDateString() && date >= now)
+                    apps.push(attr);
+            }
+            console.log(apps);
+            return apps;
+        },
+        doctor() {
+            return AuthService.getCurrentUser();
+        },
     },
     created() {
         this.appId = this.$route.params.id;
         this.getAppointmentData();
+        
     },
+    mounted() {
+    }
 }
 </script>

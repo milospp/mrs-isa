@@ -174,7 +174,8 @@ public abstract class UserServiceBase implements UserService {
         if (authentication instanceof AnonymousAuthenticationToken)
             return null;
 
-        User user = (User) authentication.getPrincipal();
+//        User user = (User) authentication.getPrincipal();
+        User user = getByEmail(authentication.getName());
         return user;
     }
 

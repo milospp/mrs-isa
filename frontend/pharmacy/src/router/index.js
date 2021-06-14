@@ -14,8 +14,8 @@ import ChangingOrder from '@/views/ChangingOrder.vue'
 import HireDermatologist from '@/views/HireDermatologist.vue'
 import AddNewPricelist from '@/views/AddNewPricelist.vue'
 import Vacations from '@/views/Vacations.vue'
-import AddPharmacy from '@/views/AddPharmacy.vue'
-import AddPharmacyAdmin from '@/views/AddPharmacyAdmin.vue'
+// import AddPharmacy from '@/views/AddPharmacy.vue'
+// import AddPharmacyAdmin from '@/views/AddPharmacyAdmin.vue'
 import PharmacistHomePage from '@/views/PharmacistHomePage.vue'
 import DispenseMedication from '@/views/DispenseMedication.vue'
 import VacationRequest from '@/views/VacationRequest.vue'
@@ -26,13 +26,13 @@ import PharmacistProfile from '@/views/PharmacistProfile.vue'
 import DermatologistProfile from '@/views/DermatologistProfile.vue'
 import DermatologistHomePage from '@/views/DermatologistHomePage.vue'
 import DermAppointments from '../views/DermAppointments.vue'
-import AddSupplier from '@/views/AddSupplier.vue'
-import AddDermatologist from '@/views/AddDermatologist.vue'
-import AddMedicine from '@/views/AddMedicine.vue'
+// import AddSupplier from '@/views/AddSupplier.vue'
+// import AddDermatologist from '@/views/AddDermatologist.vue'
+// import AddMedicine from '@/views/AddMedicine.vue'
 import Login from '@/views/Login.vue'
 import LogoutView from '@/views/LogoutView.vue'
 import Appointment from '@/views/Appointment.vue'
-import AddSysAdmin from '@/views/AddSysAdmin.vue'
+// import AddSysAdmin from '@/views/AddSysAdmin.vue'
 import SupplierProfile from '@/views/SupplierProfile.vue'
 import CounselingPage from '@/views/CounselingPage.vue'
 import MedicineSearchPage from '@/views/MedicineSearchPage.vue'
@@ -44,6 +44,8 @@ import ComplaintPage from '@/views/ComplaintPage.vue'
 import ComplaintResponsePage from '@/views/ComplaintResponsePage.vue'
 import PatientsComplaints from '@/views/PatientsComplaints.vue'
 import AdminResponses from '@/views/AdminResponses.vue'
+import SysAdminAdd from '@/views/SysAdminAdd.vue'
+import LoyaltyProgramView from '@/views/LoyaltyProgramView.vue'
 
 
 const routes = [
@@ -129,16 +131,16 @@ const routes = [
     name: 'AllDoctors',
     component: AllDoctors    // view je komponenta
   },
-  {
-    path: '/addPharmacy',
-    name: 'AddPharmacy',
-    component: AddPharmacy
-  },
-  {
-    path: '/addPharmacyAdmin',
-    name: 'AddPharmacyAdmin',
-    component: AddPharmacyAdmin
-  },
+  // {
+  //   path: '/addPharmacy',
+  //   name: 'AddPharmacy',
+  //   component: AddPharmacy
+  // },
+  // {
+  //   path: '/addPharmacyAdmin',
+  //   name: 'AddPharmacyAdmin',
+  //   component: AddPharmacyAdmin
+  // },
   {
     path: '/pharmacist',
     name: 'PharmacistHomePage',
@@ -190,16 +192,16 @@ const routes = [
     name: 'DermAppointments',
     component: DermAppointments
   },
-  {
-    path: '/addSupplier',
-    name: 'AddSupplier',
-    component: AddSupplier
-  },
-  {
-    path: '/addDermatologist',
-    name: 'AddDermatologist',
-    component: AddDermatologist
-  },
+  // {
+  //   path: '/addSupplier',
+  //   name: 'AddSupplier',
+  //   component: AddSupplier
+  // },
+  // {
+  //   path: '/addDermatologist',
+  //   name: 'AddDermatologist',
+  //   component: AddDermatologist
+  // },
   {
     path: '/login',
     name: 'Login',
@@ -210,16 +212,16 @@ const routes = [
     name: 'Logout',
     component: LogoutView
   },
-  {
-    path: '/addMedicine',
-    name: 'AddMedicine',
-    component: AddMedicine
-  },
-  {
-    path: '/addSysAdmin',
-    name: 'AddSysAdmin',
-    component: AddSysAdmin
-  },
+  // {
+  //   path: '/addMedicine',
+  //   name: 'AddMedicine',
+  //   component: AddMedicine
+  // },
+  // {
+  //   path: '/addSysAdmin',
+  //   name: 'AddSysAdmin',
+  //   component: AddSysAdmin
+  // },
   {
     path: '/supplier/profile',
     name: 'SupplierProfile',
@@ -279,6 +281,16 @@ const routes = [
     path: '/adminResponses',
     name: "AdminResponses",
     component: AdminResponses
+  },
+  {
+    path: '/add',
+    name: 'SysAdminAdd',
+    component: SysAdminAdd
+  },
+  {
+    path: '/loyaltyProgram',
+    name: 'LoyaltyProgramView',
+    component: LoyaltyProgramView
   }
 
   // {

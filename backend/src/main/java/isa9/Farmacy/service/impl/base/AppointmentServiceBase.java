@@ -323,7 +323,10 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     public List<Appointment> getDermForPharmacyAppointmentsNotCanceled(Long dermId, Long pharamcyId) {
         Doctor d = userService.getDoctorById(dermId);
         List<Appointment> allAppointments;
-        allAppointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && isInPharmacy(x, pharamcyId) && !isCanceled(x)).sorted(Comparator.comparing(Appointment::getStartTime)).collect(Collectors.toList());
+        allAppointments = findAll().stream()
+                .filter(x -> isAssignedToDoctor(x, d) && isInPharmacy(x, pharamcyId) && !isCanceled(x))
+                .sorted(Comparator.comparing(Appointment::getStartTime))
+                .collect(Collectors.toList());
         return allAppointments;
     }
 
@@ -331,7 +334,32 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     public List<Appointment> getDoctorAppointmentsNotCanceled(Long doctorId) {
         Doctor d = userService.getDoctorById(doctorId);
         List<Appointment> allAppointments;
-        allAppointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && !isCanceled(x)).sorted(Comparator.comparing(Appointment::getStartTime)).collect(Collectors.toList());
+        allAppointments = findAll().stream()
+                .filter(x -> isAssignedToDoctor(x, d) && !isCanceled(x))
+                .sorted(Comparator.comparing(Appointment::getStartTime))
+                .collect(Collectors.toList());
+        return allAppointments;
+    }
+
+    @Override
+    public List<Appointment> getDermForPharmacyAppointmentsFree(Long dermId, Long pharamcyId) {
+        Doctor d = userService.getDoctorById(dermId);
+        List<Appointment> allAppointments;
+        allAppointments = findAll().stream()
+                .filter(x -> isAssignedToDoctor(x, d) && isInPharmacy(x, pharamcyId) && x.getExamination() == null)
+                .sorted(Comparator.comparing(Appointment::getStartTime))
+                .collect(Collectors.toList());
+        return allAppointments;
+    }
+
+    @Override
+    public List<Appointment> getDoctorAppointmentsFree(Long doctorId) {
+        Doctor d = userService.getDoctorById(doctorId);
+        List<Appointment> allAppointments;
+        allAppointments = findAll().stream()
+                .filter(x -> isAssignedToDoctor(x, d) && x.getExamination() == null)
+                .sorted(Comparator.comparing(Appointment::getStartTime))
+                .collect(Collectors.toList());
         return allAppointments;
     }
 
@@ -339,7 +367,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     public List<Appointment> getPatientDoctorNotCanceledAppointments(Long patientId, Long doctorId) {
         Doctor d = userService.getDoctorById(doctorId);
         Patient p = userService.getPatientById(patientId);
-        List<Appointment> appointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && isAssignedToPatient(x, p) && !isCanceled(x)).collect(Collectors.toList());
+        List<Appointment> appointments = findAll().stream().filter(x -> isAssignedToDoctor(x, d) && isAssignedToPatient(x, p) && !isCanceled(x)).sorted(Comparator.comparing(Appointment::getStartTime)).collect(Collectors.toList());
         return appointments;
     }
 
@@ -368,5 +396,18 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         }
         return false;
 
+    }
+
+    @Override
+    //@Transactional
+    public Boolean isDoctorOccupied(LocalDateTime start, LocalDateTime end, Long doctorId) {
+        List<Appointment> appointments = getAllAppointmentsInInterval(start, end);
+        for (Appointment appointment : appointments){
+            if (appointment.getExamination() == null) continue;
+            if (appointment.getDoctor().getId().equals(doctorId)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

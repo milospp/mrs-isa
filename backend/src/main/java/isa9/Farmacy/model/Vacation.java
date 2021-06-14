@@ -23,7 +23,6 @@ public class Vacation {
 
     @ManyToOne
     @JoinColumn(name = "doctor_id")
-    @EqualsAndHashCode.Include
     private Doctor doctor;
 
     @ManyToOne

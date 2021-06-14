@@ -10,13 +10,6 @@ class SysAdminDataService {
             method: 'post',
             url: `${API_URL}/register/systemAdmin`,
             data: newSysAdmin
-        }).then(response => {
-            if (response.data) {
-				alert("System administrator has been successfully added!");
-				return true;
-			}
-			alert("This e-mail is already taken!");
-			return false;
         });
     }
 }

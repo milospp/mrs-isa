@@ -56,9 +56,9 @@
                                 <button class="btn btn-secondary" v-on:click="showModal(p)">Examination history</button>
                             </td>
                             <td> <!-- UtilService.isTimeForAppointment(p.lastDate.startTime, p.lastDate.durationInMins) && -->
-                                <button v-if="p.status == 'PENDING'" class="btn btn-primary" v-on:click="startAppointment(p.aid)">Start 
-                                  <span >Examination</span>
-                                <!-- <span v-else>Counseling</span> v-if="this.role == 'DERMATOLOGIST'"-->
+                                <button v-if="UtilService.isTimeForAppointment(p.last) && p.status == 'PENDING'" class="btn btn-primary" v-on:click="startAppointment(p.aid)">Start 
+                                  <span v-if="role == 'DERMATOLOGIST'">Examination</span>
+                                  <span v-else>Counseling</span>
                                 </button>
                             </td>
                         </tr>
@@ -254,7 +254,7 @@ export default {
               pageSize: 2,
               sortBy: 'id',
               searchParams: {
-                doctorId: 11,
+                doctorId: 0,
                 name: "",
                 surname: ""
               },
@@ -276,21 +276,21 @@ export default {
     },
     methods: {
         refreshPatients() {
-          this.refreshData.doctorId = AuthService.getCurrentUser().id;
+          this.refreshData.searchParams.doctorId = AuthService.getCurrentUser().id;
           console.log("page size: ", this.refreshData.pageSize);
           if (!this.refreshData.pageNo) this.refreshData.pageNo = 1;
 
           console.log(this.sortParams.sortBy);
         
           console.log(this.refreshData.pageNo);
-            PatientDataService.retrieveAllPatients(this.refreshData) // HARDCODED
-                .then(response => {
-                    this.patients = response.data.patients;
-                    //this.lastAppointments = response.data.lastAppointmentsByDoctor;
-                    this.totalPatients = response.data.count;
-                    //this.addDatesToPatients();
-                    console.log(response.data);
-                });
+          PatientDataService.retrieveAllPatients(this.refreshData) // HARDCODED
+              .then(response => {
+                  this.patients = response.data.patients;
+                  //this.lastAppointments = response.data.lastAppointmentsByDoctor;
+                  this.totalPatients = response.data.count;
+                  //this.addDatesToPatients();
+                  console.log(response.data);
+              });
         },
         addDatesToPatients(){
           for (let i = 0; i < this.patients.length; i++){
@@ -366,15 +366,14 @@ export default {
 
       mounted() {
           this.refreshData.searchParams.doctorId = AuthService.getCurrentUser().id;
-          this.refreshData.doctorId = AuthService.getCurrentUser().id;
           this.role = AuthService.getCurrentUser().role;
           this.refreshPatients();
 
       },
 
       created() {
-        this.refreshData.doctorId = AuthService.getCurrentUser().id;
-        console.log(this.refreshData.doctorId);
+        this.refreshData.searchParams.doctorId = AuthService.getCurrentUser().id;
+        console.log(this.refreshData.searchParams.doctorId);
         this.role = AuthService.getCurrentUser().role;
         this.refreshPatients();
 
@@ -397,64 +396,4 @@ export default {
     select{
       height: 38px;
     }
-    /*th {
-        position: sticky;
-        top: 0;
-        color:  #007bff;
-        text-decoration: none;
-    }*/
-    /* table.dataTable thead .sorting:after,
-table.dataTable thead .sorting:before,
-table.dataTable thead .sorting_asc:after,
-table.dataTable thead .sorting_asc:before,
-table.dataTable thead .sorting_asc_disabled:after,
-table.dataTable thead .sorting_asc_disabled:before,
-table.dataTable thead .sorting_desc:after,
-table.dataTable thead .sorting_desc:before,
-table.dataTable thead .sorting_desc_disabled:after,
-table.dataTable thead .sorting_desc_disabled:before {
-bottom: .5em;
-} */
-/* .table-sortable > thead > tr > th {
-    cursor: pointer;
-    position: relative;
-}
-
-.table-sortable > thead > tr > th:after,
-.table-sortable > thead > tr > th:after,
-.table-sortable > thead > tr > th:after {
-    content: ' ';
-    position: absolute;
-    height: 0;
-    width: 0;
-    right: 10px;
-    top: 16px;
-}
-.table-sortable > thead > tr > th:after {
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5px solid #ccc;
-    border-bottom: 0px solid transparent;
-}
-
-.table-sortable > thead > tr > th:hover:after {
-    border-top: 5px solid #888;
-}
-
-.table-sortable > thead > tr > th.asc:after {
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 0px solid transparent;
-    border-bottom: 5px solid #333;
-}
-.table-sortable > thead > tr > th.asc:hover:after {
-    border-bottom: 5px solid #888;
-}
-
-.table-sortable > thead > tr > th.desc:after {    
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5px solid #333;
-    border-bottom: 5px solid transparent;
-} */
 </style>

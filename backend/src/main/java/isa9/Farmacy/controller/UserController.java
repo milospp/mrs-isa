@@ -930,6 +930,7 @@ public class UserController {
     }
 
     @PostMapping("edit/dermatologist")
+    @PreAuthorize("hasAuthority('DERMATOLOGIST')")
     public ResponseEntity<Boolean> editDermatologistData(@RequestBody DermatologistDTO dermatologistDTO){
         Doctor doctor = userService.getDoctorById(dermatologistDTO.getId());
         if (doctor.getRole().getName().equals("DERMATOLOGIST")){
@@ -956,7 +957,9 @@ public class UserController {
     }
 
     @PostMapping("edit/pharmacist")
+    @PreAuthorize("hasAuthority('PHARMACIST')")
     public ResponseEntity<Boolean> editPharmacistData(@RequestBody PharmacistDTO pharmacistDTO){
+        System.out.println(pharmacistDTO);
         Pharmacist pharmacist = (Pharmacist) userService.getDoctorById(pharmacistDTO.getId());
         pharmacist.setName(pharmacistDTO.getName());
         pharmacist.setSurname(pharmacistDTO.getSurname());

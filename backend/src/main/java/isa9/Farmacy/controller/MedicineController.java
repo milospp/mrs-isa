@@ -74,6 +74,7 @@ public class MedicineController {
 
         form.setMedicineId(medId);
         form.setPharmacyId(pharmacyId);
+
         MedReservation medReservation = medReservationService.reserveMedicine(form, doctorId);
 
         if (medReservation == null)
@@ -87,6 +88,7 @@ public class MedicineController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('PATIENT')")
     @PostMapping("{medId}/pharmacy/{pharmacyId}/reserve")
     public ResponseEntity<MedReservationDTO> reserveMedicineAsPatient(@PathVariable Long medId, @PathVariable Long pharmacyId,
                                                              @RequestBody MedReservationFormDTO form){
@@ -371,11 +373,10 @@ public class MedicineController {
     }
 
     @GetMapping("/resevation/{code}")
+    @PreAuthorize("hasAuthority('PHARMACIST')")
     public  ResponseEntity<MedReservationDTO> getReservationByCode(@PathVariable String code){
         System.out.println(code);
         MedReservation reservation = medReservationService.getByCode(code);
-
-        //medReservationService.checkForExpiredReservations();
 
         if (reservation != null && reservation.getStatus() == MedReservationStatus.PENDING){
             MedReservationDTO reservationDTO = medReservationToMedReservationDTO.convert(reservation);
@@ -385,14 +386,13 @@ public class MedicineController {
     }
 
     @GetMapping("/reservation/dispense/{code}")
+    @PreAuthorize("hasAuthority('PHARMACIST')")
     public  ResponseEntity<Boolean> dispenseReservationByCode(@PathVariable String code){
         System.out.println(code);
         MedReservation reservation = medReservationService.getByCode(code);
 
         if (reservation != null && reservation.getStatus() == MedReservationStatus.PENDING){
-            // TODO: Move everything into this method
             medReservationService.dispenseMedicine(reservation);
-
             return new ResponseEntity<>(true, HttpStatus.OK);
         }
         return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);

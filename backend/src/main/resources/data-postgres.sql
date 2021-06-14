@@ -125,10 +125,10 @@ insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (11, '11:
 insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 3);
 
 --med price
-insert into med_price(price, start_date, old_price, price_type) values (200, current_timestamp - INTERVAL '10 days', 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (100, current_timestamp - INTERVAL '10 days', 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (250, current_timestamp - INTERVAL '10 days', 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (150, current_timestamp - INTERVAL '10 days', 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (200, current_date - 10, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (250, current_date - 10, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (100, current_date - 10, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (150, current_date - 10, 0, 0);
 
 --med catalog in pharmacy
 insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (0, 1,1,1);
@@ -143,16 +143,24 @@ update med_price SET medicine_in_pharmacy_id = 3 WHERE id = 3;
 insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (12000, 4,4,1);
 update med_price SET medicine_in_pharmacy_id = 4 WHERE id = 4;
 
-set timezone = 'Europe/Belgrade';
 --appointments
 -- id 1
 --insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 200, current_timestamp + INTERVAL '3day', 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 300, '2021-06-01 08:00:00'::timestamp, 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 400, '2021-06-03 08:00:00'::timestamp + INTERVAL '1 hour', 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 500, '2021-06-04 08:00:00'::timestamp + INTERVAL '2 hours', 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 330, '2021-06-01 08:00:00'::timestamp + INTERVAL '3 hours', 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 340, '2021-06-17 08:00:00'::timestamp + INTERVAL '4 hours', 0);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-05-17 08:00:00'::timestamp + INTERVAL '5 hours', 0);
+--<<<<<<< TECHNICAL-US-150
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 300, CURRENT_DATE + 1 + TIME '08:00'  , 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 400, CURRENT_DATE + 2 + TIME '09:00', 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 500, CURRENT_DATE + 3 + TIME '10:00', 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 330, CURRENT_DATE + 4 + TIME '11:00', 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 340, CURRENT_DATE + 10 + TIME '12:00', 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, CURRENT_DATE + 20 + TIME '13:00', 0);
+--=======
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 300, '2021-06-01 08:00:00'::timestamp, 0);
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 400, '2021-06-03 08:00:00'::timestamp + INTERVAL '1 hour', 0);
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 500, '2021-06-04 08:00:00'::timestamp + INTERVAL '2 hours', 0);
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 330, '2021-06-01 08:00:00'::timestamp + INTERVAL '3 hours', 0);
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 340, '2021-06-17 08:00:00'::timestamp + INTERVAL '4 hours', 0);
+--insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-06-07 11:00:00'::timestamp, 0); -- free app
+
 insert into examination (status, appointment_id, patient_id) values (0, 1, 2);
 insert into examination (diagnose, examination_info, status, appointment_id, patient_id) values ('Migrena', 'Pacijent oseca glavobolju', 1, 2, 1);
 insert into examination (status, appointment_id, patient_id) values (0, 3, 3);
@@ -172,9 +180,9 @@ insert into patient_my_examinations (patient_id, my_examinations_id) values (2, 
 insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 5);
 
 --appointments for pharmacist
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (12, 30, null, 1, 300, '2021-06-01 08:00:00'::timestamp + INTERVAL '30 minutes', 1);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (12, 30, null, 1, 300, '2021-06-17 08:00:00'::timestamp + INTERVAL '1 hour 45 minutes', 1);
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (12, 30, null, 1, 300, '2021-05-17 08:00:00'::timestamp + INTERVAL '2 hours 5 minutes', 1);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (12, 30, null, 1, 300, CURRENT_DATE + 1 + TIME '08:30', 1);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (12, 30, null, 1, 300, CURRENT_DATE + 2 + TIME '09:45', 1);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (12, 30, null, 1, 300, CURRENT_DATE + 3 + TIME '10:05', 1);
 insert into examination (status, appointment_id, patient_id) values (0, 7, 2);
 insert into examination (status, appointment_id, patient_id) values (0, 8, 1);
 insert into examination (status, appointment_id, patient_id) values (2, 9, 3);
@@ -184,6 +192,12 @@ update appointment SET examination_id = 8 WHERE id = 9;
 insert into patient_my_examinations (patient_id, my_examinations_id) values (1, 7);
 insert into patient_my_examinations (patient_id, my_examinations_id) values (2, 6);
 insert into patient_my_examinations (patient_id, my_examinations_id) values (3, 8);
+
+
+-- more free appointments
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-06-07 11:30:00'::timestamp, 0); -- free app
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-06-07 09:00:00'::timestamp, 0); -- free app
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 350, '2021-06-09 10:00:00'::timestamp, 0); -- free app
 
 
 -- --Therapy
@@ -213,11 +227,11 @@ insert into doctor_working (doctor_id, working_id) values (12, 2);
 insert into doctor_working (doctor_id, working_id) values (11, 3);
 
 -- for filter dermatologist and pharmacist
-        -- farm
+-- farm
 insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (2, 'masaGavr@maildrop.cc', true, 'Masa', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '0124567893', 5, 'Gavrilovic', LOCALTIMESTAMP);
 insert into doctor (id) values (15);
 insert into pharmacist (id) values (15);
-        -- derm
+-- derm
 insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (2, 'ana@maildrop.cc', true, 'Ana', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '345826485', 4, 'Savin', LOCALTIMESTAMP);
 insert into doctor (id) values (16);
 insert into dermatologist (id) values (16);
@@ -225,7 +239,7 @@ insert into dermatologist (id) values (16);
 insert into users (address_id, email, enabled, name, password, phone_number, role_id, surname, last_password_reset_date) values (2, 'ana17@maildrop.cc', true, 'Anastasija', '$2a$10$sRzil3y.isAJrvrT4dK5wOsACB8Y5SGqo7.dmfQK55dSn8wtRcQha', '924601573', 4, 'Maric', LOCALTIMESTAMP);
 insert into doctor (id) values (17);
 insert into dermatologist (id) values (17);
-        -- works
+-- works
 insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (15, '07:07:00', 1, '12:12:00');
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 4);
 insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (16, '08:08:00', 1, '14:14:00');
@@ -234,7 +248,7 @@ insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (17, '08:
 insert into pharmacy_staff (pharmacy_id, staff_id) values (1, 6);
 insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (16, '20:00:00', 2, '23:00:00');
 insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 7);
-        -- doctor_working
+-- doctor_working
 insert into doctor_working (doctor_id, working_id) values (15, 4);
 insert into doctor_working (doctor_id, working_id) values (16, 5);
 insert into doctor_working (doctor_id, working_id) values (17, 6);
@@ -255,7 +269,7 @@ insert into medicine_quantity(quantity, medicine_id) values (20, 1);
 insert into medicine_quantity(quantity, medicine_id) values (30, 2);
 
 --Orders
-insert into medicine_order (end_date, start_date, author_id, chosen_offer_id, pharmacy_id) values (LOCALTIMESTAMP + interval '4' day, LOCALTIMESTAMP, 14, null, 1);
+insert into medicine_order (end_date, start_date, author_id, chosen_offer_id, pharmacy_id) values (current_date + 4 + current_time , current_date  + current_time, 14, null, 1);
 insert into medicine_order_all_medicines(medicine_order_id, all_medicines_id) values (1, 1);
 insert into medicine_order_all_medicines(medicine_order_id, all_medicines_id) values (1, 2);
 
@@ -291,9 +305,13 @@ insert into pharmacy_staff (pharmacy_id, staff_id) values (3, 8);
 
 -- Reservations
 insert into med_reservation (code, last_date, quantity, reservation_date, status, medicine_in_pharmacy_id, patient_id, who_dispenses_id)
-values ('fakecode1', current_timestamp - INTERVAL '1 days', 5, current_timestamp - INTERVAL '2 days', 0, 1, 1, null);
+values ('fakecode1', current_date - 1 + current_time, 5, current_date - 2 + current_time, 0, 1, 1, null);
 insert into med_reservation (code, last_date, quantity, reservation_date, status, medicine_in_pharmacy_id, patient_id, who_dispenses_id)
-values ('fakecode2', current_timestamp + INTERVAL '2 days', 5, current_timestamp - INTERVAL '2 days', 0, 1, 1, null);
+values ('fakecode2', current_date + 2 + current_time, 5, current_date - 2 + current_time, 0, 1, 1, null);
 
 -- insert into patient_reservations (patient_id, reservations_id) values (1,1);
 -- insert into patient_reservations (patient_id, reservations_id) values (1,2);
+
+-- vacations
+insert into vacation (doctor_id, end_date, pharmacy_id, admin_id, reason, start_date, status, type, why_not) values (11, '2021-06-26', 1, null, 'eto', '2021-06-22', 1, 0, null);
+insert into doctor_vacations (doctor_id, vacations_id) values (11, 1);

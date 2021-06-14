@@ -13,9 +13,7 @@ export default {
     },
     methods:{
         getLoggedIn(){
-            this.currentUser = AuthService.getCurrentUser();
-            
-            
+            this.currentUser = AuthService.getCurrentUser();            
             if(this.currentUser){
                 AuthService.getPasswordResetDate(this.currentUser.id).then(response => {
                     this.passwordResetDate = response;
