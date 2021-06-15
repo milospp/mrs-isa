@@ -17,7 +17,7 @@ matrix:
         sonarcloud:
           organization: isidora-stanic
           token: 
-            secure: "NFPjx6stTA/hMTmgYA6emk1pIKgEBpYmI8+r+QF1QvbKq0jblpw8X5BNsX6gkiHTIPBBj4DFpHE7OGtkggSRQGf6RjHIksbrIcmH1cbD1v9QFzkZTCxROQPB9f/q5qxU6ube05Rj5odHIjkbbT64veV4eBa8US0jksUNxOnrrgebqI4ChXJ9vGa30VK8LafLCY8d9PTp0/FRHY1CXWibTAep0OWoUUqH5Br11VqpGo+jGVLU9AlsLomVCm4HEEiZzFCOK0mlF/gFetUDfQAEoAlCw6s2NdsW5suWHWOtKYY96SPYzD/n0djwQoG1AH1rfz5/BE3g9RK1mPEV70vvFo+0n4s7UVrEsS4Cm7diSBt2Nq+bFwW258TksvvbWAXyaZSarggUYEVfsceeOh3Exo+AkcLvyeRL7iiD1lmMFZNUMQMuhcqehwbJinJJkirkcuJTQXI5wa5Kf6jRppLz3uKSY6oow1ueDPFX2diRum0CFfW93GEylMuw1+UAs0HYeKmeHcgQ15KiAgTI2ZBIs4YUaXj0/Wfq49tknnT+qto2TJBoyOvihV1/BY+PxOJWES9BiISlvNIOeaBu8wtJN8Pu4QCnmWbXn0T+RIT9yRc1y4vLAt1F8Rn6TEP5gN/hcVagUJ/+a/5PI2Mcb49d2Wy2HMWj2b+44r5bewdiG+c="
+            secure: "IviL0xxl/cixUovRPQ4WLMaVbRWGHILl1Onwpp+D0WVwctsqefxfv0MeEJ3qHHeUuwvN9xLjNMsCTOFRGGgcgwsM4pR2+BgplHNwpUt8caECEkyP+KKFEI+hj/mbaAY/frvwm3ZskZVLM9clEaG/ci/4n46+W9c9si3651nPfcuZBIFbSI37NMy850aTl3zacq5QyNtEoRO1ijYsynGAY6PRaSkou7xNR0/cqNvEXzQMCJjmHKVyEfNomwziuIKlZLuGqBvYNMr1Pf6sCmTqdMgPE9Vwfx0guz+Odb+uqkQZX7s2jXdD+4ng0uEpvdm+7+4erdRgajmdgdIMmj8B3eFmQe/4SrrDYKvNaJ7OHnX4ds+AAmUCv3uR0YPAsbBso7DSYYrIGMjEHdIiKiZ0KG3xrNnc2LcKzkwnBe/08zKmD/RaAtROVFE5skhCznaQyAMt7r8JoocbHf+Tnb7rKoSjzNPbp/YycMFaXeLmt1P/6RIux1V5NNQRmcNLx90T98u17SoAHxlRrWR0f5VIhHor5+16dwzJ45blLoVTyP8+to/Q6+0zDD+fNJH+nf++3aelWx/lCC4RvKjgMPsYXFv5U64OtO0FByWsqw1O2j0DBdXcYa9+GQEauwUf8/PirlD8L/U9q7G+evNh5KmH0J8oT+1zmDSDSkZAP1kJqcI="
 
       script:
         - ./mvnw clean install -DskipTests=false -B
