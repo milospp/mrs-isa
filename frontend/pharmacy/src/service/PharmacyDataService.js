@@ -36,13 +36,6 @@ class PharmacyDataService {
             method: 'post',
             url: `${API_URL}/register/pharmacy`,
             data: newPharmacy
-        }).then(response => {
-			if (response.data) {
-				alert("Pharmacy successfully added!");
-				return true;
-			}
-			alert("This pharmacy already exists!");
-			return false;
         });
     }
     getPharmacyByIDAdmin(idAdminaApoteke) {
@@ -120,6 +113,18 @@ class PharmacyDataService {
 
   getVisitedPharmacies(patientId){
     return axios.get(`${API_URL}/visitedPharmacies/`+patientId);
+  }
+
+  subscribeUnsubscribeToPharmacy(pharmacy, id){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/subscribeUnsubscribe/`+id ,
+      data: pharmacy
+    });
+  }
+
+  getSubscriptions(id){
+    return axios.get(`${API_URL}/subscriptions/`+id);
   }
 }
 

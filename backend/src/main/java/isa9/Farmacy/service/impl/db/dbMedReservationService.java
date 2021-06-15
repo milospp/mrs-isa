@@ -21,12 +21,10 @@ import java.util.List;
 public class dbMedReservationService extends MedReservationServiceBase implements MedReservationService {
 
     private final MedReservationRepository medReservationRepository;
-    private final UserService userService;
 
     @Autowired
-    public dbMedReservationService(MedReservationRepository medReservationRepository, UserService userService) {
+    public dbMedReservationService(MedReservationRepository medReservationRepository) {
         this.medReservationRepository = medReservationRepository;
-        this.userService = userService;
     }
 
     @Override
@@ -36,7 +34,7 @@ public class dbMedReservationService extends MedReservationServiceBase implement
 
     @Override
     public MedReservation findOne(Long id) {
-        return this.medReservationRepository.findById(id).orElseGet(null);
+        return this.medReservationRepository.findById(id).orElse(null);
     }
 
     @Override

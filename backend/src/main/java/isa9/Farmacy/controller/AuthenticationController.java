@@ -107,7 +107,6 @@ public class AuthenticationController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         User user = (User) authentication.getPrincipal();
-        System.out.println(user.getEmail());
         if (user == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 

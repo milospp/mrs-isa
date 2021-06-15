@@ -8,10 +8,9 @@ public class PharmacyConstants {
         Pharmacy pharmacy = new Pharmacy();
         pharmacy.setId(1L);
         pharmacy.setName("Name1");
-        pharmacy.setAddress(new Address("Street", "Number", "City", "State"));
+        pharmacy.setAddress(new Address("Street", "Number", "City", "State", 45.2421291534108, 19.84261570497869));
         pharmacy.setDescription("Desc");
         pharmacy.setPricePerHour(500);
-
         return pharmacy;
     }
 }

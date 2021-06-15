@@ -2,10 +2,8 @@ package isa9.Farmacy.service.impl.base;
 
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.PharmacySearchDTO;
-import isa9.Farmacy.service.MedicineService;
-import isa9.Farmacy.service.PharmacyService;
-import isa9.Farmacy.service.RatingService;
-import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.service.*;
+import isa9.Farmacy.utils.Geo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -13,13 +11,18 @@ import java.util.stream.Collectors;
 
 public abstract class PharmacyServiceBase implements PharmacyService {
     protected RatingService ratingService;
-
+    protected MedInPharmaService medInPharmaService;
 
     protected UserService userService;
 
     @Autowired
     public void setRatingService(RatingService ratingService) {
         this.ratingService = ratingService;
+    }
+
+    @Autowired
+    public void setMedInPharmaService(MedInPharmaService medInPharmaService) {
+        this.medInPharmaService = medInPharmaService;
     }
 
     @Autowired
@@ -38,6 +41,7 @@ public abstract class PharmacyServiceBase implements PharmacyService {
 
     @Override
     public int reduceQuantity(Pharmacy pharmacy, Medicine medicine, int resQuantity) {
+        // TODO: Prepraviti da se dobavlja iz repo
         MedicineInPharmacy mip = pharmacy.getMedicines().stream().filter(m -> m.getMedicine().equals(medicine)).findFirst().get();
         int quantity = mip.getInStock();
         if(quantity == 0) return 1;                 // nema ga na stanju
@@ -80,6 +84,9 @@ public abstract class PharmacyServiceBase implements PharmacyService {
                 .filter(p -> pharmacySearchDTO.getName().isEmpty() || p.getName().toLowerCase().contains(pharmacySearchDTO.getName().toLowerCase()))
                 .filter(p -> pharmacySearchDTO.getAddressString().isEmpty() || (p.getAddress().getCity() + p.getAddress().getState() + p.getAddress().getStreet()).toLowerCase().contains(pharmacySearchDTO.getAddressString()))
                 .filter(p -> p.getRating() >= pharmacySearchDTO.getMinRating() && p.getRating() <= pharmacySearchDTO.getMaxRating())
+                .filter(p -> pharmacySearchDTO.getDistance() == 0 || pharmacySearchDTO.getDistance() >= Geo.distanceInKmBetweenEarthCoordinates(
+                        pharmacySearchDTO.getLocation().getLatitude(), pharmacySearchDTO.getLocation().getLongitude(), p.getAddress().getLatitude(), p.getAddress().getLongitude()
+                ) )
                 .sorted(comp).collect(Collectors.toList());
     }
 
@@ -96,5 +103,46 @@ public abstract class PharmacyServiceBase implements PharmacyService {
         }
 
         return visitedPharmacies;
+    }
+
+    @Override
+    public boolean subscribeToPharmacy(Pharmacy pharmacy, Long patientId) {
+        if(pharmacy == null || this.userService.findOne(patientId) == null) return false;
+
+        Patient patient = (Patient) this.userService.findOne(patientId);
+        patient.getSubscriptions().add(pharmacy);
+        this.userService.save(patient);
+
+
+        return true;
+    }
+
+    @Override
+    public boolean unsubscribeToPharmacy(Pharmacy pharmacy, Long patientId) {
+        if(pharmacy == null || this.userService.findOne(patientId) == null) return false;
+
+        Patient patient = (Patient) this.userService.findOne(patientId);
+        for(Pharmacy p : patient.getSubscriptions()){
+            if(p.getId() == pharmacy.getId()){
+                patient.getSubscriptions().remove(p);
+                break;
+            }
+        }
+        this.userService.save(patient);
+
+
+        return true;
+    }
+
+    @Override
+    public boolean isPatientSubscribed(Pharmacy pharmacy, Long patientId) {
+        Patient patient = (Patient) this.userService.findOne(patientId);
+
+        for(Pharmacy p : patient.getSubscriptions()){
+            if(p.getId() == pharmacy.getId()) return true;
+        }
+
+
+        return false;
     }
 }

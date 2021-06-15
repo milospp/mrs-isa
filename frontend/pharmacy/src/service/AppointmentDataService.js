@@ -1,6 +1,6 @@
-import { variationPlacements } from "@popperjs/core";
 import axios from "axios";
 import config from "@/config";
+import { returnOrUpdate } from "ol/extent";
 
 const API_URL = config.apiUrl + "/appointments"
 // const API_URL = "api/appointments";
@@ -94,6 +94,14 @@ class AppointmentDataService {
     return axios.get(`${API_URL}/` + `calendar/pharm/`+pharmId);
   }
 
+  getDermAppFromPharmacyFree(dermId, pharmacyId) {
+    return axios.get(`${API_URL}/` + `calendar/free-derm/`+dermId+`/pharmacy/`+pharmacyId);
+  }
+
+  getPharmAppForCalendarFree(pharmId) {
+    return axios.get(`${API_URL}/` + `calendar/free-pharm/`+pharmId);
+  }
+
   makeAppointmentPAdmin(pocetak, trajanje, cena, dermatolog, idApoteke) {
     //2021-05-28T16:32  
     pocetak = pocetak.split('T');
@@ -177,19 +185,6 @@ class AppointmentDataService {
       console.log("error.config");
       console.log(error.config);
     });
-  }
-
-  canEditAppointment(idPregleda) {
-    return axios.get(API_URL + "/canEdit/" + idPregleda)
-    .catch(function (error) {
-      if (error.response) {
-        console.log(error.response.data);
-      } else if (error.request) {
-        console.log(error.request);
-      }
-      console.log("Error");
-      console.log(error.config);
-  });
   }
 
 }

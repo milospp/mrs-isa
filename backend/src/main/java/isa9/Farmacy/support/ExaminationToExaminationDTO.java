@@ -36,7 +36,8 @@ public class ExaminationToExaminationDTO implements Converter<Examination, Exami
         ExaminationDTO dto = new ExaminationDTO();
 
         dto.setId(examination.getId());
-        dto.setPatient(patientToPatientDTO.convert(examination.getPatient()));
+        if (examination.getPatient() != null) dto.setPatient(patientToPatientDTO.convert(examination.getPatient()));
+        else dto.setPatient(null);
         dto.setAppointment(examination.getAppointment().getId());
         dto.setStatus(examination.getStatus());
         dto.setExaminationInfo(examination.getExaminationInfo());

@@ -1,8 +1,6 @@
 package isa9.Farmacy.controller;
 
-import isa9.Farmacy.model.PharmacyAdmin;
-import isa9.Farmacy.model.Vacation;
-import isa9.Farmacy.model.VacationRequestStatus;
+import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.VacationDTO;
 import isa9.Farmacy.service.PharmacyService;
 import isa9.Farmacy.service.UserService;
@@ -48,14 +46,17 @@ public class VacationController {
                 .endDate(vacationDTO.getEndDate())
                 .doctor(userService.getDoctorById(vacationDTO.getDoctorId()))
                 .pharmacy(pharmacyService.findOne(vacationDTO.getPharmacyId()))
-                .pharmacyAdmin(null)
+                .admin(null)
                 .whyNot(null)
                 .reason(vacationDTO.getReason())
                 .status(VacationRequestStatus.WAITING)
                 .type(vacationDTO.getType())
                 .build();
         if (vacationService.testTime(vacation)) {
+            Doctor d = userService.getDoctorById(vacationDTO.getDoctorId());
+            d.getVacations().add(vacation);
             vacationService.save(vacation);
+            userService.save(d);
             return new ResponseEntity<>(true, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(false, HttpStatus.OK);
@@ -76,6 +77,13 @@ public class VacationController {
         return new ResponseEntity<>(vacationToVacationDTO.convert(result), HttpStatus.OK);
     }
 
+    @GetMapping("/pharm/{doctorId}")
+    @PreAuthorize("hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
+    public ResponseEntity<List<VacationDTO>> getAllVacationsForDoctor(@PathVariable Long doctorId) {
+        List<Vacation> vacationsDoc = vacationService.getAllForDoctor(doctorId);
+        return new ResponseEntity<>(vacationToVacationDTO.convert(vacationsDoc), HttpStatus.OK);
+    }
+
     @GetMapping("/{idAdmina}")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<List<VacationDTO>> getVacationForPharmacy(@PathVariable Long idAdmina) {
@@ -85,16 +93,25 @@ public class VacationController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
+    @GetMapping("/all/{idAdmina}")
+    @PreAuthorize("hasAuthority('SYS_ADMIN')")
+    public ResponseEntity<List<VacationDTO>> getAllVacation(@PathVariable Long idAdmina) {
+        SysAdmin admin = (SysAdmin) this.userService.findOne(idAdmina);
+        List<Vacation> sviZahtevi = vacationService.getWaitnigAll();
+        List<VacationDTO> povratna = vacationToVacationDTO.convert(sviZahtevi);
+        return new ResponseEntity<>(povratna, HttpStatus.OK);
+    }
+
     @PostMapping("/{idAdmina}")
-    @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
+    @PreAuthorize("hasAuthority('PHARMACY_ADMIN') or hasAuthority('SYS_ADMIN')")
     public void saveVacationAdmin(@PathVariable Long idAdmina, @RequestBody VacationDTO zahtev) {
-        PharmacyAdmin admin = (PharmacyAdmin) this.userService.findOne(idAdmina);
+        User admin = this.userService.findOne(idAdmina);
         Vacation originalZahtev = this.vacationService.findOne(zahtev.getId());
         if (zahtev.getStatus() == VacationRequestStatus.ACCEPTED)
             this.vacationService.cancelAppointments(originalZahtev, this.mailService);
         originalZahtev.setStatus(zahtev.getStatus());
         originalZahtev.setWhyNot(zahtev.getWhyNot());
-        originalZahtev.setPharmacyAdmin(admin);
+        originalZahtev.setAdmin(admin);
         this.vacationService.save(originalZahtev);
         this.mailService.sendVacationInfo(originalZahtev);
     }

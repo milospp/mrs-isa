@@ -68,12 +68,12 @@ class UtilService {
     return " ( " + rounded + " / 5 )";
   }
 
-  isTimeForAppointment(appointmentDate, durationInMins) {
+  isTimeForAppointment(appointmentDate) {
     appointmentDate = appointmentDate + '';
-    durationInMins = durationInMins + '';
+    //durationInMins = durationInMins + '';
     console.log(appointmentDate);
-      console.log(durationInMins);
-    if (moment() > moment(appointmentDate).subtract(5,'m') && moment() < moment(appointmentDate).add(durationInMins,'m')){
+    //console.log(durationInMins);
+    if (moment() > moment(appointmentDate).subtract(20,'m') && moment() < moment(appointmentDate).add('1','d')){//.add(durationInMins,'m')
       return true;}
     else return false;
   }

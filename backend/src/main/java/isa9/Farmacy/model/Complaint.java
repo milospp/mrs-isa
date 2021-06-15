@@ -21,6 +21,8 @@ public class Complaint {
 
     @ManyToOne
     private Patient author;
+    @ManyToOne
+    private SysAdmin respondent;
     @OneToOne
     private Pharmacy pharmacy;
     @OneToOne

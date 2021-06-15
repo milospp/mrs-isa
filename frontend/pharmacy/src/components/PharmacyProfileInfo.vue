@@ -13,7 +13,7 @@
       <div class="col-md-6 text-left" align="center"></div>
       
       <div class="col-md-2">
-      <button class="btn btn-block btn-primary">Subscribe</button>
+      <button class="btn btn-block btn-primary" v-on:click="subUnsub()">{{setSubBtnText()}}</button>
       <button v-bind:disabled="!pharmacy.canVote" type="button" class="btn btn-block btn-primary" v-on:click="ratingModal(pharmacy)" data-toggle="modal" data-target="#rating-modal">
           {{getMyVote(pharmacy)>0 ? "Change Rate": "Rate"}}
       </button>
@@ -53,7 +53,7 @@
                 <tbody>
                     <tr :key="l" v-for="l in this.lekovi">
                       <td>{{l.medicine.name}}</td>
-                      <td>{{l.medicine.structure}}</td>
+                      <td>{{l.medicine.specification.structure}}</td>
                       <td>{{l.medicine.manufacturer}}</td>
                       <td>{{l.medicine.note}}</td>
                       <td>{{l.medicine.points}}</td>
@@ -68,7 +68,8 @@
                       <td v-else-if="l.priceType=='ACTION'">{{l.currentPrice}} ({{100-l.currentPrice*100/l.oldPrice}}%)</td>
                       <td v-else>{{l.currentPrice}}</td>
 
-                      <td><form v-on:click.prevent="funkcija(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">Reserve</button></form></td>
+                      <td v-if="user.role=='PATIENT' && l.medicine.perscription == 'WITHOUT_RECEIPT'"><form v-on:click.prevent="funkcija(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#podaci">Reserve</button></form></td>
+                      <td v-else></td>
                   </tr>
                 </tbody>
               </table>
@@ -315,7 +316,8 @@ export default {
               pharmacy: null,
             },
             userId: 1,
-            poruka: "Wait... Your require is in processing", 
+            poruka: "Please wait... Your requirement is in processing", 
+            subscriptions: [],
 		}
 	},
   methods: {
@@ -515,11 +517,35 @@ export default {
             }
           });
         },
+        isPatientSubscribed(){
+          // for(let subscription of this.user.subscriptions){
+          //   if(subscription == this.pharmacy.id){
+          //     return true;
+          //   }
+          // }
+          for(let subscription of this.subscriptions){
+            if(subscription.id == this.pharmacy.id) return true;
+          }
+
+
+          return false;
+        },
+        subUnsub(){
+          PharmacyDataService.subscribeUnsubscribeToPharmacy(this.pharmacy, this.user.id).then(response => {
+            PharmacyDataService.getSubscriptions(this.user.id).then(response => {
+              this.subscriptions = response.data;
+            });
+          });
+        },
+        setSubBtnText(){
+          if(this.isPatientSubscribed()) return "Unsubscribe";
+          else return "Subscribe";
+        }
 
   },
   created() {
       this.id = this.$route.params.id;
-
+      this.user = AuthService.getCurrentUser();
 
       this.userId = AuthService.getLoggedIdOrLogout();
       if (this.userId == null) return;
@@ -527,7 +553,7 @@ export default {
       PharmacistDataService.getAllPharmacistPharmacy(this.id)
         .then(response => {
           this.sviZaposleniFarmaceuti = response.data;
-        });2
+        });
       DermatologistDataService.getAllDermatologistsPharmacy(this.id)
         .then(response => {
           this.sviZaposleniDermatolozi = response.data;});
@@ -535,6 +561,9 @@ export default {
         .then(response => {
             this.lekovi = response.data;
         });
+      PharmacyDataService.getSubscriptions(this.user.id).then(response => {
+        this.subscriptions = response.data;
+      });
   },
   mounted() {
     this.loadPharmacyData();

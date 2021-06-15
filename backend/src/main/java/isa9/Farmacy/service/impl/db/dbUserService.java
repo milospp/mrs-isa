@@ -29,6 +29,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpServerErrorException;
 
 import javax.persistence.EntityManager;
@@ -85,7 +86,7 @@ public class dbUserService extends UserServiceBase implements UserService, UserD
         List<User> allUsers = this.findAll();
 
         for(User u : allUsers){
-            if(u.getEmail().equals(em) && u.getId() != id) return false;
+            if(u.getEmail().equals(em) && !u.getId().equals( id )) return false;
         }
 
         return true;
@@ -117,7 +118,7 @@ public class dbUserService extends UserServiceBase implements UserService, UserD
             if(u.getRole().getName().equals("PHARMACY_ADMIN")){
                 phAdmin = (PharmacyAdmin) u;
                 try{
-                    if(phAdmin.getPharmacy().getId() == pharmacyId) return phAdmin;
+                    if(phAdmin.getPharmacy().getId().equals( pharmacyId )) return phAdmin;
                 }catch(NullPointerException e){
                     continue;
                 }
@@ -147,6 +148,11 @@ public class dbUserService extends UserServiceBase implements UserService, UserD
         } else {
             return new ArrayList<Patient>();
         }
+    }
+
+    @Override
+    public User getByEmail(String email) {
+        return userRepository.findFirstByEmail(email);
     }
 
     @Override
@@ -206,8 +212,19 @@ public class dbUserService extends UserServiceBase implements UserService, UserD
     }
 
     @Override
+    @Transactional
+    public Doctor getDoctorByIdLocked(Long id) {
+        return this.doctorRepository.findDoctorByIdLocked(id);
+    }
+
+    @Override
     public Patient getPatientById(Long id) {
         return this.patientRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Patient getPatientByIdLocked(Long id) {
+        return this.patientRepository.findPatientByIdLocked(id);
     }
 
     @Override
@@ -217,7 +234,7 @@ public class dbUserService extends UserServiceBase implements UserService, UserD
             if (korisnik.getClass() == Patient.class) {
                 Patient pacijent = (Patient) korisnik;
                 for (Pharmacy apoteka : pacijent.getSubscriptions()) {
-                    if (apoteka.getId() == pharmacyId) {
+                    if (apoteka.getId().equals( pharmacyId )) {
                         pacijenti.add(pacijent);
                         break;
                     }

@@ -18,7 +18,7 @@
 					<router-link :to="{ name: 'Pharmacies'}" class="nav-item nav-link">Pharmacies</router-link>
 					<router-link :to="{ name: 'Medicines'}" class="nav-item nav-link">Medicines</router-link>
 					<router-link :to="{ name: 'MedicineSearchPage'}" class="nav-item nav-link">Search medicines</router-link>
-
+					<router-link :to="{ name: 'AllDoctors'}" class="nav-item nav-link">All doctors</router-link>
 
 				</div>
 				<div v-else-if="user.role === 'PATIENT'" class="navbar-nav mr-auto mt-2 mt-lg-0">
@@ -31,6 +31,7 @@
 					<router-link :to="{ name: 'Counseling'}" class="nav-item nav-link">Counseling</router-link>
 					<router-link :to="{ name: 'DermAppointments'}" class="nav-item nav-link">Derm Appointments</router-link>
 					<router-link :to="{ name: 'ComplaintPage'}" class="nav-item nav-link">File a complaint</router-link>
+					<router-link :to="{ name: 'PatientsComplaints'}" class="nav-item nav-link">My complaints</router-link>
 
 					
 				</div>
@@ -70,13 +71,16 @@
 
 					<a class="navbar-brand" href="/">Navbar</a>
 
-					<router-link :to="{ name: 'AddPharmacy'}" class="nav-item nav-link">Add Pharmacy</router-link>
+					<!-- <router-link :to="{ name: 'AddPharmacy'}" class="nav-item nav-link">Add Pharmacy</router-link>
 					<router-link :to="{ name: 'AddSupplier'}" class="nav-item nav-link">Add Supplier</router-link>
 					<router-link :to="{ name: 'AddDermatologist' }" class="nav-item nav-link">Add Dermatologist</router-link>
 					<router-link :to="{ name: 'AddMedicine' }" class="nav-item nav-link">Add Medicine</router-link>
 					<router-link :to="{ name: 'AddPharmacyAdmin' }" class="nav-item nav-link">Add Pharmacy Admin.</router-link>
-					<router-link :to="{ name: 'AddSysAdmin' }" class="nav-item nav-link">Add Sys. Admin.</router-link>
+					<router-link :to="{ name: 'AddSysAdmin' }" class="nav-item nav-link">Add Sys. Admin.</router-link> -->
+					<router-link :to="{ name: 'SysAdminAdd' }" class="nav-item nav-link">Add...</router-link>
 					<router-link :to="{ name: 'ComplaintResponsePage' }" class="nav-item nav-link">Complaints</router-link>
+					<router-link :to="{ name: 'Vacations' }" class="nav-item nav-link">Vacation requests</router-link>
+					<router-link :to="{ name: 'LoyaltyProgramView' }" class="nav-item nav-link">Loyalty program</router-link>
 					
 				</div>
 				<div v-else-if="user.role === 'SUPPLIER'" class="navbar-nav mr-auto mt-2 mt-lg-0">

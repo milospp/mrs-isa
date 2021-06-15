@@ -38,7 +38,7 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
     public List<MedicineOrder> findAll() {
         List<MedicineOrder> povratna = new ArrayList<>();
         for (MedicineOrder mo : this.orderRepository.findAll()) {
-            List<Offer> ponude = this.offerService.getOffers(mo.getId());
+            List<Offer> ponude = this.offerService.getOffersForOrder(mo.getId());
             mo.setAllOffer(ponude);
             povratna.add(mo);
         }
@@ -65,7 +65,7 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
     @Override
     public List<MedicineOrder> getAdminOrders(Long idAdmina) {
         List<MedicineOrder> povratna = new ArrayList<>();
-        for (MedicineOrder mo : this.orderRepository.findAll()) if (mo.getAuthor().getId() == idAdmina) {
+        for (MedicineOrder mo : this.orderRepository.findAll()) if (mo.getAuthor().getId().equals( idAdmina ))  {
             List<Offer> ponude = this.offerService.getOffers(mo.getId());
             mo.setAllOffer(ponude);
             povratna.add(mo);
@@ -83,11 +83,13 @@ public class dbOrderService extends OrderServiceBase implements OrderService {
         int povratna = -1;
         MedicineOrder narudzbenica = this.orderRepository.findById(idOrder).orElse(null);
 
+        // TODO CHECK THIS IS VALID
+        if (narudzbenica == null) return povratna;
         if (ponuda.getEndDate().isBefore(LocalDateTime.now())) return povratna;
         povratna = 0;
         narudzbenica.setChosenOffer(ponuda);
         this.offerService.acceptOffer(ponuda);
-        for (Offer o : narudzbenica.getAllOffer()) if (o.getId() != ponuda.getId()) this.offerService.rejectOffer(o);
+        for (Offer o : narudzbenica.getAllOffer()) if (!o.getId().equals( ponuda.getId() )) this.offerService.rejectOffer(o);
         this.orderRepository.save(narudzbenica);
         return povratna;
     }

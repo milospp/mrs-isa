@@ -122,9 +122,9 @@ public class PharmacyController {
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<Boolean> setPharmacyInfo(@RequestBody PharmacyDTO apotekaDTO) {
         Pharmacy apoteka = pharmacyService.findOne(apotekaDTO.getId());
+        if (apoteka == null) return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         apoteka.setName(apotekaDTO.getName());
         apoteka.setDescription(apoteka.getDescription());
-        if (apoteka == null) return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         if (apotekaDTO.getPricePerHour() != null) apoteka.setPricePerHour(apotekaDTO.getPricePerHour());
         apoteka.setName(apotekaDTO.getName());
         apoteka.setDescription(apoteka.getDescription());
@@ -147,8 +147,8 @@ public class PharmacyController {
         PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(idAdmina);
         for (MedicineInPharmacy stariLek : admin.getPharmacy().getMedicines()) {
             for (MedInPharmaDTO noviLek : cenovnik.getMedicines()) {
-                if (stariLek.getMedicine().getId() == noviLek.getMedicine().getId()) {
-                    if (stariLek.getCurrentPrice().getPrice() != noviLek.getCurrentPrice()) {
+                if (stariLek.getMedicine().getId().equals( noviLek.getMedicine().getId()) ) {
+                    if (! (stariLek.getCurrentPrice().getPrice().equals( noviLek.getCurrentPrice()) )) {
                         MedPrice novaCena = new MedPrice();
                         novaCena.setPrice(noviLek.getCurrentPrice());
                         novaCena.setStartDate(LocalDateTime.now());
@@ -201,6 +201,41 @@ public class PharmacyController {
         Patient patient = (Patient) this.userService.findOne(id);
         List<Pharmacy> visitedPharmacies = this.pharmacyService.getVisitedPharmacies(patient);
         return new ResponseEntity<>(this.pharmacyToPharmacyDTO.convert(visitedPharmacies), HttpStatus.OK);
+    }
+
+    @PostMapping("/subscribeUnsubscribe/{id}")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<Integer> subscribeUnsubscribe(@PathVariable Long id, @RequestBody PharmacyDTO pharmacyDTO){
+        boolean result = false;
+        Pharmacy pharmacy = this.pharmacyService.findOne(pharmacyDTO.getId());
+
+        if(this.pharmacyService.isPatientSubscribed(pharmacy, id))
+            result = this.pharmacyService.unsubscribeToPharmacy(pharmacy, id);
+        else
+            result = this.pharmacyService.subscribeToPharmacy(pharmacy, id);
+
+        int responseCode = 0;
+        if(result) {
+            responseCode = 0;
+        }
+        else{
+            responseCode = 1;
+        }
+        return new ResponseEntity<>(responseCode, HttpStatus.OK);
+    }
+
+    @GetMapping("/subscriptions/{id}")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<List<PharmacyDTO>> getPatientsSubscriptions(@PathVariable Long id){
+        Patient patient = (Patient) this.userService.findOne(id);
+
+        List<Pharmacy> subscriptions = new ArrayList<>();
+
+        for(Pharmacy p : patient.getSubscriptions()){
+            subscriptions.add(p);
+        }
+
+        return new ResponseEntity<>(this.pharmacyToPharmacyDTO.convert(subscriptions), HttpStatus.OK);
     }
 }
 

@@ -137,6 +137,7 @@
 <script>
 import AppointmentDataService from '../service/AppointmentDataService.js';
 import UtilService from '@/service/UtilService.js';
+import AuthService from '@/service/AuthService.js';
 
 export default {
     setup() {
@@ -148,6 +149,7 @@ export default {
         return {
             appointments: null,
             selectedAppointment: null,
+            userId: null,
             // limit: 0,
         };
     },
@@ -174,10 +176,9 @@ export default {
 
       bookAppointment(a) {
         // TODO: Getloggedin user id
-        let userId = 1;
         a.booked = true;
 
-        AppointmentDataService.bookAppointment(a.id, userId).then(response => {
+        AppointmentDataService.bookAppointment(a.id, this.userId).then(response => {
         });
       }
     },
@@ -185,6 +186,8 @@ export default {
         this.getDermatologAppointments();
     },
     created() {
+      this.userId = AuthService.getLoggedIdOrLogout();
+
     }
 }
 </script>

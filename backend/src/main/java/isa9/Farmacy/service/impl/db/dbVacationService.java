@@ -13,8 +13,11 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Primary
@@ -56,15 +59,50 @@ public class dbVacationService extends VacationServiceBase implements VacationSe
     }
 
     @Override
-    public List<Vacation> getAllForPharmacyAdmin(Long pharmacyAdminId) {
-        PharmacyAdmin pharmacyAdmin = userService.findPharmacyAdmin(pharmacyAdminId);
-        return vacationRepository.findByPharmacyAdmin(pharmacyAdmin);
+    public List<Vacation> getAllForAdmin(Long adminId) {
+        PharmacyAdmin pharmacyAdmin = userService.findPharmacyAdmin(adminId);
+        return vacationRepository.findByAdmin(pharmacyAdmin);
     }
 
     @Override
     public List<Vacation> getAllForDoctor(Long doctorId) {
         Doctor doctor = userService.getDoctorById(doctorId);
         return vacationRepository.findByDoctor(doctor);
+    }
+
+    @Override
+    public List<Vacation> getAcceptedForDoctor(Long doctorId) {
+        Doctor doctor = userService.getDoctorById(doctorId);
+        return vacationRepository.findByDoctor(doctor).stream()
+                .filter(x -> x.getStatus().equals(VacationRequestStatus.ACCEPTED))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean getIfAcceptedInIntervalForDoctor(Long doctorId, LocalDate start, LocalDate end) {
+        List<Vacation> vacations = getAcceptedForDoctor(doctorId);
+        for (Vacation v : vacations){
+            if (v.getStartDate().isAfter(start) && v.getStartDate().isAfter(end)){
+                continue;
+            }
+            else if (v.getEndDate().isBefore(start) && v.getEndDate().isBefore(end)){
+                continue;
+            }
+            else{
+                return true;
+            }
+        }
+        return false;
+    }
+  
+    @Override
+    public List<Vacation> getWaitnigAll() {
+        List<Vacation> povratna = new ArrayList<>();
+        for (Vacation odmor : findAll()) {
+            if (odmor.getStatus() == VacationRequestStatus.WAITING)
+                povratna.add(odmor);
+        }
+        return povratna;
     }
 
     @Override
@@ -91,6 +129,21 @@ public class dbVacationService extends VacationServiceBase implements VacationSe
             if (v.getStatus() == VacationRequestStatus.ACCEPTED && v.getEndDate().isAfter(vacation.getStartDate()) && v.getEndDate().isBefore(vacation.getEndDate())){
                 return false;
             }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean checkDate(Long idDoktora, LocalDate datum) {
+        for (Vacation v : findAll()) {
+            if (v.getDoctor().getId() != idDoktora) continue;
+            if (v.getStatus() == VacationRequestStatus.DENIED || v.getStatus() == VacationRequestStatus.WAITING)
+                continue;
+
+            // dobar doktor i prihvacen godisnji
+            if ((v.getStartDate().isBefore(datum) && v.getEndDate().isAfter(datum)) ||
+                v.getStartDate().isEqual(datum) || v.getEndDate().isEqual(datum))
+                return false;
         }
         return true;
     }
