@@ -115,14 +115,12 @@ public class AuthenticationController {
     }
 
     @GetMapping("/getPasswordResetDate/{id}")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Timestamp> getPasswordResetDate(@PathVariable Long id){
         User user = this.userService.findOne(id);
         return new ResponseEntity<>(user.getLastPasswordResetDate(), HttpStatus.OK);
     }
 
     @PostMapping("/changePassword/{id}")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Boolean> changePassword(@PathVariable Long id, @RequestBody String newPassword){
         // TODO do we need to check if id is same as logged in user?
         newPassword = newPassword.substring(0, newPassword.length() - 1);
