@@ -18,7 +18,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000", "https://pharmacy9.herokuapp.com"})
+@CrossOrigin(origins = {"http://localhost:3000", "https://pharmacy-tim9.herokuapp.com", "https://pharmacy9.herokuapp.com"})
 @RequestMapping("/api/appointments")
 public class AppointmentController {
 

@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000", "https://pharmacy9.herokuapp.com"})
+@CrossOrigin(origins = {"http://localhost:3000", "https://pharmacy-tim9.herokuapp.com", "https://pharmacy9.herokuapp.com"})
 @RequestMapping(value = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
 
