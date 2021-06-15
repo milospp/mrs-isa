@@ -32,7 +32,8 @@ public class Complaint {
     @Column
     private String response;
 
-
-
+    @Column(name = "version", nullable = false, columnDefinition = "int default 0")
+    @Version
+    private Long version;
 
 }

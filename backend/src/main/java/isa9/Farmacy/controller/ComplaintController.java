@@ -54,7 +54,8 @@ public class ComplaintController {
     @PostMapping("/responseToComplaint")
     @PreAuthorize("hasAuthority('SYS_ADMIN')")
     public ResponseEntity<Boolean> responseToComplaint(@RequestBody ComplaintDTO dto){
-        return new ResponseEntity<>( this.complaintService.saveResponse(dto.getResponse(), dto.getId(), dto.getRespondent()), HttpStatus.OK);
+        boolean successful = this.complaintService.saveResponse(dto.getResponse(), dto.getId(), dto.getRespondent());
+        return new ResponseEntity<>(successful, HttpStatus.OK);
     }
 
     @GetMapping("complaintsByPatient/{id}")

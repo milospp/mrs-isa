@@ -315,3 +315,6 @@ values ('fakecode2', current_date + 2 + current_time, 5, current_date - 2 + curr
 -- vacations
 insert into vacation (doctor_id, end_date, pharmacy_id, admin_id, reason, start_date, status, type, why_not) values (11, '2021-06-26', 1, null, 'eto', '2021-06-22', 1, 0, null);
 insert into doctor_vacations (doctor_id, vacations_id) values (11, 1);
+
+-- complaints
+insert into complaint (description, author_id, pharmacy_id) values ('looose', 1, 1);

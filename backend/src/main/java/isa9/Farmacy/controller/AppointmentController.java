@@ -182,7 +182,7 @@ public class AppointmentController {
     }
 
     @PostMapping("free-derm")
-    // TODO AUTENTIFICATION
+    @PreAuthorize("isAuthenticated()") // TODO check AUTH
     public ResponseEntity<List<WorkDTO>> getFreeDerm(@RequestBody ConsultingAppointmentReqDTO appointmentRequest) {
 
         List<WorkDTO> resultDTOS = workToWorkDTO.convert(this.appointmentService.getFreePharmacist(appointmentRequest));
@@ -246,7 +246,6 @@ public class AppointmentController {
         if (badTime) {
             valid = false;
         }
-        // TODO check if this works
 
         return new ResponseEntity<>(valid, HttpStatus.OK);
     }
