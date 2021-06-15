@@ -11,7 +11,10 @@ import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.*;
 
 import isa9.Farmacy.support.*;
+import isa9.Farmacy.utils.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -37,10 +42,11 @@ public class UserController {
     private final UserRoleService userRoleService;
     private final PasswordEncoder passwordEncoder;
     
-
+    private final VerificationTokenService verificationTokenService;
     private final RatingService ratingService;
     private final ExaminationService examinationService;
     private final AppointmentService appointmentService;
+    private final MailService mailService;
 
     private final PatientToPatientDTO patientToPatientDTO;
     private final MedicineToMedicineDTO medicineToMedicineDTO;
@@ -57,8 +63,7 @@ public class UserController {
     private final UserDTOToUser userDTOToUser;
 
     @Autowired
-
-    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, RatingService ratingService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO, AppointmentToAppointmentDTO appointmentToAppointmentDTO, DoctorToDoctorDTO doctorToDoctorDTO, UserToUserDTO userToUserDTO, RatingToRatingDTO ratingToRatingDTO, UserDTOToUser userDTOToUser, ExaminationService examinationService, UserRoleService urs, PasswordEncoder pe, AppointmentService appointmentService) {
+    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, RatingService ratingService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO, AppointmentToAppointmentDTO appointmentToAppointmentDTO, DoctorToDoctorDTO doctorToDoctorDTO, UserToUserDTO userToUserDTO, RatingToRatingDTO ratingToRatingDTO, UserDTOToUser userDTOToUser, ExaminationService examinationService, UserRoleService urs, PasswordEncoder pe, AppointmentService appointmentService, VerificationTokenService verificationTokenService, MailService mailService) {
         this.userService = userService;
         this.pharmacyService = pharmacyService;
         this.medReservationService = medReservationService;
@@ -81,6 +86,8 @@ public class UserController {
         this.examinationService = examinationService;
 
         this.appointmentService = appointmentService;
+        this.verificationTokenService = verificationTokenService;
+        this.mailService = mailService;
     }
 
     @GetMapping("tmp-test")
@@ -346,8 +353,12 @@ public class UserController {
         Patient newlyRegistered = new Patient(patient.getId(), patient.getName(), patient.getSurname()
                 , patient.getEmail(), passwordEncoder.encode(patient.getPassword()), patient.getAddress(), patient.getPhoneNumber()
                 , userRoleService.findOne(3L), false, null);
+
         userService.save(newlyRegistered);
+        VerificationToken token = new VerificationToken(newlyRegistered);
+        this.verificationTokenService.save(token);
         System.out.println(newlyRegistered);
+        this.mailService.sendActivationMail(newlyRegistered, token.getToken());
         return new ResponseEntity<> (true, HttpStatus.OK);
     }
 
@@ -1010,5 +1021,10 @@ public class UserController {
         List<Doctor> visitedDoctors = this.userService.getVisitedDoctors(patient);
 
         return new ResponseEntity<>(this.doctorToDoctorDTO.convert(visitedDoctors), HttpStatus.OK);
+    }
+
+    @GetMapping("/activatePatient")
+    public ResponseEntity<Integer> patientActivation(@RequestParam String token){
+        return new ResponseEntity<>(this.userService.activateUser(token), HttpStatus.OK);
     }
 }

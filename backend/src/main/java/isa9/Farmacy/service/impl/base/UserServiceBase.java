@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +25,7 @@ public abstract class UserServiceBase implements UserService {
     protected MedReservationService medReservationService;
     protected PharmacyService pharmacyService;
     protected RatingService ratingService;
+    protected VerificationTokenService verificationTokenService;
 
     @Override
     public boolean isPatientBlocked(Patient patient) {
@@ -49,6 +51,11 @@ public abstract class UserServiceBase implements UserService {
     @Autowired
     public void setMedReservationService(MedReservationService medReservationService) {
         this.medReservationService = medReservationService;
+    }
+
+    @Autowired
+    public void setVerificationTokenService(VerificationTokenService verificationTokenService) {
+        this.verificationTokenService = verificationTokenService;
     }
 
     @Override
@@ -212,5 +219,22 @@ public abstract class UserServiceBase implements UserService {
         }
 
         return visitedDoctors;
+    }
+
+    //0 - everthing is ok; 1 - token expired; 2 - token not found in database
+    @Override
+    public Integer activateUser(String token) {
+        VerificationToken vtoken = this.verificationTokenService.findByToken(token);
+
+        if(vtoken.isExpired()) return 1;
+        if(vtoken == null) return 2;
+
+        Patient patient = vtoken.getPatient();
+
+        patient.setEnabled(true);
+
+        this.save(patient);
+
+        return 0;
     }
 }

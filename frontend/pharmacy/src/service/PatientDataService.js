@@ -95,6 +95,10 @@ class PatientDataService {
     return axios.get(`${API_URL}/users/doctor/` + doctor.id + `/rating/user/` + patient.id);
   }
 
+  activateUser(token){
+    return axios.get(`${API_URL}/users/activatePatient?token=`+token);
+  }
+
 }
 
 
