@@ -1,4 +1,4 @@
-insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '2', 'Serbia', 'Nemanjina', 19.837380032838656, 45.25170720477278);
+insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '181', 'Serbia', 'Bulevar Oslobodjenja', 19.837380032838656, 45.25170720477278);
 insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '33', 'Serbia', 'Laze Kostića', 20, 45);
 insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '21', 'Serbia', 'Brodarska', 20, 45);
 insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '11', 'Serbia', 'Vuka Karadžića', 20, 45);
@@ -28,8 +28,8 @@ insert into address (city, number, state, street, longitude, latitude) values ('
 insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '30', 'Serbia', 'Terazije', 20, 45);
 insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '29', 'Serbia', 'Avalska', 20, 45);
 insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '8', 'Serbia', 'Trg slobode', 20, 45);
-insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '41', 'Serbia', 'Milutina Milankovića', 19.849610906323882, 45.244606911501705);
-insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '128', 'Serbia', 'Bulevar oslobođenja', 19.7535234496781, 45.250347642880996);
+insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '41', 'Serbia', 'Doktora Ilije Djurdjevica', 19.849610906323882, 45.244606911501705);
+insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '128', 'Serbia', 'Omladinska', 19.7535234496781, 45.250347642880996);
 insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '43', 'Serbia', 'Bulevar oslobođenja', 19.736773424361914, 45.325864824612886);
 insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '20', 'Serbia', 'Stražilovska', 20, 45);
 insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '23', 'Serbia', 'Vuka Karadžića', 20, 45);

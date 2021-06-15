@@ -136,7 +136,6 @@ public class AppointmentController {
 
     }
 
-    @PreAuthorize("hasAuthority('PATIENT')")
     @GetMapping("dermatologist/free")
     public ResponseEntity<List<AppointmentDTO>> getFreeDernatologist() {
         List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.getAllFreeDermatologist());
