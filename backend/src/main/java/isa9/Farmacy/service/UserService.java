@@ -59,4 +59,6 @@ public interface UserService extends GenericService<User> {
     List<Doctor> getVisitedDoctors(Patient patient);
 
     List<Patient> howSucribePharmacy(Long pharmacyId);
+
+    Integer activateUser(String token);
 }

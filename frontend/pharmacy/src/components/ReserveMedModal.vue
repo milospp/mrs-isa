@@ -134,9 +134,21 @@ export default{
             .then(response => {
                 this.selectedMIP.inStock -= this.quantity;
                 $('#' + this.modalId).modal('hide'); 
+                this.$toast.show(
+                    "You have successfully reserved medicine!",
+                    {
+                        position: "top", type: "success"
+                    }
+                );
 
             }).catch(error => {
             // TODO: DODATI OSTALE PROVERE!!!!
+            this.$toast.show(
+                    "You're alergic to this medicine.",
+                    {
+                        position: "top", type: "error"
+                    }
+                );
             this.poruka = "Pacijent je alergičan";
                 });
 

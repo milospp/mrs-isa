@@ -11,7 +11,10 @@ import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.*;
 
 import isa9.Farmacy.support.*;
+import isa9.Farmacy.utils.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -37,10 +42,11 @@ public class UserController {
     private final UserRoleService userRoleService;
     private final PasswordEncoder passwordEncoder;
     
-
+    private final VerificationTokenService verificationTokenService;
     private final RatingService ratingService;
     private final ExaminationService examinationService;
     private final AppointmentService appointmentService;
+    private final MailService mailService;
 
     private final PatientToPatientDTO patientToPatientDTO;
     private final MedicineToMedicineDTO medicineToMedicineDTO;
@@ -57,8 +63,7 @@ public class UserController {
     private final UserDTOToUser userDTOToUser;
 
     @Autowired
-
-    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, RatingService ratingService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO, AppointmentToAppointmentDTO appointmentToAppointmentDTO, DoctorToDoctorDTO doctorToDoctorDTO, UserToUserDTO userToUserDTO, RatingToRatingDTO ratingToRatingDTO, UserDTOToUser userDTOToUser, ExaminationService examinationService, UserRoleService urs, PasswordEncoder pe, AppointmentService appointmentService) {
+    public UserController(UserService userService, PharmacyService pharmacyService, MedReservationService medReservationService, RatingService ratingService, PatientToPatientDTO patientToPatientDTO, MedicineToMedicineDTO medicineToMedicineDTO, PharmacyToPharmacyDTO pharmacyToPharmacyDTO, PenalityToPenalityDTO penalityToPenalityDTO, DermatologistToDermatologistDTO dermatologistToDermatologistDTO, PharmacistToPharmacistDTO pharmacistToPharmacistDTO, MedReservationToMedReservationDTO medReservationToMedReservationDTO, AppointmentToAppointmentDTO appointmentToAppointmentDTO, DoctorToDoctorDTO doctorToDoctorDTO, UserToUserDTO userToUserDTO, RatingToRatingDTO ratingToRatingDTO, UserDTOToUser userDTOToUser, ExaminationService examinationService, UserRoleService urs, PasswordEncoder pe, AppointmentService appointmentService, VerificationTokenService verificationTokenService, MailService mailService) {
         this.userService = userService;
         this.pharmacyService = pharmacyService;
         this.medReservationService = medReservationService;
@@ -81,6 +86,8 @@ public class UserController {
         this.examinationService = examinationService;
 
         this.appointmentService = appointmentService;
+        this.verificationTokenService = verificationTokenService;
+        this.mailService = mailService;
     }
 
     @GetMapping("{id}")
@@ -171,6 +178,19 @@ public class UserController {
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+
+
+    @PostMapping("{id}/reservations/search")
+    @PreAuthorize("hasAuthority('PATIENT') or hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST') or hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<List<MedReservationDTO>> getUserReservations(@PathVariable Long id, @RequestBody MedReservationSearchDTO searchDTO){
+        User user = userService.findOne(id);
+        Collection<MedReservation> reservations = userService.getPatientReservations(id);
+        reservations = medReservationService.filterMedReservations(reservations, searchDTO);
+        List<MedReservationDTO> dto = medReservationToMedReservationDTO.convert(reservations);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
 
     @PutMapping("reservations/{reservationId}/cancel")
     @PreAuthorize("hasAuthority('PATIENT') or hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
@@ -284,6 +304,41 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("all-users")
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> resultDTOS = new ArrayList<>();
+        for (User user : this.userService.findAll()){
+            RolesDTO role = RolesDTO.SYS_ADMIN;
+            int roleId = user.getRole().getId().intValue();
+            switch(roleId){
+                case 1:
+                    role = RolesDTO.SYS_ADMIN;
+                    break;
+                case 2:
+                    role = RolesDTO.PHARMACY_ADMIN;
+                    break;
+                case 3:
+                    role = RolesDTO.PATIENT;
+                    break;
+                case 4:
+                    role = RolesDTO.DERMATOLOGIST;
+                    break;
+                case 5:
+                    role = RolesDTO.PHARMACIST;
+                    break;
+                case 6:
+                    role = RolesDTO.SUPPLIER;
+                    break;
+                default:
+                    System.out.println("GRESKA ZEZNUO SAM DTO ULOGE");
+            }
+            resultDTOS.add(new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), role, user.getEmail()));
+        }
+
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
+
     @GetMapping("all-patients")
     @PreAuthorize("hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
     public ResponseEntity<List<PatientDTO>> getAllPatientsDTO() {
@@ -309,7 +364,6 @@ public class UserController {
     }
 
     @PostMapping("register/patient")
-    @PreAuthorize("permitAll()")
     public ResponseEntity<Boolean> registerUser(@RequestBody PatientRegistrationDTO patient) {
         int povratna = 0;
         if (!userService.isAvaibleEmail(patient.getEmail())) povratna += 2;
@@ -317,8 +371,12 @@ public class UserController {
         Patient newlyRegistered = new Patient(patient.getId(), patient.getName(), patient.getSurname()
                 , patient.getEmail(), passwordEncoder.encode(patient.getPassword()), patient.getAddress(), patient.getPhoneNumber()
                 , userRoleService.findOne(3L), false, null);
+
         userService.save(newlyRegistered);
+        VerificationToken token = new VerificationToken(newlyRegistered);
+        this.verificationTokenService.save(token);
         System.out.println(newlyRegistered);
+        this.mailService.sendActivationMail(newlyRegistered, token.getToken());
         return new ResponseEntity<> (true, HttpStatus.OK);
     }
 
@@ -996,5 +1054,10 @@ public class UserController {
         List<Doctor> visitedDoctors = this.userService.getVisitedDoctors(patient);
 
         return new ResponseEntity<>(this.doctorToDoctorDTO.convert(visitedDoctors), HttpStatus.OK);
+    }
+
+    @GetMapping("/activatePatient")
+    public ResponseEntity<Integer> patientActivation(@RequestParam String token){
+        return new ResponseEntity<>(this.userService.activateUser(token), HttpStatus.OK);
     }
 }

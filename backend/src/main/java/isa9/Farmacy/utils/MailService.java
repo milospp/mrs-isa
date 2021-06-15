@@ -1,6 +1,7 @@
 package isa9.Farmacy.utils;
 
 import isa9.Farmacy.model.*;
+import isa9.Farmacy.model.dto.EPrescriptionDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -13,12 +14,14 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Properties;
 
 @Service
 public class MailService {
 
-
+    @Value("${frontend.application.url}")
+    private String host;
     @Value("${spring.mail.username}")
     private String email;
     @Value("${spring.mail.password}")
@@ -1164,11 +1167,37 @@ public class MailService {
         sendMail(mejl, naslov, htmlKod);
         return;
     }
+    @Async
+    public void sendActivationMail(Patient patient, String token){
+        String recipient = patient.getEmail();
+        String subject = "Activation link";
+        String content = this.startOfMail;
+
+        String link = this.host+"/activatePatient?token="+token;
+
+        System.out.println(host+"/activatePatient?token="+token);
+
+        content = content +
+                "                          Activation notification\n" +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                    <tr>\n" +
+                "                      <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#187272;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:20px;text-align:center;\">\n" +
+                "                          "+"Before you can log in for the first time, please activate your account using the following link: \n";
+
+        content += "<a target=\"_blank\" href='" + link + "'>Link</a>";
+
+
+        content += this.endOfMail;
+
+        sendMail(recipient, subject, content);
+        return;
+    }
 
     @Async
     public void sendResponseMail(Complaint complaint){
-        System.out.println(complaint.getResponse());
-
         Patient author = complaint.getAuthor();
         String description = complaint.getDescription();
         String response = complaint.getResponse();
@@ -1207,17 +1236,403 @@ public class MailService {
         return;
     }
 
-
     @Async
-    public void sendDispensedReservationInfo(MedReservation medReservation) {             // sending mail to patient that reservation was taken successfully
-        System.out.println("saljem mejl za izdavanje lekova");
+    public void sendReservationInfo(MedReservation medReservation) {             // sending mail to patient that reservation was taken successfully
         Pharmacy pharmacy = medReservation.getMedicineInPharmacy().getPharmacy();
         Medicine medicine = medReservation.getMedicineInPharmacy().getMedicine();
         Patient patient = medReservation.getPatient();
         String email = medReservation.getPatient().getEmail();
         String subject = "";
         String content = "" + this.startOfMail;
-        //if (delete) {
+        subject = "New reserveation";
+        content = content +
+                "                          You have new reserveation.\nCode: " + medReservation.getCode() + "\n" +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                    <tr>\n" +
+                "                      <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#187272;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:20px;text-align:center;\">\n" +
+                "                          " + "\n";
+        content = content +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                  </table>\n" +
+                "                </div>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "</td></tr></table>\n" +
+                "<![endif]-->\n" +
+                "              </td>\n" +
+                "            </tr>\n" +
+                "          </tbody>\n" +
+                "        </table>\n" +
+                "      </div>\n" +
+                "      <!--[if mso | IE]>\n" +
+                "</td></tr></table>\n" +
+                "<![endif]-->\n" +
+                "      <!--[if mso | IE]>\n" +
+                "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:600px;\" width=\"600\"><tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\">\n" +
+                "<![endif]-->\n" +
+                "      <div style='background:#F5774E;background-color:#F5774E;margin:0px auto;max-width:600px;'>\n" +
+                "        <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='background:#F5774E;background-color:#F5774E;width:100%;'>\n" +
+                "          <tbody>\n" +
+                "            <tr>\n" +
+                "              <td style='direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td style=\"vertical-align:top;width:300px;\">\n" +
+                "<![endif]-->\n" +
+                "                <div class='dys-column-per-50 outlook-group-fix' style='direction:ltr;display:inline-block;font-size:13px;text-align:left;vertical-align:top;width:100%;'>\n" +
+                "                  <table border='0' cellpadding='0' cellspacing='0' role='presentation' style='vertical-align:top;' width='100%'>\n" +
+                "                    <tr>\n" +
+                "                      <td align='left' style='font-size:0px;padding:25px 25px 0 50px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#FFFFFF;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:13px;line-height:1;text-align:left;\">\n" +
+                "                          " + patient.getName() + " " + patient.getSurname() + "\n" +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                    <tr>\n" +
+                "                      <td align='left' style='font-size:0px;padding:0 25px 0 50px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#933f24;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:13px;line-height:1;text-align:left;\">\n" +
+                "                          " + patient.getAddress().getState() + " " + patient.getAddress().getCity() + " " + patient.getAddress().getStreet() + " " + patient.getAddress().getNumber() + "\n" +
+                "                        </div>\n" +
+                "                        <div style=\"color:#933f24;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:13px;line-height:1;text-align:left;\">\n" +
+                "                          " + patient.getPhoneNumber() + "\n" +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                  </table>\n" +
+                "                </div>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "</td><td style=\"vertical-align:top;width:300px;\">\n" +
+                "<![endif]-->\n" +
+                "                <div class='dys-column-per-50 outlook-group-fix' style='direction:ltr;display:inline-block;font-size:13px;text-align:left;vertical-align:top;width:100%;'>\n" +
+                "                  <table border='0' cellpadding='0' cellspacing='0' role='presentation' style='vertical-align:top;' width='100%'>\n" +
+                "                    <tr>\n" +
+                "                      <td align='right' style='font-size:0px;padding:25px 50px 0 25px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#FFFFFF;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:13px;line-height:1;text-align:right;\">\n" +
+                //OVDE MENJAM
+                "                          \n" +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                    <tr>\n" +
+                "                      <td align='right' style='font-size:0px;padding:0 50px 0 25px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#FFFFFF;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:13px;line-height:1;text-align:right;\">\n" +
+                "                          \n" +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                  </table>\n" +
+                "                </div>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "</td></tr></table>\n" +
+                "<![endif]-->\n" +
+                "              </td>\n" +
+                "            </tr>\n" +
+                "          </tbody>\n" +
+                "        </table>\n" +
+                "      </div>\n" +
+                "      <!--[if mso | IE]>\n" +
+                "</td></tr></table>\n" +
+                "<![endif]-->\n" +
+                "      <!--[if mso | IE]>\n" +
+                "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:600px;\" width=\"600\"><tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\">\n" +
+                "<![endif]-->\n" +
+                "      <div style='background:#F5774E;background-color:#F5774E;margin:0px auto;max-width:600px;'>\n" +
+                "        <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='background:#F5774E;background-color:#F5774E;width:100%;'>\n" +
+                "          <tbody>\n" +
+                "            <tr>\n" +
+                "              <td style='direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td style=\"vertical-align:top;width:600px;\">\n" +
+                "<![endif]-->\n" +
+                "                <div class='dys-column-per-100 outlook-group-fix' style='direction:ltr;display:inline-block;font-size:13px;text-align:left;vertical-align:top;width:100%;'>\n" +
+                "                  <table border='0' cellpadding='0' cellspacing='0' role='presentation' style='vertical-align:top;' width='100%'>\n" +
+                "                    <tr>\n" +
+                "                      <td align='left' style='font-size:0px;padding:10px 50px;word-break:break-word;'>\n" +
+                "                        <table border='0' cellpadding='5' cellspacing='0' style='cellpadding:5;cellspacing:0;color:#000000;font-family:Helvetica, Arial, sans-serif;font-size:12px;line-height:20px;table-layout:auto;width:100%;' width='100%'>\n" +
+                "                          <tbody>\n" +
+                "                            <tr align='center'>\n" +
+                "                              <th align='center' style='background-color: #ac4d2f; color: #ffffff;'>\n" +
+                "                                Medicine name (code)\n" +
+                "                              </th>\n" +
+                "                              <th align='center' style='background-color: #ac4d2f; color: #ffffff;'>\n" +
+                "                                Price\n" +
+                "                              </th>\n" +
+                "                              <th align='center' style='background-color: #ac4d2f; color: #ffffff;'>\n" +
+                "                                Quantity\n" +
+                "                              </th>\n" +
+                "                              <th align='center' style='background-color: #ac4d2f; color: #ffffff;'>\n" +
+                "                                Total\n" +
+                "                              </th>\n" +
+                "                              <th align='center' style='background-color: #ac4d2f; color: #ffffff;'>\n" +
+                "                                Reservation made\n" +
+                "                              </th>\n" +
+                "                              <th align='center' style='background-color: #ac4d2f; color: #ffffff;'>\n" +
+                "                                Reservation expires\n" +
+                "                              </th>\n" +
+                "                            </tr>\n" +
+                "                            <tr>\n" +
+                "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
+                "                                " + medicine.getName() + " (" + medicine.getCode() + ")\n" +
+                "                              </td>\n" +
+                "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
+                "                                $" + medReservation.getMedicineInPharmacy().getCurrentPrice().getPrice() + "\n" +
+                "                              </td>\n" +
+                "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
+                "                                " + medReservation.getQuantity() + "\n" +
+                "                              </td>\n" +
+                "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
+                "                                $" + medReservation.getMedicineInPharmacy().getCurrentPrice().getPrice() * medReservation.getQuantity() + "\n" +
+                "                              </td>\n" +
+                "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
+                "                                " + medReservation.getReservationDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n" +
+                "                              </td>\n" +
+                "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
+                "                                " + medReservation.getLastDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n" +
+                "                              </td>\n" +
+                "                            </tr>\n" +
+                "                          </tbody>\n" +
+                "                        </table>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                  </table>\n" +
+                "                </div>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "</td></tr></table>\n" +
+                "<![endif]-->\n" +
+                "              </td>\n" +
+                "            </tr>\n" +
+                "          </tbody>\n" +
+                "        </table>\n" +
+                "      </div>\n" +
+                "      <!--[if mso | IE]>\n" +
+                "</td></tr></table>\n" +
+                "<![endif]-->\n" +
+                "      <!--[if mso | IE]>\n" +
+                "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:600px;\" width=\"600\"><tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\">\n" +
+                "<![endif]-->\n" +
+                "      <div style='background:#F5774E;background-color:#F5774E;margin:0px auto;max-width:600px;'>\n" +
+                "        <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='background:#F5774E;background-color:#F5774E;width:100%;'>\n" +
+                "          <tbody>\n" +
+                "            <tr>\n" +
+                "              <td style='direction:ltr;font-size:0px;padding:10px 0;text-align:center;vertical-align:top;'>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td style=\"vertical-align:top;width:540px;\">\n" +
+                "<![endif]-->\n" +
+                "                <div class='dys-column-per-90 outlook-group-fix' style='direction:ltr;display:inline-block;font-size:13px;text-align:left;vertical-align:top;width:100%;'>\n" +
+                "                  <table border='0' cellpadding='0' cellspacing='0' role='presentation' style='vertical-align:top;' width='100%'>\n" +
+                "                    <tr>\n" +
+                "                      <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#ffffff;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:1;text-align:left;\">\n" +
+                "                          Address: <strong>" + pharmacy.getAddress().getState() + " " + pharmacy.getAddress().getCity() + " " + pharmacy.getAddress().getStreet() + " " + pharmacy.getAddress().getNumber() + "</strong>\n" +
+                this.endOfMail;
+
+        sendMail(email, subject, content);
+        return;
+    }
+
+    @Async
+    public void sendEPrescriptionInfo(EPrescription ePrescription) {             // sending mail to patient that eprescription was taken successfull
+        LocalDate issueDate = ePrescription.getIssueDate();
+        List<MedReservation> medReservations = ePrescription.getMedicines();
+        Patient patient = ePrescription.getPatient();
+        String email = patient.getEmail();
+        Pharmacy pharmacy = medReservations.get(0).getMedicineInPharmacy().getPharmacy();
+        String subject = "";
+        String content = "" + this.startOfMail;
+        subject = "Successfully taken ePrescription";
+        content = content +
+                "                          You have successfully taken your ePrescription: " + ePrescription.getCode() + "\nIssue date: " + issueDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) +"\n" +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                    <tr>\n" +
+                "                      <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#187272;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:20px;text-align:center;\">\n" +
+                "                          " + "\n";
+        content = content +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                  </table>\n" +
+                "                </div>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "</td></tr></table>\n" +
+                "<![endif]-->\n" +
+                "              </td>\n" +
+                "            </tr>\n" +
+                "          </tbody>\n" +
+                "        </table>\n" +
+                "      </div>\n" +
+                "      <!--[if mso | IE]>\n" +
+                "</td></tr></table>\n" +
+                "<![endif]-->\n" +
+                "      <!--[if mso | IE]>\n" +
+                "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:600px;\" width=\"600\"><tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\">\n" +
+                "<![endif]-->\n" +
+                "      <div style='background:#F5774E;background-color:#F5774E;margin:0px auto;max-width:600px;'>\n" +
+                "        <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='background:#F5774E;background-color:#F5774E;width:100%;'>\n" +
+                "          <tbody>\n" +
+                "            <tr>\n" +
+                "              <td style='direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td style=\"vertical-align:top;width:300px;\">\n" +
+                "<![endif]-->\n" +
+                "                <div class='dys-column-per-50 outlook-group-fix' style='direction:ltr;display:inline-block;font-size:13px;text-align:left;vertical-align:top;width:100%;'>\n" +
+                "                  <table border='0' cellpadding='0' cellspacing='0' role='presentation' style='vertical-align:top;' width='100%'>\n" +
+                "                    <tr>\n" +
+                "                      <td align='left' style='font-size:0px;padding:25px 25px 0 50px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#FFFFFF;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:13px;line-height:1;text-align:left;\">\n" +
+                "                          " + patient.getName() + " " + patient.getSurname() + "\n" +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                    <tr>\n" +
+                "                      <td align='left' style='font-size:0px;padding:0 25px 0 50px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#933f24;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:13px;line-height:1;text-align:left;\">\n" +
+                "                          " + patient.getAddress().getState() + " " + patient.getAddress().getCity() + " " + patient.getAddress().getStreet() + " " + patient.getAddress().getNumber() + "\n" +
+                "                        </div>\n" +
+                "                        <div style=\"color:#933f24;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:13px;line-height:1;text-align:left;\">\n" +
+                "                          " + patient.getPhoneNumber() + "\n" +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                  </table>\n" +
+                "                </div>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "</td><td style=\"vertical-align:top;width:300px;\">\n" +
+                "<![endif]-->\n" +
+                "                <div class='dys-column-per-50 outlook-group-fix' style='direction:ltr;display:inline-block;font-size:13px;text-align:left;vertical-align:top;width:100%;'>\n" +
+                "                  <table border='0' cellpadding='0' cellspacing='0' role='presentation' style='vertical-align:top;' width='100%'>\n" +
+                "                    <tr>\n" +
+                "                      <td align='right' style='font-size:0px;padding:25px 50px 0 25px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#FFFFFF;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:13px;line-height:1;text-align:right;\">\n" +
+                //OVDE MENJAM
+                "                          \n" +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                    <tr>\n" +
+                "                      <td align='right' style='font-size:0px;padding:0 50px 0 25px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#FFFFFF;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:13px;line-height:1;text-align:right;\">\n" +
+                "                          \n" +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                  </table>\n" +
+                "                </div>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "</td></tr></table>\n" +
+                "<![endif]-->\n" +
+                "              </td>\n" +
+                "            </tr>\n" +
+                "          </tbody>\n" +
+                "        </table>\n" +
+                "      </div>\n" +
+                "      <!--[if mso | IE]>\n" +
+                "</td></tr></table>\n" +
+                "<![endif]-->\n" +
+                "      <!--[if mso | IE]>\n" +
+                "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:600px;\" width=\"600\"><tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\">\n" +
+                "<![endif]-->\n" +
+                "      <div style='background:#F5774E;background-color:#F5774E;margin:0px auto;max-width:600px;'>\n" +
+                "        <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='background:#F5774E;background-color:#F5774E;width:100%;'>\n" +
+                "          <tbody>\n" +
+                "            <tr>\n" +
+                "              <td style='direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td style=\"vertical-align:top;width:600px;\">\n" +
+                "<![endif]-->\n" +
+                "                <div class='dys-column-per-100 outlook-group-fix' style='direction:ltr;display:inline-block;font-size:13px;text-align:left;vertical-align:top;width:100%;'>\n" +
+                "                  <table border='0' cellpadding='0' cellspacing='0' role='presentation' style='vertical-align:top;' width='100%'>\n" +
+                "                    <tr>\n" +
+                "                      <td align='left' style='font-size:0px;padding:10px 50px;word-break:break-word;'>\n" +
+                "                        <table border='0' cellpadding='5' cellspacing='0' style='cellpadding:5;cellspacing:0;color:#000000;font-family:Helvetica, Arial, sans-serif;font-size:16px;line-height:20px;table-layout:auto;width:100%;' width='100%'>\n" +
+                "                          <tbody>\n" +
+                "                            <tr align='center'>\n" +
+                "                              <th align='center' style='background-color: #ac4d2f; color: #ffffff;'>\n" +
+                "                                Medicine name (code)\n" +
+                "                              </th>\n" +
+                "                              <th align='center' style='background-color: #ac4d2f; color: #ffffff;'>\n" +
+                "                                Price\n" +
+                "                              </th>\n" +
+                "                              <th align='center' style='background-color: #ac4d2f; color: #ffffff;'>\n" +
+                "                                Quantity\n" +
+                "                              </th>\n" +
+                "                              <th align='center' style='background-color: #ac4d2f; color: #ffffff;'>\n" +
+                "                                Total\n" +
+                "                              </th>\n" +
+                "                            </tr>\n";
+
+        for (MedReservation medReservation : medReservations){
+            Medicine medicine = medReservation.getMedicineInPharmacy().getMedicine();
+            content = content +
+                    "                            <tr>\n" +
+                    "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
+                    "                                " + medicine.getName() + " (" + medicine.getCode() + ")\n" +
+                    "                              </td>\n" +
+                    "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
+                    "                                $" + medReservation.getMedicineInPharmacy().getCurrentPrice().getPrice() + "\n" +
+                    "                              </td>\n" +
+                    "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
+                    "                                " + medReservation.getQuantity() + "\n" +
+                    "                              </td>\n" +
+                    "                              <td style='background-color: #f7a084; color: #933f24; text-align: center;'>\n" +
+                    "                                $" + medReservation.getMedicineInPharmacy().getCurrentPrice().getPrice() * medReservation.getQuantity() + "\n" +
+                    "                              </td>\n" +
+                    "                            </tr>\n";
+        }
+        content = content +
+                "                          </tbody>\n" +
+                "                        </table>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                  </table>\n" +
+                "                </div>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "</td></tr></table>\n" +
+                "<![endif]-->\n" +
+                "              </td>\n" +
+                "            </tr>\n" +
+                "          </tbody>\n" +
+                "        </table>\n" +
+                "      </div>\n" +
+                "      <!--[if mso | IE]>\n" +
+                "</td></tr></table>\n" +
+                "<![endif]-->\n" +
+                "      <!--[if mso | IE]>\n" +
+                "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:600px;\" width=\"600\"><tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\">\n" +
+                "<![endif]-->\n" +
+                "      <div style='background:#F5774E;background-color:#F5774E;margin:0px auto;max-width:600px;'>\n" +
+                "        <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='background:#F5774E;background-color:#F5774E;width:100%;'>\n" +
+                "          <tbody>\n" +
+                "            <tr>\n" +
+                "              <td style='direction:ltr;font-size:0px;padding:10px 0;text-align:center;vertical-align:top;'>\n" +
+                "                <!--[if mso | IE]>\n" +
+                "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td style=\"vertical-align:top;width:540px;\">\n" +
+                "<![endif]-->\n" +
+                "                <div class='dys-column-per-90 outlook-group-fix' style='direction:ltr;display:inline-block;font-size:13px;text-align:left;vertical-align:top;width:100%;'>\n" +
+                "                  <table border='0' cellpadding='0' cellspacing='0' role='presentation' style='vertical-align:top;' width='100%'>\n" +
+                "                    <tr>\n" +
+                "                      <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#ffffff;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:1;text-align:left;\">\n" +
+                "                          Address: <strong>" + pharmacy.getAddress().getState() + " " + pharmacy.getAddress().getCity() + " " + pharmacy.getAddress().getStreet() + " " + pharmacy.getAddress().getNumber() + "</strong>\n" +
+                this.endOfMail;
+
+        sendMail(email, subject, content);
+        return;
+    }
+
+    @Async
+    public void sendDispensedReservationInfo(MedReservation medReservation) {             // sending mail to patient that reservation was taken successfully
+        Pharmacy pharmacy = medReservation.getMedicineInPharmacy().getPharmacy();
+        Medicine medicine = medReservation.getMedicineInPharmacy().getMedicine();
+        Patient patient = medReservation.getPatient();
+        String email = medReservation.getPatient().getEmail();
+        String subject = "";
+        String content = "" + this.startOfMail;
             subject = "Successfully taken reservation";
             content = content +
                     "                          You have successfully taken your reservation: " + medReservation.getCode() + "\n" +

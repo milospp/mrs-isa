@@ -30,6 +30,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
     protected InquiryService inquiryService;
     protected MailService mailService;
     protected LoyaltyProgramService loyaltyProgramService;
+    protected EPrescriptionService ePrescriptionService;
 
     @Autowired
     public void setMedicineService(MedicineService medicineService) {
@@ -59,17 +60,15 @@ public abstract class MedReservationServiceBase implements MedReservationService
         this.loyaltyProgramService = loyaltyProgramService;
     }
 
+    @Autowired
+    public void setePrescriptionService(EPrescriptionService e) {
+        this.ePrescriptionService = e;
+    }
+
     @Override
     @Transactional
     public MedReservation dispenseMedicine(String code) {
         MedReservation medReservation = getByCodeLocked(code);
-        /* System.out.println("cekam");
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println("docekam"); */
 
         if (medReservation == null || !medReservation.getStatus().equals(MedReservationStatus.PENDING)){
             System.out.println("Cannot dispense this");
@@ -226,7 +225,10 @@ public abstract class MedReservationServiceBase implements MedReservationService
             pharmacyService.save(apoteka);
             return null;
         }
-                                                // na stanju > poruceno
+
+        // na stanju > poruceno
+        mailService.sendReservationInfo(medReservation);
+
         userService.save(patient);
         return medReservation;
 
@@ -251,11 +253,14 @@ public abstract class MedReservationServiceBase implements MedReservationService
     }
 
     @Override
+    @Transactional
     public Integer eReserveMedicines(EPrescriptionDTO ePrescriptionDTO) {
         Patient patient = (Patient) this.userService.getLoggedInUser();
         Map<String, Integer> reservations = ePrescriptionDTO.getMedicines();
         Pharmacy pharmacy = this.pharmacyService.findOne(ePrescriptionDTO.getPharmacy().getId());
         int index = 0;
+
+        List<MedReservation> medReservations = new ArrayList<>();
 
         for(Map.Entry<String, Integer> entry : reservations.entrySet()){
             Medicine medicine = null;
@@ -282,11 +287,21 @@ public abstract class MedReservationServiceBase implements MedReservationService
 
             patient.getReservations().add(medReservation);
             medicineInPharmacy.setInStock(medicineInPharmacy.getInStock() - entry.getValue());
+            medReservations.add(medReservation);
         }
+        EPrescription ePrescription = EPrescription.builder()
+                .id(null)
+                .code(ePrescriptionDTO.getCode())
+                .medicines(medReservations)
+                .issueDate(LocalDate.now())
+                .patient(patient)
+                .build();
 
+        mailService.sendEPrescriptionInfo(ePrescription);
+
+        //this.ePrescriptionService.save(ePrescription);
         this.pharmacyService.save(pharmacy);
         this.userService.save(patient);
-
 
         return 0;
     }

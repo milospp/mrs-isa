@@ -11,9 +11,9 @@
 
       <div class="row subsection">
         <div class="col-md-12">
-
+<br>
+<br>
           <div>
-            <h2>TODO AUTH!! More info</h2>
             <ul class="nav nav-tabs">
               <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#tab-alergies">Alergies</a></li>
               <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab-reservations">Reservations</a></li>

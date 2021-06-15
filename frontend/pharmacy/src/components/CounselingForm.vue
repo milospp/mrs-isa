@@ -124,7 +124,7 @@ export default {
   data: function () {
     return {
       appointmentRequest: {
-        startTime: "2021-05-04T03:00",
+        startTime: "2021-06-20T11:00",
         durationInMins: 30
       },
       workList: null,
