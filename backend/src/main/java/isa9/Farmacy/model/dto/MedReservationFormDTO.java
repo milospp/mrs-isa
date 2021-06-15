@@ -1,5 +1,6 @@
 package isa9.Farmacy.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import isa9.Farmacy.model.ExaminationStatus;
 import isa9.Farmacy.model.TypeOfReview;
 import lombok.*;
@@ -23,6 +24,7 @@ public class MedReservationFormDTO {
     private Long patientId;
     private int quantity;
 
+    @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate expirityDate;
 
 }

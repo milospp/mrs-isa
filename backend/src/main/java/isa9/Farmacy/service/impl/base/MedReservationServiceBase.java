@@ -7,6 +7,7 @@ import isa9.Farmacy.model.dto.MedReservationDTO;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
 import isa9.Farmacy.service.*;
 import isa9.Farmacy.utils.MailService;
+import isa9.Farmacy.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -136,7 +137,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'
         int targetStringLength = 10;
-        Random random = new Random();
+        Random random = Utils.getRand();
 
         String generatedString = random.ints(leftLimit, rightLimit + 1)
                 .limit(targetStringLength)

@@ -48,7 +48,7 @@ public class dbOfferService extends OfferServiceBase implements OfferService {
     public List<Offer> getOffersForOrder(Long orderId) {
         List<Offer> povratna = new ArrayList<>();
         for (Offer o : this.offerRepository.findAll())
-            if (o.getOrder().getId() == orderId)
+            if (o.getOrder().getId().equals( orderId ))
                 povratna.add(o);
         return povratna;
     }
@@ -59,7 +59,7 @@ public class dbOfferService extends OfferServiceBase implements OfferService {
         Pharmacy apoteka = o.getOrder().getPharmacy();
         for (MedicineQuantity mq : o.getOrder().getAllMedicines()) {
             for (MedicineInPharmacy mp : apoteka.getMedicines()) {
-                if (mq.getMedicine().getCode() == mp.getMedicine().getCode()) {
+                if (mq.getMedicine().getCode().equals( mp.getMedicine().getCode() )) {
                     mp.setInStock(mq.getQuantity() + mp.getInStock());
                     break;
                 }
@@ -76,7 +76,7 @@ public class dbOfferService extends OfferServiceBase implements OfferService {
         Supplier dobavljac = o.getSupplier();
         for (MedicineQuantity mq : o.getOrder().getAllMedicines()) {
             for (MedicineAtSupplier ms : dobavljac.getMedicinesInStock()) {
-                if (mq.getMedicine().getCode() == ms.getQuantity().getMedicine().getCode()) {
+                if (mq.getMedicine().getCode().equals( ms.getQuantity().getMedicine().getCode() )) {
                     ms.getQuantity().setQuantity(mq.getQuantity() + ms.getQuantity().getQuantity());
                     break;
                 }

@@ -5,7 +5,6 @@ import isa9.Farmacy.model.Supplier;
 import isa9.Farmacy.repository.MedAtSupplierRepository;
 import isa9.Farmacy.repository.MedicineRepository;
 import isa9.Farmacy.service.MedicineAtSupplierService;
-import isa9.Farmacy.service.UserService;
 import isa9.Farmacy.service.impl.base.MedicineAtSupplierServiceBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -20,13 +19,11 @@ import java.util.List;
 public class dbMedAtSupplierService extends MedicineAtSupplierServiceBase implements MedicineAtSupplierService {
     private final MedAtSupplierRepository medAtSupplierRepository;
     private final MedicineRepository medicineRepository;
-    private final UserService userService;
 
     @Autowired
-    public dbMedAtSupplierService(MedAtSupplierRepository medAtSupplierRepository, MedicineRepository medicineRepository, UserService userService){
+    public dbMedAtSupplierService(MedAtSupplierRepository medAtSupplierRepository, MedicineRepository medicineRepository){
         this.medAtSupplierRepository = medAtSupplierRepository;
         this.medicineRepository = medicineRepository;
-        this.userService = userService;
     }
 
     @Override

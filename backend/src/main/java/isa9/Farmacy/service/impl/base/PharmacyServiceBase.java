@@ -4,6 +4,7 @@ import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.EPrescriptionDTO;
 import isa9.Farmacy.model.dto.PharmacySearchDTO;
 import isa9.Farmacy.service.*;
+import isa9.Farmacy.utils.Geo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -42,6 +43,7 @@ public abstract class PharmacyServiceBase implements PharmacyService {
 
     @Override
     public int reduceQuantity(Pharmacy pharmacy, Medicine medicine, int resQuantity) {
+        // TODO: Prepraviti da se dobavlja iz repo
         MedicineInPharmacy mip = pharmacy.getMedicines().stream().filter(m -> m.getMedicine().equals(medicine)).findFirst().get();
         int quantity = mip.getInStock();
         if(quantity == 0) return 1;                 // nema ga na stanju
@@ -84,6 +86,9 @@ public abstract class PharmacyServiceBase implements PharmacyService {
                 .filter(p -> pharmacySearchDTO.getName().isEmpty() || p.getName().toLowerCase().contains(pharmacySearchDTO.getName().toLowerCase()))
                 .filter(p -> pharmacySearchDTO.getAddressString().isEmpty() || (p.getAddress().getCity() + p.getAddress().getState() + p.getAddress().getStreet()).toLowerCase().contains(pharmacySearchDTO.getAddressString()))
                 .filter(p -> p.getRating() >= pharmacySearchDTO.getMinRating() && p.getRating() <= pharmacySearchDTO.getMaxRating())
+                .filter(p -> pharmacySearchDTO.getDistance() == 0 || pharmacySearchDTO.getDistance() >= Geo.distanceInKmBetweenEarthCoordinates(
+                        pharmacySearchDTO.getLocation().getLatitude(), pharmacySearchDTO.getLocation().getLongitude(), p.getAddress().getLatitude(), p.getAddress().getLongitude()
+                ) )
                 .sorted(comp).collect(Collectors.toList());
     }
 

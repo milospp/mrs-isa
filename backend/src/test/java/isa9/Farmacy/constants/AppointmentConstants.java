@@ -1,10 +1,12 @@
 package isa9.Farmacy.constants;
 
 import isa9.Farmacy.model.*;
-import isa9.Farmacy.model.dto.ConsultingAppointmentReqDTO;
+import isa9.Farmacy.model.dto.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,6 +14,74 @@ import java.util.List;
 import java.util.Set;
 
 public class AppointmentConstants {
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d HH:mm:ss");
+
+    public static final Long AP_FREE_ID = 6L;
+    public static final String AP_FREE_START_TIME = LocalDate.now().atTime(15,0).plusDays(20).format(formatter);
+    public static final double AP_FREE_PRICE = 350.0;
+    public static final int AP_FREE_DURATION = 30;
+    public static final String AP_FREE_TYPE = "EXAMINATION";
+    public static final Long AP_FREE_DOCTOR_ID = 11L;
+    public static final String AP_FREE_DOCTOR_NAME = "Gordan";
+    public static final String AP_FREE_DOCTOR_SURNAME = "Popović";
+    public static final Long AP_FREE_PHARMACY_ID = 1L;
+    public static final String AP_FREE_PHARMACY_NAME = "Prima";
+    public static final Object AP_FREE_EXAMINATION = null;
+
+
+    public static final Long AP_DERM_ID = 6L;
+    public static final LocalDateTime AP_DERM_START_TIME = LocalDate.now().plusDays(20).atTime(15,0);
+    public static final LocalDateTime AP_CONS_START_TIME = LocalDate.now().plusDays(60).atTime(11,0);
+
+
+
+
+
+    public static ConsultingAppointmentReqDTO getConsulstingRequest() {
+        ConsultingAppointmentReqDTO request = new ConsultingAppointmentReqDTO();
+        request.setDurationInMins(45);
+        request.setPharmacistId(12L);
+        request.setPharmacyId(1L);
+        request.setStartTime(AP_CONS_START_TIME);
+        return request;
+    }
+
+    public static AppointmentDTO getConsultingResult() {
+        PatientDTO patient = new PatientDTO();
+        patient.setId(1L);
+        DoctorDTO doctotr = new DoctorDTO();
+        doctotr.setId(12L);
+
+        AppointmentDTO appointmentDTO = new AppointmentDTO();
+        appointmentDTO.setDoctor(doctotr);
+        appointmentDTO.setDurationInMins(45);
+        appointmentDTO.setExamination(ExaminationDTO.builder().patient( patient ).status(ExaminationStatus.PENDING).type(TypeOfReview.COUNSELING).build() );
+        appointmentDTO.setPharmacy(PharmacyDTO.builder().id(1L).build());
+        appointmentDTO.setPrice(30);
+        appointmentDTO.setStartTime(AP_CONS_START_TIME);
+        appointmentDTO.setType(TypeOfReview.COUNSELING);
+        return appointmentDTO;
+    }
+
+
+    public static AppointmentDTO getDermAppointmentResult() {
+
+        PatientDTO patient = new PatientDTO();
+        patient.setId(1L);
+        DoctorDTO doctotr = new DoctorDTO();
+        doctotr.setId(11L);
+
+        AppointmentDTO appointmentDTO = new AppointmentDTO();
+        appointmentDTO.setDoctor(doctotr);
+        appointmentDTO.setDurationInMins(30);
+        appointmentDTO.setExamination(ExaminationDTO.builder().patient( patient ).status(ExaminationStatus.PENDING).type(TypeOfReview.EXAMINATION).build() );
+        appointmentDTO.setPharmacy(PharmacyDTO.builder().id(1L).build());
+        appointmentDTO.setPrice(350);
+        appointmentDTO.setStartTime(AP_DERM_START_TIME);
+        appointmentDTO.setType(TypeOfReview.EXAMINATION);
+        return appointmentDTO;
+    }
+
 
     public static ConsultingAppointmentReqDTO getConsultingReq(){
         ConsultingAppointmentReqDTO consultingAppointmentReqDTO = new ConsultingAppointmentReqDTO();
