@@ -1,89 +1,77 @@
 <template>
-    <div id="map"></div>
+  <div ref="map-root"
+       style="width: 100%; height: 500px;">
+  </div>
 </template>
+
 <script>
+  import View from 'ol/View';
+  import Map from 'ol/Map';
+  import TileLayer from 'ol/layer/Tile';
+  import OSM from 'ol/source/OSM';
+  import Feature from 'ol/Feature';
+  import Point from 'ol/geom/Point';
+  import * as proj from 'ol/proj';
+  import Style from 'ol/style/Style';
+  import Icon from 'ol/style/Icon';
+  import * as layer from 'ol/layer';
+  import Vector from 'ol/source/Vector';
+  import 'ol/ol.css';
 
-import Map from 'ol/Map';
-import View from 'ol/View';
-import {Tile as TileLayer} from 'ol/layer';
-import {Vector as VectorLayer} from 'ol/layer';
-import {OSM, Vector as VectorSource} from 'ol/source';
-import { defaults as defaultControls, ScaleLine } from 'ol/control';
-import * as proj from 'ol/proj';
-import * as ol from 'ol';
-import * as geom from 'ol/geom';
-import {Point as tacka} from 'ol/geom';
-import {Feature as Feature} from 'ol/Feature';
-import { DragFeature as DragFeature } from 'ol/control';
-import 'ol/ol.css'
-
-
-export default {
+  export default {
+    name: 'Maps',
     data() {
-         return {
-                trenutnaPozicija: {lat: 45.252600, lon: 19.830002, adresa: "Cirpanova 51, Novi Sad"}
-            }
+        return {
+            lon: null,
+            lat: null,
+            map: null,
+            markerFeature: null,
+        }
     },
-    mounted() { 
-        this.kreiranjeMape();
+    mounted() {
+        setTimeout(this.inicijalizujMapu, 200);
     },
     methods: {
-       obeleziTackom(koordinate) {
-        //    ovo zavisi da li korisnik odabere ok
-           this.trenutnaPozicija.lon = koordinate[0];
-           this.trenutnaPozicija.lat = koordinate[1];
-            fetch('http://nominatim.openstreetmap.org/reverse?format=json&lon=' + this.trenutnaPozicija.lon + '&lat=' + this.trenutnaPozicija.lat)
-                 .then(function(response) {
-                        return response.json();
-                    }).then(function(json) {
-                        console.log(json);
-                        
-                    });
-        },
-        kreiranjeMape() {
-            let self = this;
-            // kreiranje vektora
-            var vectorSource = new VectorSource({});
-            var vektor = new VectorLayer({
-                source: vectorSource,
-            });
-            // kreiranje prikaza
-            var prikaz = new TileLayer({
-                source: new OSM(),
-            });
-            // kreiranje mape
-            var mapa = new Map({
-                controls: defaultControls().extend([
-                    new ScaleLine({
-                        units: "degrees",
-                    }),
-                ]),
-                target: "map",
-                layers: [prikaz, vektor],
-                view: new View({
-                    maxZoom: 25,
-                    center: [	2247066.76, 	5659454.38],
-                    zoom: 8
-                    }),
-                });
-            mapa.on('singleclick', function (evt) {
-                var koordinate = proj.toLonLat(evt.coordinate);
-                var kruzic = new ol.Feature(new tacka(proj.fromLonLat(koordinate)));
-                vectorSource.addFeature(kruzic);
-                self.obeleziTackom(koordinate);
+        inicijalizujMapu() {
+            var koordinatee = JSON.parse(localStorage.getItem("adresa"));
 
+            this.markerFeature = new Feature({
+                geometry: new Point(proj.fromLonLat([koordinatee[0], koordinatee[1]])),
+            });
+
+            this.markerFeature.setStyle(new Style({
+                image: new Icon({
+                    scale: 1,
+                    src: 'https://openlayers.org/en/latest/examples/data/icon.png'
+                })
+            }));
+
+            var vectorLayer = new layer.Vector({
+                source: new Vector({
+                    features: [this.markerFeature],
+					wrapX: true,
+                }),
+				wrapX: false,
+            });
+            
+            const centar = proj.transform(koordinatee, 'EPSG:4326', 'EPSG:3857');
+
+            new Map({
+                target: this.$refs['map-root'],
+                layers: [
+                    new TileLayer({
+                        source: new OSM({wrapX:false})
+                    }),
+                    vectorLayer
+                ],
+                view: new View({
+                    zoom: 17,
+                    center: centar,
+                    }),
             });
         },
-    }
-};
+    },
+  }
 </script>
-<style>
-#map {
-  position: absolute;
-  margin: 1%;
-  padding: 1%;
-  height: 700px;
-  width:  100%;
-  text-align: center;
-}
+<style scoped>
 </style>

@@ -402,7 +402,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     }
 
     @Override
-    //@Transactional
+    @Transactional // TODO Isidora did this...
     public Boolean isDoctorOccupied(LocalDateTime start, LocalDateTime end, Long doctorId) {
         List<Appointment> appointments = getAllAppointmentsInInterval(start, end);
         for (Appointment appointment : appointments){

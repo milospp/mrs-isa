@@ -1,4 +1,4 @@
-insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '2', 'Serbia', 'Nemanjina', 19.837380032838656, 45.25170720477278);
+insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '181', 'Serbia', 'Bulevar Oslobodjenja', 19.837380032838656, 45.25170720477278);
 insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '33', 'Serbia', 'Laze Kostića', 20, 45);
 insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '21', 'Serbia', 'Brodarska', 20, 45);
 insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '11', 'Serbia', 'Vuka Karadžića', 20, 45);
@@ -28,8 +28,8 @@ insert into address (city, number, state, street, longitude, latitude) values ('
 insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '30', 'Serbia', 'Terazije', 20, 45);
 insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '29', 'Serbia', 'Avalska', 20, 45);
 insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '8', 'Serbia', 'Trg slobode', 20, 45);
-insert into address (city, number, state, street, longitude, latitude) values ('Beograd', '41', 'Serbia', 'Milutina Milankovića', 19.849610906323882, 45.244606911501705);
-insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '128', 'Serbia', 'Bulevar oslobođenja', 19.7535234496781, 45.250347642880996);
+insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '41', 'Serbia', 'Doktora Ilije Djurdjevica', 19.849610906323882, 45.244606911501705);
+insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '128', 'Serbia', 'Omladinska', 19.7535234496781, 45.250347642880996);
 insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '43', 'Serbia', 'Bulevar oslobođenja', 19.736773424361914, 45.325864824612886);
 insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '20', 'Serbia', 'Stražilovska', 20, 45);
 insert into address (city, number, state, street, longitude, latitude) values ('Novi Sad', '23', 'Serbia', 'Vuka Karadžića', 20, 45);
@@ -90,7 +90,7 @@ insert into medicine_specifications (side_effects, daily_intake, structure) valu
 insert into medicine_specifications (side_effects, daily_intake, structure) values ('Sistemska alergija, lokalna alergija, Lipodistrofija','Doktor daje instrukcije za dozu','insulin');
 
 --medicine
-insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('AZ45', 'Hemofarm', 'Methyldopa', 'Može uzrokovati pospanost', 1, 3, 'pills', 1, 'Alfa-adrenergicki agonist');
+insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('AZ45', 'Hemofarm', 'Methyldopa', 'Može uzrokovati pospanost', 0, 3, 'pills', 1, 'Alfa-adrenergicki agonist');
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('BZ55', 'Kinezi', 'Sinopharm', 'vakcina', 0, 5, 'pills', 2, 'some type idl');
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('FAR-123', 'Galenika','Farin','Piti isključivo prema receptu',1,2,'tablets',3,'antikoagulans');
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('ANB-001', 'Galenika', 'Anbol', 'Ne uzimati ako uzimate lekove protiv zgrušavanja krvi npr. varfarin', 1, 1, 'tablets', 4, 'NSAIL');
@@ -125,10 +125,12 @@ insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (11, '11:
 insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 3);
 
 --med price
-insert into med_price(price, start_date, old_price, price_type) values (200, current_date - 10, 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (250, current_date - 10, 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (100, current_date - 10, 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (150, current_date - 10, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (200, CURRENT_DATE - 10 + CURRENT_TIME, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (100, CURRENT_DATE - 10 + CURRENT_TIME, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (250, CURRENT_DATE - 10 + CURRENT_TIME, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (150, CURRENT_DATE - 10 + CURRENT_TIME, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (230, CURRENT_DATE - 10 + CURRENT_TIME, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (170, CURRENT_DATE - 10 + CURRENT_TIME, 0, 0);
 
 --med catalog in pharmacy
 insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (0, 1,1,1);
@@ -142,12 +144,18 @@ update med_price SET medicine_in_pharmacy_id = 3 WHERE id = 3;
 --
 insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (12000, 4,4,1);
 update med_price SET medicine_in_pharmacy_id = 4 WHERE id = 4;
+--
+insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (7500, 5,4,3);
+update med_price SET medicine_in_pharmacy_id = 5 WHERE id = 5;
+--
+insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (9000, 6,3,3);
+update med_price SET medicine_in_pharmacy_id = 6 WHERE id = 6;
 
 --appointments
 -- id 1
 --insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 200, current_timestamp + INTERVAL '3day', 0);
 --<<<<<<< TECHNICAL-US-150
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 300, CURRENT_DATE + 1 + TIME '08:00'  , 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 300, CURRENT_DATE + TIME '15:00'  , 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 400, CURRENT_DATE + 2 + TIME '09:00', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 500, CURRENT_DATE + 3 + TIME '10:00', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 330, CURRENT_DATE + 4 + TIME '11:00', 0);
@@ -315,3 +323,6 @@ values ('fakecode2', current_date + 2 + current_time, 5, current_date - 2 + curr
 -- vacations
 insert into vacation (doctor_id, end_date, pharmacy_id, admin_id, reason, start_date, status, type, why_not) values (11, '2021-06-26', 1, null, 'eto', '2021-06-22', 1, 0, null);
 insert into doctor_vacations (doctor_id, vacations_id) values (11, 1);
+
+-- complaints
+insert into complaint (description, author_id, pharmacy_id) values ('looose', 1, 1);

@@ -11,6 +11,7 @@ import isa9.Farmacy.service.impl.base.AppointmentServiceBase;
 import isa9.Farmacy.support.DateTimeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -224,7 +225,7 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
     }
 
     @Override
-    @Transactional
+    @Transactional // TODO Isidora did this...
     public boolean bookFromAppointment(DateTimeDTO dateTime) {
         System.out.println(dateTime);
 
@@ -303,5 +304,17 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
         }
 
         return !badTime;
+    }
+
+    @Override
+    @Scheduled(cron="0 1 0 * * ?") // runs every day at midnight
+    public void checkForNotHeldAppointments() {
+        List<Appointment> pastBookedAppointments = findAll().stream().filter(x -> x.getStartTime().plusMinutes(x.getDurationInMins()).toLocalDate().isBefore(LocalDateTime.now().toLocalDate()) && x.getExamination() != null).collect(Collectors.toList());
+        for (Appointment a : pastBookedAppointments) {
+            if (a.getExamination().getStatus().equals(ExaminationStatus.PENDING)) {
+                a.getExamination().setStatus(ExaminationStatus.NOT_HELD);
+                save(a);
+            }
+        }
     }
 }

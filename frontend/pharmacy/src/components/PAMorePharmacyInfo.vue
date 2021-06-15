@@ -226,6 +226,13 @@
         <div class="modal-body" align="left">Name: <input type="text" v-model="pharmacyName" placeholder=pharmacyName/></div>
         <div class="modal-body" align="left">Description: <input type="text" v-model="pharmacyDesc" placeholder=pharmacyDesc/></div>
         <div class="modal-body" align="left">Consulting Price: <input type="text" v-model="pharmacyConsulting" placeholder=pharmacyDesc/></div>
+        <div class="modal-body" align="left">Address</div>
+        <div class="modal-body" align="left">State: <input type="text" v-model="pharmacyState" placeholder=pharmacyState/></div>
+        <div class="modal-body" align="left">City: <input type="text" v-model="pharmacyCity" placeholder=pharmacyCity/></div>
+        <div class="modal-body" align="left">Street and number: 
+          <input type="text" v-model="pharmacyStreet" placeholder=pharmacyStreet size="17"/>&nbsp;
+          <input type="text" v-model="pharmacyNumber" placeholder=pharmacyNumber size="5"/>
+        </div>
          <div class="modal-footer">
           <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#obavestenje" data-dismiss="modal" v-on:click.prevent="proveraApoteka()">Save changes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -417,6 +424,7 @@ import OrderDataService from '../service/OrderDataService.js';
 import MedicineDataService from '../service/MedicineDataService.js';
 import VacationDataService from '../service/VacationDataService.js';
 import AuthService from "../service/AuthService.js";
+import axios from "axios";
 
 export default {
     name: 'MorePharmacyInfo',
@@ -430,6 +438,7 @@ export default {
             izabraniLek: null, novaCena: 0, procenti: 0, krajAkcije: null, izmene: true,
             akcijePromocije: [], 
             zahteviZaGodisnji: [], odabraniZahtev: null, potvrdaZahteva: null, zastoNe: null,
+            pharmacyState: null, pharmacyStreet: null, pharmacyCity: null, pharmacyNumber: null,
         };
       
     },
@@ -441,6 +450,10 @@ export default {
           this.pharmacyName = this.pharmacy.name;
           this.pharmacyDesc = this.pharmacy.description;
           this.pharmacyConsulting = this.pharmacy.pricePerHour;
+          this.pharmacyState = this.pharmacy.address.state;
+          this.pharmacyCity = this.pharmacy.address.city;
+          this.pharmacyStreet = this.pharmacy.address.street;
+          this.pharmacyNumber = this.pharmacy.address.number;
           this.osveziUpite();
         });
       this.osveziPorudzbine();
@@ -489,11 +502,43 @@ export default {
           this.poruka = "Name, description and price can't be empty.";
           return false;
         }
-        this.pharmacy.name = this.pharmacyName;
-        this.pharmacy.description = this.pharmacyDesc;
-        this.pharmacy.pricePerHour = this.pharmacyConsulting;
-        PharmacyDataService.setPharmacy(this.pharmacy)
-          .then(response => {this.poruka = "You successfaly changed pharmacy info.";});
+        if (this.pharmacyState.length == 0 || this.pharmacyStreet.length == 0 
+          || this.pharmacyCity.length == 0 || this.pharmacyNumber.length == 0) {
+          this.poruka = "You must enter hole address.";
+          return false;
+        }
+        const url = "https://nominatim.openstreetmap.org/search/" + this.pharmacyCity + ", "
+           + this.pharmacyStreet + " " + this.pharmacyNumber;
+        axios.get(url, {
+            params: {
+              format: "json",
+              limit: 1,
+              "accept-language": "en",
+            },
+          })
+          .then((response) => {
+            if (response.data && response.data.lenght != 0) {
+              const { lon, lat } = response.data[0];
+              
+              this.pharmacy.name = this.pharmacyName;
+              this.pharmacy.description = this.pharmacyDesc;
+              this.pharmacy.pricePerHour = this.pharmacyConsulting;
+              
+              this.pharmacy.address.state = this.pharmacyState;
+              this.pharmacy.address.city = this.pharmacyCity;
+              this.pharmacy.address.street = this.pharmacyStreet;
+              this.pharmacy.address.number = this.pharmacyNumber;
+              this.pharmacy.address.longitude = lon;
+              this.pharmacy.address.latitude = lat;
+
+              PharmacyDataService.setPharmacy(this.pharmacy)
+                .then(response => {this.poruka = "You successfully changed pharmacy info.";});
+              }
+          })
+          .catch(() => {
+          this.poruka = "Address is not found";
+          });
+        
       },
       filterNarudzbenica() {
         this.narudzbeniceZaIspis = [];

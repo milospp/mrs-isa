@@ -2,83 +2,83 @@
      <form v-on:submit.prevent="proveraForme(this)">
         <table>
             <tr>
-                <td align="right">Name:</td>
+                <td align="left">Name:</td>
                 <td colspan="2">
                     <input 
-                        type="text" id="name" v-model="info.registerData.name" required="required"
+                        type="text" class="form-control" id="name" v-model="info.registerData.name" required="required"
                         pattern="[A-Z][a-zA-Z]*" title="Name must start with capital letter"  size="31"
                     ></td>
             </tr>
 
             <tr>
-                <td align="right">Surname:</td>
+                <td align="left">Surname:</td>
                 <td colspan="2">
                     <input 
-                        type="text" id="surname" v-model="info.registerData.surname" required="required"
+                        type="text" class="form-control" id="surname" v-model="info.registerData.surname" required="required"
                         pattern="[A-Z][a-zA-Z]*" title="Surname must start with capital letter"  size="31"
                     ></td>
             </tr>
             
             <tr>
-                <td align="right">Email:</td>
+                <td align="left">Email:</td>
                 <td colspan="2">
                     <input 
-                        type="text" id="email" v-model="info.registerData.email" required="required"  size="31"
+                        type="left" class="form-control" id="email" v-model="info.registerData.email" required="required"  size="31"
                         pattern="[a-z0-9._%+-]+@[a-z0-9.-]+[.][a-z]{2,}$" title="Email must be in form example@yahoo.com"
                     ></td>
             </tr>
             
             <tr>
-                <td align="right">Initial password:</td>
+                <td align="left">Initial password:</td>
                 <td colspan="2">
                     <input 
-                        type="text" id="password" v-model="info.registerData.password" required="required"
+                        type="left" class="form-control" id="password" v-model="info.registerData.password" required="required"
                         pattern="[a-zA-Z0-9]{6,}" title="Password must have minimum 6 symbols"  size="31"
                     ></td>
             </tr>
 
             <tr>
-                <td align="right">Country:</td>
+                <td align="left">Country:</td>
                 <td colspan="2">
                     <input 
-                        type="text" id="address" v-model="info.registerData.address.state" required="required"
+                        type="text" class="form-control" id="address" v-model="info.registerData.address.state" required="required"
                             pattern="[A-Z][a-zA-Z| ]*" title="State must start with capital letter"  size="31"
                     ></td>
             </tr>
             
             <tr>
-                <td align="right">City:</td>
+                <td align="left">City:</td>
                 <td colspan="2">
                     <input 
-                        type="text" id="address" v-model="info.registerData.address.city" required="required"
+                        type="text" class="form-control" id="address" v-model="info.registerData.address.city" required="required"
                             pattern="[A-Z][a-zA-Z| ]*"  title="City must start with capital letter"  size="31"
                     ></td>
             </tr>
 
             <tr>
-                <td align="right">Address and number:</td>
+                <td align="left">Address and number:</td>
                 <td>
                     <input 
-                        type="text" id="address" v-model="info.registerData.address.street" required="required"
+                        type="text" class="form-control" id="address" v-model="info.registerData.address.street" required="required"
                             pattern="[A-Z][a-zA-Z0-9| ]*" title="Address must start with capital letter"
                     ></td>
                 <td>
                     <input 
-                        type="text" id="address" v-model="info.registerData.address.number" required="required" size="5" 
+                        type="text" class="form-control" id="address" v-model="info.registerData.address.number" required="required" size="5" 
                         pattern="[0-9][0-9a-zA-Z|/| ]*" title="Address number can have number, letters and /"
                     ></td>
             </tr>
 
             <tr>
-                <td align="right">Phone numer:</td>
+                <td align="left">Phone numer:</td>
                 <td colspan="2"><input 
-                    type="text" id="phoneNumber" v-model="info.registerData.phoneNumber" required="required"
+                    type="text" id="phoneNumber" class="form-control" v-model="info.registerData.phoneNumber" required="required"
                     pattern="[0-9]*" title="Phone number must number" size="31"
                 ></td>
             </tr>
             
             <tr>
-                <td align="right">Working hours:</td>
+                <td align="left">Working hours:</td>
                 <td colspan="2" align="left">
                     <span>&ensp; from &nbsp;</span>
                     <input 
@@ -129,22 +129,22 @@ export default {
         return {
             info: {
                 registerData: {
-                    name : "Farnaceyt",
-                    surname : "Farm",
-                    email : "farm@maildrop.cc",
-                    username : "farm",
-                    password : "password",
+                    name : "",
+                    surname : "",
+                    email : "",
+                    username : "",
+                    password : "",
                     address : {
-                        state: "Stat",
-                        city: "City",
-                        street: "Street",
-                        number: "123",
+                        state: "",
+                        city: "",
+                        street: "",
+                        number: "",
                     },
-                    phoneNumber : "111222333",
+                    phoneNumber : "",
                     
                 },
-                startHour: "10:00",
-                endHour: "12:00",
+                startHour: "",
+                endHour: "",
             },
             poruka: "Wait... Your require is in processing", 
             porukaOk: false,

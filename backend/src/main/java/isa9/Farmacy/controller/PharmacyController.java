@@ -20,9 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000", "https://pharmacy9.herokuapp.com"})
+@CrossOrigin(origins = {"http://localhost:3000", "https://pharmacy-tim9.herokuapp.com", "https://pharmacy9.herokuapp.com"})
 @RequestMapping("/api/pharmacies")
 public class PharmacyController {
 
@@ -45,12 +46,14 @@ public class PharmacyController {
 
 
     @GetMapping("")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
         List<PharmacyDTO> resultDTOS = pharmacyToPharmacyDTO.convert(this.pharmacyService.findAll());
         return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
     }
 
     @PostMapping("search")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<PharmacyDTO>> SearchPharmacies(@RequestBody(required=false) PharmacySearchDTO pharmacySearchDTO) {
         List<Pharmacy> pharmacies = this.pharmacyService.findAll();
         pharmacies = pharmacyService.filterPharmacies(pharmacies, pharmacySearchDTO);
@@ -75,6 +78,7 @@ public class PharmacyController {
     }
   
     @GetMapping("{id}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<PharmacyDTO> getPharmacy(@PathVariable Long id) {
         Pharmacy pharmacy = pharmacyService.findOne(id);
 
@@ -101,6 +105,7 @@ public class PharmacyController {
     }
 
     @GetMapping("working/{doctorId}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<WorkDTO>> getPharmacistPharmacy(@PathVariable Long doctorId) {
         Doctor doctor = userService.getDoctorById(doctorId);
         List<Work> work = pharmacyService.findDoctorsWork(doctor);
@@ -128,6 +133,7 @@ public class PharmacyController {
         if (apotekaDTO.getPricePerHour() != null) apoteka.setPricePerHour(apotekaDTO.getPricePerHour());
         apoteka.setName(apotekaDTO.getName());
         apoteka.setDescription(apoteka.getDescription());
+        apoteka.setAddress(apotekaDTO.getAddress());
         this.pharmacyService.save(apoteka);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
@@ -164,6 +170,7 @@ public class PharmacyController {
     }
 
     @GetMapping("{id}/rating")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<PharmacyDTO> getMedicineRating(@PathVariable Long id){
         Pharmacy pharmacy = pharmacyService.findOne(id);
         PharmacyDTO dto = pharmacyToPharmacyDTO.convert(pharmacy);
@@ -173,6 +180,7 @@ public class PharmacyController {
 
 
     @GetMapping("{pharmacyId}/rating/user/{userId}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<RatingDTO> getUserRatingValue(@PathVariable Long pharmacyId, @PathVariable Long userId){
         Rating rating = ratingService.getPatientPharmacyRate(userId, pharmacyId);
 
@@ -181,6 +189,7 @@ public class PharmacyController {
     }
 
     @PostMapping("{id}/rating")
+    @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<RatingDTO> ratePharmacy(@PathVariable Long id, @RequestBody RatingDTO ratingDTO){
         Rating rating = ratingService.ratePharmacy(id, ratingDTO.getUser(), ratingDTO.getRating());
 
@@ -189,6 +198,7 @@ public class PharmacyController {
     }
 
     @GetMapping("{pharmacyId}/rating/user/{userId}/can-rate")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Boolean> getCanUserRate(@PathVariable Long pharmacyId, @PathVariable Long userId){
         Boolean result = ratingService.canUserRate(userId, pharmacyId);
 
@@ -225,9 +235,10 @@ public class PharmacyController {
     }
 
     @GetMapping("/subscriptions/{id}")
-    @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<List<PharmacyDTO>> getPatientsSubscriptions(@PathVariable Long id){
-        Patient patient = (Patient) this.userService.findOne(id);
+        User pacijent = this.userService.findOne(id);
+        if (pacijent.getClass() != Patient.class) return new ResponseEntity<>(null, HttpStatus.OK);
+        Patient patient = (Patient) pacijent;
 
         List<Pharmacy> subscriptions = new ArrayList<>();
 
@@ -236,6 +247,20 @@ public class PharmacyController {
         }
 
         return new ResponseEntity<>(this.pharmacyToPharmacyDTO.convert(subscriptions), HttpStatus.OK);
+    }
+
+    @PostMapping("/eligibleForEPrescription")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<List<PharmacyDTO>> getEligibleForEPrescription(@RequestBody EPrescriptionDTO ePrescriptionDTO){
+        List<Pharmacy> eligible = this.pharmacyService.findEligibleForEPrescription(ePrescriptionDTO);
+        return new ResponseEntity<>(this.pharmacyToPharmacyDTO.convert(eligible), HttpStatus.OK);
+    }
+
+    @PostMapping("/totalsInEligible")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<Map<Long, Double>> getTotalsInEligible(@RequestBody EPrescriptionDTO dto){
+        List<Pharmacy> pharmacyList = this.pharmacyService.findEligibleForEPrescription(dto);
+        return new ResponseEntity<>(this.pharmacyService.calculateTotalsInPharmacies( pharmacyList, dto), HttpStatus.OK);
     }
 }
 
