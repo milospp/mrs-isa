@@ -226,7 +226,10 @@ public abstract class MedReservationServiceBase implements MedReservationService
             pharmacyService.save(apoteka);
             return null;
         }
-                                                // na stanju > poruceno
+
+        // na stanju > poruceno
+        mailService.sendReservationInfo(medReservation);
+
         userService.save(patient);
         return medReservation;
 

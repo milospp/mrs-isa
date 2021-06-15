@@ -48,6 +48,7 @@ import AdminResponses from '@/views/AdminResponses.vue'
 import SysAdminAdd from '@/views/SysAdminAdd.vue'
 import LoyaltyProgramView from '@/views/LoyaltyProgramView.vue'
 import ePrescriptionPage from '@/views/ePrescriptionPage.vue'
+import ActivatePatientView from '@/views/ActivatePatientView.vue'
 
 
 const routes = [
@@ -303,6 +304,11 @@ const routes = [
     path: '/ePrescription',
     name: 'ePrescriptionPage',
     component: ePrescriptionPage
+  },
+  {
+    path: '/activatePatient',
+    name: 'ActivatePatientView',
+    component: ActivatePatientView
   }
 
   // {
