@@ -291,6 +291,41 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("all-users")
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> resultDTOS = new ArrayList<>();
+        for (User user : this.userService.findAll()){
+            RolesDTO role = RolesDTO.SYS_ADMIN;
+            int roleId = user.getRole().getId().intValue();
+            switch(roleId){
+                case 1:
+                    role = RolesDTO.SYS_ADMIN;
+                    break;
+                case 2:
+                    role = RolesDTO.PHARMACY_ADMIN;
+                    break;
+                case 3:
+                    role = RolesDTO.PATIENT;
+                    break;
+                case 4:
+                    role = RolesDTO.DERMATOLOGIST;
+                    break;
+                case 5:
+                    role = RolesDTO.PHARMACIST;
+                    break;
+                case 6:
+                    role = RolesDTO.SUPPLIER;
+                    break;
+                default:
+                    System.out.println("GRESKA ZEZNUO SAM DTO ULOGE");
+            }
+            resultDTOS.add(new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), role, user.getEmail()));
+        }
+
+        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
+
+    }
+
     @GetMapping("all-patients")
     @PreAuthorize("hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
     public ResponseEntity<List<PatientDTO>> getAllPatientsDTO() {
