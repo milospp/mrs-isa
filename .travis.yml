@@ -17,7 +17,7 @@ matrix:
         sonarcloud:
           organization: milospp
           token: 
-            secure: "J7XWuDO0jeI9kRoyYF/ob4HPXFfAaMvwFHNj7BrF6esJjZQ2kWCBr3qWYzl4gV2B7IcmLmJaasvYIo/b0m9pH3ZVmNKUZgO22k4vNdwZjQowtXFFSpQ3HPnrsbG1eDjoXliXbx7BmhUnC+7PLtc2A0RVcJ3DzN3AVRyleQmZyDxSSB8G1dqTmtoBVDgylMA2tIpLoGKE1IKx8njEVWoAXbKmU9AJNFWEGWfQmaNyHv6cm3OKuqT0QB9yCK7duo78fGcCnhSzXYyFy6NyS8/favPmm6oUxpWK/lBdkIbysmsWm10gMMukBaBvGGBRtFPwVfek1OEkiN0jgqdXCDwAjg6NVCap9tCCgObfeqGmgpN6gnTY6ig5HE+3JmQ1swZCWBSe6SYAPTx1s5uzhMEqShJkq+7Z02VHGuAwdc3S065lVUR8BBke0BouYHRatG0ATT+OqzW05on6BT9ywrxrwtEzZFF6vlN6LPtC2Zj+nLGuZWczTCV0SvIRE0GrPaK9DlI5vFvqnCq8IVqktzbHrWFb2YJmF8qZGFMWl8vc1xoFDFEOqhRUHdm/V7CJlJCiqAapVrmKQ/ooAR9yK0ZC8yCxKSglGH1yD7rlJToQ+aHBlJfEl+hiY3SGNiHXOJ5JxZmgMgQy09lMFAB9GKHmI5rQhpKOX/LJpR20KvW+fmM="
+            secure: "Mv/Xbbet1gVnUc8iUKeNuJ8q+Sro/2MffoJfyzMiqL6bGN7X07f+G/X9SDnWwGiTctN39uK8l2DQV+Xki4hAW2B9LyZzB+Y++qwKar8SewMh9zK+PwiZ0uKbXwcwbSpCPMAxbb21DLpkdwQD7GuaOCnRDiVmpjDi2FTKno0BzVwuYMrHwlWt6S7zcRGPQhE/c5v03PnzlLzBm0/1xCCppygA4+oSjLl1AhcXcF0qAiHsmznpRvYrsDBRSTk7BR/3hrQlXZoQBXFvN9HqZq+2NkwHSl8mMKIrg3SADYyIt9fwXZz5h44BCNdOA/s+uSQRkE3u1dv3djuiTbjzo7mTsjiKdAuYrresM5hUZEuLAggk0B+QQjjIPkksfxFrwvgnbtFDnXlF0kYP/BFyFEfrdwodQcYHEnqPSk0sGGgXjEEf7OzmsDQt2U4AgZKe3qGE1xZAHHRzni6v4YtxVxl2Ie/njCHgFIXqojk7KXt/Y1ncCbGXurw/9mlVBC+R61IstTUCXrSSuXtIXmMIWEAxsKRtkjp+YqdDVDuL/3bZgfn+tguSo3hzNtPMSWyjSRD89kMGza/O3aPU4u0Sjdkk5lslEHQQSgmja87mem9a7FCY/KGsehM8BV3W6K+tgKIu59yYaC0VEnWtQKvDiNa6AP5xbY26yi712O1Tm2H2PVI="
 
       script:
         - ./mvnw clean install -DskipTests=false -B
