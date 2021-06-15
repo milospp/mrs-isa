@@ -15,6 +15,8 @@ import java.util.Set;
 
 public class AppointmentConstants {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d HH:mm:ss");
+    private static final DateTimeFormatter timeformatter = DateTimeFormatter.ofPattern("HH:mm");
+    private static final DateTimeFormatter dateformatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public static final Long AP_FREE_ID = 6L;
     public static final String AP_FREE_START_TIME = LocalDate.now().atTime(15,0).plusDays(20).format(formatter);
@@ -34,6 +36,22 @@ public class AppointmentConstants {
     public static final LocalDateTime AP_CONS_START_TIME = LocalDate.now().plusDays(60).atTime(11,0);
 
 
+    public static final Long AP_PH_ID = 7L;
+    public static final String AP_PH_START_TIME = LocalTime.of(8,30).format(timeformatter);
+    public static final String AP_PH_START_DATE = LocalDate.now().plusDays(1).format(dateformatter);
+    public static final double AP_PH_PRICE = 300.0;
+    public static final int AP_PH_DURATION = 30;
+    public static final String AP_PH_TYPE_FOR_CLASS = "counseling";
+    public static final Long AP_PH_DOCTOR_ID = 12L;
+    public static final String AP_PH_DOCTOR_NAME = "Milisav";
+    public static final String AP_PH_DOCTOR_SURNAME = "Nikolić";
+    public static final String AP_PH_PATIENT_NAME = "Maja";
+    public static final String AP_PH_PATIENT_SURNAME = "Marković";
+    public static final Long AP_PH_PHARMACY_ID = 1L;
+    public static final String AP_PH_PHARMACY_NAME = "Prima";
+    public static final Object AP_PH_EXAMINATION_STATUS = "PENDING";
+    public static final String AP_DERM_START_DATE_FREE = LocalDate.of(2021,6,7).toString();
+    public static final String AP_DERM_START_DATE_TAKEN = LocalDate.now().plusDays(3).toString();
 
 
 

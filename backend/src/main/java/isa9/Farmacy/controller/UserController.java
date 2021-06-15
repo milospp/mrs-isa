@@ -90,53 +90,8 @@ public class UserController {
         this.mailService = mailService;
     }
 
-    @GetMapping("tmp-test")
-    public ResponseEntity<Boolean> debug(){
-
-        RatingDoctor rate = new RatingDoctor(null, userService.findOne(1L), 5, userService.getDoctorById(16L));
-        System.out.println("rate = " + rate);
-        ratingService.save(rate);
-
-        return new ResponseEntity<>(true, HttpStatus.OK);
-
-    }
-
-    @GetMapping("all-users")
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<UserDTO> resultDTOS = new ArrayList<>();
-        for (User user : this.userService.findAll()){
-            RolesDTO role = RolesDTO.SYS_ADMIN;
-            int roleId = user.getRole().getId().intValue();
-            switch(roleId){
-                case 1:
-                    role = RolesDTO.SYS_ADMIN;
-                    break;
-                case 2:
-                    role = RolesDTO.PHARMACY_ADMIN;
-                    break;
-                case 3:
-                    role = RolesDTO.PATIENT;
-                    break;
-                case 4:
-                    role = RolesDTO.DERMATOLOGIST;
-                    break;
-                case 5:
-                    role = RolesDTO.PHARMACIST;
-                    break;
-                case 6:
-                    role = RolesDTO.SUPPLIER;
-                    break;
-                default:
-                    System.out.println("GRESKA ZEZNUO SAM DTO ULOGE");
-            }
-            resultDTOS.add(new UserDTO(user.getId(), user.getName(), user.getSurname(), user.getAddress(), user.getPhoneNumber(), role, user.getEmail()));
-        }
-
-        return new ResponseEntity<>(resultDTOS, HttpStatus.OK);
-
-    }
-
     @GetMapping("{id}")
+    @PreAuthorize("hasAuthority('PATIENT') or hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST') or hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN') or hasAuthority('SUPPLIER')")
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id){
         User user = userService.findOne(id);
 
@@ -148,6 +103,7 @@ public class UserController {
     }
 
     @GetMapping("{id}/allergies")
+    @PreAuthorize("hasAuthority('PATIENT') or hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
     public ResponseEntity<List<MedicineDTO>> getUserAlergies(@PathVariable Long id){
         Set<Medicine> allergies = userService.getPatientAllergies(id);
         List<MedicineDTO> dto = medicineToMedicineDTO.convert(allergies);
@@ -157,6 +113,7 @@ public class UserController {
     }
 
     @GetMapping("doctor/{id}/rating")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<DermatologistDTO> getMyDermatologistRating(@PathVariable Long id){
         User user = userService.findOne(id);
         double rating = ratingService.getDoctorAverage(id);
@@ -168,6 +125,7 @@ public class UserController {
     }
 
     @GetMapping("doctor/{doctorId}/rating/user/{userId}")
+    @PreAuthorize("hasAuthority('PATIENT') or hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST') or hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<RatingDTO> getUserRatingValue(@PathVariable Long doctorId, @PathVariable Long userId){
         Rating rating = ratingService.getPatientDoctorRate(userId, doctorId);
 
@@ -176,6 +134,7 @@ public class UserController {
     }
 
     @PostMapping("doctor/{id}/rating")
+    @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<RatingDTO> rateDoctor(@PathVariable Long id, @RequestBody RatingDTO ratingDTO){
         Rating rating = ratingService.rateDoctor(id, ratingDTO.getUser(), ratingDTO.getRating());
 
@@ -184,6 +143,7 @@ public class UserController {
     }
 
     @PostMapping("{id}/allergies")
+    @PreAuthorize("hasAuthority('PATIENT') or hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
     public ResponseEntity<MedicineDTO> getUserAlergies(@RequestBody MedicineDTO medicine){
         // TODO: Get patient from session
         User user = userService.findOne(1L);
@@ -197,6 +157,7 @@ public class UserController {
     }
 
     @DeleteMapping("{id}/allergies")
+    @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<Void> deleteUserAlergies(@RequestBody MedicineDTO medicine){
         // TODO: Get patient from session
         User user = userService.findOne(1L);
@@ -208,6 +169,7 @@ public class UserController {
     }
 
     @GetMapping("{id}/reservations")
+    @PreAuthorize("hasAuthority('PATIENT') or hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST') or hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<List<MedReservationDTO>> getUserReservations(@PathVariable Long id){
         User user = userService.findOne(id);
         Set<MedReservation> reservations = userService.getPatientReservations(id);
@@ -218,6 +180,7 @@ public class UserController {
     }
 
     @PutMapping("reservations/{reservationId}/cancel")
+    @PreAuthorize("hasAuthority('PATIENT') or hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
     public ResponseEntity<MedReservationDTO> cancelReservation(@PathVariable Long reservationId) {
         MedReservation medReservation = medReservationService.cancel(reservationId);
         MedReservationDTO dto = medReservationToMedReservationDTO.convert(medReservation);
@@ -228,6 +191,7 @@ public class UserController {
     }
 
     @GetMapping("{id}/subscriptions")
+    @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<List<PharmacyDTO>> getUserSubscriptions(@PathVariable Long id){
         User user = userService.findOne(id);
         Set<Pharmacy> subscriptions = userService.getPatientSubscriptions(user);
@@ -239,6 +203,7 @@ public class UserController {
     }
 
     @GetMapping("{id}/penalties")
+    @PreAuthorize("hasAuthority('PATIENT') or hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST') or hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<List<PenalityDTO>> getUserPenalties(@PathVariable Long id){
         User user = userService.findOne(id);
         Set<Penality> penalties = userService.getPenalties(user);
@@ -250,6 +215,7 @@ public class UserController {
     }
 
     @GetMapping("{id}/penalties/count")
+    @PreAuthorize("hasAuthority('PATIENT') or hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST') or hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<Integer> getUserPenaltiesCount(@PathVariable Long id){
         User user = userService.findOne(id);
         Integer penalties = userService.countActivePenalties(user);
@@ -259,6 +225,7 @@ public class UserController {
     }
 
     @DeleteMapping("{id}/subscriptions/{pharmacyId}")
+    @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<List<PharmacyDTO>> getUserSubscriptions(@PathVariable Long id, @PathVariable Long pharmacyId){
         User user = userService.findOne(id);
         Pharmacy pharmacy = pharmacyService.findOne(pharmacyId);
@@ -269,6 +236,7 @@ public class UserController {
     }
 
     @PostMapping("register")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO) {
         User user = userDTOToUser.convert(userDTO);
         user.setEnabled(false);
@@ -324,6 +292,7 @@ public class UserController {
     }
 
     @GetMapping("all-patients")
+    @PreAuthorize("hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
     public ResponseEntity<List<PatientDTO>> getAllPatientsDTO() {
         List<PatientDTO> resultDTOS = new ArrayList<>();
         List<User> svi = userService.findAll();
@@ -337,6 +306,7 @@ public class UserController {
     }
 
     @GetMapping("patient/{id}")
+    @PreAuthorize("hasAuthority('PATIENT') or hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST') or hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<PatientDTO> getPatient(@PathVariable Long id){
         User us = userService.findOne(id);
         if (us.getClass() != Patient.class) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -346,6 +316,7 @@ public class UserController {
     }
 
     @PostMapping("register/patient")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<Boolean> registerUser(@RequestBody PatientRegistrationDTO patient) {
         int povratna = 0;
         if (!userService.isAvaibleEmail(patient.getEmail())) povratna += 2;
@@ -363,6 +334,7 @@ public class UserController {
     }
 
     @PostMapping("{id}/update")
+    @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<PatientDTO> updatePatient(@RequestBody PatientDTO patient) {
         PatientDTO patientDTO = patientToPatientDTO.convert(userService.updatePatient(patient));
         return new ResponseEntity<> (patientDTO, HttpStatus.OK);
@@ -382,6 +354,7 @@ public class UserController {
     }
 
     @GetMapping("all-pharmacy-admins")
+    @PreAuthorize("hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')") // TODO check AUTH
     public ResponseEntity<List<PharmacyAdminDTO>> getAllPharmacyAdminsDTO() {
         List<PharmacyAdminDTO> resultDTOS = new ArrayList<>();
         List<User> allUsers = userService.findAll();
@@ -398,7 +371,7 @@ public class UserController {
 
     @GetMapping("/pharmacists/admin/{id}")
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
-     public ResponseEntity<List<PharmacistDTO>> getAllPharmacistsAdmin(@PathVariable Long id) {
+    public ResponseEntity<List<PharmacistDTO>> getAllPharmacistsAdmin(@PathVariable Long id) {
         List<User> svi = userService.findAll();
         if (userService.findOne(id).getClass() != PharmacyAdmin.class) return new ResponseEntity<>(null, HttpStatus.OK);
         // tehnicki suvisna provera ali dok ne sredimo registraciju
@@ -468,6 +441,7 @@ public class UserController {
     }
 
     @GetMapping("/pharmacists/pharmacy/{id}")
+    @PreAuthorize("hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')") // TODO check AUTH
     public ResponseEntity<List<PharmacistDTO>> getAllPharmacistsPharmacy(@PathVariable Long id) {
         List<User> svi = userService.findAll();
         List<PharmacistDTO> povratna = new ArrayList<>();
@@ -483,6 +457,7 @@ public class UserController {
     }
 
     @GetMapping("/allPharmacists")
+    @PreAuthorize("hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')") // TODO check AUTH
     public ResponseEntity<List<PharmacistDTO>> getAllPharmacists() {
         List<User> svi = userService.findAll();
         List<PharmacistDTO> povratna = new ArrayList<>();
@@ -521,6 +496,7 @@ public class UserController {
     }
 
     @GetMapping("/pharmacists/pharmacy/{id}/{search}")
+    @PreAuthorize("hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')") // TODO check AUTH
     public ResponseEntity<List<PharmacistDTO>> searchPharmacistsPharmacy(@PathVariable Long id, @PathVariable String search) {
         List<User> svi = userService.findAll();
         List<PharmacistDTO> povratna = new ArrayList<>();
@@ -538,6 +514,7 @@ public class UserController {
     }
 
     @GetMapping("/pharmacists/search/{search}")
+    @PreAuthorize("hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')") // TODO check AUTH
     public ResponseEntity<List<PharmacistDTO>> searchAllPharmacists(@PathVariable String search) {
         List<User> svi = userService.findAll();
         List<PharmacistDTO> povratna = new ArrayList<>();
@@ -553,6 +530,7 @@ public class UserController {
     }
 
     @PostMapping("/pharm/filter/pharmacy/{id}")
+    @PreAuthorize("hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')") // TODO check AUTH
     public ResponseEntity<List<PharmacistDTO>> filterPharmacistsPharmacy(@PathVariable Long id, @RequestBody SearchHelp podaci) {
         List<User> svi = userService.findAll();
         List<PharmacistDTO> povratna = new ArrayList<>();
@@ -578,6 +556,7 @@ public class UserController {
 
 
     @PostMapping("pharmacists/filter")
+    @PreAuthorize("hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')") // TODO check AUTH
     public ResponseEntity<List<PharmacistDTO>> filterAllPharmacists(@RequestBody SearchHelp podaci) {
         List<User> svi = userService.findAll();
         List<PharmacistDTO> povratna = new ArrayList<>();
@@ -799,6 +778,7 @@ public class UserController {
     }
 
     @PostMapping("/derm/filter/pharmacy/{id}")
+    @PreAuthorize("hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')") // TODO check AUTH
     public ResponseEntity<List<DermatologistDTO>> filterDermatologistsPharmacy(@PathVariable Long id, @RequestBody SearchHelp podaci) {
         List<User> svi = userService.findAll();
         List<DermatologistDTO> povratna = new ArrayList<>();
@@ -824,6 +804,7 @@ public class UserController {
     }
 
     @PostMapping("/dermatologists/filter")
+    @PreAuthorize("hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')") // TODO check AUTH
     public ResponseEntity<List<DermatologistDTO>> filterAllDermatologists(@RequestBody SearchHelp podaci) {
         List<User> svi = userService.findAll();
         List<DermatologistDTO> povratna = new ArrayList<>();
@@ -846,6 +827,7 @@ public class UserController {
     }
 
     @GetMapping("/dermatologists/pharmacy/{id}/{search}")
+    @PreAuthorize("hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')") // TODO check AUTH
     public ResponseEntity<List<DermatologistDTO>> searchDermatologistsPharmacy(@PathVariable Long id, @PathVariable String search) {
         List<User> svi = userService.findAll();
         List<DermatologistDTO> povratna = new ArrayList<>();
@@ -864,6 +846,7 @@ public class UserController {
     }
 
     @GetMapping("/dermatologists/search/{search}")
+    @PreAuthorize("hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')") // TODO check AUTH
     public ResponseEntity<List<DermatologistDTO>> searchAllDermatologists(@PathVariable String search) {
         List<User> svi = userService.findAll();
         List<DermatologistDTO> povratna = new ArrayList<>();
@@ -879,6 +862,7 @@ public class UserController {
     }
 
     @GetMapping("/dermatologists/pharmacy/{id}")
+    @PreAuthorize("hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')") // TODO check AUTH
     public ResponseEntity<List<DermatologistDTO>> getAllDermatologistsPharmacy(@PathVariable Long id) {
         List<User> svi = userService.findAll();
         List<DermatologistDTO> povratna = new ArrayList<>();
@@ -894,6 +878,7 @@ public class UserController {
     }
 
     @GetMapping("/allDermatologists")
+    @PreAuthorize("hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')") // TODO check AUTH
     public ResponseEntity<List<DermatologistDTO>> getAllDermatologists() {
         List<User> svi = userService.findAll();
         List<DermatologistDTO> povratna = new ArrayList<>();
@@ -993,6 +978,7 @@ public class UserController {
     }
 
     @PostMapping("edit/supplier")
+    @PreAuthorize("hasAuthority('SUPPLIER')") // TODO check AUTH
     public ResponseEntity<Boolean> editSupplierData(@RequestBody SupplierDTO supplierDTO){
         Supplier supplier = (Supplier) userService.findOne(supplierDTO.getId());
         supplier.setName(supplierDTO.getName());

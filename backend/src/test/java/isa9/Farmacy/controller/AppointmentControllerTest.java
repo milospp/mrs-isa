@@ -1,5 +1,6 @@
 package isa9.Farmacy.controller;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import isa9.Farmacy.constants.AppointmentConstants;
 import isa9.Farmacy.constants.MedicineConstants;
 import isa9.Farmacy.model.dto.AppointmentDTO;
@@ -20,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.Charset;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.hamcrest.Matchers.hasItem;
@@ -114,6 +117,52 @@ public class AppointmentControllerTest {
                 .andExpect(jsonPath("$.examination.type").value(result.getExamination().getType().toString()))
                 .andExpect(jsonPath("$.price").value(result.getPrice()))
                 .andExpect(jsonPath("$.startTime").value(result.getStartTime().format(formatter)));
+
+    }
+
+    @Test
+    @WithMockUser(username="drmili@maildrop.cc" , authorities = {"PHARMACIST"})
+    public void testCalendarPh() throws Exception {
+        mockMvc.perform(get(URL_PREFIX + "/calendar/pharm/12"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$.[*].id").value(hasItem(AppointmentConstants.AP_PH_ID.intValue())))
+                .andExpect(jsonPath("$.[*].startDate").value(hasItem(AppointmentConstants.AP_PH_START_DATE)))
+                .andExpect(jsonPath("$.[*].price").value(hasItem(AppointmentConstants.AP_PH_PRICE)))
+                .andExpect(jsonPath("$.[*].patientName").value(hasItem(AppointmentConstants.AP_PH_PATIENT_NAME)))
+                .andExpect(jsonPath("$.[*].patientSurname").value(hasItem(AppointmentConstants.AP_PH_PATIENT_SURNAME)))
+                .andExpect(jsonPath("$.[*].pharmacyName").value(hasItem(AppointmentConstants.AP_PH_PHARMACY_NAME)))
+                .andExpect(jsonPath("$.[*].durationInMins").value(hasItem(AppointmentConstants.AP_PH_DURATION)));
+    }
+
+    @Test
+    @WithMockUser(username="gordop@maildrop.cc" , authorities = {"DERMATOLOGIST"})
+    public void testCalendarDerm() throws Exception {
+        mockMvc.perform(get(URL_PREFIX + "/calendar/derm/11/pharmacy/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$.[*].id").value(hasItem(AppointmentConstants.AP_FREE_DOCTOR_ID.intValue())))
+                .andExpect(jsonPath("$.[*].startDate").value(hasItem(AppointmentConstants.AP_DERM_START_DATE_TAKEN)))
+                .andExpect(jsonPath("$.[*].price").value(hasItem(AppointmentConstants.AP_FREE_PRICE)))
+                .andExpect(jsonPath("$.[*].patientName").value(hasItem("")))
+                .andExpect(jsonPath("$.[*].patientSurname").value(hasItem("")))
+                .andExpect(jsonPath("$.[*].pharmacyName").value(hasItem(AppointmentConstants.AP_PH_PHARMACY_NAME)))
+                .andExpect(jsonPath("$.[*].durationInMins").value(hasItem(AppointmentConstants.AP_PH_DURATION)));
+    }
+
+    @Test
+    @WithMockUser(username="gordop@maildrop.cc" , authorities = {"DERMATOLOGIST"})
+    public void testCalendarFreeDerm() throws Exception {
+        mockMvc.perform(get(URL_PREFIX + "/calendar/free-derm/11/pharmacy/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$.[*].id").value(hasItem(AppointmentConstants.AP_FREE_DOCTOR_ID.intValue())))
+                .andExpect(jsonPath("$.[*].startDate").value(hasItem(AppointmentConstants.AP_DERM_START_DATE_FREE)))
+                .andExpect(jsonPath("$.[*].price").value(hasItem(AppointmentConstants.AP_FREE_PRICE)))
+                .andExpect(jsonPath("$.[*].patientName").value(hasItem("")))
+                .andExpect(jsonPath("$.[*].patientSurname").value(hasItem("")))
+                .andExpect(jsonPath("$.[*].pharmacyName").value(hasItem(AppointmentConstants.AP_PH_PHARMACY_NAME)))
+                .andExpect(jsonPath("$.[*].durationInMins").value(hasItem(AppointmentConstants.AP_PH_DURATION)));
 
     }
 

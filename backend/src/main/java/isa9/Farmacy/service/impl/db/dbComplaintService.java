@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class dbComplaintService extends ComplaintServiceBase implements Complain
     }
 
     @Override
+    //@Transactional
     public Complaint findOne(Long id) {
         return this.complaintRepository.findById(id).orElse(null);
     }
@@ -36,5 +38,11 @@ public class dbComplaintService extends ComplaintServiceBase implements Complain
     @Override
     public Complaint save(Complaint entity) {
         return this.complaintRepository.save(entity);
+    }
+
+    @Override
+    @Transactional
+    public Complaint findOneLocked(Long complaintId) {
+        return complaintRepository.findByIdLocked(complaintId);
     }
 }
