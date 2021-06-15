@@ -17,6 +17,7 @@
       <button v-bind:disabled="!pharmacy.canVote" type="button" class="btn btn-block btn-primary" v-on:click="ratingModal(pharmacy)" data-toggle="modal" data-target="#rating-modal">
           {{getMyVote(pharmacy)>0 ? "Change Rate": "Rate"}}
       </button>
+      <button v-bind:disabled="this.user.role!='PATIENT'" class="btn btn-block btn-primary" v-on:click="ucitavanjeQRkoda()">Load QR code</button>
       </div>
 
     </div>
@@ -542,7 +543,8 @@ export default {
         setSubBtnText(){
           if(this.isPatientSubscribed()) return "Unsubscribe";
           else return "Subscribe";
-        }
+        },
+        ucitavanjeQRkoda() { window.location.href = "/PharmacyQRcode/" + this.id; },
 
   },
   created() {
