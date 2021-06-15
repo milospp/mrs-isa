@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = {"http://localhost:3000", "https://pharmacy9.herokuapp.com"})
 @RequestMapping("/api/complaints")
 public class ComplaintController {
 
