@@ -179,6 +179,19 @@ public class UserController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+
+    @PostMapping("{id}/reservations/search")
+    @PreAuthorize("hasAuthority('PATIENT') or hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST') or hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')")
+    public ResponseEntity<List<MedReservationDTO>> getUserReservations(@PathVariable Long id, @RequestBody MedReservationSearchDTO searchDTO){
+        User user = userService.findOne(id);
+        Collection<MedReservation> reservations = userService.getPatientReservations(id);
+        reservations = medReservationService.filterMedReservations(reservations, searchDTO);
+        List<MedReservationDTO> dto = medReservationToMedReservationDTO.convert(reservations);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+
     @PutMapping("reservations/{reservationId}/cancel")
     @PreAuthorize("hasAuthority('PATIENT') or hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
     public ResponseEntity<MedReservationDTO> cancelReservation(@PathVariable Long reservationId) {

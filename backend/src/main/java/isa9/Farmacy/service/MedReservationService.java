@@ -6,6 +6,8 @@ import isa9.Farmacy.model.Patient;
 import isa9.Farmacy.model.Pharmacy;
 import isa9.Farmacy.model.dto.EPrescriptionDTO;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
+import isa9.Farmacy.model.dto.MedReservationSearchDTO;
+import isa9.Farmacy.model.dto.MedicineSearchDTO;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,6 +17,9 @@ public interface MedReservationService extends GenericService<MedReservation> {
 
     MedReservation reserveMedicine(MedReservationFormDTO reservationFormDTO, Long doctorId);
     MedReservation reserveMedicine(MedReservationFormDTO reservationFormDTO);
+
+    Collection<MedReservation> filterMedReservations(Collection<MedReservation> medicines, MedReservationSearchDTO medReservationSearchDTO);
+
 
     Collection<MedReservation> saveAll(Collection<MedReservation> entity);
 
