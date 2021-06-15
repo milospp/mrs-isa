@@ -89,6 +89,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/users/allPharmacists**").permitAll()
 				.antMatchers("/api/users/dermatologists/**").permitAll()
 				.antMatchers("/api/users/pharmacists/**").permitAll()
+				.antMatchers("/api/users/register/patient").permitAll()
 				.antMatchers("/api/users/activatePatient**").permitAll()
 				.antMatchers("/api/medicines/pharmacy/**").permitAll()
 				.antMatchers("/api/pharmacies/**").permitAll()
@@ -120,6 +121,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 															"/api/users/pharmacists/pharmacy/**/**",
 															"/api/users/pharm/filter/pharmacy/**",
 															"/api/users/derm/filter/pharmacy/**",
+															"/api/users/register/patient",
 															"/api/users/activatePatient**",
 															"/api/medicines/pharmacy/**",
 				"/api/users/allDermatologists**", "/api/users/allPharmacists**",
