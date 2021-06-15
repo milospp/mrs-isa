@@ -1171,7 +1171,7 @@ public class MailService {
         String subject = "Activation link";
         String content = this.startOfMail;
 
-        String link = this.host;
+        String link = this.host+"/activatePatient?token="+token;
 
         System.out.println(host+"/activatePatient?token="+token);
 
@@ -1185,7 +1185,7 @@ public class MailService {
                 "                        <div style=\"color:#187272;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:20px;text-align:center;\">\n" +
                 "                          "+"Before you can log in for the first time, please activate your account using the following link: \n";
 
-        content += "<a href='" + link + "'>Link</a>";
+        content += "<a target=\"_blank\" href='" + link + "'>Link</a>";
 
 
         content += this.endOfMail;
