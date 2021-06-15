@@ -125,12 +125,12 @@ insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (11, '11:
 insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 3);
 
 --med price
-insert into med_price(price, start_date, old_price, price_type) values (200, current_timestamp - INTERVAL '10 days', 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (100, current_timestamp - INTERVAL '10 days', 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (250, current_timestamp - INTERVAL '10 days', 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (150, current_timestamp - INTERVAL '10 days', 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (230, current_timestamp - INTERVAL '10 days', 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (170, current_timestamp - INTERVAL '10 days', 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (200, CURRENT_DATE - 10 + CURRENT_TIME, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (100, CURRENT_DATE - 10 + CURRENT_TIME, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (250, CURRENT_DATE - 10 + CURRENT_TIME, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (150, CURRENT_DATE - 10 + CURRENT_TIME, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (230, CURRENT_DATE - 10 + CURRENT_TIME, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (170, CURRENT_DATE - 10 + CURRENT_TIME, 0, 0);
 
 --med catalog in pharmacy
 insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (0, 1,1,1);
