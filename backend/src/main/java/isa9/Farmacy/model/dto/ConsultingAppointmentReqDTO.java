@@ -19,7 +19,7 @@ import java.time.LocalTime;
 
 public class ConsultingAppointmentReqDTO {
 //    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    //@JsonFormat(pattern="yyyy-MM-ddTHH:mm:ss")
     private LocalDateTime startTime;
     private int durationInMins;
     private Long pharmacistId;
