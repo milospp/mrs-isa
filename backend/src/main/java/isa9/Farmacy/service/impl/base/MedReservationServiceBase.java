@@ -9,6 +9,11 @@ import isa9.Farmacy.service.*;
 import isa9.Farmacy.utils.MailService;
 import isa9.Farmacy.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -55,12 +60,32 @@ public abstract class MedReservationServiceBase implements MedReservationService
     }
 
     @Override
-    public MedReservation dispenseMedicine(MedReservation medReservation) {
+    @Transactional
+    public MedReservation dispenseMedicine(String code) {
+        MedReservation medReservation = getByCodeLocked(code);
+        /* System.out.println("cekam");
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("docekam"); */
+
+        if (medReservation == null || !medReservation.getStatus().equals(MedReservationStatus.PENDING)){
+            System.out.println("Cannot dispense this");
+            return null;
+        }
+
         medReservation.setStatus(MedReservationStatus.TAKEN);
 
-        // TODO: hardcoded pharmacist who 'issued', this will be fixed when authorisation is added
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof AnonymousAuthenticationToken)
+            System.out.println("nema ulogovanog farmaceuta");
 
-        Pharmacist pharmacist = new Pharmacist(); // = (Pharmacist) reservation.getMedicineInPharmacy().getPharmacy().getStaff().iterator().next().getDoctor();
+        User user = (User) authentication.getPrincipal();
+        System.out.println(user.getEmail());
+
+        Pharmacist pharmacist = (Pharmacist) userService.getDoctorById(user.getId());//new Pharmacist(); // = (Pharmacist) reservation.getMedicineInPharmacy().getPharmacy().getStaff().iterator().next().getDoctor();
         for (Work work : medReservation.getMedicineInPharmacy().getPharmacy().getStaff()){
             if (work.getDoctor().getRole().getName().equals("PHARMACIST")){
                 pharmacist = (Pharmacist) work.getDoctor();

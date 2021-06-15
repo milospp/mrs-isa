@@ -1167,6 +1167,8 @@ public class MailService {
 
     @Async
     public void sendResponseMail(Complaint complaint){
+        System.out.println(complaint.getResponse());
+
         Patient author = complaint.getAuthor();
         String description = complaint.getDescription();
         String response = complaint.getResponse();
@@ -1208,6 +1210,7 @@ public class MailService {
 
     @Async
     public void sendDispensedReservationInfo(MedReservation medReservation) {             // sending mail to patient that reservation was taken successfully
+        System.out.println("saljem mejl za izdavanje lekova");
         Pharmacy pharmacy = medReservation.getMedicineInPharmacy().getPharmacy();
         Medicine medicine = medReservation.getMedicineInPharmacy().getMedicine();
         Patient patient = medReservation.getPatient();

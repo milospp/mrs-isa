@@ -73,7 +73,7 @@ class UtilService {
     //durationInMins = durationInMins + '';
     console.log(appointmentDate);
     //console.log(durationInMins);
-    if (moment() > moment(appointmentDate).subtract(20,'m') && moment() < moment(appointmentDate).add('1','d')){//.add(durationInMins,'m')
+    if (moment() > moment(appointmentDate).subtract(20,'m') && moment() < moment(appointmentDate).add('30','m')){//.add(durationInMins,'m')
       return true;}
     else return false;
   }

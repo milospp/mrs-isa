@@ -60,15 +60,15 @@ public class MedicineController {
         this.ePrescriptionService = ePrescriptionService;
     }
 
-    @GetMapping("tmp-test")
-    public ResponseEntity<Boolean> debug(){
-        medReservationService.checkForExpiredReservations();
-        this.medInPharmaService.checkForExpiredActionOrPromotion();
-        return new ResponseEntity<>(true, HttpStatus.OK);
-
-    }
+//    @GetMapping("tmp-test")
+//    public ResponseEntity<Boolean> debug(){
+//        medReservationService.checkForExpiredReservations();
+//        this.medInPharmaService.checkForExpiredActionOrPromotion();
+//        return new ResponseEntity<>(true, HttpStatus.OK);
+//    }
 
     @PostMapping("{medId}/pharmacy/{pharmacyId}/reserve/{doctorId}")
+    @PreAuthorize("hasAuthority('PATIENT') or hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
     public ResponseEntity<MedReservationDTO> reserveMedicine(@PathVariable Long medId, @PathVariable Long pharmacyId,
                  @PathVariable Long doctorId, @RequestBody MedReservationFormDTO form){
         // TODO: Get patient from session
@@ -121,6 +121,7 @@ public class MedicineController {
 
 
     @GetMapping("")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<MedicineDTO>> getMedicines(){
 
         List<MedicineDTO> resultDTOS = medicineToMedicineDTO.convert(this.medicineService.findAll());
@@ -129,6 +130,7 @@ public class MedicineController {
     }
 
     @PostMapping("search")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<MedicineDTO>> SearchMedicines(@RequestBody(required=false) MedicineSearchDTO medicineSearchDTO) {
         List<Medicine> medicines = this.medicineService.findAll();
         medicines = medicineService.filterMedicines(medicines, medicineSearchDTO);
@@ -341,6 +343,7 @@ public class MedicineController {
     }
 
     @GetMapping("/pharmacy/{id}")
+    @PreAuthorize("isAuthenticated()") // TODO check AUTH
     public ResponseEntity<List<MedInPharmaDTO>> getMedicinePharmacy(@PathVariable Long id) {
         Pharmacy apoteka = pharmacyService.findOne(id);
         List<MedInPharmaDTO> povratna = new ArrayList<>();
@@ -350,6 +353,7 @@ public class MedicineController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
     @GetMapping("/all/pharmacy/{id}")
+    @PreAuthorize("isAuthenticated()") // TODO check AUTH
     public ResponseEntity<List<MedInPharmaDTO>> getAllMedicinePharmacy(@PathVariable Long id) {
         Pharmacy apoteka = pharmacyService.findOne(id);
         List<MedInPharmaDTO> povratna = medicineInPharmacyToMedInPharmaDTO.convert(apoteka.getMedicines());
@@ -357,6 +361,7 @@ public class MedicineController {
     }
 
     @GetMapping("/{medicineId}/pharmacies")
+    @PreAuthorize("isAuthenticated()")// TODO check AUTH
     public ResponseEntity<Collection<MedInPharmaDTO>> getAllMedicinePharmacies(@PathVariable Long medicineId) {
         Collection<MedicineInPharmacy> medicineInPharmacies = medInPharmaService.findAllMedicinesInPharmacy(medicineId);
         return new ResponseEntity<>(medicineInPharmacyToMedInPharmaDTO.convert(medicineInPharmacies), HttpStatus.OK);
@@ -393,18 +398,16 @@ public class MedicineController {
 
     @GetMapping("/reservation/dispense/{code}")
     @PreAuthorize("hasAuthority('PHARMACIST')")
-    public  ResponseEntity<Boolean> dispenseReservationByCode(@PathVariable String code){
+    public  ResponseEntity<Boolean> dispenseReservationByCode(@PathVariable String code) throws InterruptedException {
         System.out.println(code);
-        MedReservation reservation = medReservationService.getByCode(code);
+        if (medReservationService.dispenseMedicine(code) == null)
+            return new ResponseEntity<>(false, HttpStatus.OK);
+        return new ResponseEntity<>(true, HttpStatus.OK);
 
-        if (reservation != null && reservation.getStatus() == MedReservationStatus.PENDING){
-            medReservationService.dispenseMedicine(reservation);
-            return new ResponseEntity<>(true, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("{id}/rating")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<MedicineDTO> getMedicineRating(@PathVariable Long id){
         Medicine medicine = medicineService.findOne(id);
 //        double rating = ratingService.getMedicineAverage(id);
@@ -416,6 +419,7 @@ public class MedicineController {
     }
 
     @GetMapping("{medId}/rating/user/{userId}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<RatingDTO> getUserRatingValue(@PathVariable Long medId, @PathVariable Long userId){
         Rating rating = ratingService.getPatientMedicineRate(userId, medId);
 
@@ -424,6 +428,7 @@ public class MedicineController {
     }
 
     @PostMapping("{id}/rating")
+    @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<RatingDTO> rateMedicine(@PathVariable Long id, @RequestBody RatingDTO ratingDTO){
         Rating rating = ratingService.rateMedicine(id, ratingDTO.getUser(), ratingDTO.getRating());
 
@@ -432,6 +437,7 @@ public class MedicineController {
     }
 
     @GetMapping("/prices/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<PriceInPharmaciesDTO>> getPricesOfMedicine(@PathVariable Long id){
         Medicine medToLookFor = this.medicineService.findOne(id);
         List<PriceInPharmaciesDTO> prices = this.medicineService.getPricesOfMedicine(medToLookFor);
@@ -439,6 +445,7 @@ public class MedicineController {
     }
 
     @GetMapping("/medicinesInStock")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<MedicineDTO>> getMedicinesInStock(){
         List<MedicineDTO> inStock = new ArrayList<MedicineDTO>();
         List<Medicine> allMeds = this.medicineService.findAll();
