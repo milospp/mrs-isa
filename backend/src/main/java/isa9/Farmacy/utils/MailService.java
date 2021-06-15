@@ -18,7 +18,8 @@ import java.util.Properties;
 @Service
 public class MailService {
 
-
+    @Value("${frontend.application.url}")
+    private String host;
     @Value("${spring.mail.username}")
     private String email;
     @Value("${spring.mail.password}")
@@ -1162,6 +1163,34 @@ public class MailService {
                 this.endOfMail;
 
         sendMail(mejl, naslov, htmlKod);
+        return;
+    }
+    @Async
+    public void sendActivationMail(Patient patient, String token){
+        String recipient = patient.getEmail();
+        String subject = "Activation link";
+        String content = this.startOfMail;
+
+        String link = this.host;
+
+        System.out.println(host+"/activatePatient?token="+token);
+
+        content = content +
+                "                          Activation notification\n" +
+                "                        </div>\n" +
+                "                      </td>\n" +
+                "                    </tr>\n" +
+                "                    <tr>\n" +
+                "                      <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;'>\n" +
+                "                        <div style=\"color:#187272;font-family:'Droid Sans', 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:20px;text-align:center;\">\n" +
+                "                          "+"Before you can log in for the first time, please activate your account using the following link: " + link + "\n";
+
+
+
+
+        content += this.endOfMail;
+
+        sendMail(recipient, subject, content);
         return;
     }
 
