@@ -24,7 +24,7 @@
         <th>Price</th>
         <th>Action/promotion</th>
         <th>Needed quantity</th>
-        <th>Have enough</th>
+        <th>Have</th>
     </thead>
     <tbody>
         <tr :key="l" v-for="l in this.odgovarajuciLekovi">
@@ -116,7 +116,7 @@ export default {
                             pronadjeniLek.currentPrice + "(" + (100-pronadjeniLek.currentPrice*100/pronadjeniLek.currentPrice.oldPrice) + "%)" :
                             pronadjeniLek.currentPrice),
                         "kolicina": lek[1], 
-                        "dovoljno": pronadjeniLek.inStock >= lek[1] ? "Yes" : "No"};
+                        "dovoljno": pronadjeniLek.inStock >= lek[1] ? "Enough" : "Not enough"};
                     if (imaDovoljno == "da") 
                         this.ukupno += pronadjeniLek.currentPrice * lek[1];
                     else if (imaDovoljno == "ne") this.ukupno = "This pharmacy do not have enough medicines."; 
