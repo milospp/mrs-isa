@@ -83,8 +83,6 @@ public class AuthenticationController {
     @PostMapping(value = "/refresh")
     public ResponseEntity<UserTokenState> refreshAuthenticationToken(HttpServletRequest request) {
 
-        System.out.println("Uvek fresh");
-
         String token = tokenUtils.getToken(request);
         String username = this.tokenUtils.getUsernameFromToken(token);
         User user = (User) this.userService.loadUserByUsername(username);
@@ -117,14 +115,16 @@ public class AuthenticationController {
     }
 
     @GetMapping("/getPasswordResetDate/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Timestamp> getPasswordResetDate(@PathVariable Long id){
         User user = this.userService.findOne(id);
         return new ResponseEntity<>(user.getLastPasswordResetDate(), HttpStatus.OK);
     }
 
     @PostMapping("/changePassword/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Boolean> changePassword(@PathVariable Long id, @RequestBody String newPassword){
-
+        // TODO do we need to check if id is same as logged in user?
         newPassword = newPassword.substring(0, newPassword.length() - 1);
 
         return new ResponseEntity<>(this.userService.changePassword(id, passwordEncoder.encode(newPassword)),

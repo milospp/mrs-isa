@@ -11,6 +11,7 @@ import axios from 'axios';
 import { SetupCalendar, Calendar, DatePicker } from 'v-calendar';
 import Toasted from 'vue-toasted';
 import Toaster from '@meforma/vue-toaster';
+import QrReader from 'vue3-qr-reader';
 
 
 
@@ -21,6 +22,7 @@ app.use(store)
     .use(router)
     .use(SetupCalendar, {})
     .use(Toaster)
+    .use(QrReader)
     .component('Calendar', Calendar)
     .component('DatePicker', DatePicker)
     .mount('#app');

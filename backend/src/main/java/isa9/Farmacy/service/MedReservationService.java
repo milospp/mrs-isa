@@ -4,10 +4,12 @@ import isa9.Farmacy.model.MedReservation;
 import isa9.Farmacy.model.Medicine;
 import isa9.Farmacy.model.Patient;
 import isa9.Farmacy.model.Pharmacy;
+import isa9.Farmacy.model.dto.EPrescriptionDTO;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public interface MedReservationService extends GenericService<MedReservation> {
 
@@ -20,7 +22,8 @@ public interface MedReservationService extends GenericService<MedReservation> {
     MedReservation cancel(Long medReservationId);
 
     MedReservation getByCode(String code);
-    MedReservation dispenseMedicine(MedReservation medReservation);
+    MedReservation getByCodeLocked(String code);
+    MedReservation dispenseMedicine(String code);
 
     Boolean patientConsumedMedicine(Patient patient, Medicine medicine);
     Boolean patientConsumedMedInPharmacy(Patient patient, Pharmacy pharmacy);
@@ -28,4 +31,6 @@ public interface MedReservationService extends GenericService<MedReservation> {
     List<MedReservation> getPatientsPurchases(Patient patient);
 
     void checkForExpiredReservations();
+
+    Integer eReserveMedicines(EPrescriptionDTO ePrescriptionDTO);
 }

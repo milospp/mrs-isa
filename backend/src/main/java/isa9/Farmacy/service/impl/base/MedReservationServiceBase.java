@@ -1,6 +1,7 @@
 package isa9.Farmacy.service.impl.base;
 
 import isa9.Farmacy.model.*;
+import isa9.Farmacy.model.dto.EPrescriptionDTO;
 import isa9.Farmacy.model.dto.MedInPharmaDTO;
 import isa9.Farmacy.model.dto.MedReservationDTO;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
@@ -8,12 +9,18 @@ import isa9.Farmacy.service.*;
 import isa9.Farmacy.utils.MailService;
 import isa9.Farmacy.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public abstract class MedReservationServiceBase implements MedReservationService {
@@ -53,12 +60,32 @@ public abstract class MedReservationServiceBase implements MedReservationService
     }
 
     @Override
-    public MedReservation dispenseMedicine(MedReservation medReservation) {
+    @Transactional
+    public MedReservation dispenseMedicine(String code) {
+        MedReservation medReservation = getByCodeLocked(code);
+        /* System.out.println("cekam");
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("docekam"); */
+
+        if (medReservation == null || !medReservation.getStatus().equals(MedReservationStatus.PENDING)){
+            System.out.println("Cannot dispense this");
+            return null;
+        }
+
         medReservation.setStatus(MedReservationStatus.TAKEN);
 
-        // TODO: hardcoded pharmacist who 'issued', this will be fixed when authorisation is added
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof AnonymousAuthenticationToken)
+            System.out.println("nema ulogovanog farmaceuta");
 
-        Pharmacist pharmacist = new Pharmacist(); // = (Pharmacist) reservation.getMedicineInPharmacy().getPharmacy().getStaff().iterator().next().getDoctor();
+        User user = (User) authentication.getPrincipal();
+        System.out.println(user.getEmail());
+
+        Pharmacist pharmacist = (Pharmacist) userService.getDoctorById(user.getId());//new Pharmacist(); // = (Pharmacist) reservation.getMedicineInPharmacy().getPharmacy().getStaff().iterator().next().getDoctor();
         for (Work work : medReservation.getMedicineInPharmacy().getPharmacy().getStaff()){
             if (work.getDoctor().getRole().getName().equals("PHARMACIST")){
                 pharmacist = (Pharmacist) work.getDoctor();
@@ -221,5 +248,46 @@ public abstract class MedReservationServiceBase implements MedReservationService
         }
 
         return purchases;
+    }
+
+    @Override
+    public Integer eReserveMedicines(EPrescriptionDTO ePrescriptionDTO) {
+        Patient patient = (Patient) this.userService.getLoggedInUser();
+        Map<String, Integer> reservations = ePrescriptionDTO.getMedicines();
+        Pharmacy pharmacy = this.pharmacyService.findOne(ePrescriptionDTO.getPharmacy().getId());
+        int index = 0;
+
+        for(Map.Entry<String, Integer> entry : reservations.entrySet()){
+            Medicine medicine = null;
+            for(Medicine m : this.medicineService.findAll()){
+                if(m.getCode().equals(entry.getKey())) medicine = m;
+            }
+
+            if(isPatientAlergic(patient, medicine)) return 1;
+
+            MedicineInPharmacy medicineInPharmacy = this.pharmacyService.gedMedicineInPharmacy(pharmacy, medicine);
+
+            MedReservation medReservation = new MedReservation();
+
+            medReservation.setReservationDate(LocalDate.now());
+            medReservation.setLastDate(LocalDate.now());
+            medReservation.setPatient(patient);
+            medReservation.setMedicineInPharmacy(medicineInPharmacy);
+            medReservation.setStatus(MedReservationStatus.TAKEN);
+            medReservation.setCode(ePrescriptionDTO.getCode()+"_"+ ++index);
+            medReservation.setQuantity(entry.getValue());
+
+            LoyaltyProgram category = this.loyaltyProgramService.getCategoryOfUser(patient);
+            medReservation.setLoyaltyDiscount((category != null) ?  category.getDiscount() : null);
+
+            patient.getReservations().add(medReservation);
+            medicineInPharmacy.setInStock(medicineInPharmacy.getInStock() - entry.getValue());
+        }
+
+        this.pharmacyService.save(pharmacy);
+        this.userService.save(patient);
+
+
+        return 0;
     }
 }

@@ -11,4 +11,6 @@ public interface ComplaintService extends GenericService<Complaint> {
     boolean saveResponse(String response, Long complaintId, Long respondentId);
     List<Complaint> complaintsOfPatient(Patient patient);
     List<Complaint> responsesOfAdmin(SysAdmin sysAdmin);
+
+    Complaint findOneLocked(Long complaintId);
 }

@@ -14,6 +14,7 @@ import ChangingOrder from '@/views/ChangingOrder.vue'
 import HireDermatologist from '@/views/HireDermatologist.vue'
 import AddNewPricelist from '@/views/AddNewPricelist.vue'
 import Vacations from '@/views/Vacations.vue'
+import PharmacyQRcode from '@/views/PharmacyQRcode.vue'
 // import AddPharmacy from '@/views/AddPharmacy.vue'
 // import AddPharmacyAdmin from '@/views/AddPharmacyAdmin.vue'
 import PharmacistHomePage from '@/views/PharmacistHomePage.vue'
@@ -46,6 +47,7 @@ import PatientsComplaints from '@/views/PatientsComplaints.vue'
 import AdminResponses from '@/views/AdminResponses.vue'
 import SysAdminAdd from '@/views/SysAdminAdd.vue'
 import LoyaltyProgramView from '@/views/LoyaltyProgramView.vue'
+import ePrescriptionPage from '@/views/ePrescriptionPage.vue'
 
 
 const routes = [
@@ -125,6 +127,11 @@ const routes = [
     path: '/vacationRequests',
     name: 'Vacations',
     component: Vacations    // view je komponenta
+  },
+  {
+    path: '/PharmacyQRcode/:id',
+    name: 'PharmacyQRcode',
+    component: PharmacyQRcode    // view je komponenta
   },
   {
     path: '/allDoctors',
@@ -291,6 +298,11 @@ const routes = [
     path: '/loyaltyProgram',
     name: 'LoyaltyProgramView',
     component: LoyaltyProgramView
+  },
+  {
+    path: '/ePrescription',
+    name: 'ePrescriptionPage',
+    component: ePrescriptionPage
   }
 
   // {
