@@ -249,10 +249,7 @@
 </div>
 </template>
 <style>
-  .hidden-cb [type="checkbox"]:checked, 
-  .hidden-cb [type="checkbox"]:not(:checked), 
-  .hidden-cb [type="radio"]:checked, 
-  .hidden-cb [type="radio"]:not(:checked) {
+  .hidden-cb  {
     position: absolute;
     left: -9999px;
     width: 0;
