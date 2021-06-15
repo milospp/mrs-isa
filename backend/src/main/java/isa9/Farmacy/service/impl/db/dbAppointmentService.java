@@ -75,7 +75,6 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
 
     @Override
     @Transactional
-    //@Transactional(propagation = Propagation.REQUIRED)
     public Set<Work> getFreePharmacist(ConsultingAppointmentReqDTO appointmentReqDTO) {
         if (appointmentReqDTO.getStartTime() == null) return new HashSet<>();
         if (appointmentReqDTO.getStartTime().isBefore(LocalDateTime.now())) return new HashSet<>();
@@ -102,7 +101,6 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
 
     @Override
     @Transactional
-    //@Transactional(propagation = Propagation.REQUIRED)
     public List<Appointment> getAllAppointmentsInInterval(LocalDateTime start, LocalDateTime end) {
 
         return appointmentRepository.getAppointmentsInInterval(start.toString(), end.toString());
@@ -232,8 +230,8 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
 
         boolean badTime = false;
 
-        Doctor doctor = userService.getDoctorById(dateTime.getDoctorId());
-        Patient patient = userService.getPatientById(dateTime.getPatientId());
+        Doctor doctor = userService.getDoctorByIdLocked(dateTime.getDoctorId());
+        Patient patient = userService.getPatientByIdLocked(dateTime.getPatientId());
         Pharmacy pharmacy = pharmacyService.findOne(dateTime.getPharmacyId());
 
         List<Work> works = pharmacyService.findDoctorsWork(doctor);
@@ -247,7 +245,7 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
 
         // checking working hours - works fine
         boolean worksThen = workService.getIfWorksInIntervalForDocPharm(doctor.getId(), pharmacy.getId(), tryBookTime, tryBookTimeEnd);
-        if (!worksThen){
+        if (!worksThen) {
             badTime = true;
             System.out.println("Doktoru nije tad radno vreme");
         }
@@ -299,6 +297,8 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
                 appointment.setType(TypeOfReview.COUNSELING);
 
             save(appointment);
+            patient.getMyExaminations().add(appointment.getExamination());
+            userService.save(patient);
             mailService.sendAppointmentInfo(appointment, false);
         }
 

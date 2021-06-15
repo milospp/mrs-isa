@@ -32,7 +32,7 @@ public abstract class WorkServiceBase implements WorkService {
     @Override
     public boolean getIfWorksInIntervalForDocPharm(Long doctorId, Long pharmacyId, LocalTime start, LocalTime end) {
         List<Work> works = findAll();
-        for (Work work : works){
+        for (Work work : works) {
             if (work.getPharmacy().getId().equals(pharmacyId)) {
                 if (start.isAfter(work.getEndHour()) ||
                         start.isBefore(work.getStartHour()) ||

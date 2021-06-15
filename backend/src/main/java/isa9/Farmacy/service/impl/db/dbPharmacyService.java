@@ -50,6 +50,7 @@ public class dbPharmacyService extends PharmacyServiceBase implements PharmacySe
 
     @Override
     public Pharmacy findOne(Long id) {
+        if (id == null) return null;
         Pharmacy apoteka = this.pharmacyRepository.findById(id).orElse(null);
         if (apoteka != null)
             apoteka.setInquiryMedicines(this.inquiryService.getAllForPharmacy(apoteka.getId()));
