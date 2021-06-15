@@ -101,7 +101,7 @@ export default {
                 if (pronadjeniLek == null) {
                     imaDovoljno = "ne postoji";
                     this.odgovarajuciLekovi[ind] = {"kod": lek[0], "ime": "/", "cena": "/", "akcija": "/",
-                        "kolicina": lek[1], "naStanju": "No"};
+                        "kolicina": lek[1], "dovoljno": "Not have"};
                     this.ukupno = "This pharmacy do not have all medicines.";
                 }
                 else {
