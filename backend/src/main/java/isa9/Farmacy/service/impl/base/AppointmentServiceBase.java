@@ -3,10 +3,7 @@ package isa9.Farmacy.service.impl.base;
 import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.AppointmentSearchDTO;
 import isa9.Farmacy.model.dto.ConsultingAppointmentReqDTO;
-import isa9.Farmacy.service.AppointmentService;
-import isa9.Farmacy.service.ExaminationService;
-import isa9.Farmacy.service.PharmacyService;
-import isa9.Farmacy.service.UserService;
+import isa9.Farmacy.service.*;
 import isa9.Farmacy.utils.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Isolation;
@@ -23,6 +20,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     protected UserService userService;
     protected PharmacyService pharmacyService;
     protected MailService mailService;
+    protected WorkService workService;
 
     public AppointmentServiceBase() {
     }
@@ -45,6 +43,11 @@ public abstract class AppointmentServiceBase implements AppointmentService {
     @Autowired
     public void setMailService(MailService mailService) {
         this.mailService = mailService;
+    }
+
+    @Autowired
+    public final void setWorkService(WorkService workService) {
+        this.workService = workService;
     }
 
     @Override

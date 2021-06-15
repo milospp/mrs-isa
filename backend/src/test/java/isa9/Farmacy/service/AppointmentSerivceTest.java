@@ -7,19 +7,25 @@ import isa9.Farmacy.model.dto.ConsultingAppointmentReqDTO;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
 import isa9.Farmacy.repository.AppointmentRepository;
 import isa9.Farmacy.repository.ExaminationRepository;
+import isa9.Farmacy.repository.WorkRepository;
 import isa9.Farmacy.service.impl.db.*;
+import isa9.Farmacy.support.DateTimeDTO;
 import isa9.Farmacy.utils.MailService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.naming.PartialResultException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,6 +40,9 @@ public class AppointmentSerivceTest {
 
     @Mock
     private ExaminationRepository examinationRepository;
+
+    @Mock
+    private WorkRepository workRepositoryMock;
 
     @Mock
     private MailService mailServiceMock;
@@ -340,6 +349,5 @@ public class AppointmentSerivceTest {
 
         assertThat(appointmentResult).isNull();
     }
-
 
 }

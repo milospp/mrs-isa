@@ -4,7 +4,7 @@
     <h1 class="title">Vacation Request</h1>
     <div v-if="jobs && doctorsRole === 'DERMATOLOGIST'" class="form-group">
       <label for="pharmacy">Pharmacy</label>
-      <select class="form-control" v-model="vacation.pharmacyId" name="pharmacy" id="pharmacy">
+      <select class="form-control" v-model="vacation.pharmacyId" name="pharmacy" id="pharmacy" required>
         <option :key="j" v-for="j in jobs" :value="j.pharmacyId">{{j.pharmacyName}}</option>
       </select>
     </div>
@@ -26,7 +26,7 @@
       <!-- </div> -->
     <!-- </div> -->
 
-    <DatePicker :min-date='new Date()' v-model="range" is-range>
+    <DatePicker :min-date='minDate' v-model="range" is-range>
           <template v-slot="{ inputValue, inputEvents }">
             <div class="form-group row">
               <div class="col">
@@ -65,6 +65,10 @@ import AuthService from "@/service/AuthService.js";
 import PharmacyDataService from '@/service/PharmacyDataService.js';
 import VacationDataService from "@/service/VacationDataService.js";
 
+const today = new Date()
+const tomorrow = new Date(today)
+tomorrow.setDate(tomorrow.getDate() + 1)
+
 export default {
   name: 'PharmacistHomePage',
   components: {
@@ -72,15 +76,16 @@ export default {
   },
   data() {
       return {
+          minDate: tomorrow,
           range: {
-            start: new Date(),
-            end: new Date()
+            start: tomorrow,
+            end: tomorrow
           },
           jobs: null,
           vacation: {
             type: 'REST',
-            startDate: new Date().toISOString(),
-            endDate: new Date().toISOString(),
+            startDate: tomorrow.toISOString(),
+            endDate: tomorrow.toISOString(),
             reason: '',
             status: null,
             whyNot: null,
@@ -99,11 +104,17 @@ export default {
       this.vacation.startDate = this.range.start;
       this.vacation.endDate = this.range.end;
       if (this.doctorsRole === 'PHARMACIST'){
-        //alert(JSON.stringify(this.jobs[0].pharmacyId));
         this.vacation.pharmacyId = this.jobs[0].pharmacyId;
-        
       }
-      //alert('sending...' + JSON.stringify(this.vacation));
+      if (this.vacation.pharmacyId == null){
+        this.$toast.show(
+              "Please select pharmacy.",
+              {
+                  position: "top", type: "warning",
+              }
+            );
+        return;
+      }
       VacationDataService.sendRequest(this.vacation)
         .then(response => {
           if (response.data){

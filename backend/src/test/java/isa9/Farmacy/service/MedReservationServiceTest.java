@@ -14,10 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import static isa9.Farmacy.constants.MedReservationConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -203,6 +200,38 @@ public class MedReservationServiceTest {
 
         assertThat(medReservation).isNull();
 
+    }
+
+    @Test
+    public void testCheckForExpiredReservationsInPast() {
+        MedReservation mr = new MedReservation();
+        mr.setStatus(MedReservationStatus.PENDING);
+        mr.setLastDate(LocalDate.now().minusDays(1));
+
+        List<MedReservation> mrs = new ArrayList<>();
+        mrs.add(mr);
+
+        when(medReservationRepositoryMock.findAllByStatusAndLastDateBefore(MedReservationStatus.PENDING, LocalDate.now())).thenReturn(mrs);
+
+        medReservationService.checkForExpiredReservations();
+
+        assertThat(mr.getStatus().equals(MedReservationStatus.EXPIRED)).isTrue();
+    }
+
+    @Test
+    public void testCheckForExpiredReservationsInFuture() {
+        MedReservation mr = new MedReservation();
+        mr.setStatus(MedReservationStatus.PENDING);
+        mr.setLastDate(LocalDate.now().plusDays(3));
+
+        List<MedReservation> mrs = new ArrayList<>();
+        //mrs.add(mr);
+
+        when(medReservationRepositoryMock.findAllByStatusAndLastDateBefore(MedReservationStatus.PENDING, LocalDate.now())).thenReturn(mrs);
+
+        medReservationService.checkForExpiredReservations();
+
+        assertThat(mr.getStatus().equals(MedReservationStatus.EXPIRED)).isFalse();
     }
 
 
