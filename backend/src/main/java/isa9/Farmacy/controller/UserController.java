@@ -351,7 +351,6 @@ public class UserController {
     }
 
     @PostMapping("register/patient")
-    @PreAuthorize("permitAll()")
     public ResponseEntity<Boolean> registerUser(@RequestBody PatientRegistrationDTO patient) {
         int povratna = 0;
         if (!userService.isAvaibleEmail(patient.getEmail())) povratna += 2;
