@@ -32,6 +32,12 @@ cd mrs-isa/backend
 .\mvnw spring-boot:run
 ```
 
+Frontend runs on local port 3000
+
+Backend runs on local port 8080
+
+http://localhost:3000/
+
 
 # Demo
 https://pharmacy9.herokuapp.com/ 
