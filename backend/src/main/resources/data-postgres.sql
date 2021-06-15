@@ -125,12 +125,12 @@ insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (11, '11:
 insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 3);
 
 --med price
-insert into med_price(price, start_date, old_price, price_type) values (200, current_timestamp - INTERVAL '10 days', 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (100, current_timestamp - INTERVAL '10 days', 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (250, current_timestamp - INTERVAL '10 days', 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (150, current_timestamp - INTERVAL '10 days', 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (230, current_timestamp - INTERVAL '10 days', 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (170, current_timestamp - INTERVAL '10 days', 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (200, CURRENT_DATE - 10 + CURRENT_TIME, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (100, CURRENT_DATE - 10 + CURRENT_TIME, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (250, CURRENT_DATE - 10 + CURRENT_TIME, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (150, CURRENT_DATE - 10 + CURRENT_TIME, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (230, CURRENT_DATE - 10 + CURRENT_TIME, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (170, CURRENT_DATE - 10 + CURRENT_TIME, 0, 0);
 
 --med catalog in pharmacy
 insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (0, 1,1,1);
@@ -155,7 +155,7 @@ update med_price SET medicine_in_pharmacy_id = 6 WHERE id = 6;
 -- id 1
 --insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 200, current_timestamp + INTERVAL '3day', 0);
 --<<<<<<< TECHNICAL-US-150
-insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 300, CURRENT_DATE + 1 + TIME '08:00'  , 0);
+insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 300, CURRENT_DATE + TIME '15:00'  , 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 400, CURRENT_DATE + 2 + TIME '09:00', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 500, CURRENT_DATE + 3 + TIME '10:00', 0);
 insert into appointment (doctor_id, duration_in_mins, examination_id, pharmacy_id, price, start_time, type) values (11, 30, null, 1, 330, CURRENT_DATE + 4 + TIME '11:00', 0);
@@ -323,3 +323,6 @@ values ('fakecode2', current_date + 2 + current_time, 5, current_date - 2 + curr
 -- vacations
 insert into vacation (doctor_id, end_date, pharmacy_id, admin_id, reason, start_date, status, type, why_not) values (11, '2021-06-26', 1, null, 'eto', '2021-06-22', 1, 0, null);
 insert into doctor_vacations (doctor_id, vacations_id) values (11, 1);
+
+-- complaints
+insert into complaint (description, author_id, pharmacy_id) values ('looose', 1, 1);

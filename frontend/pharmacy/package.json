@@ -33,7 +33,7 @@
     "vue-simple-calendar": "^6.0.1",
     "vue-toasted": "^1.1.28",
     "vue-toastify": "^1.8.0",
-    "vue3-qr-reader": "0.0.3",
+    "vue3-qr-reader": "^0.0.3",
     "vuex": "^4.0.1"
   },
   "devDependencies": {

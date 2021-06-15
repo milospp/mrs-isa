@@ -56,6 +56,7 @@ public class AppointmentController {
     }
 
     @GetMapping("")
+    @PreAuthorize("hasAuthority('SYS_ADMIN') or hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<List<AppointmentDTO>> getAllAppointments() {
         List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.findAll());
 
@@ -65,6 +66,8 @@ public class AppointmentController {
 
     @GetMapping("{id}")
     @PreAuthorize("hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
+    // TODO jedan dermatolog ne može istovremeno da bude prisutan na više različitih pregleda
+    // TODO ako je ulogovan na telefonu i na laptopu, ne moze da gleda isti pregled?
     public ResponseEntity<AppointmentDTO> getAnAppointment(@PathVariable Long id) {
         Appointment appointment = appointmentService.findOne(id);
         if (appointment == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -102,7 +105,7 @@ public class AppointmentController {
         appointment.getExamination().setTherapy(therapy);
         Patient patient = appointment.getExamination().getPatient();
         patient.setPoints(patient.getPoints() + this.loyaltyProgramService.getExaminationPointsReward());
-        this.userService.save(patient);
+        userService.save(patient);
         appointmentService.save(appointment);
 
         return new ResponseEntity<>(true, HttpStatus.OK);
@@ -110,6 +113,7 @@ public class AppointmentController {
     }
 
     @PostMapping("{id}/book")
+    @PreAuthorize("hasAuthority('PATIENT') or hasAuthority('DERMATOLOGIST') or hasAuthority('PHARMACIST')")
     public ResponseEntity<AppointmentDTO> bookAnAppointment(@RequestBody PatientDTO patientDTO, @PathVariable Long id) {
         if (patientDTO == null){
             // TODO: Get logged user
@@ -125,6 +129,7 @@ public class AppointmentController {
     }
 
     @PostMapping("{id}/cancel")
+    @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<AppointmentDTO> cancelAnAppointment(@PathVariable Long id) {
         // TODO: Check for user rights
 
@@ -144,6 +149,7 @@ public class AppointmentController {
     }
 
     @GetMapping("dermatologist/patient-upcoming/{id}")
+    @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<List<AppointmentDTO>> getPatientUpcomingDermAppointments(@PathVariable Long id) {
 
         List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.getPatientUpcomingDermAppointments(id));
@@ -154,6 +160,7 @@ public class AppointmentController {
 
 
     @GetMapping("pharmacist/patient-upcoming/{id}")
+    @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<List<AppointmentDTO>> getPatientUpcomingConsultings(@PathVariable Long id) {
 
         List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.getPatientUpcomingConsultingAppointments(id));
@@ -164,6 +171,7 @@ public class AppointmentController {
 
 
     @GetMapping("patient-upcoming/{id}")
+    @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<List<AppointmentDTO>> getPatientUpcomingAppointments(@PathVariable Long id) {
         this.appointmentService.getPatientUpcomingAppointments(id);
         List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.getPatientUpcomingAppointments(id));
@@ -173,6 +181,7 @@ public class AppointmentController {
     }
 
     @PostMapping("free-derm")
+    @PreAuthorize("isAuthenticated()") // TODO check AUTH
     public ResponseEntity<List<WorkDTO>> getFreeDerm(@RequestBody ConsultingAppointmentReqDTO appointmentRequest) {
 
         List<WorkDTO> resultDTOS = workToWorkDTO.convert(this.appointmentService.getFreePharmacist(appointmentRequest));
@@ -199,6 +208,7 @@ public class AppointmentController {
     }
 
     @GetMapping("patient-past/{id}")
+    @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<List<AppointmentDTO>> getPastPatientAppointments(@PathVariable Long id) {
 
         List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.getPastPatientAppointments(id));
@@ -208,6 +218,7 @@ public class AppointmentController {
     }
 
     @PostMapping("patient-past/{id}/search")
+    @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<List<AppointmentDTO>> searchPastPatientAppointments(@PathVariable Long id, @RequestBody AppointmentSearchDTO appointmentSearchDTO) {
 
         List<Appointment> appointments = this.appointmentService.getPastPatientAppointments(id);
@@ -232,10 +243,8 @@ public class AppointmentController {
                 tryBookDateTime.toLocalDate(), tryBookDateTimeEnd.toLocalDate());
 
         if (badTime) {
-            //System.out.println("Tad ima odmor");
             valid = false;
         }
-
 
         return new ResponseEntity<>(valid, HttpStatus.OK);
     }
@@ -344,7 +353,7 @@ public class AppointmentController {
         return new ResponseEntity<>(povratna, HttpStatus.OK);
     }
 
-
+    // TODO move this method to AppointmentService
     private int proveriVreme(AppointmentDTO podaci) {
         LocalTime pocetakPregleda = LocalTime.of(podaci.getStartTime().getHour(), podaci.getStartTime().getMinute());
         if (podaci.getDoctor().getPharmacyWork().getStartHour().isAfter(pocetakPregleda) ||

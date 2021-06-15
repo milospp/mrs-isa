@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class IndexController {
 
-        @GetMapping(path="/", produces="application/json")
-        public ResponseEntity<String> getAllPatients() {
-            return new ResponseEntity<String>("Deploy test #5", HttpStatus.OK);
-        }
+
+
+//        @GetMapping(path="/", produces="application/json")
+//
+//        public ResponseEntity<String> getAllPatients() {
+//            return new ResponseEntity<String>("Deploy test #5", HttpStatus.OK);
+//        }
     }
