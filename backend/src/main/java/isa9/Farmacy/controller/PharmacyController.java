@@ -128,6 +128,7 @@ public class PharmacyController {
         if (apotekaDTO.getPricePerHour() != null) apoteka.setPricePerHour(apotekaDTO.getPricePerHour());
         apoteka.setName(apotekaDTO.getName());
         apoteka.setDescription(apoteka.getDescription());
+        apoteka.setAddress(apotekaDTO.getAddress());
         this.pharmacyService.save(apoteka);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }

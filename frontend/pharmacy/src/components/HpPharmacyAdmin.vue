@@ -548,6 +548,8 @@ export default {
     },
     created() {
       this.id = AuthService.getCurrentUser().id;
+    },
+    mounted() {
       PharmacyDataService.getPharmacyByIDAdmin(this.id)
         .then(response => {
           this.pharmacy = response.data;
@@ -567,9 +569,6 @@ export default {
       .then(response => {
           this.sviLekovi = response.data;
       });
-
-    },
-    mounted() {
     },
     deleted() {
         localStorage.removeItem("narudzbenica");
