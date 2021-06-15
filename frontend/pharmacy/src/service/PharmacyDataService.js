@@ -126,6 +126,22 @@ class PharmacyDataService {
   getSubscriptions(id){
     return axios.get(`${API_URL}/subscriptions/`+id);
   }
+
+  getEligible(ePrescription){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/eligibleForEPrescription`,
+      data: ePrescription
+    });
+  }
+
+  calculateTotals(ePrescription){
+    return axios({
+      method: 'post',
+      url: `${API_URL}/totalsInEligible`,
+      data: ePrescription
+    });
+  }
 }
 
 

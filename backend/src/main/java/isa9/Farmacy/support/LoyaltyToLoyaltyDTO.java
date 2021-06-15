@@ -17,6 +17,8 @@ public class LoyaltyToLoyaltyDTO implements Converter<LoyaltyProgram, LoyaltyPro
     public LoyaltyProgramDTO convert(LoyaltyProgram loyaltyProgram) {
         LoyaltyProgramDTO dto = new LoyaltyProgramDTO();
 
+        if(loyaltyProgram == null) return dto;
+
         dto.setName(loyaltyProgram.getName());
         dto.setId(loyaltyProgram.getId());
         dto.setDiscount(loyaltyProgram.getDiscount());

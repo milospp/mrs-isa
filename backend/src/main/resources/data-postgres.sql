@@ -90,7 +90,7 @@ insert into medicine_specifications (side_effects, daily_intake, structure) valu
 insert into medicine_specifications (side_effects, daily_intake, structure) values ('Sistemska alergija, lokalna alergija, Lipodistrofija','Doktor daje instrukcije za dozu','insulin');
 
 --medicine
-insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('AZ45', 'Hemofarm', 'Methyldopa', 'Može uzrokovati pospanost', 1, 3, 'pills', 1, 'Alfa-adrenergicki agonist');
+insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('AZ45', 'Hemofarm', 'Methyldopa', 'Može uzrokovati pospanost', 0, 3, 'pills', 1, 'Alfa-adrenergicki agonist');
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('BZ55', 'Kinezi', 'Sinopharm', 'vakcina', 0, 5, 'pills', 2, 'some type idl');
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('FAR-123', 'Galenika','Farin','Piti isključivo prema receptu',1,2,'tablets',3,'antikoagulans');
 insert into medicine (code, manufacturer, name, note, perscription, points, shape, specification_id, type) values ('ANB-001', 'Galenika', 'Anbol', 'Ne uzimati ako uzimate lekove protiv zgrušavanja krvi npr. varfarin', 1, 1, 'tablets', 4, 'NSAIL');
@@ -125,10 +125,12 @@ insert into work (doctor_id, start_hour, pharmacy_id, end_hour) values (11, '11:
 insert into pharmacy_staff (pharmacy_id, staff_id) values (2, 3);
 
 --med price
-insert into med_price(price, start_date, old_price, price_type) values (200, current_date - 10, 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (250, current_date - 10, 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (100, current_date - 10, 0, 0);
-insert into med_price(price, start_date, old_price, price_type) values (150, current_date - 10, 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (200, current_timestamp - INTERVAL '10 days', 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (100, current_timestamp - INTERVAL '10 days', 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (250, current_timestamp - INTERVAL '10 days', 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (150, current_timestamp - INTERVAL '10 days', 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (230, current_timestamp - INTERVAL '10 days', 0, 0);
+insert into med_price(price, start_date, old_price, price_type) values (170, current_timestamp - INTERVAL '10 days', 0, 0);
 
 --med catalog in pharmacy
 insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (0, 1,1,1);
@@ -142,6 +144,12 @@ update med_price SET medicine_in_pharmacy_id = 3 WHERE id = 3;
 --
 insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (12000, 4,4,1);
 update med_price SET medicine_in_pharmacy_id = 4 WHERE id = 4;
+--
+insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (7500, 5,4,3);
+update med_price SET medicine_in_pharmacy_id = 5 WHERE id = 5;
+--
+insert into medicine_in_pharmacy (in_stock, current_price_id, medicine_id, pharmacy_id) values (9000, 6,3,3);
+update med_price SET medicine_in_pharmacy_id = 6 WHERE id = 6;
 
 --appointments
 -- id 1

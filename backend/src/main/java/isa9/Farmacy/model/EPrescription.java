@@ -1,7 +1,9 @@
 package isa9.Farmacy.model;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import lombok.*;
 
@@ -23,6 +25,8 @@ public class EPrescription {
     @ManyToOne
     private Patient patient;
     @Column
-    private Date issueDate;
+    private LocalDate issueDate;
+    @OneToMany
+    private List<MedReservation> medicines;
 
 }
