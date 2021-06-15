@@ -116,7 +116,7 @@
                 <br />
                 <button
                   class="btn btn-block btn-primary"
-                  v-bind:disabled="a.booked"
+                  v-bind:disabled="a.booked || this.user.role != 'PATIENT'"
                   v-on:click="bookAppointmentModal(a)"
                 >
                   Book an appointment
@@ -186,6 +186,7 @@ export default {
         this.getDermatologAppointments();
     },
     created() {
+      this.user = this.user = AuthService.getCurrentUser();
       this.userId = AuthService.getLoggedIdOrLogout();
 
     }

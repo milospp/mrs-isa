@@ -26,7 +26,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = {"http://localhost:3000", "https://pharmacy-tim9.herokuapp.com", "https://pharmacy9.herokuapp.com"})
 @RequestMapping("/api/users")
 public class UserController {
 
@@ -230,7 +230,8 @@ public class UserController {
 
     @PostMapping("register")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<UserDTO> registerUser(@RequestBody User user) {
+    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO) {
+        User user = userDTOToUser.convert(userDTO);
         user.setEnabled(false);
         user.setRole(this.userRoleService.findOne(3L));
         userService.save(user);

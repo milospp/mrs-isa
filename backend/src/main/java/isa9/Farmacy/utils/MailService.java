@@ -1,6 +1,7 @@
 package isa9.Farmacy.utils;
 
 import isa9.Farmacy.model.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,12 @@ import java.util.Properties;
 
 @Service
 public class MailService {
+
+
+    @Value("${spring.mail.username}")
+    private String email;
+    @Value("${spring.mail.password}")
+    private String password;
 
     private String startOfMail = "" +
             "<!doctype html>\n" +
@@ -304,8 +311,8 @@ public class MailService {
         properties.put("mail.smtp.port", "587");
         properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
 
-        String email = "jasamperojasampero@gmail.com";
-        String password = "jasampero";
+        System.out.println("email = " + email);
+
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -321,7 +328,8 @@ public class MailService {
             message.setContent(messageContent, "text/html");
             Transport.send(message);
         } catch (MessagingException e) {
-            e.printStackTrace();
+            System.out.println("e.getMessage() = " + e.getMessage());
+            //e.printStackTrace();
         }
     }
 

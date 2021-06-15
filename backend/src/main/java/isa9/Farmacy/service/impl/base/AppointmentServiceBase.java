@@ -392,7 +392,7 @@ public abstract class AppointmentServiceBase implements AppointmentService {
         Collection<Appointment> appointments = this.getAllAppointmentsInInterval(start, end);
         for (Appointment appointment : appointments){
             if (appointment.getExamination() == null) continue;
-            if (appointment.getExamination().getPatient().getId() == patientId) return true;
+            if (appointment.getExamination().getPatient().getId().equals( patientId )) return true;
         }
         return false;
 

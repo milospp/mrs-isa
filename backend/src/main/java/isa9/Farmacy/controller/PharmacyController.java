@@ -20,9 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = {"http://localhost:3000", "https://pharmacy-tim9.herokuapp.com", "https://pharmacy9.herokuapp.com"})
 @RequestMapping("/api/pharmacies")
 public class PharmacyController {
 
@@ -126,12 +127,13 @@ public class PharmacyController {
     @PreAuthorize("hasAuthority('PHARMACY_ADMIN')")
     public ResponseEntity<Boolean> setPharmacyInfo(@RequestBody PharmacyDTO apotekaDTO) {
         Pharmacy apoteka = pharmacyService.findOne(apotekaDTO.getId());
+        if (apoteka == null) return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         apoteka.setName(apotekaDTO.getName());
         apoteka.setDescription(apoteka.getDescription());
-        if (apoteka == null) return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         if (apotekaDTO.getPricePerHour() != null) apoteka.setPricePerHour(apotekaDTO.getPricePerHour());
         apoteka.setName(apotekaDTO.getName());
         apoteka.setDescription(apoteka.getDescription());
+        apoteka.setAddress(apotekaDTO.getAddress());
         this.pharmacyService.save(apoteka);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
@@ -151,8 +153,8 @@ public class PharmacyController {
         PharmacyAdmin admin = (PharmacyAdmin) userService.findOne(idAdmina);
         for (MedicineInPharmacy stariLek : admin.getPharmacy().getMedicines()) {
             for (MedInPharmaDTO noviLek : cenovnik.getMedicines()) {
-                if (stariLek.getMedicine().getId() == noviLek.getMedicine().getId()) {
-                    if (stariLek.getCurrentPrice().getPrice() != noviLek.getCurrentPrice()) {
+                if (stariLek.getMedicine().getId().equals( noviLek.getMedicine().getId()) ) {
+                    if (! (stariLek.getCurrentPrice().getPrice().equals( noviLek.getCurrentPrice()) )) {
                         MedPrice novaCena = new MedPrice();
                         novaCena.setPrice(noviLek.getCurrentPrice());
                         novaCena.setStartDate(LocalDateTime.now());
@@ -233,9 +235,10 @@ public class PharmacyController {
     }
 
     @GetMapping("/subscriptions/{id}")
-    @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<List<PharmacyDTO>> getPatientsSubscriptions(@PathVariable Long id){
-        Patient patient = (Patient) this.userService.findOne(id);
+        User pacijent = this.userService.findOne(id);
+        if (pacijent.getClass() != Patient.class) return new ResponseEntity<>(null, HttpStatus.OK);
+        Patient patient = (Patient) pacijent;
 
         List<Pharmacy> subscriptions = new ArrayList<>();
 
@@ -244,6 +247,20 @@ public class PharmacyController {
         }
 
         return new ResponseEntity<>(this.pharmacyToPharmacyDTO.convert(subscriptions), HttpStatus.OK);
+    }
+
+    @PostMapping("/eligibleForEPrescription")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<List<PharmacyDTO>> getEligibleForEPrescription(@RequestBody EPrescriptionDTO ePrescriptionDTO){
+        List<Pharmacy> eligible = this.pharmacyService.findEligibleForEPrescription(ePrescriptionDTO);
+        return new ResponseEntity<>(this.pharmacyToPharmacyDTO.convert(eligible), HttpStatus.OK);
+    }
+
+    @PostMapping("/totalsInEligible")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<Map<Long, Double>> getTotalsInEligible(@RequestBody EPrescriptionDTO dto){
+        List<Pharmacy> pharmacyList = this.pharmacyService.findEligibleForEPrescription(dto);
+        return new ResponseEntity<>(this.pharmacyService.calculateTotalsInPharmacies( pharmacyList, dto), HttpStatus.OK);
     }
 }
 

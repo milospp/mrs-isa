@@ -22,8 +22,4 @@ public class SearchHelp {
     private String filterAdrU;
     private String filterAdrB;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(search, filterIme, filterPrez, filterBroj, filterAdrD, filterAdrG, filterAdrU, filterAdrB);
-    }
 }

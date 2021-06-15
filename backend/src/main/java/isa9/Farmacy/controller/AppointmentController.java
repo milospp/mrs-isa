@@ -18,7 +18,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = {"http://localhost:3000", "https://pharmacy-tim9.herokuapp.com", "https://pharmacy9.herokuapp.com"})
 @RequestMapping("/api/appointments")
 public class AppointmentController {
 
@@ -141,7 +141,6 @@ public class AppointmentController {
 
     }
 
-    @PreAuthorize("hasAuthority('PATIENT')")
     @GetMapping("dermatologist/free")
     public ResponseEntity<List<AppointmentDTO>> getFreeDernatologist() {
         List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.getAllFreeDermatologist());
@@ -311,9 +310,9 @@ public class AppointmentController {
         List<AppointmentDTO> povratna = new ArrayList<>();
         for (Appointment pregled : this.appointmentService.findAll()) {
             if (pregled.getDoctor().getClass() == Pharmacist.class) continue;
-            if (idApoteke == pregled.getPharmacy().getId()) {
+            if (idApoteke.equals(pregled.getPharmacy().getId())) {
                 for (Work w : pregled.getDoctor().getWorking())
-                    if (w.getPharmacy().getId() == pregled.getPharmacy().getId()) {
+                    if (w.getPharmacy().getId().equals( pregled.getPharmacy().getId())) {
                         AppointmentDTO pregledDTO = this.appointmentToAppointmentDTO.convert(pregled, w);
                         pregledDTO.setCanEdit(this.appointmentService.canEditDelete(pregled.getId()));
                         povratna.add(pregledDTO);
@@ -362,7 +361,7 @@ public class AppointmentController {
             return -1;  // radno vreme nije tad = -1
 
         LocalTime krajPregleda = LocalTime.of(podaci.getStartTime().getHour(), podaci.getStartTime().getMinute());
-        krajPregleda.plusMinutes(podaci.getDurationInMins());
+        krajPregleda = krajPregleda.plusMinutes(podaci.getDurationInMins());
         if (podaci.getDoctor().getPharmacyWork().getEndHour().isBefore(krajPregleda))
             return -2;  // probija mu radno vreme = -2
 

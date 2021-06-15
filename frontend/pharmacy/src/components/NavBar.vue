@@ -32,6 +32,7 @@
 					<router-link :to="{ name: 'DermAppointments'}" class="nav-item nav-link">Derm Appointments</router-link>
 					<router-link :to="{ name: 'ComplaintPage'}" class="nav-item nav-link">File a complaint</router-link>
 					<router-link :to="{ name: 'PatientsComplaints'}" class="nav-item nav-link">My complaints</router-link>
+					<router-link :to="{ name: 'ePrescriptionPage'}" class="nav-item nav-link">ePrescription</router-link>
 
 					
 				</div>
