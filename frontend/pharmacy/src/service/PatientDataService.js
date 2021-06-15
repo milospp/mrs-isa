@@ -79,6 +79,15 @@ class PatientDataService {
     return axios.get(`${API_URL}/users/` + id + `/reservations`);
   }
 
+  
+  getPatientReservationsFilter(id,filter) {
+    return axios({
+      method: 'post',
+      url: `${API_URL}/users/` + id + `/reservations/search`,
+      data: JSON.parse(filter)
+    });
+  }
+
   cancelReservation(id) {
     return axios.put(`${API_URL}/users/reservations/` + id + `/cancel`);
   }

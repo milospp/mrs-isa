@@ -2,7 +2,106 @@
 <div>
   <RatingModal modalId="rating-modal" v-model="rating" @rated="rateMedicine"></RatingModal>
 
-  <h3>Reservations</h3>
+  <h3 style="padding:20px 0px">Reservations</h3>
+
+
+
+<div class="row mb-3">
+			<div class="col-md-12">
+				<a class="btn btn-outline-secondary" data-toggle="collapse" href="#searchMedCollapse" role="button" aria-expanded="false" aria-controls="searchMedCollapse">
+					Filter
+				</a>
+			</div>
+	</div>
+  <div class="searchForm collapse mb-2 bg-light" id="searchMedCollapse">
+    <form v-on:submit.prevent="searchMedicines" class="p-3">
+          <h4>Filter</h4>
+
+        <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="inputMedName">Name</label>
+              <input type="text" class="form-control" id="inputMedName" v-model="searchParams.name">
+            </div>
+            <div class="form-group col-md-3">
+              <label for="inputPharmacy">Pharmacy</label>
+              <input type="text" class="form-control" id="inputPharmacy" v-model="searchParams.pharmacy">
+            </div>
+            
+
+            <div class="form-group col-md-2">
+              <label for="inputMedPointsMin">Quantity</label>
+
+              <div class="input-group">
+
+                  <input type="number" class="form-control" id="inputMedPointsMin" min="0" :max="Math.min(999,searchParams.maxQuantity)" v-model="searchParams.minQuantity">
+
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputMedPointsMax">-</span>
+                  </div>
+                  <input type="number" class="form-control" id="inputMedPointsMax" :min="Math.max(0,searchParams.minQuantity)" v-model="searchParams.maxQuantity">
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputMedMinResDate">Reservation Date</label>
+
+              <div class="input-group">
+
+                  <input type="date" class="form-control" id="inputMedMinResDate" :max="searchParams.maxResDate" v-model="searchParams.minResDate">
+
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputMedMaxResDate">-</span>
+                  </div>
+                  <input type="date" class="form-control" id="inputMedMaxResDate" :min="searchParams.minResDate" v-model="searchParams.maxResDate">
+              </div>
+            </div>
+            
+            <div class="form-group col-md-6">
+              <label for="inputMedMinLastDate">Last Date</label>
+
+              <div class="input-group">
+
+                  <input type="date" class="form-control" id="inputMedMinLastDate" :max="searchParams.maxLastDate" v-model="searchParams.minLastDate">
+
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputMedMaxResDate">-</span>
+                  </div>
+                  <input type="date" class="form-control" id="inputMedMaxLastDate" :min="searchParams.minLastDate" v-model="searchParams.maxLastDate">
+              </div>
+            </div>
+
+
+        
+                <div class="form-group col-md-3">
+              <label for="sortMedSelect">Sort</label>
+              <select class="form-control" id="sortMedSelect" v-model="searchParams.sort">
+                <option value="NAME_ASC">By Name Asc</option>
+                <option value="NAME_DES">By Name Des</option>
+                <option value="RES_DATE_ASC">By Reserved Date Asc</option>
+                <option value="RES_DATE_DES">By Reserved Date Des</option>
+                <option value="LAST_DATE_ASC">By Last Date Asc</option>
+                <option value="LAST_DATE_DES">By Last Date Des</option>
+                <option value="QUANTITY_ASC">By Quantity Asc</option>
+                <option value="QUANTITY_DES">By Quantity Des</option>
+              </select>          
+            </div>
+
+                <div class="form-group col-md-3">
+
+            <label for="btn-check-outlined">Only e-recepies</label><br>
+            <input style="width:35px; height:35px;" type="checkbox" class="btn-check" id="btn-check-outlined" autocomplete="off" v-model="searchParams.onlye">
+
+                </div>
+
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button> 
+        <a v-on:click="resetFormMedicines" class="ml-3 btn btn-warning">Reset</a> 
+
+    </form>
+  </div>
+
+
+
+
   <table class="table table-striped">
     <thead>
       <tr>
@@ -85,7 +184,13 @@ export default {
         ratingValue: "0",
         oldValue: null,
         medicine: null,
-      }
+      },
+      
+      searchParams: {
+        minQuantity: 0,
+        maxQuantity: undefined,
+      },
+
 		}
 	},
   methods: {
@@ -128,6 +233,23 @@ export default {
             console.log("Success");
           });
           console.log(obj);
+        },
+
+        resetFormMedicines() {
+          this.searchParams = {
+            minQuantity: 0,
+            maxQuantity: undefined,
+            minLastDate: undefined,
+
+          }
+        },
+        searchMedicines() {
+
+              PatientDataService.getPatientReservationsFilter(this.id, JSON.stringify(this.searchParams)) // HARDCODED
+                .then(response => {
+
+                    this.reservations = response.data;
+                });
         },
 
         getMyVote(r){
