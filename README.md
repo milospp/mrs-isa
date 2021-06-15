@@ -6,6 +6,12 @@
 # Pharmacy Project
 MRS-ISA Project
 
+# Forked repository
+We have forked the repository because we spent all the free credit on Travis CI.
+
+Finally, we have made the pull request from old repository (main) to new repository (main).
+
+Link to the forked repository is https://github.com/isidora-stanic/mrs-isa
 
 # Running a project
 
