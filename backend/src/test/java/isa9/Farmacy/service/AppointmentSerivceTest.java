@@ -7,10 +7,7 @@ import isa9.Farmacy.model.dto.ConsultingAppointmentReqDTO;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
 import isa9.Farmacy.repository.AppointmentRepository;
 import isa9.Farmacy.repository.ExaminationRepository;
-import isa9.Farmacy.service.impl.db.dbAppointmentService;
-import isa9.Farmacy.service.impl.db.dbPharmacyService;
-import isa9.Farmacy.service.impl.db.dbUserService;
-import isa9.Farmacy.service.impl.db.dbWorkService;
+import isa9.Farmacy.service.impl.db.*;
 import isa9.Farmacy.utils.MailService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,6 +45,9 @@ public class AppointmentSerivceTest {
     private dbUserService userService;
 
     @Mock
+    private dbExaminationService examinationService;
+
+    @Mock
     private dbPharmacyService pharmacyService;
 
     @InjectMocks
@@ -58,6 +58,8 @@ public class AppointmentSerivceTest {
         appointmentService.setUserService(userService);
         appointmentService.setPharmacyService(pharmacyService);
         appointmentService.setMailService(mailServiceMock);
+//        appointmentService.setMailService(mailServiceMock);
+        appointmentService.setExaminationService(examinationService);
 
         Pharmacy pharmacy = PharmacyConstants.getPharmacyExample();
         Patient patient = UserConstants.getPatient();
@@ -65,9 +67,11 @@ public class AppointmentSerivceTest {
         ConsultingAppointmentReqDTO consultingAppointmentReqDTO = AppointmentConstants.getConsultingReq();
 
         when(pharmacyService.findOne(1L)).thenReturn(pharmacy);
+        when(userService.getPatientByIdLocked(1L)).thenReturn(patient);
         when(userService.findOne(1L)).thenReturn(patient);
         when(userService.isPatientBlocked(patient)).thenReturn(false);
-        when(userService.getDoctorById(11L)).thenReturn(UserConstants.getPharmacist());
+        when(userService.getDoctorByIdLocked(11L)).thenReturn(UserConstants.getPharmacist());
+
 //
         LocalDateTime start = consultingAppointmentReqDTO.getStartTime();
         LocalDateTime end = consultingAppointmentReqDTO.getStartTime().plusMinutes(consultingAppointmentReqDTO.getDurationInMins());
@@ -94,7 +98,7 @@ public class AppointmentSerivceTest {
         ConsultingAppointmentReqDTO consultingAppointmentReqDTO = AppointmentConstants.getConsultingReq();
 
         when(pharmacyService.findOne(1L)).thenReturn(pharmacy);
-        when(userService.findOne(1L)).thenReturn(patient);
+        when(userService.getPatientByIdLocked(1L)).thenReturn(patient);
         when(userService.isPatientBlocked(patient)).thenReturn(true);
         when(userService.getDoctorById(11L)).thenReturn(UserConstants.getPharmacist());
 //
@@ -180,7 +184,7 @@ public class AppointmentSerivceTest {
         consultingAppointmentReqDTO.setPharmacistId(0L);
 
         when(pharmacyService.findOne(1L)).thenReturn(pharmacy);
-        when(userService.findOne(1L)).thenReturn(patient);
+        when(userService.getPatientByIdLocked(1L)).thenReturn(patient);
         when(userService.isPatientBlocked(patient)).thenReturn(false);
         when(userService.getDoctorById(11L)).thenReturn(UserConstants.getPharmacist());
 //
@@ -228,6 +232,7 @@ public class AppointmentSerivceTest {
     public void testDermAppointment() {
         appointmentService.setUserService(userService);
         appointmentService.setMailService(mailServiceMock);
+        appointmentService.setExaminationService(examinationService);
 
         Pharmacy pharmacy = PharmacyConstants.getPharmacyExample();
         Patient patient = UserConstants.getPatient();
@@ -255,6 +260,7 @@ public class AppointmentSerivceTest {
     public void testDermAppointmentWithAppointment() {
         appointmentService.setUserService(userService);
         appointmentService.setMailService(mailServiceMock);
+        appointmentService.setExaminationService(examinationService);
 
         Pharmacy pharmacy = PharmacyConstants.getPharmacyExample();
         Patient patient = UserConstants.getPatient();

@@ -38,9 +38,10 @@ public class AppointmentToAppointmentCalendarDTO implements Converter<Appointmen
         dto.setStartDate(appointment.getStartTime().toLocalDate());
         dto.setDurationInMins(appointment.getDurationInMins());
         dto.setPharmacyName(appointment.getPharmacy().getName());
+        dto.setPrice(appointment.getPrice());
 
         if (appointment.getExamination() == null) {
-            System.out.println("Examination is null");
+            //System.out.println("Examination is null");
             dto.setTypeForClass("free");
             dto.setPatientName("");
             dto.setPatientSurname("");

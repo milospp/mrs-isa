@@ -10,7 +10,7 @@
         </tr>
     </table>
 
-    <h4>Pharmacies you bought from: </h4>
+    <h4>Pharmacies you bought from or visited: </h4>
 
     <div style="height: 350px; overflow-y: scroll;">
     <table class="table table-striped">
@@ -124,6 +124,9 @@ export default {
             console.log(this.complaint);
             ComplaintDataService.sendComplaint(this.complaint).then(response => {
                 this.complaint.description = "";
+                if(response.data == 0){
+                    this.$toast.show("You have successfully filed a complaint!", {position: "top", type: "success"});
+                }
             });
         }
     },

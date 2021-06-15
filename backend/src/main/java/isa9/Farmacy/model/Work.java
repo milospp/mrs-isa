@@ -2,12 +2,14 @@ package isa9.Farmacy.model;
 
 import javax.persistence.*;
 import java.time.LocalTime;
+import java.util.Objects;
+
 import lombok.*;
 
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -16,6 +18,7 @@ import lombok.*;
 public class Work {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @ManyToOne
@@ -26,11 +29,5 @@ public class Work {
     private LocalTime startHour;
     @Column
     private LocalTime endHour;
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
 
 }

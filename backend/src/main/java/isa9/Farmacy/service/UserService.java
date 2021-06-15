@@ -15,7 +15,7 @@ public interface UserService extends GenericService<User> {
     boolean isAvaibleEmail(String em);
     boolean isAvaibleEmail(String em, Long id);
 
-    //User getByEmail()
+    User getByEmail(String email);
 
     Set<Medicine> getPatientAllergies(User patient);
     Set<Pharmacy> getPatientSubscriptions(User patient);
@@ -44,7 +44,9 @@ public interface UserService extends GenericService<User> {
     PatientsPagesDTO getPatientLastAppointmentDTOsSortedSearched(PaginationSortSearchDTO pssDTO);
 
     Doctor getDoctorById(Long id);
+    Doctor getDoctorByIdLocked(Long id);
     Patient getPatientById(Long id);
+    Patient getPatientByIdLocked(Long id);
 
     Doctor updateDoctorRating(Doctor doctor);
 

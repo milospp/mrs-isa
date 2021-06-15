@@ -20,7 +20,7 @@
             
             <td align="left"> <form v-on:submit.prevent="">
                     <input type="submit" class="btn btn-primary" data-toggle="modal" data-target="#napraviPregled" 
-                      v-on:click.prevent="osveziDermatologe()" value="Make appointment"></form> </td>
+                      v-on:click.prevent="osveziDermatologe()" value="Make examination"></form> </td>
         </tr> 
     </table> 
     <!-- Tabela sa podacima -->
@@ -98,6 +98,7 @@
                   <th>Last name</th>
                   <th>Address</th>
                   <th>Phone number</th>
+                  <th>Rating</th>
                   <th>Start time</th>
                   <th>End time</th>
                   <th>&emsp;</th>
@@ -108,6 +109,7 @@
                       <td>{{f.surname}}</td>
                       <td>{{f.address["state"]}}, {{f.address["city"]}}, {{f.address["street"]}}, {{f.address["number"]}}</td>
                       <td>{{f.phoneNumber}}</td>
+                      <td>{{f.rating}}</td>
                       <td>{{(f.pharmacyWork.startHour[0] < 10 ? "0" + f.pharmacyWork.startHour[0] : f.pharmacyWork.startHour[0])}}:{{(f.pharmacyWork.startHour[1] < 10 ? "0" + f.pharmacyWork.startHour[1] : f.pharmacyWork.startHour[1])}}</td>
                       <td>{{(f.pharmacyWork.endHour[0] < 10 ? "0" + f.pharmacyWork.endHour[0] : f.pharmacyWork.endHour[0])}}:{{(f.pharmacyWork.endHour[1] < 10 ? "0" + f.pharmacyWork.endHour[1] : f.pharmacyWork.endHour[1])}}</td>
                       <td><form v-on:click.prevent="podesi(f, true)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#potvrda">Fire</button></form></td>
@@ -140,6 +142,7 @@
                   <th>Last name</th>
                   <th>Address</th>
                   <th>Phone number</th>
+                  <th>Rating</th>
                   <th>Start time</th>
                   <th>End time</th>
                   <th>&emsp;</th>
@@ -150,6 +153,7 @@
                       <td>{{d.surname}}</td>
                       <td>{{d.address["state"]}}, {{d.address["city"]}}, {{d.address["street"]}}, {{d.address["number"]}}</td>
                       <td>{{d.phoneNumber}}</td>
+                      <td>{{d.rating}}</td>
                       <td>{{(d.pharmacyWork.startHour[0] < 10 ? "0" + d.pharmacyWork.startHour[0] : d.pharmacyWork.startHour[0])}}:{{(d.pharmacyWork.startHour[1] < 10 ? "0" + d.pharmacyWork.startHour[1] : d.pharmacyWork.startHour[1])}}</td>
                       <td>{{(d.pharmacyWork.endHour[0] < 10 ? "0" + d.pharmacyWork.endHour[0] : d.pharmacyWork.endHour[0])}}:{{(d.pharmacyWork.endHour[1] < 10 ? "0" + d.pharmacyWork.endHour[1] : d.pharmacyWork.endHour[1])}}</td>
                       <td><form v-on:click.prevent="podesi(d, false)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#potvrda">Fire</button></form></td>
@@ -176,11 +180,11 @@
                       <td>{{p.doctor.name}}</td>
                       <td>{{p.doctor.surname}}</td>
                       <td>{{p.doctor.phoneNumber}} </td>
-                      <td>{{p.startTime[1]}}/{{p.startTime[2]}}/{{p.startTime[0]}} {{p.startTime[3]}}:{{p.startTime[4]}}</td>
+                      <td>{{p.startTime[2]}}/{{p.startTime[1]}}/{{p.startTime[0]}} {{p.startTime[3]}}:{{p.startTime[4]}}</td>
                       <td>{{p.durationInMins}}</td>
                       <td>{{p.price}}</td>
-                      <td><form v-on:click.prevent="podesiPregled(p, true)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#izmeniPregled">View</button></form></td>
-                      <td><form v-on:click.prevent="podesiPregled(p, false)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obrisiPregled">Delete</button></form></td>
+                      <td><form v-on:click.prevent="podesiPregled(p)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#izmeniPregled">View</button></form></td>
+                      <td><form v-on:click.prevent="podesiPregled(p)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obrisiPregled">Delete</button></form></td>
                   </tr>
                 </tbody>
               </table>
@@ -214,7 +218,12 @@
         <div class="modal-body" align="left">Points: <input type="text" v-model="points" placeholder=points/></div>
         <div class="modal-body" align="left">Price: <input type="text" v-model="price" placeholder=price/></div>
         <div class="modal-body" align="left">Quantity: <input type="text" v-model="quantity" placeholder=quantity/></div>
-        <div class="modal-body" align="left">With receipt (yes/no): <input type="text" v-model="perscription" placeholder=perscription/></div>
+        <div class="modal-body" align="left">With receipt: 
+          <select id="potvrdaZahteva" style="width: 50%;" v-model="perscription" required="required">
+              <option>Yes</option>
+              <option>No</option>
+          </select>
+        </div>
         <div class="modal-body" align="left">Shape: <input type="text" v-model="shape" placeholder=shape/></div>
         <div class="modal-body" align="left">Rating: {{this.rating}}</div>
         <div class="modal-footer">
@@ -238,19 +247,25 @@
         <div class="modal-body" align="left">Code: {{this.originalLeka?.medicine.code}}</div>
         <div class="modal-body" align="left">Name: {{this.originalLeka?.medicine.name}}</div>
         <div class="modal-body" align="left">Structure: {{this.structure}}</div>
-        <div class="modal-body" align="left">Manufacturer: {{this.originalLeka?.medicine.manufacturer}}</div>
-        <div class="modal-body" align="left">Note: {{this.originalLeka?.medicine.note}}</div>
-        <div class="modal-body" align="left">Type: {{this.originalLeka?.medicine.type}}</div>
-        <div class="modal-body" align="left">Points: {{this.originalLeka?.medicine.points}}</div>
+        <div class="modal-body" align="left">Manufacturer: <input type="text" v-model="manufacturer" placeholder=manufacturer/></div>
+        <div class="modal-body" align="left">Note: <input type="text" v-model="note" placeholder=note/></div>
+        <div class="modal-body" align="left">Type: <input type="text" v-model="type" placeholder=type/></div>
+        <div class="modal-body" align="left">Points: <input type="text" v-model="points" placeholder=points/></div>
         <div class="modal-body" align="left">Price: {{this.originalLeka?.currentPrice}}</div>
         <div class="modal-body" align="left">Action/promotion: 
           <label v-if="originalLeka?.priceType=='ACTION'">Action {{100-originalLeka?.currentPrice*100/originalLeka?.oldPrice}}% (original price = {{originalLeka?.oldPrice}})</label>
           <label v-else>Promotion (original price = {{originalLeka?.oldPrice}})</label></div>
-        <div class="modal-body" align="left">Quantity: {{this.originalLeka?.inStock}}</div>
-        <div class="modal-body" align="left">With receipt (yes/no): {{this.originalLeka?.medicine.perscription}}</div>
-        <div class="modal-body" align="left">Shape: {{this.originalLeka?.medicine.shape}}</div>
+        <div class="modal-body" align="left">Quantity: <input type="text" v-model="quantity" placeholder=quantity/></div>
+        <div class="modal-body" align="left">With receipt (yes/no): 
+          <select id="potvrdaZahteva" style="width: 50%;" v-model="perscription" required="required">
+              <option>Yes</option>
+              <option>No</option>
+          </select>
+        </div>
+        <div class="modal-body" align="left">Shape: <input type="text" v-model="shape" placeholder=shape/></div>
         <div class="modal-body" align="left">Rating: {{this.rating}}</div>
         <div class="modal-footer">
+          <button type="button" class="btn btn-primary"  data-dismiss="modal" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="provera()">Save changes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -312,7 +327,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="Potvrdica">Are you sure you want to fire {{this.otpustiRadnika?.name}} {{this.otpustiRadnika?.surname}}?</h5>
+          <h5 class="modal-title" id="Potvrdica">Are you sure you want to fire {{this.otpustiRadnika?.name}} {{this.otpustiRadnika?.surname}} ({{this.otpustiRadnika?.phoneNumber}})?</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -366,17 +381,18 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="ObrisiNar">Are you sure you want to delete examination? </h5>
-          
+          <h5 v-if="this.izabraniPregled?.canEdit" class="modal-title" id="ObrisiNar">Are you sure you want to delete examination? </h5>
+          <h5 v-else>You can't delete examination</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-          <label>&emsp; {{this.izabraniPregled?.doctor.name}} {{this.izabraniPregled?.doctor.surname}} {{this.izabraniPregled?.doctor.phoneNumber}}</label>
+          <label>&emsp; {{this.izabraniPregled?.doctor.name}} {{this.izabraniPregled?.doctor.surname}} ({{this.izabraniPregled?.doctor.phoneNumber}})</label>
           <label>&emsp; {{this.izabraniPregled?.startTime[2]}}/{{this.izabraniPregled?.startTime[1]}}/{{this.izabraniPregled?.startTime[0]}}
-            {{this.izabraniPregled?.startTime[3]}}:{{this.izabraniPregled?.startTime[4]}} {{this.izabraniPregled?.durationInMins}}</label>
+            {{this.izabraniPregled?.startTime[3]}}:{{this.izabraniPregled?.startTime[4]}}</label>
+          <label>&emsp; Min: {{this.izabraniPregled?.durationInMins}}</label>
          <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="obrisiPregled()" data-dismiss="modal">Yes</button>
+          <button v-if="this.izabraniPregled?.canEdit" type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="obrisiPregled()" data-dismiss="modal">Yes</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -401,7 +417,11 @@
         <div class="modal-body" align="left">Points: <input type="text" v-model="points"/></div>
         <div class="modal-body" align="left">Price: <input type="text" v-model="price"/></div>
         <div class="modal-body" align="left">Quantity: <input type="text" v-model="quantity"/></div>
-        <div class="modal-body" align="left">With receipt (yes/no): <input type="text" v-model="perscription"/> </div>
+        <div class="modal-body" align="left">With receipt: 
+          <select id="potvrdaZahteva" style="width: 50%;" v-model="perscription" required="required">
+              <option>Yes</option>
+              <option>No</option>
+          </select></div>
         <div class="modal-body" align="left">Shape: <input type="text" v-model="shape"/></div>
         <div class="modal-body" align="left">Replacement medicines: 
           <select id="zamenski" style="width: 50%;" v-model="zamenskiLekovi" required="required" multiple>
@@ -438,7 +458,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="lekic">New appointment</h5>
+          <h5 class="modal-title" id="lekic">New examination</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -448,7 +468,7 @@
         <div class="modal-body" align="left">Price: <input type="number" min="1" v-model="pregledKosta"/></div>
         <div class="modal-body" align="left">Choose dermatologist: 
           <select id="zamenski" style="width: 80%;" v-model="pregledDoktor" required="required">
-              <option v-for="d in this.sviZaposleniDermatolozi" v-bind:value=d>{{d.name}} {{d.surname}} {{d.phoneNumber}}</option>
+              <option v-for="d in this.sviZaposleniDermatolozi" v-bind:value=d>{{d.name}} {{d.surname}} ({{d.phoneNumber}})</option>
           </select></div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="modal"  data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="dodajPregled()">Make</button>
@@ -463,12 +483,13 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="lekic">Edit appointment</h5>
+          <h5 v-if="this.izabraniPregled?.canEdit" class="modal-title" id="lekic">Edit appointment</h5>
+          <h5 v-else>View appointment</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div v-if="menjaPregled == true">
+        <div v-if="this.izabraniPregled?.canEdit">
           <div class="modal-body" align="left">Start time: <input type="datetime-local" v-model="pregledStartuje"/></div>
           <div class="modal-body" align="left">Duration : <input type="number" min="1" v-model="pregledTraje"/> minutes</div>
           <div class="modal-body" align="left">Price: <input type="number" min="1" v-model="pregledKosta"/></div>
@@ -478,9 +499,9 @@
           <div class="modal-body" align="left">Duration : {{this.izabraniPregled?.durationInMins}} minutes</div>
           <div class="modal-body" align="left">Price: {{this.izabraniPregled?.price}}</div>
         </div>
-        <div class="modal-body" align="left">Chosen dermatologist: {{this.izabraniPregled?.doctor.name}} {{this.izabraniPregled?.doctor.surname}} {{this.izabraniPregled?.doctor.phoneNumber}}</div>
+        <div class="modal-body" align="left">Chosen dermatologist: {{this.izabraniPregled?.doctor.name}} {{this.izabraniPregled?.doctor.surname}} ({{this.izabraniPregled?.doctor.phoneNumber}})</div>
         <div class="modal-footer">
-          <div v-if="menjaPregled == true">
+          <div v-if="this.izabraniPregled?.canEdit">
             <button type="button" class="btn btn-primary" data-dismiss="modal"  data-toggle="modal" data-target="#obavestenje" v-on:click.prevent="izmeniPregled()">Edit</button>
           </div>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -521,7 +542,7 @@ export default {
             sviLekovi: [], zamenskiLekovi: [], poruka: "Wait... Your require is in processing", 
             filterOrder: 0, narudzbenica: null, sveNarudzbenice: [], narudzbeniceZaIspis: [],
             pregledStartuje:null, pregledTraje: 0, pregledKosta: 0,  pregledDoktor: null,
-            sviPreglediDermatologa: [], izabraniPregled: null, menjaPregled: false,
+            sviPreglediDermatologa: [], izabraniPregled: null,
             upitiZaLek: [], 
         };
     },
@@ -572,13 +593,8 @@ export default {
 
       inicijalizujPoruku(pk) { this.poruka = pk; },
       podesi(farm_der, jesteFar) { this.otpustiRadnika = farm_der; this.jesteFarmaceut = jesteFar;},
-      podesiPregled(p, zaIzmenu) { 
-        if (zaIzmenu) {
-          AppointmentDataService.canEditAppointment(p.id)
-            .then(response => {
-              if (response.data == 0) this.menjaPregled = true;
-              else this.menjaPregled = false;
-              return;});
+      podesiPregled(p) { 
+        if (p.canEdit) {
           this.pregledTraje = p.durationInMins;
           this.pregledKosta = p.price;
         }
@@ -683,8 +699,8 @@ export default {
         this.originalLeka = l;
         if (!samoLek) {
           this.name = l.medicine.name;
-          if (l.medicine.perscription == "WITH_RECEIPT") this.perscription = "yes";  //novi
-          else this.perscription = "no";  //novi
+          if (l.medicine.perscription == "WITH_RECEIPT") this.perscription = "Yes";  //novi
+          else this.perscription = "No";  //novi
           this.structure =  l.medicine.specification.structure;
           this.manufacturer = l.medicine.manufacturer;
           this.note = l.medicine.note;
@@ -867,14 +883,14 @@ export default {
         AppointmentDataService.makeAppointmentPAdmin(this.pregledStartuje, this.pregledTraje, this.pregledKosta,
           this.pregledDoktor, this.pregledDoktor.pharmacyWork.pharmacyId)
           .then(response => {
-            if (response.data == 0) {
+            if (response.data == 1) {
               this.poruka = "You successfully made appointment";
               this.osveziPreglede();
             }
             else if (response.data == -1) this.poruka = "Dermatologist doesn't work in this pharmacy in inputed time";
             else if (response.data == -2) this.poruka = "Appointment is too long, end time is after end hour of dermatologist";
             else if (response.data == -3) this.poruka = "Dermatologist already have some appointment at inputed time";
-
+            else if (response.data == 0) this.poruka = "Dermatologist is on vacation at that day";
             return;
           });
         },

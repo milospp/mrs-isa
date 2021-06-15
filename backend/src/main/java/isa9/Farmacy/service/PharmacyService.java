@@ -4,12 +4,14 @@ import isa9.Farmacy.model.*;
 import isa9.Farmacy.model.dto.PharmacySearchDTO;
 
 import java.util.List;
+import java.util.Set;
 
 public interface PharmacyService extends GenericService<Pharmacy> {
 
     boolean pharmacyExists(Pharmacy p);
     int reduceQuantity(Pharmacy pharmacy, Medicine medicine, int resQuantity);
 
+    Pharmacy findOneLocked(Long id);
 
     MedicineInPharmacy gedMedicineInPharmacy(Pharmacy pharmacy, Medicine medicine);
 
@@ -24,4 +26,8 @@ public interface PharmacyService extends GenericService<Pharmacy> {
     void sendActionMail(MedPrice actionPromotion, Boolean delete);
 
     List<Pharmacy> getVisitedPharmacies(Patient patient);
+
+    boolean subscribeToPharmacy(Pharmacy pharmacy, Long patientId);
+    boolean unsubscribeToPharmacy(Pharmacy pharmacy, Long patientId);
+    boolean isPatientSubscribed(Pharmacy pharmacy, Long patientId);
 }

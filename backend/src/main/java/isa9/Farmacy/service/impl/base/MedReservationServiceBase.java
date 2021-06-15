@@ -5,6 +5,8 @@ import isa9.Farmacy.model.dto.MedInPharmaDTO;
 import isa9.Farmacy.model.dto.MedReservationDTO;
 import isa9.Farmacy.model.dto.MedReservationFormDTO;
 import isa9.Farmacy.service.*;
+import isa9.Farmacy.utils.MailService;
+import isa9.Farmacy.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,8 @@ public abstract class MedReservationServiceBase implements MedReservationService
     protected MedicineService medicineService;
     protected UserService userService;
     protected InquiryService inquiryService;
+    protected MailService mailService;
+    protected LoyaltyProgramService loyaltyProgramService;
 
     @Autowired
     public void setMedicineService(MedicineService medicineService) {
@@ -37,6 +41,16 @@ public abstract class MedReservationServiceBase implements MedReservationService
 
     @Autowired
     public void setInquiryService(InquiryService inquiryService) { this.inquiryService = inquiryService; }
+
+    @Autowired
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
+    }
+
+    @Autowired
+    public void setLoyaltyProgramService(LoyaltyProgramService loyaltyProgramService) {
+        this.loyaltyProgramService = loyaltyProgramService;
+    }
 
     @Override
     public MedReservation dispenseMedicine(MedReservation medReservation) {
@@ -62,6 +76,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
 
         patient.setPoints(points);
         userService.save(patient);
+        mailService.sendDispensedReservationInfo(medReservation);
 
         return save(medReservation);
     }
@@ -120,7 +135,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'
         int targetStringLength = 10;
-        Random random = new Random();
+        Random random = Utils.getRand();
 
         String generatedString = random.ints(leftLimit, rightLimit + 1)
                 .limit(targetStringLength)
@@ -149,6 +164,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
 
         MedicineInPharmacy mip = pharmacyService.gedMedicineInPharmacy(pharmacy, medicine);
 
+        LoyaltyProgram category = this.loyaltyProgramService.getCategoryOfUser(patient);
 
         MedReservation medReservation = MedReservation.builder()
                 .id(null)
@@ -159,6 +175,7 @@ public abstract class MedReservationServiceBase implements MedReservationService
                 .status(MedReservationStatus.PENDING)
                 .medicineInPharmacy(mip)
                 .quantity(reservationFormDTO.getQuantity())
+                .loyaltyDiscount((category != null) ? category.getDiscount() : null)
                 .build();
 
         patient.getReservations().add(medReservation);

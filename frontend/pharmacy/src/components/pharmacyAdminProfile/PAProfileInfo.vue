@@ -3,7 +3,6 @@
     <div class="col-md-12">
         <h4>&emsp;</h4>
         <h2>{{admin?.name}} {{admin?.surname}}</h2>
-
         <h4>Address: {{admin?.address.state}} {{admin?.address.city}} {{admin?.address.street}} {{admin?.address.number}}</h4>
         <h4>Phone: {{admin?.phoneNumber}}</h4>
         <h4>&emsp;</h4>

@@ -13,24 +13,26 @@ import PAProfile from '@/views/PAProfile.vue'
 import ChangingOrder from '@/views/ChangingOrder.vue'
 import HireDermatologist from '@/views/HireDermatologist.vue'
 import AddNewPricelist from '@/views/AddNewPricelist.vue'
-import AddPharmacy from '@/views/AddPharmacy.vue'
-import AddPharmacyAdmin from '@/views/AddPharmacyAdmin.vue'
+import Vacations from '@/views/Vacations.vue'
+// import AddPharmacy from '@/views/AddPharmacy.vue'
+// import AddPharmacyAdmin from '@/views/AddPharmacyAdmin.vue'
 import PharmacistHomePage from '@/views/PharmacistHomePage.vue'
 import DispenseMedication from '@/views/DispenseMedication.vue'
 import VacationRequest from '@/views/VacationRequest.vue'
 import PharmacyPage from '@/views/PharmacyPage.vue'
+import AllDoctors from '@/views/AllDoctors.vue'
 import PatientProfile from '@/views/PatientProfile.vue'
 import PharmacistProfile from '@/views/PharmacistProfile.vue'
 import DermatologistProfile from '@/views/DermatologistProfile.vue'
 import DermatologistHomePage from '@/views/DermatologistHomePage.vue'
 import DermAppointments from '../views/DermAppointments.vue'
-import AddSupplier from '@/views/AddSupplier.vue'
-import AddDermatologist from '@/views/AddDermatologist.vue'
-import AddMedicine from '@/views/AddMedicine.vue'
+// import AddSupplier from '@/views/AddSupplier.vue'
+// import AddDermatologist from '@/views/AddDermatologist.vue'
+// import AddMedicine from '@/views/AddMedicine.vue'
 import Login from '@/views/Login.vue'
 import LogoutView from '@/views/LogoutView.vue'
 import Appointment from '@/views/Appointment.vue'
-import AddSysAdmin from '@/views/AddSysAdmin.vue'
+// import AddSysAdmin from '@/views/AddSysAdmin.vue'
 import SupplierProfile from '@/views/SupplierProfile.vue'
 import CounselingPage from '@/views/CounselingPage.vue'
 import MedicineSearchPage from '@/views/MedicineSearchPage.vue'
@@ -40,6 +42,10 @@ import SuppliersOffersPage from '@/views/SuppliersOffersPage.vue'
 import AddNewOffer from '@/views/AddNewOffer.vue'
 import ComplaintPage from '@/views/ComplaintPage.vue'
 import ComplaintResponsePage from '@/views/ComplaintResponsePage.vue'
+import PatientsComplaints from '@/views/PatientsComplaints.vue'
+import AdminResponses from '@/views/AdminResponses.vue'
+import SysAdminAdd from '@/views/SysAdminAdd.vue'
+import LoyaltyProgramView from '@/views/LoyaltyProgramView.vue'
 
 
 const routes = [
@@ -101,7 +107,7 @@ const routes = [
     component: ChangingOrder    // view je komponenta
   },
   {
-    path: '/paMoreInfo',
+    path: '/pharmacyMoreInfo',
     name: 'PAMoreInfo',
     component: PAMoreInfo    // view je komponenta
   },
@@ -116,15 +122,25 @@ const routes = [
     component: AddNewPricelist    // view je komponenta
   },
   {
-    path: '/addPharmacy',
-    name: 'AddPharmacy',
-    component: AddPharmacy
+    path: '/vacationRequests',
+    name: 'Vacations',
+    component: Vacations    // view je komponenta
   },
   {
-    path: '/addPharmacyAdmin',
-    name: 'AddPharmacyAdmin',
-    component: AddPharmacyAdmin
+    path: '/allDoctors',
+    name: 'AllDoctors',
+    component: AllDoctors    // view je komponenta
   },
+  // {
+  //   path: '/addPharmacy',
+  //   name: 'AddPharmacy',
+  //   component: AddPharmacy
+  // },
+  // {
+  //   path: '/addPharmacyAdmin',
+  //   name: 'AddPharmacyAdmin',
+  //   component: AddPharmacyAdmin
+  // },
   {
     path: '/pharmacist',
     name: 'PharmacistHomePage',
@@ -172,20 +188,20 @@ const routes = [
     component: DermatologistHomePage
   },
   {
-    path: '/darm-appointments',
+    path: '/derm-appointments',
     name: 'DermAppointments',
     component: DermAppointments
   },
-  {
-    path: '/addSupplier',
-    name: 'AddSupplier',
-    component: AddSupplier
-  },
-  {
-    path: '/addDermatologist',
-    name: 'AddDermatologist',
-    component: AddDermatologist
-  },
+  // {
+  //   path: '/addSupplier',
+  //   name: 'AddSupplier',
+  //   component: AddSupplier
+  // },
+  // {
+  //   path: '/addDermatologist',
+  //   name: 'AddDermatologist',
+  //   component: AddDermatologist
+  // },
   {
     path: '/login',
     name: 'Login',
@@ -196,16 +212,16 @@ const routes = [
     name: 'Logout',
     component: LogoutView
   },
-  {
-    path: '/addMedicine',
-    name: 'AddMedicine',
-    component: AddMedicine
-  },
-  {
-    path: '/addSysAdmin',
-    name: 'AddSysAdmin',
-    component: AddSysAdmin
-  },
+  // {
+  //   path: '/addMedicine',
+  //   name: 'AddMedicine',
+  //   component: AddMedicine
+  // },
+  // {
+  //   path: '/addSysAdmin',
+  //   name: 'AddSysAdmin',
+  //   component: AddSysAdmin
+  // },
   {
     path: '/supplier/profile',
     name: 'SupplierProfile',
@@ -255,6 +271,26 @@ const routes = [
     path: '/complaints',
     name: 'ComplaintResponsePage',
     component: ComplaintResponsePage
+  },
+  {
+    path: '/patientsComplaints',
+    name: 'PatientsComplaints',
+    component: PatientsComplaints
+  },
+  {
+    path: '/adminResponses',
+    name: "AdminResponses",
+    component: AdminResponses
+  },
+  {
+    path: '/add',
+    name: 'SysAdminAdd',
+    component: SysAdminAdd
+  },
+  {
+    path: '/loyaltyProgram',
+    name: 'LoyaltyProgramView',
+    component: LoyaltyProgramView
   }
 
   // {

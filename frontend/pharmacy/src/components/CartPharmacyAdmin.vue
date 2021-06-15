@@ -63,7 +63,7 @@
                       <td>{{l.code}}</td>
                       <td>{{l.name}}</td>
                       <td>{{l.type}}</td>
-                      <td>{{l.structure}}</td>
+                      <td>{{l.specification.structure}}</td>
                       <td><form v-on:click.prevent="dodajUKorpu(l)"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#obavestenje">Add to cart</button></form></td>
                   </tr>
                 </tbody>
@@ -87,7 +87,7 @@
         </div>
         <div class="modal-body" align="left">Code: {{this.odabraniLek?.medicine.code}}</div>
         <div class="modal-body" align="left">Name: {{this.odabraniLek?.medicine?.name}}</div>
-        <div class="modal-body" align="left">Structure: {{this.odabraniLek?.medicine?.structure}}</div>
+        <div class="modal-body" align="left">Structure: {{this.odabraniLek?.medicine?.specification.structure}}</div>
         <div class="modal-body" align="left">Manufacturer: {{this.odabraniLek?.medicine?.manufacturer}}</div>
         <div class="modal-body" align="left">Note: {{this.odabraniLek?.medicine?.note}}</div>
         <div class="modal-body" align="left">Type: {{this.odabraniLek?.medicine?.type}}</div>

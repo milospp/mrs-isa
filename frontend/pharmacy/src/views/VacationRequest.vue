@@ -96,16 +96,31 @@ export default {
   },
   methods: {
     sendRequest(){
-      //alert('sending...' + JSON.stringify(this.vacation));
       this.vacation.startDate = this.range.start;
       this.vacation.endDate = this.range.end;
+      if (this.doctorsRole === 'PHARMACIST'){
+        //alert(JSON.stringify(this.jobs[0].pharmacyId));
+        this.vacation.pharmacyId = this.jobs[0].pharmacyId;
+        
+      }
+      //alert('sending...' + JSON.stringify(this.vacation));
       VacationDataService.sendRequest(this.vacation)
         .then(response => {
           if (response.data){
-            alert('Vacation request sucessfully sent!')
+            this.$toast.show(
+              "Vacation request sucessfully sent!",
+              {
+                  position: "top", type: "success",
+              }
+            );
           }
           else {
-            alert('Invalid time!');
+            this.$toast.show(
+              "Invalid time!",
+              {
+                  position: "top", type: "error",
+              }
+            );
           }
         })
     },

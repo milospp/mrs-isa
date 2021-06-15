@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -60,6 +61,12 @@ public class dbPharmacyService extends PharmacyServiceBase implements PharmacySe
 
 
     @Override
+    @Transactional
+    public Pharmacy findOneLocked(Long id) {
+        return pharmacyRepository.findPharmacyByIdLocked(id);
+    }
+
+    @Override
     public List<Work> findDoctorsWork(Doctor doctor) {
         return workRepository.findAllByDoctor(doctor);
     }
@@ -72,7 +79,7 @@ public class dbPharmacyService extends PharmacyServiceBase implements PharmacySe
             for (MedicineInPharmacy uApoteci : pharmacy.getMedicines()) {
                 System.out.println(mq.getMedicine().getName());
                 System.out.println(uApoteci.getMedicine().getName());
-                if (mq.getMedicine().getId() == uApoteci.getMedicine().getId()) {
+                if (mq.getMedicine().getId().equals( uApoteci.getMedicine().getId() )) {
                     nadjen = true;
                     break;
                 }
@@ -84,11 +91,13 @@ public class dbPharmacyService extends PharmacyServiceBase implements PharmacySe
                 MedPrice cena = new MedPrice();
                 cena.setMedicineInPharmacy(noviLek);
                 cena.setStartDate(LocalDateTime.now());
+                cena.setPriceType(PriceType.NORMAL);
                 cena.setPrice(77.0);
                 noviLek.setCurrentPrice(cena);
                 noviLek.setPharmacy(pharmacy);
                 noviLek.setMedicine(mq.getMedicine());
                 pharmacy.getMedicines().add(noviLek);
+                this.medInPharmaService.save(noviLek);
                 save(pharmacy);
             }
         }

@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = {"http://localhost:3000", "https://pharmacy9.herokuapp.com"})
 @RequestMapping(value = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
 
@@ -107,7 +107,6 @@ public class AuthenticationController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         User user = (User) authentication.getPrincipal();
-        System.out.println(user.getEmail());
         if (user == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 

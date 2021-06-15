@@ -5,19 +5,24 @@ import isa9.Farmacy.model.dto.ConsultingAppointmentReqDTO;
 import isa9.Farmacy.repository.AppointmentRepository;
 import isa9.Farmacy.repository.ExaminationRepository;
 import isa9.Farmacy.service.AppointmentService;
+import isa9.Farmacy.service.VacationService;
 import isa9.Farmacy.service.WorkService;
 import isa9.Farmacy.service.impl.base.AppointmentServiceBase;
+import isa9.Farmacy.support.DateTimeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @Primary
@@ -42,7 +47,7 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
 
     @Override
     public Appointment findOne(Long id) {
-        return this.appointmentRepository.findById(id).orElseGet(null);
+        return this.appointmentRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -69,7 +74,10 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
     }
 
     @Override
+    @Transactional
+    //@Transactional(propagation = Propagation.REQUIRED)
     public Set<Work> getFreePharmacist(ConsultingAppointmentReqDTO appointmentReqDTO) {
+        if (appointmentReqDTO.getStartTime() == null) return new HashSet<>();
         if (appointmentReqDTO.getStartTime().isBefore(LocalDateTime.now())) return new HashSet<>();
 
         LocalDateTime start = appointmentReqDTO.getStartTime();
@@ -83,7 +91,7 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
 
         for (Work work : workSet) {
             if (work.getDoctor().getRole().getId() != 5L) invalidWorkSet.add(work);
-            else if (dermatologists.stream().anyMatch(d -> d.getId() == work.getDoctor().getId())) invalidWorkSet.add(work);
+            else if (dermatologists.stream().anyMatch(d -> d.getId().equals( work.getDoctor().getId()))) invalidWorkSet.add(work);
         }
 
         workSet.removeAll(invalidWorkSet);
@@ -93,9 +101,61 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
     }
 
     @Override
+    @Transactional
+    //@Transactional(propagation = Propagation.REQUIRED)
     public List<Appointment> getAllAppointmentsInInterval(LocalDateTime start, LocalDateTime end) {
 
         return appointmentRepository.getAppointmentsInInterval(start.toString(), end.toString());
+    }
+
+    @Override
+    @Transactional
+    public Appointment bookConsultingAppointment(ConsultingAppointmentReqDTO appointmentReqDTO, Patient patient) {
+
+        patient = userService.getPatientByIdLocked(patient.getId());
+        Doctor doctor = userService.getDoctorByIdLocked(appointmentReqDTO.getPharmacistId());
+
+        if (userService.isPatientBlocked(patient)) return null;
+        if (appointmentReqDTO.getDurationInMins() <= 0) return null;
+        if (appointmentReqDTO.getStartTime().isBefore(LocalDateTime.now())) return null;
+        if (this.isPatientOccupied(
+                appointmentReqDTO.getStartTime(),
+                appointmentReqDTO.getStartTime().plusMinutes(appointmentReqDTO.getDurationInMins()),
+                patient.getId()
+        )) return null;
+
+
+        Set<Work> workSet = getFreePharmacist(appointmentReqDTO);
+        Boolean available = workSet.stream().anyMatch(w ->
+                w.getDoctor().getId() == appointmentReqDTO.getPharmacistId() &&
+                        w.getPharmacy().getId() == appointmentReqDTO.getPharmacyId());
+
+        if (!available) return null;
+
+        Pharmacy pharmacy = pharmacyService.findOne(appointmentReqDTO.getPharmacyId());
+
+        Double price = pharmacy.getPricePerHour();
+        if (price == null) price = 999.0;
+
+        Appointment appointment = Appointment.builder()
+                .doctor(doctor).pharmacy(pharmacy)
+                .durationInMins(appointmentReqDTO.getDurationInMins())
+                .startTime(appointmentReqDTO.getStartTime())
+                .price(price * appointmentReqDTO.getDurationInMins() / 60)
+                .type(TypeOfReview.COUNSELING)
+                .build();
+
+        Examination examination = Examination.builder()
+                .patient(patient)
+                .status(ExaminationStatus.PENDING)
+                .therapy(new HashSet<>())
+                .appointment(appointment).build();
+        appointment.setExamination(examination);
+
+        save(appointment);
+        mailService.sendAppointmentInfo(appointment, false);
+
+        return appointment;
     }
 
     @Override
@@ -103,10 +163,11 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
         LocalDateTime end = start.plusMinutes(duration);
         LocalDateTime kraj;
         for (Appointment pregled : this.appointmentRepository.findAll()) {
-            if (pregled.getDoctor().getId() != idDoktora || pregled.getId() == id) continue;
+            if (!pregled.getDoctor().getId().equals( idDoktora ) || pregled.getId().equals( id )) continue;
             kraj = pregled.getStartTime().plusMinutes(pregled.getDurationInMins());
             if ((start.isAfter(pregled.getStartTime()) && start.isBefore(kraj))
-                    || (start.isBefore(pregled.getStartTime()) && end.isAfter(pregled.getStartTime())))
+                    || (start.isBefore(pregled.getStartTime()) && end.isAfter(pregled.getStartTime()))
+                    || (start.isEqual(pregled.getStartTime()) || end.isEqual(kraj)))
                 return false;
         }
         return true;
@@ -119,7 +180,7 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
             if (u.getClass() == Patient.class) {
                 zaBrisanje.clear();
                 for (Examination e : ((Patient) u).getMyExaminations()) {
-                    if (e.getAppointment().getId() == id) {
+                    if (e.getAppointment().getId().equals( id )) {
                         zaBrisanje.add(e);
                     }
                 }
@@ -129,27 +190,118 @@ public class dbAppointmentService extends AppointmentServiceBase implements Appo
         }
 
         for (Examination ex : this.examinationService.findAll()) {
-            if (ex.getAppointment().getId() == id) {
+            if (ex.getAppointment().getId() .equals( id )) {
                 this.examinationService.delete(ex);}
         }
-        this.appointmentRepository.delete(this.appointmentRepository.getOne(id));
+        this.appointmentRepository.delete(findOne(id));
     }
 
     @Override
-    public int canEditDelete(Long id) {
+    public boolean canEditDelete(Long id) {
+        if (findOne(id).getStartTime().isBefore(LocalDateTime.now())) return false; // bio u proslosti
         for (Examination ex : this.examinationService.findAll())
-            if (ex.getAppointment().getId() == id) {
+            if (ex.getAppointment().getId().equals( id )) {
                 if (ex.getStatus() != ExaminationStatus.CANCELED) continue;
                 if (ex.getStatus() == ExaminationStatus.HELD || ex.getStatus() == ExaminationStatus.NOT_HELD)
-                    return 1;               // bio je u proslosti
-                else return 2;              // neko je rezervisao
+                    return false;               // bio je u proslosti
+                else return false;              // neko je rezervisao
             }
-        return 0;                           // mozes da menjas
+        return true;                           // mozes da menjas
+    }
+
+    @Override
+    public void deleteFreeAppointments(Long idDoktora) {
+        for (Appointment a : findAll()) {
+            if (a.getDoctor().getId() != idDoktora) continue;
+            if (a.getStartTime().isBefore(LocalDateTime.now())) continue;
+            // jeste doktor i jeste u buducnosti
+            deleteApponitment(a.getId());
+        }
     }
 
 
     @Override
     public Appointment findByStartTime(LocalDateTime last) {
         return appointmentRepository.findByStartTime(last);
+    }
+
+    @Override
+    @Transactional
+    public boolean bookFromAppointment(DateTimeDTO dateTime) {
+        System.out.println(dateTime);
+
+        boolean badTime = false;
+
+        Doctor doctor = userService.getDoctorById(dateTime.getDoctorId());
+        Patient patient = userService.getPatientById(dateTime.getPatientId());
+        Pharmacy pharmacy = pharmacyService.findOne(dateTime.getPharmacyId());
+
+        List<Work> works = pharmacyService.findDoctorsWork(doctor);
+
+        LocalTime tryBookTime = dateTime.getDateTime().toLocalTime();
+        int tryBookDuration = dateTime.getDurationInMins();
+        LocalTime tryBookTimeEnd = tryBookTime.plusMinutes(tryBookDuration);
+
+        LocalDateTime tryBookDateTime = dateTime.getDateTime();
+        LocalDateTime tryBookDateTimeEnd = tryBookDateTime.plusMinutes(tryBookDuration);
+
+        // checking working hours - works fine
+        boolean worksThen = workService.getIfWorksInIntervalForDocPharm(doctor.getId(), pharmacy.getId(), tryBookTime, tryBookTimeEnd);
+        if (!worksThen){
+            badTime = true;
+            System.out.println("Doktoru nije tad radno vreme");
+        }
+
+        // checking patient's appointments
+        boolean occupied = isPatientOccupied(tryBookDateTime, tryBookDateTimeEnd, patient.getId()); // if true, than it is bad time for appointment
+        if (occupied){
+            badTime = true;
+            System.out.println("Pacijent ima pregled tad");
+        }
+
+        // checking doctor's appointments
+        boolean occupiedDoc = isDoctorOccupied(tryBookDateTime, tryBookDateTimeEnd, doctor.getId());
+        if (occupiedDoc) {
+            badTime = true;
+            System.out.println("Doktor ima pregled tad");
+        }
+
+        // checking doctor's vacations and absences
+        List<Vacation> acceptedVacationsInTheGivenPeriod = doctor.getVacations().stream()
+                .filter(x -> x.getStatus().equals(VacationRequestStatus.ACCEPTED) &&
+                        !((x.getStartDate().isAfter(tryBookDateTime.toLocalDate()) && x.getStartDate().isAfter(tryBookDateTimeEnd.toLocalDate()))
+                        || (x.getEndDate().isBefore(tryBookDateTime.toLocalDate()) && x.getEndDate().isBefore(tryBookDateTimeEnd.toLocalDate()))))
+                .collect(Collectors.toList());
+        if (!acceptedVacationsInTheGivenPeriod.isEmpty()) {
+            badTime = true;
+            System.out.println("Ima odmor tad");
+        }
+
+        boolean derm = doctor.getRole().getName().equals("DERMATOLOGIST");
+        if (!badTime) {
+            Appointment appointment = Appointment.builder()
+                    .id(null)
+                    .doctor(doctor)
+                    .durationInMins(dateTime.getDurationInMins())
+                    .examination(Examination.builder()
+                            .id(null)
+                            .patient(patient)
+                            .status(ExaminationStatus.PENDING)
+                            .build())
+                    .pharmacy(pharmacy)
+                    .price(dateTime.getPrice())
+                    .startTime(dateTime.getDateTime())
+                    .build();
+            appointment.getExamination().setAppointment(appointment);
+            if (derm)
+                appointment.setType(TypeOfReview.EXAMINATION);
+            else
+                appointment.setType(TypeOfReview.COUNSELING);
+
+            save(appointment);
+            mailService.sendAppointmentInfo(appointment, false);
+        }
+
+        return !badTime;
     }
 }

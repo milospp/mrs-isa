@@ -18,8 +18,7 @@
         </div>
       </div>
 
-<!-- MODAL -->
-
+    <!-- MODAL -->
     <div class="modal fade" id="editDataModal" tabindex="-1" role="dialog" aria-labelledby="editDataModal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -112,8 +111,7 @@ export default {
 	},
     methods: {
         loadDoctorData() {
-
-            DataService.getDermatologist(this.id) // HARDCODED this.id
+            DataService.getDermatologist(this.id)
                 .then(response => {
                     console.log(this.id);
                     this.doctor = response.data;
@@ -128,7 +126,20 @@ export default {
             DataService.editPersonalData(this.doctor)
             .then((response) => {
                 if (response.data)
-                    alert("You have successfuly changed personal data!");
+                    this.$toast.show(
+                        "You have successfully changed personal data!",
+                        {
+                            position: "top", type: "success",
+                        }
+                    );
+                else {
+                    this.$toast.show(
+                        "Due to error did not change personal data.",
+                        {
+                            position: "top", type: "error",
+                        }
+                    );
+                }
             });
             $('#editDataModal').modal('hide');
         },

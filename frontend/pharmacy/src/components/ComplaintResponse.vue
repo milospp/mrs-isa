@@ -1,5 +1,5 @@
 <template>
-<div style="height: 500px; overflow-y: scroll;">
+<div style="height: 450px; overflow-y: scroll;">
 <form v-on:submit.prevent="">
     <table class="table table-striped">
         <thead class="card-header">
@@ -23,7 +23,7 @@
 
 
     <div class="modal fade" id="responseModal" tabindex="-1" role="dialog" aria-labelledby="responseModal" aria-hidden="true" size="lg">
-        <div class="modal-dialog modal-dialog-centered" role="document" >
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document" >
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="Potvrdica">Respond to {{this.chosenComplaint.author.name+" "+this.chosenComplaint.author.surname}}</h5>
@@ -95,6 +95,8 @@ export default {
             if(this.chosenComplaint.doctor){
                 this.chosenComplaint.doctor = this.chosenComplaint.doctor.id;
             }
+            let admin = AuthService.getCurrentUser();
+            this.chosenComplaint.respondent = admin.id;
 
             ComplaintDataService.respondToComplaint(complaint).then(response => {
                 this.$router.go("/complaints"); 

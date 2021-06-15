@@ -10,12 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.security.PermitAll;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = {"http://localhost:3000", "https://pharmacy9.herokuapp.com"})
 @RequestMapping("/api/medicines")
 public class MedicineController {
 
@@ -74,6 +76,7 @@ public class MedicineController {
 
         form.setMedicineId(medId);
         form.setPharmacyId(pharmacyId);
+
         MedReservation medReservation = medReservationService.reserveMedicine(form, doctorId);
 
         if (medReservation == null)
@@ -87,6 +90,7 @@ public class MedicineController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('PATIENT')")
     @PostMapping("{medId}/pharmacy/{pharmacyId}/reserve")
     public ResponseEntity<MedReservationDTO> reserveMedicineAsPatient(@PathVariable Long medId, @PathVariable Long pharmacyId,
                                                              @RequestBody MedReservationFormDTO form){
@@ -176,12 +180,14 @@ public class MedicineController {
                 med.getMedicine().setShape(lek.getMedicine().getShape());
                 med.getMedicine().setType(lek.getMedicine().getType());
                 med.getMedicine().setPoints(lek.getMedicine().getPoints());
-                MedPrice novacena = new MedPrice();
-                novacena.setPriceType(PriceType.NORMAL);
-                novacena.setPrice(lek.getCurrentPrice());
-                novacena.setStartDate(LocalDateTime.now());
-                novacena.setMedicineInPharmacy(med);
-                med.setCurrentPrice(novacena);
+                if (med.getCurrentPrice().getPriceType() == PriceType.NORMAL) {
+                    MedPrice novacena = new MedPrice();
+                    novacena.setPriceType(PriceType.NORMAL);
+                    novacena.setPrice(lek.getCurrentPrice());
+                    novacena.setStartDate(LocalDateTime.now());
+                    novacena.setMedicineInPharmacy(med);
+                    med.setCurrentPrice(novacena);
+                }
                 medicineService.save(med.getMedicine());
                 povratna = 1;
                 pharmacyService.save(((PharmacyAdmin) user).getPharmacy());
@@ -369,11 +375,10 @@ public class MedicineController {
     }
 
     @GetMapping("/resevation/{code}")
+    @PreAuthorize("hasAuthority('PHARMACIST')")
     public  ResponseEntity<MedReservationDTO> getReservationByCode(@PathVariable String code){
         System.out.println(code);
         MedReservation reservation = medReservationService.getByCode(code);
-
-        //medReservationService.checkForExpiredReservations();
 
         if (reservation != null && reservation.getStatus() == MedReservationStatus.PENDING){
             MedReservationDTO reservationDTO = medReservationToMedReservationDTO.convert(reservation);
@@ -383,14 +388,13 @@ public class MedicineController {
     }
 
     @GetMapping("/reservation/dispense/{code}")
+    @PreAuthorize("hasAuthority('PHARMACIST')")
     public  ResponseEntity<Boolean> dispenseReservationByCode(@PathVariable String code){
         System.out.println(code);
         MedReservation reservation = medReservationService.getByCode(code);
 
         if (reservation != null && reservation.getStatus() == MedReservationStatus.PENDING){
-            // TODO: Move everything into this method
             medReservationService.dispenseMedicine(reservation);
-
             return new ResponseEntity<>(true, HttpStatus.OK);
         }
         return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
