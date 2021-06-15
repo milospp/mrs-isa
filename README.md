@@ -8,7 +8,31 @@ MRS-ISA Project
 
 
 # Running a project
-TODO
+
+Clone this repository:
+```
+git clone https://github.com/milospp/mrs-isa.git
+```
+
+Or clone the new repository:
+```
+git clone https://github.com/isidora-stanic/mrs-isa.git
+```
+
+Run frontend:
+```
+cd mrs-isa/frontend/pharmacy
+npm install --save
+npm run serve
+```
+
+Run backend (from the root folder for cloned repo):
+```
+cd mrs-isa/backend
+.\mvnw spring-boot:run
+```
+
+
 # Demo
 https://pharmacy9.herokuapp.com/ 
 
@@ -41,3 +65,4 @@ D --> E{Heroku frontend}
 D --> F{Heroku backend}
 D --> G{SonarCloud}
 
+```
