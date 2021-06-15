@@ -18,7 +18,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000", "https://pharmacy9.herokuapp.com"})
+@CrossOrigin(origins = {"http://localhost:3000", "https://pharmacy-tim9.herokuapp.com", "https://pharmacy9.herokuapp.com"})
 @RequestMapping("/api/appointments")
 public class AppointmentController {
 
@@ -136,7 +136,6 @@ public class AppointmentController {
 
     }
 
-    @PreAuthorize("hasAuthority('PATIENT')")
     @GetMapping("dermatologist/free")
     public ResponseEntity<List<AppointmentDTO>> getFreeDernatologist() {
         List<AppointmentDTO> resultDTOS = appointmentToAppointmentDTO.convert(this.appointmentService.getAllFreeDermatologist());

@@ -1,11 +1,13 @@
 package isa9.Farmacy.service.impl.base;
 
 import isa9.Farmacy.model.*;
+import isa9.Farmacy.model.dto.EPrescriptionDTO;
 import isa9.Farmacy.model.dto.PharmacySearchDTO;
 import isa9.Farmacy.service.*;
 import isa9.Farmacy.utils.Geo;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -144,5 +146,65 @@ public abstract class PharmacyServiceBase implements PharmacyService {
 
 
         return false;
+    }
+
+    @Override
+    public boolean pharmacyHasEnoughMedicine(String code, int quantity, Pharmacy pharmacy) {
+
+        for(MedicineInPharmacy mip : pharmacy.getMedicines()){
+            if(mip.getMedicine().getCode().equals(code) && mip.getInStock() >= quantity) return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public List<Pharmacy> findEligibleForEPrescription(EPrescriptionDTO ePrescriptionDTO) {
+        List<Pharmacy> eligible = new ArrayList<>();
+
+        boolean isEligible = true;
+
+        for(Pharmacy p : this.findAll()){
+            if(p.getMedicines().size() == 0) continue;
+            isEligible = true;
+
+            for(Map.Entry<String, Integer> med : ePrescriptionDTO.getMedicines().entrySet()){
+                if(!pharmacyHasEnoughMedicine(med.getKey(), med.getValue(), p)){
+                    isEligible = false;
+                    break;
+                }
+            }
+
+            if(isEligible) eligible.add(p);
+        }
+
+        return eligible;
+    }
+
+    @Override
+    public Double calculateTotalInPharmacy(Pharmacy pharmacy, EPrescriptionDTO ePrescriptionDTO) {
+        double total = 0d;
+
+        for(Map.Entry<String, Integer> entry : ePrescriptionDTO.getMedicines().entrySet()){
+            for(MedicineInPharmacy mip : pharmacy.getMedicines()){
+                if(mip.getMedicine().getCode().equals(entry.getKey())){
+                    total += mip.getCurrentPrice().getPrice() * entry.getValue();
+                    break;
+                }
+            }
+        }
+
+        return total;
+    }
+
+    @Override
+    public Map<Long, Double> calculateTotalsInPharmacies(List<Pharmacy> pharmacies, EPrescriptionDTO ePrescriptionDTO) {
+        Map<Long, Double> totals = new HashMap<>();
+
+        for(Pharmacy p : pharmacies){
+            totals.put(p.getId(), calculateTotalInPharmacy(p, ePrescriptionDTO));
+        }
+
+        return totals;
     }
 }

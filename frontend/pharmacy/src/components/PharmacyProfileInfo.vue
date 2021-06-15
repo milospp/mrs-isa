@@ -13,7 +13,7 @@
       <div class="col-md-6 text-left" align="center"></div>
       
       <div class="col-md-2">
-      <button class="btn btn-block btn-primary" v-on:click="subUnsub()">{{setSubBtnText()}}</button>
+      <button v-bind:disabled="this.user.role!='PATIENT'" class="btn btn-block btn-primary" v-on:click="subUnsub()">{{setSubBtnText()}}</button>
       <button v-bind:disabled="!pharmacy.canVote" type="button" class="btn btn-block btn-primary" v-on:click="ratingModal(pharmacy)" data-toggle="modal" data-target="#rating-modal">
           {{getMyVote(pharmacy)>0 ? "Change Rate": "Rate"}}
       </button>
@@ -160,7 +160,7 @@
               <Appointments class="col-md-12 mt-3" :filterPharmacyId="id" />
               
             </div>
-            <div id="menu4" class="tab-pane fade active">
+            <div id="menu4" align-v="start" class="tab-pane fade active">
 					          <Mapa/>
             </div>
             
@@ -364,11 +364,13 @@ export default {
           PharmacyDataService.getPharmacy(this.id) // HARDCODED
               .then(response => {
                   self.pharmacy = response.data; 
+                  //za mapu
+                  localStorage.setItem("adresa", '[' + self.pharmacy.address.longitude + ', ' + self.pharmacy.address.latitude + ']');
                   // console.log(this.id);
                   this.patients = response.data;
                   self.pharmacy.canVote = false;
                   // console.log(response.data);
-                  this.canUserRatePharmacy()
+                  this.canUserRatePharmacy();
               });
       },
       pretragaFarm() {

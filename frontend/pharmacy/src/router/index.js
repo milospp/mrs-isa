@@ -46,6 +46,7 @@ import PatientsComplaints from '@/views/PatientsComplaints.vue'
 import AdminResponses from '@/views/AdminResponses.vue'
 import SysAdminAdd from '@/views/SysAdminAdd.vue'
 import LoyaltyProgramView from '@/views/LoyaltyProgramView.vue'
+import ePrescriptionPage from '@/views/ePrescriptionPage.vue'
 
 
 const routes = [
@@ -291,6 +292,11 @@ const routes = [
     path: '/loyaltyProgram',
     name: 'LoyaltyProgramView',
     component: LoyaltyProgramView
+  },
+  {
+    path: '/ePrescription',
+    name: 'ePrescriptionPage',
+    component: ePrescriptionPage
   }
 
   // {
