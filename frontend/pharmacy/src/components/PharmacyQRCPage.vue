@@ -86,13 +86,11 @@ export default {
             this.pronadjiLekove();
         },
         pronadjiLekove() {
-            alert(this.ePrescription.medicines.length);
             var ind = 0;
             this.ukupno = 0;
             var imaDovoljno = "da";
             this.odgovarajuciLekovi = [];
             for (var lek of this.ePrescription.medicines) {
-                alert(lek);
                 let pronadjeniLek = null;
                 for (var lekApoteke of this.allMedicines) {
                     if (lek[0] == lekApoteke.medicine.code) {
