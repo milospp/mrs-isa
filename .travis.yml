@@ -15,13 +15,13 @@ matrix:
 
       addons:
         sonarcloud:
-          organization: milospp
+          organization: isidora-stanic
           token: 
-            secure: "J7XWuDO0jeI9kRoyYF/ob4HPXFfAaMvwFHNj7BrF6esJjZQ2kWCBr3qWYzl4gV2B7IcmLmJaasvYIo/b0m9pH3ZVmNKUZgO22k4vNdwZjQowtXFFSpQ3HPnrsbG1eDjoXliXbx7BmhUnC+7PLtc2A0RVcJ3DzN3AVRyleQmZyDxSSB8G1dqTmtoBVDgylMA2tIpLoGKE1IKx8njEVWoAXbKmU9AJNFWEGWfQmaNyHv6cm3OKuqT0QB9yCK7duo78fGcCnhSzXYyFy6NyS8/favPmm6oUxpWK/lBdkIbysmsWm10gMMukBaBvGGBRtFPwVfek1OEkiN0jgqdXCDwAjg6NVCap9tCCgObfeqGmgpN6gnTY6ig5HE+3JmQ1swZCWBSe6SYAPTx1s5uzhMEqShJkq+7Z02VHGuAwdc3S065lVUR8BBke0BouYHRatG0ATT+OqzW05on6BT9ywrxrwtEzZFF6vlN6LPtC2Zj+nLGuZWczTCV0SvIRE0GrPaK9DlI5vFvqnCq8IVqktzbHrWFb2YJmF8qZGFMWl8vc1xoFDFEOqhRUHdm/V7CJlJCiqAapVrmKQ/ooAR9yK0ZC8yCxKSglGH1yD7rlJToQ+aHBlJfEl+hiY3SGNiHXOJ5JxZmgMgQy09lMFAB9GKHmI5rQhpKOX/LJpR20KvW+fmM="
+            secure: "NFPjx6stTA/hMTmgYA6emk1pIKgEBpYmI8+r+QF1QvbKq0jblpw8X5BNsX6gkiHTIPBBj4DFpHE7OGtkggSRQGf6RjHIksbrIcmH1cbD1v9QFzkZTCxROQPB9f/q5qxU6ube05Rj5odHIjkbbT64veV4eBa8US0jksUNxOnrrgebqI4ChXJ9vGa30VK8LafLCY8d9PTp0/FRHY1CXWibTAep0OWoUUqH5Br11VqpGo+jGVLU9AlsLomVCm4HEEiZzFCOK0mlF/gFetUDfQAEoAlCw6s2NdsW5suWHWOtKYY96SPYzD/n0djwQoG1AH1rfz5/BE3g9RK1mPEV70vvFo+0n4s7UVrEsS4Cm7diSBt2Nq+bFwW258TksvvbWAXyaZSarggUYEVfsceeOh3Exo+AkcLvyeRL7iiD1lmMFZNUMQMuhcqehwbJinJJkirkcuJTQXI5wa5Kf6jRppLz3uKSY6oow1ueDPFX2diRum0CFfW93GEylMuw1+UAs0HYeKmeHcgQ15KiAgTI2ZBIs4YUaXj0/Wfq49tknnT+qto2TJBoyOvihV1/BY+PxOJWES9BiISlvNIOeaBu8wtJN8Pu4QCnmWbXn0T+RIT9yRc1y4vLAt1F8Rn6TEP5gN/hcVagUJ/+a/5PI2Mcb49d2Wy2HMWj2b+44r5bewdiG+c="
 
       script:
         - ./mvnw clean install -DskipTests=false -B
-        - ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=milospp_mrs-isa
+        - ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=isidora-stanic
         # - ./mvnw sonar:sonar -Dsonar.projectKey=$PROJECT_KEY -Dsonar.organization=mrs-isa -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
 
       dist: trusty
