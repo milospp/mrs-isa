@@ -16,7 +16,7 @@
                     <input type="submit" class="btn btn-primary" value="Make action and promotion" data-toggle="modal" data-target="#napraviAkciju"></form> </td>
             <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
             <td align="left"> <form v-on:submit.prevent="">
-                    <input type="submit" class="btn btn-primary" value="Get report"></form> </td>
+                    <input type="submit" v-on:click.prevent="prikazIzvestaja()" class="btn btn-primary" value="Get report"></form> </td>
             <td>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
             <td align="left"><button type="button" class="btn btn-primary" data-toggle="modal" 
                 data-target="#pharmacy">See pharmacy</button></td>
@@ -630,6 +630,7 @@ export default {
           });
       },
       promenaCene() {this.postojiPromena = true; },
+      prikazIzvestaja() { window.location.href = "/pharmacysReports"; },
       kreirajCenovnik() {
          window.location.href = "/addPricelist";
          this.osveziCenovnik();

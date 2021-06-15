@@ -15,6 +15,7 @@ import HireDermatologist from '@/views/HireDermatologist.vue'
 import AddNewPricelist from '@/views/AddNewPricelist.vue'
 import Vacations from '@/views/Vacations.vue'
 import PharmacyQRcode from '@/views/PharmacyQRcode.vue'
+import PAReportsPage from '@/views/PAReportsPage.vue'
 // import AddPharmacy from '@/views/AddPharmacy.vue'
 // import AddPharmacyAdmin from '@/views/AddPharmacyAdmin.vue'
 import PharmacistHomePage from '@/views/PharmacistHomePage.vue'
@@ -129,9 +130,14 @@ const routes = [
     component: Vacations    // view je komponenta
   },
   {
-    path: '/PharmacyQRcode/:id',
+    path: '/pharmacyQRcode/:id',
     name: 'PharmacyQRcode',
     component: PharmacyQRcode    // view je komponenta
+  },
+  {
+    path: '/pharmacysReports',
+    name: 'PAReportsPage',
+    component: PAReportsPage    // view je komponenta
   },
   {
     path: '/allDoctors',

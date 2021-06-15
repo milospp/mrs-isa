@@ -544,7 +544,7 @@ export default {
           if(this.isPatientSubscribed()) return "Unsubscribe";
           else return "Subscribe";
         },
-        ucitavanjeQRkoda() { window.location.href = "/PharmacyQRcode/" + this.id; },
+        ucitavanjeQRkoda() { window.location.href = "/pharmacyQRcode/" + this.id; },
 
   },
   created() {
